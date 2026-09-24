@@ -8,7 +8,7 @@ const props = defineProps<{ class?: HTMLAttributes['class'] }>()
 </script>
 
 <template>
-  <CollapsibleContent :class="cn('group/disclosure', disclosureContentClass)">
+  <CollapsibleContent :class="disclosureContentClass">
     <div :class="cn(disclosureInnerClass, 'pb-3 text-fg-secondary', props.class)">
       <slot />
     </div>

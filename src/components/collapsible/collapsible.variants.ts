@@ -8,10 +8,13 @@ export const disclosureContentClass = [
   'motion-reduce:animate-none',
 ]
 
+// The inner element follows its own section's state, read from its direct parent. A group variant
+// would match any section around it too, so a folding section nested in an open one would both
+// come in and go out.
 export const disclosureInnerClass = [
   // Comes into focus block by block (see `stagger-children` in tokens.css).
-  'group-data-[state=open]/disclosure:stagger-children',
-  'group-data-[state=closed]/disclosure:animate-content-out',
+  '[[data-state=open]>&]:stagger-children',
+  '[[data-state=closed]>&]:animate-content-out',
   'motion-reduce:animate-none',
 ]
 

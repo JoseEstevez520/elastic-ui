@@ -8,7 +8,7 @@ const props = defineProps<{ class?: HTMLAttributes['class'] }>()
 </script>
 
 <template>
-  <AccordionContent :class="cn('group/disclosure', disclosureContentClass)">
+  <AccordionContent :class="disclosureContentClass">
     <div :class="cn(disclosureInnerClass, 'pb-4 text-fg-secondary', props.class)">
       <slot />
     </div>
