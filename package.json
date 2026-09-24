@@ -36,6 +36,7 @@
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
+    "@lucide/vue": "^1.48.0",
     "@storybook/vue3-vite": "^10.6.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.2",

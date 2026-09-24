@@ -50,6 +50,8 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+  /* A long, gentle landing, taken from SkillNet: the MorphHeader's glass and the Sidebar's fold. */
+  --ease-glide: cubic-bezier(0.38, 0.49, 0, 1);
   /* For content fading in: even from start to end, so nothing in it lands with a jolt. */
   --ease-soft: cubic-bezier(0.25, 0.1, 0.25, 1);
 
@@ -217,6 +219,45 @@
   @supports (-moz-appearance: none) {
     scrollbar-width: thin;
     scrollbar-color: var(--color-border-strong) transparent;
+  }
+}
+
+/*
+ * Fades a line's right end out over its last 24px, instead of cutting it or ending it in an
+ * ellipsis (see ExpandableCardText): the edge can animate, an ellipsis cannot. Text that ends
+ * short of the box never reaches the fade, so it only shows on a line that does not fit.
+ */
+@utility mask-fade-r {
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+}
+
+/*
+ * A tab that is part of the surface beside it, as SkillNet's active nav item is part of the page:
+ * rounded on its open side, flat where it meets the edge, and with the corners above and below
+ * curving into it. The curves are two small squares whose inner corner is rounded off and whose
+ * shadow, in the tab's colour, fills the rest. The colour is `--tab-color`.
+ */
+@utility tab-connected {
+  border-radius: 0.75rem 0 0 0.75rem;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 0.75rem;
+    height: 0.75rem;
+    pointer-events: none;
+  }
+  &::before {
+    top: -0.75rem;
+    border-bottom-right-radius: 0.625rem;
+    box-shadow: 0.3rem 0.3rem 0 0.3rem var(--tab-color);
+  }
+  &::after {
+    bottom: -0.75rem;
+    border-top-right-radius: 0.625rem;
+    box-shadow: 0.3rem -0.3rem 0 0.3rem var(--tab-color);
   }
 }
 

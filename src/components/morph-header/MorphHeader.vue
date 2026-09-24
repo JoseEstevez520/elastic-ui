@@ -4,7 +4,7 @@ import { computed, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch
 import { useEventListener } from '../../composables/useEventListener'
 import { useScrolled } from '../../composables/useScrolled'
 import { cn } from '../../utils/cn'
-import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
+import { contentOut, EASE_GLIDE, morphCloseTransition, morphTransition } from '../../utils/motion'
 import MorphHeaderRegion from './MorphHeaderRegion.vue'
 import { provideMorphHeaderContext } from './morph-header.context'
 import { morphHeaderGlassClass, morphHeaderSurfaceVariants, morphHeaderWidth } from './morph-header.variants'
@@ -84,6 +84,18 @@ const surfacePaint = computed(() => ({
 const close = () => (open.value = false)
 provideMorphHeaderContext({ open, close })
 
+// The surface grows by scaling, and Motion corrects the links against it but not a scrollbar,
+// which would be drawn stretched and sliding. A long panel only scrolls once it has arrived;
+// timed, since Motion sends no event when there is no animation.
+const settled = ref(false)
+let settleTimer: ReturnType<typeof setTimeout> | undefined
+watch(open, (isOpen) => {
+  clearTimeout(settleTimer)
+  settled.value = false
+  if (isOpen) settleTimer = setTimeout(() => (settled.value = true), morphTransition.duration * 1000)
+})
+onBeforeUnmount(() => clearTimeout(settleTimer))
+
 const header = useTemplateRef<HTMLElement>('header')
 useEventListener<KeyboardEvent>(() => document, 'keydown', (event) => {
   if (event.key === 'Escape') close()
@@ -125,7 +137,7 @@ watch(open, (isOpen) => {
           aria-hidden="true"
           :initial="false"
           :animate="{ opacity: scrolled ? 1 : 0, scaleX: scrolled ? 1 : 0.9 }"
-          :transition="{ duration: scrolled ? 0.3 : 0.16, delay: scrolled ? 0.12 : 0, ease: [0.38, 0.49, 0, 1] }"
+          :transition="{ duration: scrolled ? 0.3 : 0.16, delay: scrolled ? 0.12 : 0, ease: EASE_GLIDE }"
           :style="{ borderRadius: 'inherit' }"
           :class="morphHeaderGlassClass"
         />
@@ -185,7 +197,8 @@ watch(open, (isOpen) => {
             :exit="{ opacity: 0, transition: contentOut }"
             :class="
               cn(
-                'relative z-10 mt-2 max-h-[calc(100dvh-6rem)] w-full overflow-y-auto overscroll-contain',
+                'relative z-10 mt-2 max-h-[calc(100dvh-6rem)] w-full overscroll-contain scrollbar-subtle',
+                settled ? 'overflow-y-auto' : 'overflow-hidden',
                 menuClass,
               )
             "

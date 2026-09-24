@@ -17,7 +17,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 
 | Component | Tier | Notes |
 |---|---|---|
-| Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases, `shadow-overlay` / `shadow-soft`, `mask-fade-b`, `blur-in`, `stagger-children` / `stagger-items`, `scrollbar-subtle`, disclosure and popover keyframes |
+| Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases (`--ease-glide` among them), `shadow-overlay` / `shadow-soft`, `mask-fade-b`, `blur-in`, `stagger-children` / `stagger-items`, `scrollbar-subtle`, disclosure and popover keyframes |
 | Button | Base | `solid`, `outline`, `ghost`, `link`; sizes; `icon`, `loading`, `href` |
 | Card | Base | Composable parts; `CardImage` with `fade` |
 | ThemeToggle | Base | Sun/moon from Adam Argyle's theme switch (Apache-2.0); `useTheme()` |
@@ -30,8 +30,10 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Select | Base | Reka UI; the list appears from its trigger like a Popover (shared `floatingPanelClass`), options in a wave from the trigger outwards (none past eight); groups, separator, `multiple`, form-ready |
 | AnimatedList | Base | Motion layout; items slide to their new place, leaving ones fade out before the rest close the gap, new ones wait for room; first items come in as a wave; `#empty` |
 | DialogMorph | Special | Reka UI Dialog; the button's box travels to the middle and grows into the dialog, folds back on close; label fades out in place; content scrolls only once the box has landed |
-| NavTree | Base | Side navigation on Collapsible; one indicator slides to the active item and takes on the clip of the groups around it; groups holding the active item open on their own; `aria-current` |
+| NavTree | Base | Side navigation on Collapsible; one indicator slides to the active item and takes on the clip of the groups around it; groups holding the active item open on their own; `icon` on items and groups; `aria-current` |
 | Toast | Base | `toast()` from anywhere, one `<Toaster>`; arrives from the edge, fades and folds its place away; entrances queued so nothing overlaps; three at most, the oldest fading out as a new one arrives (as in Sonner); pauses on hover and focus; `aria-live`; six positions |
+| Tooltip | Base | Reka UI; Popover's surface, smaller; `TooltipGroup` shows the next ones at once while moving along |
+| Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain`, `connected` (SkillNet's tab of the page) and `floating`; slides in as a panel on a phone |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
@@ -43,10 +45,15 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **Badge, Input** as the forms and tags need them.
+2. **Menu (Dropdown).** Popover's panel with items, the wave, shortcuts and submenus; Reka UI.
+3. **Forms: Input, Textarea, Checkbox, Switch.** The Switch's thumb slides with the library's ease.
+4. **Badge.**
+5. **Search that grows from an icon.**
+6. **Command palette.** DialogMorph with a search field and a list.
 
 ## Later / ideas
 
+- NavTree indicator variants, such as SkillNet's "connected" pill that takes the page colour and fuses with the sidebar's edge.
 - AnimatedList: items crossing while reordering (for now they slide past each other).
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
 - Organize Storybook and the docs by family (actions, forms, overlays, disclosure, collections, navigation) instead of Base / Special, with each morph variant next to its plain one.

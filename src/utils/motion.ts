@@ -1,6 +1,12 @@
 /** The easing behind every morph in the library. Mirrors `--ease-emphasized` in tokens.css. */
 export const EASE_EMPHASIZED = [0.22, 1, 0.36, 1] as const
 
+/** Mirrors `--ease-soft` in tokens.css: for content fading in. */
+export const EASE_SOFT = [0.25, 0.1, 0.25, 1] as const
+
+/** Mirrors `--ease-glide` in tokens.css. */
+export const EASE_GLIDE = [0.38, 0.49, 0, 1] as const
+
 export const morphTransition = { type: 'tween', duration: 0.52, ease: EASE_EMPHASIZED } as const
 
 /**

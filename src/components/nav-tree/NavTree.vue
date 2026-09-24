@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { animate, motion, useMotionValue } from 'motion-v'
 import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
-import { EASE_EMPHASIZED, prefersReducedMotion } from '../../utils/motion'
+import { EASE_EMPHASIZED, EASE_SOFT, prefersReducedMotion } from '../../utils/motion'
+import { useSidebarVariant } from '../sidebar/sidebar.context'
 import { provideNavTreeContext } from './nav-tree.context'
-import { navTreeIndicatorClass } from './nav-tree.variants'
+import { navTreeIndicatorVariants } from './nav-tree.variants'
 
 /**
  * Side navigation: items, and groups that fold open like a Collapsible. The active item's
@@ -19,7 +20,8 @@ const props = withDefaults(
 )
 
 const active = defineModel<string>()
-provideNavTreeContext({ active, select: (value) => (active.value = value) })
+let rows = 0
+provideNavTreeContext({ active, select: (value) => (active.value = value), nextIndex: () => rows++ })
 
 // One indicator for the whole tree, placed over the active item's measured box, as in Tabs. It
 // slides on a change of item, and follows the item at once while groups open and close above
@@ -37,6 +39,8 @@ let sliding = false
 let shown = false
 
 const list = useTemplateRef<HTMLElement>('list')
+// In a `connected` sidebar the indicator is a tab of the page, running on to the sidebar's edge.
+const tab = useSidebarVariant() === 'connected'
 
 // The indicator sits outside the groups' clip, so it takes on the clip of the groups around its
 // item: it folds away and grows back exactly like the item, and fades with the group's content
@@ -50,7 +54,7 @@ function clipAround(row: HTMLElement) {
   let closing = false
   for (let el = row.parentElement; el && el !== list.value; el = el.parentElement) {
     if (el.dataset.state === 'closed') closing = true
-    if (getComputedStyle(el).overflow === 'hidden') {
+    if (getComputedStyle(el).overflowY !== 'visible') {
       const rect = el.getBoundingClientRect()
       top = Math.max(top, rect.top)
       bottom = Math.min(bottom, rect.bottom)
@@ -60,13 +64,13 @@ function clipAround(row: HTMLElement) {
   const hiddenBottom = Math.max(0, box.bottom - bottom)
   return {
     visible: !closing && hiddenTop + hiddenBottom < box.height,
-    clip: hiddenTop || hiddenBottom ? `inset(${hiddenTop}px 0 ${hiddenBottom}px 0)` : undefined,
+    clip: hiddenTop || hiddenBottom ? `inset(${hiddenTop}px 0 ${hiddenBottom}px 0 round 6px)` : undefined,
   }
 }
 
 // A group that opens brings its items in as a wave; the indicator comes in with its own item,
 // on that item's delay and pace, never ahead of the text it sits under.
-const COME_IN = { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] as const }
+const COME_IN = { duration: 0.45, ease: EASE_SOFT }
 function fadeInWith(row: HTMLElement) {
   const entrance = row.closest('li')?.getAnimations()[0]
   const timing = entrance?.effect?.getComputedTiming()
@@ -81,14 +85,22 @@ function place(slide: boolean) {
   const around = row ? clipAround(row) : { visible: false, clip: undefined }
   if (around.visible !== shown) {
     shown = around.visible
-    animate(opacity, shown ? 1 : 0, shown && row ? fadeInWith(row) : FADE)
+    // Placed for the first time, it is simply there, like everything open when the page loads.
+    if (!placed) opacity.jump(shown ? 1 : 0)
+    else animate(opacity, shown ? 1 : 0, shown && row ? fadeInWith(row) : FADE)
   }
   clip.value = around.clip
   if (!row || !list.value) return
 
   const from = list.value.getBoundingClientRect()
   const to = row.getBoundingClientRect()
-  const target = { x: to.left - from.left, y: to.top - from.top, width: to.width, height: to.height }
+  const edge = tab ? list.value.closest('aside')?.getBoundingClientRect().right : undefined
+  const target = {
+    x: to.left - from.left,
+    y: to.top - from.top,
+    width: (edge ?? to.right) - to.left,
+    height: to.height,
+  }
 
   if (!placed || prefersReducedMotion() || (!slide && !sliding)) {
     x.jump(target.x)
@@ -108,7 +120,7 @@ function place(slide: boolean) {
 watch(active, () => nextTick(() => place(true)))
 
 // Created on mount: ResizeObserver does not exist during server rendering. The list's size
-// changes on every frame of a group opening or closing, and when the width changes.
+// changes on every frame of a group opening or closing, and of a sidebar folding.
 let observer: ResizeObserver | undefined
 onMounted(() => {
   if (!list.value) return
@@ -127,7 +139,7 @@ onBeforeUnmount(() => observer?.disconnect())
         aria-hidden="true"
         role="presentation"
         :style="{ x, y, width, height, opacity, clipPath: clip }"
-        :class="navTreeIndicatorClass"
+        :class="navTreeIndicatorVariants({ shape: tab ? 'tab' : 'pill' })"
       />
       <slot />
     </ul>

@@ -1,14 +1,22 @@
-import { inject, provide, type InjectionKey, type Ref } from 'vue'
+import { computed, inject, provide, type InjectionKey, type Ref } from 'vue'
+import { useSidebarContext } from '../sidebar/sidebar.context'
+import type { NavTreeLabelPlacement } from './nav-tree.variants'
 
 export interface NavTreeContext {
   /** The value of the active item. */
   active: Ref<string | undefined>
   select: (value: string) => void
+  /** The row's place in the tree, in the order rows are set up, for cascades down the list. */
+  nextIndex: () => number
 }
 
 export interface NavTreeGroupContext {
   /** Opens this group and every group around it. */
   reveal: () => void
+  /** Tells this group and those around it whether the active item is inside. */
+  holdActive: (isActive: boolean) => void
+  /** Whether its items are tucked away in a sidebar's rail, where the group stands in for them. */
+  railedAway: Readonly<Ref<boolean>>
 }
 
 const NavTreeContextKey: InjectionKey<NavTreeContext> = Symbol('NavTreeContext')
@@ -31,4 +39,12 @@ export function provideNavTreeGroupContext(context: NavTreeGroupContext) {
 /** The group an item or group sits in, or none at the top level. */
 export function useNavTreeGroupContext(): NavTreeGroupContext | null {
   return inject(NavTreeGroupContextKey, null)
+}
+
+/** Where a row renders: on its own, in an open Sidebar, or in one folded to its rail. */
+export function useNavTreePlacement() {
+  const sidebar = useSidebarContext()
+  const railed = computed(() => !!sidebar?.collapsed.value)
+  const placement = computed<NavTreeLabelPlacement>(() => (!sidebar ? 'standalone' : railed.value ? 'rail' : 'sidebar'))
+  return { sidebar, railed, placement }
 }
