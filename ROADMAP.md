@@ -26,8 +26,9 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | ExpandableCard | Special | Grid card that lifts and grows to cover the grid; `default` and `ghost`; `#media` slot with `ExpandableCardImage`; `ExpandableCardText` with fading edges |
 | MorphHeader | Special | Bar → pill → panel; collapses to the menu when the links don't fit (measured); `menu="always"` |
 | Popover | Base | Reka UI; fades in from 97% at the corner facing its trigger, with a soft shadow; content comes in as a wave; closes faster |
-| PopoverMorph | Special | The trigger's box grows into the panel and folds back; label blurs out, content comes into focus; `align`, `side` |
+| PopoverMorph | Special | The trigger's box grows into the panel and folds back; label blurs out, content comes into focus; `align`, `side`; `role="menu"` with `PopoverMorphItem` (arrow keys, typeahead, closes on choosing) for short menus |
 | Select | Base | Reka UI; the list appears from its trigger like a Popover (shared `floatingPanelClass`), options in a wave from the trigger outwards (none past eight); groups, separator, `multiple`, form-ready |
+| Menu | Base | Reka UI dropdown on Popover's surface; items with `icon` and `shortcut`, checks, radios, labels, separators, submenus; items in a wave from the trigger. For long lists, submenus and triggers near an edge; PopoverMorph's menu for the rest |
 | AnimatedList | Base | Motion layout; items slide to their new place, leaving ones fade out before the rest close the gap, new ones wait for room; first items come in as a wave; `#empty` |
 | DialogMorph | Special | Reka UI Dialog; the button's box travels to the middle and grows into the dialog, folds back on close; label fades out in place; content scrolls only once the box has landed |
 | NavTree | Base | Side navigation on Collapsible; one indicator slides to the active item and takes on the clip of the groups around it; groups holding the active item open on their own; `icon` on items and groups; `aria-current` |
@@ -45,11 +46,10 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **Menu (Dropdown).** Popover's panel with items, the wave, shortcuts and submenus; Reka UI.
-3. **Forms: Input, Textarea, Checkbox, Switch.** The Switch's thumb slides with the library's ease.
-4. **Badge.**
-5. **Search that grows from an icon.**
-6. **Command palette.** DialogMorph with a search field and a list.
+2. **Forms: Input, Textarea, Checkbox, Switch.** The Switch's thumb slides with the library's ease.
+3. **Badge.**
+4. **Search that grows from an icon.**
+5. **Command palette.** DialogMorph with a search field and a list.
 
 ## Later / ideas
 

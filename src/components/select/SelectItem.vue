@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { SelectItem, SelectItemIndicator, SelectItemText, type SelectItemProps } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useDelegatedProps } from '../../utils/useDelegatedProps'
 import { selectItemClass } from './select.variants'
 
 const props = defineProps<SelectItemProps & { class?: HTMLAttributes['class'] }>()
 
-const delegated = computed(() => {
-  const { class: _, ...rest } = props
-  return rest
-})
+const delegated = useDelegatedProps(props)
 </script>
 
 <template>

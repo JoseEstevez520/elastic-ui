@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
+import { RovingFocusGroup } from 'reka-ui'
 import { cn } from '../../utils/cn'
+import { providePopoverMorphContext } from './popover-morph.context'
 import {
   popoverMorphLabelState,
+  popoverMorphListClass,
   popoverMorphPanelVariants,
   popoverMorphSurfaceVariants,
   popoverMorphTriggerClass,
@@ -13,22 +16,29 @@ import {
  * A trigger that becomes its own panel: the button's box grows into the panel and folds back
  * into it, while the label blurs out and the content comes into focus. Text never scales; the
  * box takes its size and clips the content, which sits at its full size from the start.
+ *
+ * With `role="menu"` it is a menu: PopoverMorphItems are reached with the arrow keys and by
+ * typing their first letter, and choosing one closes it.
  */
 const props = withDefaults(
   defineProps<{
     /** The edge the panel lines up with, and the corner it grows from. */
     align?: 'start' | 'end'
     side?: 'bottom' | 'top'
+    /** A `dialog` holds any content; a `menu` holds PopoverMorphItems. */
+    role?: 'dialog' | 'menu'
     /** Accessible name of the panel. */
     label?: string
     /** Applied to the panel. */
     class?: HTMLAttributes['class']
   }>(),
-  { align: 'start', side: 'bottom' },
+  { align: 'start', side: 'bottom', role: 'dialog' },
 )
 
 const open = defineModel<boolean>('open', { default: false })
 const close = () => (open.value = false)
+providePopoverMorphContext({ close })
+const isMenu = computed(() => props.role === 'menu')
 
 const root = useTemplateRef<HTMLElement>('root')
 const trigger = useTemplateRef<HTMLButtonElement>('trigger')
@@ -60,6 +70,18 @@ const surfaceStyle = computed(() => {
 useEventListener<KeyboardEvent>(() => document, 'keydown', (event) => {
   if (open.value && event.key === 'Escape') close()
 })
+// In a menu, typing a letter moves to the next item that starts with it, as native menus do.
+function onTypeahead(event: KeyboardEvent) {
+  if (!isMenu.value || event.key.length !== 1 || event.ctrlKey || event.metaKey || event.altKey) return
+  const items = [...(panel.value?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([aria-disabled="true"])') ?? [])]
+  const from = items.indexOf(document.activeElement as HTMLElement)
+  const letter = event.key.toLowerCase()
+  const next = [...items.slice(from + 1), ...items.slice(0, from + 1)].find((item) =>
+    item.textContent?.trim().toLowerCase().startsWith(letter),
+  )
+  next?.focus()
+}
+
 useEventListener<PointerEvent>(() => document, 'pointerdown', (event) => {
   if (open.value && event.target instanceof Node && !root.value?.contains(event.target)) close()
 })
@@ -84,13 +106,18 @@ watch(open, async (isOpen) => {
       <div
         :id="panelId"
         ref="panel"
-        role="dialog"
+        :role="role"
         :aria-label="label"
         tabindex="-1"
         :inert="!open"
-        :class="cn(popoverMorphPanelVariants({ align, side, open }), props.class)"
+        :class="cn(popoverMorphPanelVariants({ align, side, open, menu: isMenu }), props.class)"
+        @keydown="onTypeahead"
       >
-        <slot :close="close" />
+        <!-- A menu's items take the arrow keys, looping round at the ends. -->
+        <RovingFocusGroup v-if="isMenu" orientation="vertical" loop :class="open && popoverMorphListClass">
+          <slot :close="close" />
+        </RovingFocusGroup>
+        <slot v-else :close="close" />
       </div>
     </div>
 
@@ -98,7 +125,7 @@ watch(open, async (isOpen) => {
     <button
       ref="trigger"
       type="button"
-      aria-haspopup="dialog"
+      :aria-haspopup="role"
       :aria-expanded="open"
       :aria-controls="panelId"
       :inert="open"

@@ -7,8 +7,9 @@ import {
   type SelectContentEmits,
   type SelectContentProps,
 } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useDelegatedProps } from '../../utils/useDelegatedProps'
 import { floatingPanelClass } from '../popover/popover.variants'
 import { selectContentClass } from './select.variants'
 
@@ -22,10 +23,7 @@ const props = withDefaults(
 )
 const emits = defineEmits<SelectContentEmits>()
 
-const delegated = computed(() => {
-  const { class: _, ...rest } = props
-  return rest
-})
+const delegated = useDelegatedProps(props)
 const forwarded = useForwardPropsEmits(delegated, emits)
 </script>
 

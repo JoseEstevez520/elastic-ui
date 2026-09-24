@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { Archive, Copy, FolderInput, Pencil, Trash2 } from '@lucide/vue'
 import { ref } from 'vue'
 import Button from '../button/Button.vue'
 import PopoverMorph from './PopoverMorph.vue'
+import PopoverMorphItem from './PopoverMorphItem.vue'
+import PopoverMorphSeparator from './PopoverMorphSeparator.vue'
 
 const meta = {
   title: 'Special/PopoverMorph',
@@ -29,23 +32,23 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
-/** A menu: the trigger's box grows into the list of options. */
+/**
+ * A menu: the trigger's box grows into the list. Arrow keys move between the items, a letter jumps
+ * to the next one starting with it, and choosing one closes the menu.
+ */
 export const Menu: Story = {
   render: () => ({
-    components: { PopoverMorph },
-    setup: () => ({ items: ['Rename', 'Duplicate', 'Move to…', 'Archive'] }),
+    components: { PopoverMorph, PopoverMorphItem, PopoverMorphSeparator },
+    setup: () => ({ icons: { Archive, Copy, FolderInput, Pencil, Trash2 } }),
     template: `
-      <PopoverMorph label="Actions" class="p-1.5 [--popover-width:12rem]">
+      <PopoverMorph role="menu" label="Actions" class="[--popover-width:13rem]">
         <template #trigger>Actions</template>
-        <template #default="{ close }">
-          <button
-            v-for="item in items"
-            :key="item"
-            type="button"
-            class="block w-full cursor-pointer rounded-md px-2.5 py-2 text-left hover:bg-bg-muted focus-visible:bg-bg-muted focus-visible:outline-none"
-            @click="close"
-          >{{ item }}</button>
-        </template>
+        <PopoverMorphItem :icon="icons.Pencil" shortcut="⌘R">Rename</PopoverMorphItem>
+        <PopoverMorphItem :icon="icons.Copy" shortcut="⌘D">Duplicate</PopoverMorphItem>
+        <PopoverMorphItem :icon="icons.FolderInput">Move to…</PopoverMorphItem>
+        <PopoverMorphSeparator />
+        <PopoverMorphItem :icon="icons.Archive">Archive</PopoverMorphItem>
+        <PopoverMorphItem :icon="icons.Trash2" disabled>Delete (not allowed)</PopoverMorphItem>
       </PopoverMorph>`,
   }),
 }

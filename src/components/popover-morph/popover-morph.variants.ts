@@ -17,7 +17,7 @@ export const popoverMorphSurfaceVariants = cva(
       open: {
         // Opening lets the eye follow the shape; closing only wants it gone.
         true: 'rounded-[var(--popover-radius,var(--radius-lg))] shadow-overlay duration-[350ms]',
-        false: 'rounded-[var(--button-radius,var(--radius-md))] duration-[250ms]',
+        false: 'rounded-[var(--button-radius,var(--radius-md))] duration-300',
       },
     },
   },
@@ -25,20 +25,29 @@ export const popoverMorphSurfaceVariants = cva(
 
 /** Pinned to the same corner as the surface, at its own full size, so growing never reflows it. */
 export const popoverMorphPanelVariants = cva(
-  'absolute w-[var(--popover-width,18rem)] max-h-[70dvh] overflow-y-auto overscroll-contain scrollbar-subtle p-4 text-sm text-fg outline-none',
+  'absolute w-[var(--popover-width,18rem)] max-h-[70dvh] overflow-y-auto overscroll-contain scrollbar-subtle text-sm text-fg outline-none',
   {
     variants: {
       align: { start: 'left-0', end: 'right-0' },
       side: { bottom: 'top-0', top: 'bottom-0' },
       open: {
-        // Comes into focus as one wave once the shape is on its way; leaves at once. Once faded it
-        // turns invisible, so find-in-page skips it, yet keeps its box to be measured.
-        true: 'stagger-children [--stagger-delay:0.1s]',
+        true: '',
+        // Leaves at once. Once faded it turns invisible, so find-in-page skips it, yet keeps its
+        // box to be measured.
         false: 'invisible opacity-0 transition-[opacity,visibility] duration-150',
       },
+      /** A menu's items come in one by one (see `popoverMorphListClass`); other content by block. */
+      menu: { true: 'p-1', false: 'p-4' },
     },
+    compoundVariants: [
+      // Comes into focus as one wave once the shape is on its way.
+      { open: true, menu: false, class: 'stagger-children [--stagger-delay:0.1s]' },
+    ],
   },
 )
+
+/** A menu's items, coming into focus one by one as the shape grows (see `stagger-items`). */
+export const popoverMorphListClass = 'stagger-items [--stagger-delay:0.1s]'
 
 export const popoverMorphTriggerClass = [
   'relative z-10 inline-flex h-10 cursor-pointer items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap text-fg',
@@ -53,7 +62,17 @@ export const popoverMorphTriggerClass = [
  */
 export const popoverMorphLabelState = {
   open: 'pointer-events-none opacity-0 blur-[2px] duration-150',
-  closed: 'duration-300 delay-150',
+  closed: 'duration-300 delay-[180ms]',
 }
+
+/**
+ * A menu item, as a MenuItem looks. Highlighted on hover and on focus, since the arrow keys move
+ * the focus from item to item.
+ */
+export const popoverMorphItemClass = [
+  'flex w-full cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-sm outline-none select-none',
+  'hover:bg-bg-muted focus-visible:bg-bg-muted',
+  'aria-disabled:pointer-events-none aria-disabled:opacity-50',
+]
 
 export type PopoverMorphVariants = VariantProps<typeof popoverMorphSurfaceVariants>

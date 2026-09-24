@@ -6,8 +6,9 @@ import {
   type PopoverContentEmits,
   type PopoverContentProps,
 } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
+import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useDelegatedProps } from '../../utils/useDelegatedProps'
 import { floatingPanelClass, popoverContentClass } from './popover.variants'
 
 defineOptions({ inheritAttrs: false })
@@ -19,10 +20,7 @@ const props = withDefaults(defineProps<PopoverContentProps & { class?: HTMLAttri
 })
 const emits = defineEmits<PopoverContentEmits>()
 
-const delegated = computed(() => {
-  const { class: _, ...rest } = props
-  return rest
-})
+const delegated = useDelegatedProps(props)
 const forwarded = useForwardPropsEmits(delegated, emits)
 </script>
 
