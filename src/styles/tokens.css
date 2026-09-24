@@ -75,6 +75,8 @@
   /* Lifts a floating panel off the page; deeper in dark, where a soft shadow disappears. */
   --shadow-overlay: 0 8px 24px -6px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.5)),
     0 2px 6px -2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
+  /* A lighter lift, for surfaces that sit over the page without weighing on it (Popover, Toast). */
+  --shadow-soft: 0 2px 8px -3px rgb(0 0 0 / 0.1);
 
   @keyframes disclosure-open {
     from { height: 0; }

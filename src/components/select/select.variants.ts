@@ -10,7 +10,7 @@ export const selectTriggerClass = [
 
 /** At least as wide as its trigger; scrolls inside when taller than the room left. */
 export const selectContentClass = [
-  'min-w-(--reka-select-trigger-width) max-w-(--reka-select-content-available-width)',
+  'shadow-overlay min-w-(--reka-select-trigger-width) max-w-(--reka-select-content-available-width)',
   'max-h-[min(24rem,var(--reka-select-content-available-height))] overflow-hidden',
 ]
 

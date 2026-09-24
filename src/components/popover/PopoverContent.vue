@@ -32,7 +32,11 @@ const forwarded = useForwardPropsEmits(delegated, emits)
       v-bind="{ ...forwarded, ...$attrs }"
       :class="cn(floatingPanelClass, popoverContentClass, props.class)"
     >
-      <slot />
+      <!-- Its own element: the wave animates the content, and on the panel it would replace the
+           panel's own entrance. Comes in as the panel appears, as Select's options do. -->
+      <div class="stagger-children [--stagger-delay:0.05s]">
+        <slot />
+      </div>
     </PopoverContent>
   </PopoverPortal>
 </template>
