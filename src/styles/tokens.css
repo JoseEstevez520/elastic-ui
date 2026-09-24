@@ -108,8 +108,8 @@
   }
   /* A sheen crossing its text from before the start to past the end. */
   @keyframes sheen {
-    from { background-position: 100% 0; }
-    to { background-position: -50% 0; }
+    from { mask-position: 100% 0; }
+    to { mask-position: -50% 0; }
   }
   @keyframes fade-in {
     from { opacity: 0; }
@@ -279,19 +279,20 @@
 }
 
 /*
- * Text that is working on something ("Thinking…"): a soft sheen runs across its letters, left to
- * right, over and over, as prompt-kit's Text Shimmer does. The letters are the page's muted text
- * with a brighter band passing through them.
+ * Text that is working on something ("Thinking…"): a brighter band runs across it, left to right,
+ * over and over, as prompt-kit's Text Shimmer does. Drawn with a mask rather than by clipping a
+ * background to the text, so it holds on text whose letters move in layers of their own, as
+ * TextMorph's do: the text keeps its colour, and the mask lets it show fainter outside the band.
  */
 @utility text-shimmer {
-  color: transparent;
-  background: linear-gradient(90deg, var(--color-fg-muted) 40%, var(--color-fg) 50%, var(--color-fg-muted) 60%);
-  background-size: 250% 100%;
-  background-clip: text;
+  color: var(--color-fg);
+  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.45) 40%, #000 50%, rgb(0 0 0 / 0.45) 60%);
+  mask-size: 250% 100%;
   animation: sheen 2s linear infinite;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+    mask-image: none;
     color: var(--color-fg-muted);
   }
 }

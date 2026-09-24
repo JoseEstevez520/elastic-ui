@@ -27,13 +27,17 @@ const props = defineProps<{
   <div :class="cn(chatMessageVariants({ role }), props.class)">
     <!-- Above the answer: what it used to get there, such as the tools it ran. -->
     <slot name="before" />
-    <template v-if="role === 'assistant' && text !== undefined">
-      <!-- What it is doing, until its first words; anything above it already says so. -->
-      <p v-if="streaming && !text && !$slots.before" role="status" class="text-shimmer w-fit">
-        <TextMorph :text="`${status ?? 'Thinking'}…`" />
-      </p>
-      <ChatStream v-else :text="text" :streaming="streaming" />
-    </template>
+    <!-- The status and the answer share one cell, so the status fades out where it stood as the
+         first words fade in, with nothing jumping. -->
+    <div v-if="role === 'assistant' && text !== undefined" class="grid">
+      <Transition leave-active-class="transition-opacity duration-300" leave-to-class="opacity-0">
+        <!-- What it is doing, until its first words; anything above it already says so. -->
+        <p v-if="streaming && !text && !$slots.before" role="status" class="text-shimmer w-fit [grid-area:1/1]">
+          <TextMorph :text="`${status ?? 'Thinking'}…`" />
+        </p>
+      </Transition>
+      <div class="[grid-area:1/1]"><ChatStream :text="text" :streaming="streaming" /></div>
+    </div>
     <slot v-else />
   </div>
 </template>

@@ -9,8 +9,9 @@ import { ChatThreadReadyKey } from './chat.keys'
  * a steady pace, spreading each burst over the time the next one is expected to take (as
  * Streamdown and llm-ui do), a whole word at a time, and each word comes into focus as it
  * appears (as FlowToken does, with the library's blur-in). A word takes far longer to come into
- * focus than the next takes to appear, so many are coming in at once: a soft front of focus
- * travelling through the text, one wave rather than words landing one by one.
+ * focus than the next takes to appear, on an ease that starts and ends gently, so many are
+ * coming in at once: a soft gradient of focus travelling through the text, one smooth wave
+ * rather than words landing one by one.
  */
 const props = defineProps<{ text: string; streaming?: boolean }>()
 
@@ -96,8 +97,8 @@ const animate = shown.value < props.text.length || props.streaming
 <template>
   <template v-for="(piece, i) in pieces" :key="i">
     <template v-if="/^\s+$/.test(piece)">{{ piece }}</template>
-    <!-- Each word comes into focus over 900ms, far longer than the gap to the next: at a model's
-         pace the band of words coming in spans several lines, a front moving on a slant. -->
-    <span v-else :class="animate && 'animate-[blur-in_900ms_var(--ease-soft)_both] motion-reduce:animate-none'">{{ piece }}</span>
+    <!-- Each word comes into focus over 1.2s, far longer than the gap to the next: at a model's
+         pace the band of words coming in spans several lines, a soft front moving on a slant. -->
+    <span v-else :class="animate && 'animate-[blur-in_1200ms_var(--ease-in-out)_both] motion-reduce:animate-none'">{{ piece }}</span>
   </template>
 </template>
