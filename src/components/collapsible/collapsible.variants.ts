@@ -11,7 +11,7 @@ export const disclosureContentClass = [
 export const disclosureInnerClass = [
   // Comes into focus block by block (see `stagger-children` in tokens.css).
   'group-data-[state=open]/disclosure:stagger-children',
-  'group-data-[state=closed]/disclosure:animate-disclosure-content-out',
+  'group-data-[state=closed]/disclosure:animate-content-out',
   'motion-reduce:animate-none',
 ]
 

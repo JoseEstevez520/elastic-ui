@@ -61,7 +61,20 @@
    */
   --animate-disclosure-open: disclosure-open 0.45s var(--ease-emphasized);
   --animate-disclosure-close: disclosure-close 0.3s var(--ease-emphasized);
-  --animate-disclosure-content-out: fade-out 0.15s linear both;
+  /* Content leaves at once, before the shape folds back. */
+  --animate-content-out: fade-out 0.15s linear both;
+
+  /*
+   * Floating panels (Popover, and later Select and menus) appear from their trigger: they fade in
+   * while growing from 97% at the corner facing it, and leave faster, barely shrinking. The
+   * scale is too small to read as stretched text. Same values as transitions.dev's menu dropdown.
+   */
+  --animate-popover-in: popover-in 0.25s var(--ease-emphasized);
+  --animate-popover-out: popover-out 0.15s var(--ease-emphasized) forwards;
+
+  /* Lifts a floating panel off the page; deeper in dark, where a soft shadow disappears. */
+  --shadow-overlay: 0 8px 24px -6px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.5)),
+    0 2px 6px -2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
 
   @keyframes disclosure-open {
     from { height: 0; }
@@ -70,6 +83,12 @@
   @keyframes disclosure-close {
     from { height: var(--reka-collapsible-content-height); }
     to { height: 0; }
+  }
+  @keyframes popover-in {
+    from { opacity: 0; transform: scale(0.97); }
+  }
+  @keyframes popover-out {
+    to { opacity: 0; transform: scale(0.99); }
   }
   @keyframes fade-in {
     from { opacity: 0; }
