@@ -31,3 +31,15 @@ export const composerButtonClass = [
   'flex size-11 cursor-pointer items-center justify-center rounded-full text-fg transition-colors duration-150',
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
 ]
+
+/** A step's line: quiet text, as wide as it needs, that only reads as a button once it opens. */
+export const chatToolTriggerClass = [
+  'group/tool flex w-fit max-w-full items-center gap-2 rounded-md text-left enabled:cursor-pointer',
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+]
+
+// No box: a line of text, brightening under the pointer.
+export const chatSourceClass = [
+  'group/source flex min-w-0 items-center gap-2.5 rounded-sm py-0.5 text-sm',
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+]

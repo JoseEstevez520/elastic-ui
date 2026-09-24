@@ -38,6 +38,8 @@
   /* Outcome colours, only for what they mean: something that went well, something that went wrong. */
   --color-success: light-dark(#16a34a, #4ade80);
   --color-danger: light-dark(#dc2626, #f87171);
+  /* Something to be careful with, before it goes wrong. */
+  --color-warning: light-dark(#d97706, #fbbf24);
 
   /* The knob of a Switch: white on the track in light, a step off white in dark. */
   --color-knob: light-dark(#ffffff, #e4e4e7);

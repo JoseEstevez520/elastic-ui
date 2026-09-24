@@ -30,3 +30,26 @@ export const StopIcon: FunctionalComponent = () =>
   h('svg', { viewBox: '0 0 24 24', fill: 'currentColor' }, [h('rect', { x: 6, y: 6, width: 12, height: 12, rx: 2.5 })])
 
 export const XIcon: FunctionalComponent = () => h('svg', stroke, [h('path', { d: 'M18 6 6 18M6 6l12 12' })])
+
+export const InfoIcon: FunctionalComponent = () =>
+  h('svg', stroke, [h('circle', { cx: 12, cy: 12, r: 9 }), h('path', { d: 'M12 16v-4M12 8h.01' })])
+
+export const LightbulbIcon: FunctionalComponent = () =>
+  h('svg', stroke, [
+    h('path', { d: 'M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5' }),
+    h('path', { d: 'M9 18h6M10 22h4' }),
+  ])
+
+export const TriangleAlertIcon: FunctionalComponent = () =>
+  h('svg', stroke, [
+    h('path', { d: 'm21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3' }),
+    h('path', { d: 'M12 9v4M12 17h.01' }),
+  ])
+
+export const OctagonAlertIcon: FunctionalComponent = () =>
+  h('svg', stroke, [
+    h('path', {
+      d: 'M15.3 2a2 2 0 0 1 1.4.6l4.7 4.7a2 2 0 0 1 .6 1.4v6.6a2 2 0 0 1-.6 1.4l-4.7 4.7a2 2 0 0 1-1.4.6H8.7a2 2 0 0 1-1.4-.6l-4.7-4.7A2 2 0 0 1 2 15.3V8.7a2 2 0 0 1 .6-1.4l4.7-4.7A2 2 0 0 1 8.7 2z',
+    }),
+    h('path', { d: 'M12 8v4M12 16h.01' }),
+  ])

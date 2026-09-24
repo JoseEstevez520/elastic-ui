@@ -1,11 +1,24 @@
 // For the stories only: a model that streams its answers as a real one would.
 import { computed, ref } from 'vue'
 
+export interface Source {
+  title: string
+  url: string
+}
+
 export interface Message {
   id: number
   role: 'user' | 'assistant'
   text: string
+  /** A search it ran before answering. */
+  tool?: { label: string; state: 'running' | 'done'; sources: Source[] }
 }
+
+export const SOURCES: Source[] = [
+  { title: 'What a harness does for a coding agent', url: 'https://docs.example.com/agents/harness' },
+  { title: 'Test harness', url: 'https://wiki.example.org/Test_harness' },
+  { title: 'Reading, deciding, acting: the agent loop explained step by step', url: 'https://blog.example.dev/agent-loop' },
+]
 
 const LONG =
   'A harness is the part of a coding agent that gives the model something to work with. The model on its own only reads and writes text; the harness turns that into actions. It reads the files in your project and passes them to the model, applies the edits the model asks for, runs the commands it proposes and shows it what they printed.\n\nThat loop, reading, deciding and acting, is what makes it feel like working with someone rather than asking a search box. The better the harness, the more of your project the model can see and the safer its actions are.'
@@ -34,14 +47,14 @@ export function fakeModel(start: Omit<Message, 'id'>[]) {
     const live = messages.value.at(-1)!
     streamingId.value = live.id
 
-    // What it does before writing, one line morphing from step to step.
+    // It thinks, then searches: one line saying so, which turns into what it found.
     status.value = 'Thinking'
     stream = setTimeout(() => {
-      status.value = 'Searching the web'
+      live.tool = { label: 'Searching the web', state: 'running', sources: SOURCES }
       stream = setTimeout(() => {
-        status.value = 'Reading 3 sources'
-        stream = setTimeout(answer, 1100)
-      }, 1100)
+        live.tool = { ...live.tool!, label: `Read ${SOURCES.length} sources`, state: 'done' }
+        stream = setTimeout(answer, 700)
+      }, 1800)
     }, 1100)
 
     // The answer, in bursts of uneven size at uneven times, at a model's pace (a few
