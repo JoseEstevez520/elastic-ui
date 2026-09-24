@@ -8,7 +8,7 @@ import {
 } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { popoverContentClass } from './popover.variants'
+import { floatingPanelClass, popoverContentClass } from './popover.variants'
 
 defineOptions({ inheritAttrs: false })
 
@@ -30,7 +30,7 @@ const forwarded = useForwardPropsEmits(delegated, emits)
   <PopoverPortal>
     <PopoverContent
       v-bind="{ ...forwarded, ...$attrs }"
-      :class="cn(popoverContentClass, props.class)"
+      :class="cn(floatingPanelClass, popoverContentClass, props.class)"
     >
       <slot />
     </PopoverContent>

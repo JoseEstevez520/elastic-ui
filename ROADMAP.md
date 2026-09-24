@@ -27,6 +27,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | MorphHeader | Special | Bar → pill → panel; collapses to the menu when the links don't fit (measured); `menu="always"` |
 | Popover | Base | Reka UI; fades in from 97% at the corner facing its trigger, with a shadow; closes faster |
 | PopoverMorph | Special | The trigger's box grows into the panel and folds back; label blurs out, content comes into focus; `align`, `side` |
+| Select | Base | Reka UI; the list appears from its trigger like a Popover (shared `floatingPanelClass`); groups, separator, `multiple`, form-ready |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
@@ -38,12 +39,11 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **Select.** Built on Popover's panel; Reka UI for keyboard, typeahead and positioning.
-3. **Animated list.** Items slide to their new place when a list is filtered or reordered (Motion layout animations).
-4. **Dialog born from its trigger.** The button becomes the dialog and returns to it on close; Reka UI for the focus trap.
-5. **Tree / Sidebar navigation** built on Collapsible.
-6. **Toast.** Arrives from an edge and leaves through it.
-7. **Badge, Input** as the forms and tags need them.
+2. **Animated list.** Items slide to their new place when a list is filtered or reordered (Motion layout animations).
+3. **Dialog born from its trigger.** The button becomes the dialog and returns to it on close; Reka UI for the focus trap.
+4. **Tree / Sidebar navigation** built on Collapsible.
+5. **Toast.** Arrives from an edge and leaves through it.
+6. **Badge, Input** as the forms and tags need them.
 
 ## Later / ideas
 
