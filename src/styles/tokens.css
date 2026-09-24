@@ -35,6 +35,12 @@
   --color-accent-subtle: light-dark(#eff4ff, #16233d);
   --color-accent-fg: light-dark(#ffffff, #0a0a0a);
 
+  /* Danger: only for what went wrong, such as a field that needs fixing. */
+  --color-danger: light-dark(#dc2626, #f87171);
+
+  /* The knob of a Switch: white on the track in light, a step off white in dark. */
+  --color-knob: light-dark(#ffffff, #e4e4e7);
+
   /* Typography */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
