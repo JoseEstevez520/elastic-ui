@@ -39,6 +39,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Checkbox, Switch | Base | Reka UI; the check is drawn along its stroke and turns into the dash for in between; the Switch's knob slides on the library's ease |
 | CopyButton | Base | Copy turns into a check, and back after two seconds; its label morphs with TextMorph |
 | ProgressButton | Base | A button that becomes its own progress: the amount fills it and counts up beside the morphing label, then the fill turns green (done) or red (error) and it goes back to itself; a sweep when there is no amount |
+| SearchMorph | Special | A magnifier that widens into the field around it (button, `/` or ⌘K), folding back when left empty; no box once open, as Apple's, or `soft` as Vercel's |
 | TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. For text that becomes something else (see "Appearing is not becoming") |
 | DynamicIsland | Special | A pill that morphs into each state's size and shape (a song, a timer, an upload), content leaving and coming into focus; only moves when its state changes; inline by default, `floating` to hold it at the top |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
@@ -53,9 +54,8 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **Search that grows from an icon.**
-3. **Feedback morph.** A "Feedback" button that becomes a small form and a thank-you, on PopoverMorph.
-4. **Command palette.** DialogMorph with a search field and a list.
+2. **Feedback morph.** A "Feedback" button that becomes a small form and a thank-you, on PopoverMorph.
+3. **Command palette.** DialogMorph with a search field and a list.
 
 ## Later / ideas
 
