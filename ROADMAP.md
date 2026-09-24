@@ -1,6 +1,6 @@
 # Roadmap — elastic-ui
 
-Where the library is and what comes next. Design rules live in `DECISIONS.md`; working conventions in `AGENTS.md`.
+Where the library is and what comes next. Design rules live in `DECISIONS.md`, rules for using it in a project in `USAGE.md`, and working conventions in `AGENTS.md`.
 
 ## Getting started
 
