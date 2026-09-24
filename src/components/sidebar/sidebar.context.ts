@@ -36,9 +36,8 @@ export function useRequiredSidebarContext(part: string): SidebarContext {
  *   plain      a column in a slightly different tone, with no line between it and the page.
  *   connected  as in SkillNet: a tinted column where the active item is a tab of the page itself,
  *              fused to the sidebar's edge with the corners curving into it.
- *   floating   a rounded panel held off the screen's edges, over the page.
  */
-export type SidebarVariant = 'plain' | 'connected' | 'floating'
+export type SidebarVariant = 'plain' | 'connected'
 
 const SidebarVariantKey: InjectionKey<SidebarVariant> = Symbol('SidebarVariant')
 

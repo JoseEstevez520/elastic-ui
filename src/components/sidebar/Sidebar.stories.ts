@@ -17,7 +17,7 @@ const meta = {
   title: 'Special/Sidebar',
   parameters: { layout: 'fullscreen' },
   args: { variant: 'plain' },
-  argTypes: { variant: { control: 'inline-radio', options: ['plain', 'connected', 'floating'] } },
+  argTypes: { variant: { control: 'inline-radio', options: ['plain', 'connected'] } },
   render: (args) => ({
     components: parts,
     setup: () => ({ args, page: ref('home'), collapsed: ref(false), icons }),
@@ -67,9 +67,6 @@ export const Default: Story = {}
 
 /** As in SkillNet: a tinted column whose active item is a tab of the page, curving into it. */
 export const Connected: Story = { args: { variant: 'connected' } }
-
-/** A rounded panel held off the screen's edges. */
-export const Floating: Story = { args: { variant: 'floating' } }
 
 /** Starts folded to the rail; the group holding the active page stands in for it. */
 export const Collapsed: Story = {

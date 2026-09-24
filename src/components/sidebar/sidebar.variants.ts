@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority'
 /**
  * Clips its content while it narrows. Everything in it keeps to one line (labels fold away rather
  * than wrap), so heights never change as the width does. No line sets it apart from the page:
- * its tone does, or its own floating surface.
+ * its tone does.
  */
 export const sidebarVariants = cva('shrink-0 overflow-hidden text-fg', {
   variants: {
@@ -14,24 +14,16 @@ export const sidebarVariants = cva('shrink-0 overflow-hidden text-fg', {
         'bg-[color:var(--sidebar-bg,color-mix(in_srgb,var(--color-accent)_7%,var(--color-bg)))]',
         '[--nav-tree-indicator:var(--color-bg)]',
       ],
-      floating: [
-        'rounded-[var(--sidebar-radius,var(--radius-xl))] shadow-soft',
-        'border border-[color:var(--sidebar-border,var(--color-border))] bg-[color:var(--sidebar-bg,var(--color-bg))]',
-      ],
     },
     mobile: {
-      false: 'sticky transition-[width] ease-glide motion-reduce:transition-none',
+      false: 'sticky top-0 h-dvh transition-[width] ease-glide motion-reduce:transition-none',
       // On a phone: a panel over the page, slid in from the left edge and out through it.
-      true: 'fixed z-50 w-[min(var(--sidebar-width,16rem),85vw)] transition-transform ease-emphasized motion-reduce:transition-none',
+      true: [
+        'fixed inset-y-0 left-0 z-50 w-[min(var(--sidebar-width,16rem),85vw)] shadow-overlay',
+        'transition-transform ease-emphasized motion-reduce:transition-none',
+      ],
     },
   },
-  compoundVariants: [
-    { variant: ['plain', 'connected'], mobile: false, class: 'top-0 h-dvh' },
-    { variant: ['plain', 'connected'], mobile: true, class: 'inset-y-0 left-0 shadow-overlay' },
-    // Held off the edges by the page's gutter, on a phone too.
-    { variant: 'floating', mobile: false, class: 'top-2 m-2 h-[calc(100dvh-1rem)]' },
-    { variant: 'floating', mobile: true, class: 'inset-y-2 left-2' },
-  ],
 })
 
 /** Barely there, as in SkillNet: a light veil and a blur, enough to set the panel apart. */
