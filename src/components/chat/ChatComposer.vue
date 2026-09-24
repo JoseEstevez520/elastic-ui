@@ -3,7 +3,7 @@ import { computed, ref, useId, type HTMLAttributes } from 'vue'
 import { ChevronRightIcon, StopIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import IconSwap from '../icon-swap/IconSwap.vue'
-import { composerButtonClass, composerFieldClass } from './chat.variants'
+import { composerButtonClass, composerDropClass, composerFieldClass, composerShapeClass } from './chat.variants'
 
 /**
  * Where the conversation is written, as in Curio: a filled pill with a round button of the same
@@ -44,15 +44,25 @@ function onKeydown(event: KeyboardEvent) {
 
 const press = () => (props.responding ? emit('stop') : send())
 
-// The goo: blurring the pill and the button together and cutting the blur back to a hard edge
-// turns the gap between them into a liquid neck, so the button pulls out of the pill as a drop
-// rather than just moving aside. The sharp originals are drawn back on top, so text never blurs.
+// The goo: the pill and the button are drawn as plain shapes on a layer of their own, blurred
+// together and cut back to a hard edge, so the gap between them becomes a liquid neck and the
+// button pulls out of the pill as a drop. The result is filled with the composer's colour, which
+// may be translucent (over an Aurora), and only then shadowed; the text and the icon sit above,
+// never filtered.
 const goo = `${useId()}-goo`
 </script>
 
 <template>
   <form :class="cn('mx-auto w-full max-w-2xl px-4 pt-2 pb-5', props.class)" @submit.prevent="press">
-    <div class="relative flex items-end" :style="{ filter: `url(#${goo})` }">
+    <div class="relative flex items-end">
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0"
+        :style="{ filter: `url(#${goo}) var(--chat-composer-shadow,)` }"
+      >
+        <div :class="composerShapeClass" class="absolute inset-y-0 left-0 rounded-3xl" :style="{ right: active ? '52px' : '0px' }" />
+        <div class="absolute right-0 bottom-0 size-11 rounded-full bg-black" :class="composerDropClass" :style="{ translate: active ? '0 0' : '-4px 0' }" />
+      </div>
       <textarea
         v-model="text"
         rows="1"
@@ -65,15 +75,12 @@ const goo = `${useId()}-goo`
         @keydown="onKeydown"
       />
       <!-- Under the pill's end at rest, so the two read as one; out beside it once active. -->
-      <div
-        class="absolute right-0 bottom-0 transition-[translate] duration-500 ease-glide motion-reduce:transition-none"
-        :style="{ translate: active ? '0 0' : '-4px 0' }"
-      >
+      <div :class="composerDropClass" class="absolute right-0 bottom-0" :style="{ translate: active ? '0 0' : '-4px 0' }">
         <button
           type="submit"
           :aria-label="responding ? 'Stop' : 'Send'"
           :aria-disabled="(!responding && !ready) || undefined"
-          :class="[composerButtonClass, active && 'hover:bg-accent hover:text-accent-fg']"
+          :class="[composerButtonClass, active && 'hover:text-accent']"
         >
           <IconSwap
             :icon="responding ? StopIcon : ChevronRightIcon"
@@ -90,8 +97,9 @@ const goo = `${useId()}-goo`
       <defs>
         <filter :id="goo">
           <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
-          <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo" />
-          <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 20 -9" result="shape" />
+          <feFlood style="flood-color: var(--chat-composer-bg, var(--color-bg-muted))" result="fill" />
+          <feComposite in="fill" in2="shape" operator="in" />
         </filter>
       </defs>
     </svg>

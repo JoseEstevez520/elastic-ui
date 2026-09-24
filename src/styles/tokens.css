@@ -111,6 +111,11 @@
     from { mask-position: 100% 0; }
     to { mask-position: -50% 0; }
   }
+  /* A light wandering from where it rests and back, as behind an Aurora. */
+  @keyframes aurora-drift {
+    from { translate: 0 0; scale: 1; }
+    to { translate: var(--drift); scale: 1.15; }
+  }
   @keyframes fade-in {
     from { opacity: 0; }
   }

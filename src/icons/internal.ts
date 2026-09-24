@@ -28,3 +28,5 @@ export const ChevronRightIcon: FunctionalComponent = () => h('svg', stroke, [h('
 /** A rounded square: stop. */
 export const StopIcon: FunctionalComponent = () =>
   h('svg', { viewBox: '0 0 24 24', fill: 'currentColor' }, [h('rect', { x: 6, y: 6, width: 12, height: 12, rx: 2.5 })])
+
+export const XIcon: FunctionalComponent = () => h('svg', stroke, [h('path', { d: 'M18 6 6 18M6 6l12 12' })])
