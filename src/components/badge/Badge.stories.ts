@@ -104,7 +104,7 @@ export const Removable: Story = {
   }),
 }
 
-/** A count: when it changes, the old number blurs out upwards and the new one comes in from below. */
+/** A count: when it changes, its digits roll to the new value by place value. */
 export const Count: Story = {
   render: () => ({
     components: { Badge, BadgeCount, Button },

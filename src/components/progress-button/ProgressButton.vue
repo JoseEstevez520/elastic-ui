@@ -118,12 +118,11 @@ const shownIcon = computed(() => (state.value === 'done' ? CheckIcon : state.val
       leave-active-class="transition-opacity duration-300"
       leave-to-class="opacity-0"
     >
-      <span
-        v-if="outcome || (working && amount !== undefined)"
-        aria-hidden="true"
-        :class="progressFillVariants({ outcome: outcome ?? 'none' })"
-        :style="{ scale: `${fillScale} 1` }"
-      />
+      <!-- The outer layer only fades; the fill inside keeps its own tint, so the two never compete
+           over the same opacity. -->
+      <span v-if="outcome || (working && amount !== undefined)" aria-hidden="true" class="pointer-events-none absolute inset-0">
+        <span :class="progressFillVariants({ outcome: outcome ?? 'none' })" :style="{ scale: `${fillScale} 1` }" />
+      </span>
     </Transition>
     <span v-if="working && amount === undefined" aria-hidden="true" :class="progressSweepClass" />
     <IconSwap v-if="shownIcon" :icon="shownIcon" class="relative" />

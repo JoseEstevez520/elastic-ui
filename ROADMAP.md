@@ -34,7 +34,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | NavTree | Base | Side navigation on Collapsible; one indicator slides to the active item and takes on the clip of the groups around it; groups holding the active item open on their own; `icon` on items and groups; `aria-current` |
 | Toast | Base | `toast()` from anywhere, one `<Toaster>`; arrives from the edge, fades and folds its place away; entrances queued so nothing overlaps; three at most, the oldest fading out as a new one arrives (as in Sonner); pauses on hover and focus; `aria-live`; six positions |
 | Tooltip | Base | Reka UI; Popover's surface, smaller; `TooltipGroup` shows the next ones at once while moving along |
-| Badge, BadgeCount | Base | `soft`, `outline`, `solid`; `icon`, a colour dot; `compact` folds to the icon and unfolds its label on hover and focus; `removable`; BadgeCount's old number blurs out upwards as the new one comes in |
+| Badge, BadgeCount | Base | `soft`, `outline`, `solid`; `icon`, a colour dot; `compact` folds to the icon and unfolds its label on hover and focus; `removable`; BadgeCount's digits roll by place value (TextMorph) |
 | Input, Textarea | Base | A hairline that darkens on focus, no halo; `icon`, `invalid`; Textarea grows with its text |
 | Checkbox, Switch | Base | Reka UI; the check is drawn along its stroke and turns into the dash for in between; the Switch's knob slides on the library's ease |
 | CopyButton | Base | Copy turns into a check, and back after two seconds; its label morphs with TextMorph |
@@ -53,10 +53,9 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **One way to change text.** BadgeCount rolls its number with its own animation; move it onto TextMorph, whose numbers roll by place value, so every changing text in the library moves the same way.
-3. **Search that grows from an icon.**
-4. **Feedback morph.** A "Feedback" button that becomes a small form and a thank-you, on PopoverMorph.
-5. **Command palette.** DialogMorph with a search field and a list.
+2. **Search that grows from an icon.**
+3. **Feedback morph.** A "Feedback" button that becomes a small form and a thank-you, on PopoverMorph.
+4. **Command palette.** DialogMorph with a search field and a list.
 
 ## Later / ideas
 

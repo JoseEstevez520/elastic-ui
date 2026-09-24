@@ -67,13 +67,10 @@ export const badgeRemoveClass = [
 ]
 
 /**
- * A count's digits: the old number blurs out upwards as the new one comes in from below. The cell
- * fills the badge's height, and each number's box is trimmed to the digits themselves (from the
- * cap height to the baseline): a font leaves more room above its glyphs than below, so an
- * untrimmed number sits low in its box.
+ * A count's digits, trimmed to the digits themselves (from the cap height to the baseline): a
+ * font leaves more room above its glyphs than below, so an untrimmed number sits low in its box.
  */
-export const badgeCountClass = 'relative grid h-full place-items-center overflow-hidden leading-none tabular-nums'
-export const badgeCountDigitsClass = '[grid-area:1/1] [text-box:trim-both_cap_alphabetic]'
+export const badgeCountDigitsClass = 'leading-none tabular-nums [text-box:trim-both_cap_alphabetic]'
 
 /** A single digit makes a circle; more widen it into a pill. */
 export const badgeCountVariants = cva('justify-center px-1.5', {
