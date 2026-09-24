@@ -7,12 +7,12 @@
   "files": [
     "dist"
   ],
-  "module": "./dist/elastic-ui.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/elastic-ui.js"
+      "import": "./dist/index.js"
     },
     "./tokens.css": "./dist/tokens.css"
   },

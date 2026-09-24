@@ -14,11 +14,13 @@ export default defineConfig({
     lib: {
       entry: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
       formats: ['es'],
-      fileName: 'elastic-ui',
     },
     rollupOptions: {
       // Consumers bring their own copies of these.
       external: ['vue', 'motion-v', 'reka-ui', 'class-variance-authority', 'clsx', 'tailwind-merge', /^torph/],
+      // One file per module, as in the source: a project's bundler drops whole files it does not
+      // reach, and what each part weighs can be measured.
+      output: { preserveModules: true, preserveModulesRoot: 'src', entryFileNames: '[name].js' },
     },
   },
 })
