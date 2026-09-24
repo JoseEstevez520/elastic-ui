@@ -4,6 +4,7 @@ import { computed, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch
 import { useEventListener } from '../../composables/useEventListener'
 import { useScrolled } from '../../composables/useScrolled'
 import { cn } from '../../utils/cn'
+import { labelFor } from '../../utils/labels'
 import { contentOut, EASE_GLIDE, morphCloseTransition, morphTransition } from '../../utils/motion'
 import MorphHeaderRegion from './MorphHeaderRegion.vue'
 import { provideMorphHeaderContext } from './morph-header.context'
@@ -21,7 +22,7 @@ const props = withDefaults(
     menuLabel?: string
     class?: HTMLAttributes['class']
   }>(),
-  { scrollThreshold: 40, menu: 'responsive', menuLabel: 'Menu' },
+  { scrollThreshold: 40, menu: 'responsive', menuLabel: labelFor('menu') },
 )
 
 const open = defineModel<boolean>('open', { default: false })

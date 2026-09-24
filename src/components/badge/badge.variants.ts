@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /** A small label for a status or a tag. Colors read `--badge-*` first. */
-export const badgeVariants = cva(
+export const badgeVariants = /* @__PURE__ */ cva(
   'group/badge inline-flex shrink-0 items-center rounded-full font-medium whitespace-nowrap outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
   {
     variants: {
@@ -42,7 +42,7 @@ export type BadgeVariants = VariantProps<typeof badgeVariants>
  * room opening while the text comes into focus, the way the Sidebar's labels come back; it folds
  * away faster than it opened.
  */
-export const badgeLabelVariants = cva('', {
+export const badgeLabelVariants = /* @__PURE__ */ cva('', {
   variants: {
     compact: {
       true: [
@@ -73,7 +73,7 @@ export const badgeRemoveClass = [
 export const badgeCountDigitsClass = 'leading-none tabular-nums [text-box:trim-both_cap_alphabetic]'
 
 /** A single digit makes a circle; more widen it into a pill. */
-export const badgeCountVariants = cva('justify-center px-1.5', {
+export const badgeCountVariants = /* @__PURE__ */ cva('justify-center px-1.5', {
   variants: { size: { sm: 'min-w-5', md: 'min-w-6' } },
   defaultVariants: { size: 'md' },
 })

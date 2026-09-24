@@ -5,6 +5,7 @@ import type { ButtonVariants } from '../button/button.variants'
 import IconSwap from '../icon-swap/IconSwap.vue'
 import TextMorph from '../text-morph/TextMorph.vue'
 import { CheckIcon, CopyIcon } from '../../icons/internal'
+import { labelFor } from '../../utils/labels'
 
 /**
  * Copies `value` to the clipboard. Its icon turns into a check once copied, and back after a
@@ -20,7 +21,7 @@ const props = withDefaults(
     size?: ButtonVariants['size']
     class?: HTMLAttributes['class']
   }>(),
-  { label: 'Copy', copiedLabel: 'Copied', variant: 'ghost', size: 'icon' },
+  { label: labelFor('copy'), copiedLabel: labelFor('copied'), variant: 'ghost', size: 'icon' },
 )
 const emit = defineEmits<{ copied: [] }>()
 

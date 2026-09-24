@@ -2,6 +2,7 @@
 import { computed, nextTick, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
+import { labelFor, useLabels } from '../../utils/labels'
 import {
   searchMorphClearClass,
   searchMorphIconClass,
@@ -25,7 +26,7 @@ const props = withDefaults(
     shortcut?: '/' | 'mod+k'
     class?: HTMLAttributes['class']
   }>(),
-  { variant: 'plain', label: 'Search', placeholder: 'Search…' },
+  { variant: 'plain', label: labelFor('search'), placeholder: labelFor('searchPlaceholder') },
 )
 
 const query = defineModel<string>({ default: '' })
@@ -73,6 +74,7 @@ useEventListener<KeyboardEvent>(() => document, 'keydown', (event) => {
 watch(open, (isOpen) => isOpen && document.activeElement !== input.value && expand())
 
 const hasQuery = computed(() => query.value.length > 0)
+const labels = useLabels()
 </script>
 
 <template>
@@ -97,7 +99,7 @@ const hasQuery = computed(() => query.value.length > 0)
     <button
       v-if="open && hasQuery"
       type="button"
-      aria-label="Clear"
+      :aria-label="labels.clear"
       :class="searchMorphClearClass"
       @click="clear"
     >

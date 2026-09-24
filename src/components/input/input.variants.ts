@@ -22,7 +22,7 @@ export const fieldBareClass = [
   'disabled:cursor-not-allowed disabled:opacity-50',
 ]
 
-export const inputVariants = cva(fieldClass, {
+export const inputVariants = /* @__PURE__ */ cva(fieldClass, {
   variants: {
     size: {
       sm: 'h-8 px-2.5',
@@ -39,7 +39,7 @@ export const inputVariants = cva(fieldClass, {
 })
 
 /** Darkens along with the line when the field takes focus. */
-export const inputIconVariants = cva(
+export const inputIconVariants = /* @__PURE__ */ cva(
   'pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 text-fg-faint transition-colors duration-150 peer-focus:text-fg-secondary',
   {
     variants: { size: { sm: 'left-2.5', md: 'left-3' } },

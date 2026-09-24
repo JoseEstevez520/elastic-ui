@@ -3,6 +3,7 @@ import { MotionConfig, motion } from 'motion-v'
 import { computed, useId, type HTMLAttributes } from 'vue'
 import { useTheme } from '../../composables/useTheme'
 import { cn } from '../../utils/cn'
+import { labelFor } from '../../utils/labels'
 
 const props = withDefaults(
   defineProps<{
@@ -11,7 +12,7 @@ const props = withDefaults(
     darkLabel?: string
     class?: HTMLAttributes['class']
   }>(),
-  { lightLabel: 'Switch to light theme', darkLabel: 'Switch to dark theme' },
+  { lightLabel: labelFor('switchToLight'), darkLabel: labelFor('switchToDark') },
 )
 
 const { theme, toggle } = useTheme(props.storageKey)

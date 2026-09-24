@@ -1,0 +1,78 @@
+import { inject, provide, type App, type InjectionKey } from 'vue'
+
+/**
+ * Every text the library writes on its own: names for screen readers, placeholders, default
+ * titles. English by default; set them once for a whole app in another language with
+ * `app.use(ElasticUi, { labels })`, or for part of a page with `provideLabels`. A prop on a part
+ * still wins over both.
+ */
+export const defaultLabels = {
+  // Actions
+  close: 'Close',
+  clear: 'Clear',
+  dismiss: 'Dismiss',
+  copy: 'Copy',
+  copied: 'Copied',
+  send: 'Send',
+  sending: 'Sending',
+  sent: 'Sent',
+  sendError: "Couldn't send",
+  stop: 'Stop',
+  somethingWentWrong: 'Something went wrong',
+  // Navigation
+  menu: 'Menu',
+  mainNav: 'Main',
+  sections: 'Sections',
+  sidebar: 'Sidebar',
+  toggleSidebar: 'Toggle sidebar',
+  onThisPage: 'On this page',
+  notifications: 'Notifications',
+  // Search
+  search: 'Search',
+  searchPlaceholder: 'Search…',
+  // Theme
+  switchToLight: 'Switch to light theme',
+  switchToDark: 'Switch to dark theme',
+  // Callout
+  note: 'Note',
+  tip: 'Tip',
+  important: 'Important',
+  warning: 'Warning',
+  caution: 'Caution',
+  // Forms
+  comment: 'Comment',
+  commentPlaceholder: 'Write a comment…',
+  rating: 'Rating',
+  // Chat
+  message: 'Message',
+  messagePlaceholder: 'Ask anything…',
+  conversation: 'Conversation',
+  thinking: 'Thinking',
+  askAi: 'Ask AI',
+  assistant: 'Assistant',
+}
+
+export type Labels = typeof defaultLabels
+
+const LabelsKey: InjectionKey<Partial<Labels>> = Symbol('ElasticUiLabels')
+
+/** Sets the library's texts for everything below this component. */
+export function provideLabels(labels: Partial<Labels>) {
+  const around = inject(LabelsKey, {})
+  provide(LabelsKey, { ...around, ...labels })
+}
+
+/** The library's texts where this component sits. Call in `setup` or in a prop's default. */
+export function useLabels(): Labels {
+  return { ...defaultLabels, ...inject(LabelsKey, {}) }
+}
+
+/** One of the library's texts, for a prop's default: `{ label: () => labelFor('search') }`. */
+export const labelFor = (key: keyof Labels) => () => useLabels()[key]
+
+/** `app.use(ElasticUi, { labels: { copy: 'Copiar', … } })` sets the library's texts app-wide. */
+export const ElasticUi = {
+  install(app: App, options: { labels?: Partial<Labels> } = {}) {
+    app.provide(LabelsKey, options.labels ?? {})
+  },
+}

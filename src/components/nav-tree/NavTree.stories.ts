@@ -82,7 +82,10 @@ export const Links: Story = {
 
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
 
-/** The active page sits in folded groups: they open on their own to show it. */
+/**
+ * The active page sits in folded groups: they open on their own to show it. On load they are simply
+ * open, with no animation; only a later change of page opens a group with its wave.
+ */
 export const ActiveInsideFolded: Story = {
   render: () => ({
     components: parts,
@@ -100,6 +103,37 @@ export const ActiveInsideFolded: Story = {
           <NavTreeItem value="php">PHP</NavTreeItem>
         </NavTreeGroup>
       </NavTree>`,
+  }),
+}
+
+/**
+ * Groups that are pages of their own, as a documentation site's sections: the label goes to the
+ * section's index (`value` and `to` or `href`), and only the chevron folds the group. Going to a
+ * section opens it. With a router, pass `to` and the items render the app's RouterLink.
+ */
+export const GroupPages: Story = {
+  render: () => ({
+    components: parts,
+    setup: () => ({ page: ref('modules') }),
+    template: `
+      <div class="flex gap-10">
+        <NavTree v-model="page" class="w-64">
+          <NavTreeItem value="home" href="#home">Home</NavTreeItem>
+          <NavTreeGroup label="Modules" value="modules" href="#modules" default-open>
+            <NavTreeItem value="web-client" href="#web-client">Web client</NavTreeItem>
+            <NavTreeItem value="web-server" href="#web-server">Web server</NavTreeItem>
+            <NavTreeGroup label="Design" value="design" href="#design">
+              <NavTreeItem value="colour" href="#colour">Colour</NavTreeItem>
+              <NavTreeItem value="type" href="#type">Type</NavTreeItem>
+            </NavTreeGroup>
+          </NavTreeGroup>
+          <NavTreeGroup label="Tools" value="tools" href="#tools">
+            <NavTreeItem value="git" href="#git">Git</NavTreeItem>
+            <NavTreeItem value="docker" href="#docker">Docker</NavTreeItem>
+          </NavTreeGroup>
+        </NavTree>
+        <p class="text-sm text-fg-muted">Active: {{ page }}</p>
+      </div>`,
   }),
 }
 

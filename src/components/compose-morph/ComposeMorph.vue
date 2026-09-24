@@ -4,6 +4,7 @@ import Textarea from '../input/Textarea.vue'
 import PopoverMorph from '../popover-morph/PopoverMorph.vue'
 import type { ProgressButtonState } from '../progress-button/ProgressButton.vue'
 import ComposeSend from './ComposeSend.vue'
+import { labelFor, useLabels } from '../../utils/labels'
 
 export interface Composed {
   message: string
@@ -35,13 +36,13 @@ const props = withDefaults(
     side?: 'bottom' | 'top'
   }>(),
   {
-    label: 'Comment',
-    placeholder: 'Write a comment…',
+    label: labelFor('comment'),
+    placeholder: labelFor('commentPlaceholder'),
     ratings: () => [],
-    sendLabel: 'Send',
-    sendingLabel: 'Sending',
-    sentLabel: 'Sent',
-    errorLabel: "Couldn't send",
+    sendLabel: labelFor('send'),
+    sendingLabel: labelFor('sending'),
+    sentLabel: labelFor('sent'),
+    errorLabel: labelFor('sendError'),
     thanks: 'Sent, thanks!',
     align: 'start',
     side: 'bottom',
@@ -94,6 +95,7 @@ onBeforeUnmount(() => timers.forEach(clearTimeout))
 const hasMessage = computed(() => message.value.trim().length > 0)
 const canSend = computed(() => hasMessage.value && sending.value === 'idle')
 const submitForm = () => canSend.value && submit()
+const labels = useLabels()
 </script>
 
 <template>
@@ -114,7 +116,7 @@ const submitForm = () => canSend.value && submit()
         @keydown.enter.ctrl.prevent="submitForm"
       />
       <div class="flex items-center justify-between gap-3">
-        <div v-if="ratings.length" role="radiogroup" aria-label="Rating" class="flex gap-1">
+        <div v-if="ratings.length" role="radiogroup" :aria-label="labels.rating" class="flex gap-1">
           <button
             v-for="(face, i) in ratings"
             :key="i"

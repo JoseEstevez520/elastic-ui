@@ -7,7 +7,7 @@ import { cva } from 'class-variance-authority'
  * steps run together into one continuous fill. When the work ends, the fill does not go: it
  * turns into the outcome, taking its colour where it stands.
  */
-export const progressFillVariants = cva(
+export const progressFillVariants = /* @__PURE__ */ cva(
   [
     'pointer-events-none absolute inset-0 origin-left',
     'transition-[scale,background-color,opacity] duration-500 ease-out motion-reduce:transition-none',
@@ -39,7 +39,7 @@ export const progressSweepClass = [
  * The amount beside the label. Its own padding stands in for the button's gap (cancelled by the
  * negative margin), so the space before it folds away with it.
  */
-export const amountVariants = cva(
+export const amountVariants = /* @__PURE__ */ cva(
   [
     'relative -ml-2 overflow-hidden text-left whitespace-nowrap tabular-nums',
     'transition-[width,padding,opacity] duration-300 ease-emphasized motion-reduce:transition-none',

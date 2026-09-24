@@ -2,6 +2,7 @@
 import { animate, motion, useMotionValue } from 'motion-v'
 import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { EASE_EMPHASIZED, EASE_SOFT, prefersReducedMotion } from '../../utils/motion'
+import { labelFor } from '../../utils/labels'
 import { useSidebarVariant } from '../sidebar/sidebar.context'
 import { provideNavTreeContext } from './nav-tree.context'
 import { navTreeIndicatorVariants } from './nav-tree.variants'
@@ -16,7 +17,7 @@ const props = withDefaults(
     label?: string
     class?: HTMLAttributes['class']
   }>(),
-  { label: 'Sections' },
+  { label: labelFor('sections') },
 )
 
 const active = defineModel<string>()

@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * The card pads vertically and spaces its children with `gap`; each part pads itself
  * horizontally. That keeps any order of parts, and any custom markup between them, aligned.
  */
-export const cardVariants = cva(
+export const cardVariants = /* @__PURE__ */ cva(
   'flex flex-col overflow-hidden rounded-[var(--card-radius,var(--radius-xl))] text-fg',
   {
     variants: {
@@ -28,7 +28,7 @@ export const cardVariants = cva(
   },
 )
 
-export const cardSectionVariants = cva('', {
+export const cardSectionVariants = /* @__PURE__ */ cva('', {
   variants: {
     size: {
       sm: 'px-4',
@@ -38,7 +38,7 @@ export const cardSectionVariants = cva('', {
 })
 
 /** An image at either end of the card cancels the card's vertical padding to sit flush. */
-export const cardImageVariants = cva('block w-full object-cover', {
+export const cardImageVariants = /* @__PURE__ */ cva('block w-full object-cover', {
   variants: {
     size: {
       sm: 'first:-mt-4 last:-mb-4',
@@ -50,7 +50,7 @@ export const cardImageVariants = cva('block w-full object-cover', {
 /** A bottom edge that melts into whatever is below, in the same spirit as fading text edges. */
 export const imageFade = 'mask-fade-b'
 
-export const cardTitleVariants = cva('font-semibold leading-tight tracking-tight text-fg', {
+export const cardTitleVariants = /* @__PURE__ */ cva('font-semibold leading-tight tracking-tight text-fg', {
   variants: {
     size: {
       sm: 'text-base',

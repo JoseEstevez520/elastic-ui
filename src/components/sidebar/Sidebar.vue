@@ -2,6 +2,7 @@
 import { computed, nextTick, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
+import { labelFor } from '../../utils/labels'
 import { provideSidebarVariant, useRequiredSidebarContext, type SidebarVariant } from './sidebar.context'
 import SidebarToggle from './SidebarToggle.vue'
 import {
@@ -24,9 +25,11 @@ const props = withDefaults(
     /** How it sits against the page (see `SidebarVariant`). */
     variant?: SidebarVariant
     label?: string
+    /** Names the fold button the sidebar carries. */
+    toggleLabel?: string
     class?: HTMLAttributes['class']
   }>(),
-  { variant: 'plain', label: 'Sidebar' },
+  { variant: 'plain', label: labelFor('sidebar'), toggleLabel: labelFor('toggleSidebar') },
 )
 
 const sidebar = useRequiredSidebarContext('Sidebar')
@@ -84,7 +87,7 @@ const timing = computed(() => {
         <div :class="cn(sidebarHeaderClass, collapsed ? sidebarHeaderFolded : sidebarHeaderShown)">
           <slot name="header" />
         </div>
-        <SidebarToggle v-if="!mobile" :class="collapsed ? 'mx-auto' : 'ml-auto'" />
+        <SidebarToggle v-if="!mobile" :label="toggleLabel" :class="collapsed ? 'mx-auto' : 'ml-auto'" />
       </div>
       <div class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain p-2 scrollbar-subtle">
         <slot />

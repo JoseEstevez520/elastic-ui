@@ -8,7 +8,7 @@ import { cva } from 'class-variance-authority'
  *   plain  as Apple's: no box at all once open, just the icon and the text.
  *   soft   as Vercel's: a faint fill and no border, for a search that needs to read as a field.
  */
-export const searchMorphVariants = cva(
+export const searchMorphVariants = /* @__PURE__ */ cva(
   [
     'group/search relative h-10 overflow-hidden rounded-[var(--input-radius,var(--radius-md))]',
     'transition-[width,background-color] ease-emphasized motion-reduce:transition-none',
@@ -37,7 +37,7 @@ export const searchMorphIconClass = [
 ]
 
 /** Comes into focus once the box has grown enough to hold it; leaves at once. */
-export const searchMorphInputVariants = cva(
+export const searchMorphInputVariants = /* @__PURE__ */ cva(
   // The browser's own clear button is hidden: the field has its own.
   'h-full w-full bg-transparent pr-9 pl-9 text-sm text-fg outline-none placeholder:text-fg-faint [&::-webkit-search-cancel-button]:appearance-none',
   {

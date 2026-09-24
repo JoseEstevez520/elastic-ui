@@ -2,6 +2,7 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion-v'
 import { computed, onBeforeUnmount, ref, shallowRef, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { labelFor, useLabels } from '../../utils/labels'
 import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
 import { dismissToast, useToasts, type Toast } from './toast.store'
 import { toastClass, toasterVariants, type ToasterPosition } from './toast.variants'
@@ -22,7 +23,7 @@ const props = withDefaults(
     label?: string
     class?: HTMLAttributes['class']
   }>(),
-  { position: 'bottom-right', duration: 5000, max: 3, label: 'Notifications' },
+  { position: 'bottom-right', duration: 5000, max: 3, label: labelFor('notifications') },
 )
 
 const { toasts } = useToasts()
@@ -145,6 +146,7 @@ const fromEdge = computed(() => ({ opacity: 0, y: atTop.value ? '-120%' : '120%'
 function onKeydown(event: KeyboardEvent, id: number) {
   if (event.key === 'Escape') dismissToast(id)
 }
+const labels = useLabels()
 </script>
 
 <template>
@@ -187,7 +189,7 @@ function onKeydown(event: KeyboardEvent, id: number) {
               </div>
               <button
                 type="button"
-                aria-label="Dismiss"
+                :aria-label="labels.dismiss"
                 class="-m-1 flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-sm)] text-fg-faint transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
                 @click="dismissToast(t.id)"
               >

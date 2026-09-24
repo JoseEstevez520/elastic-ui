@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, type Component, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useLink, type LinkTo } from '../../utils/link'
 import { buttonVariants, type ButtonVariants } from './button.variants'
 
 const props = withDefaults(
@@ -13,23 +14,27 @@ const props = withDefaults(
     disabled?: boolean
     /** Renders an `<a>` instead of a `<button>`. */
     href?: string
+    /** Renders the app's RouterLink to this location (a path or `{ name, params }`). */
+    to?: LinkTo
+    /** The link component to render, such as NuxtLink, given `to` or `href`. */
+    as?: string | Component
     type?: 'button' | 'submit' | 'reset'
     class?: HTMLAttributes['class']
   }>(),
   { type: 'button' },
 )
 
-const isLink = computed(() => props.href !== undefined)
+const link = useLink(props)
 const isDisabled = computed(() => props.disabled || props.loading)
 </script>
 
 <template>
   <component
-    :is="isLink ? 'a' : 'button'"
-    :href="isLink && !isDisabled ? href : undefined"
-    :type="isLink ? undefined : type"
-    :disabled="isLink ? undefined : isDisabled"
-    :aria-disabled="isLink && isDisabled ? true : undefined"
+    :is="link && !isDisabled ? link.is : link ? 'a' : 'button'"
+    v-bind="link && !isDisabled ? link.attrs : {}"
+    :type="link ? undefined : type"
+    :disabled="link ? undefined : isDisabled"
+    :aria-disabled="link && isDisabled ? true : undefined"
     :aria-busy="loading || undefined"
     :class="cn(buttonVariants({ variant, size }), props.class)"
   >

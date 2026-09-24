@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority'
  * The surface is the round button at rest and the chat box when open, pinned to the corner the box grows
  * from and clipping it while it grows.
  */
-export const chatMorphSurfaceVariants = cva(
+export const chatMorphSurfaceVariants = /* @__PURE__ */ cva(
   [
     'absolute overflow-hidden',
     'border border-[color:var(--chat-morph-border,var(--color-border))] bg-[color:var(--chat-morph-bg,var(--color-bg))]',
@@ -24,7 +24,7 @@ export const chatMorphSurfaceVariants = cva(
 )
 
 /** Pinned to the same corner as the surface, at its full size, so growing never reflows it. */
-export const chatMorphPanelVariants = cva(
+export const chatMorphPanelVariants = /* @__PURE__ */ cva(
   [
     'absolute flex flex-col text-fg outline-none',
     'w-[min(var(--chat-morph-width,24rem),calc(100vw-2rem))] h-[min(var(--chat-morph-height,36rem),calc(100dvh-3rem))]',

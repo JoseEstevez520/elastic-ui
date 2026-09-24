@@ -5,6 +5,7 @@ import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import Aurora, { type AuroraActivity } from '../aurora/Aurora.vue'
 import { chatMorphTriggerState, chatMorphPanelVariants, chatMorphSurfaceVariants, chatMorphTriggerClass } from './chat-morph.variants'
+import { labelFor, useLabels } from '../../utils/labels'
 
 /**
  * An orb that becomes a chat box of its own. The button is a small circle of drifting aurora, no
@@ -32,7 +33,7 @@ const props = withDefaults(
     /** Applied to the box. */
     class?: HTMLAttributes['class']
   }>(),
-  { label: 'Ask AI', title: 'Assistant', floating: true, settled: false, activity: 'rest' },
+  { label: labelFor('askAi'), title: labelFor('assistant'), floating: true, settled: false, activity: 'rest' },
 )
 
 // Over the aurora, the composer and your messages turn to glass: a white veil that lets the
@@ -101,6 +102,7 @@ watch(open, async (isOpen) => {
   if (isOpen) (panel.value?.querySelector<HTMLElement>('textarea') ?? panel.value)?.focus({ preventScroll: true })
   else if (hadFocus) trigger.value?.focus({ preventScroll: true })
 })
+const labels = useLabels()
 </script>
 
 <template>
@@ -128,7 +130,7 @@ watch(open, async (isOpen) => {
           <h2 :id="titleId" class="sr-only">{{ title }}</h2>
           <button
             type="button"
-            aria-label="Close"
+            :aria-label="labels.close"
             class="absolute top-3 right-3 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
             @click="close"
           >

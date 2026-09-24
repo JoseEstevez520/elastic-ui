@@ -4,6 +4,7 @@ import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
 import { prefersReducedMotion } from '../../utils/motion'
 import { tocIndicatorClass, tocLinkVariants, tocTrackClass } from './table-of-contents.variants'
+import { labelFor } from '../../utils/labels'
 
 export interface TableOfContentsItem {
   /** The heading's `id`, the link's target. */
@@ -28,23 +29,38 @@ const props = withDefaults(
      * header, set it to the header's height and a little more.
      */
     offset?: number
+    /**
+     * What scrolls the page, when it is not the window: an element with its own overflow, such as
+     * a `<main>`, or a selector for it.
+     */
+    scroller?: HTMLElement | string
     class?: HTMLAttributes['class']
   }>(),
-  { title: 'On this page', offset: 96 },
+  { title: labelFor('onThisPage'), offset: 96 },
 )
 
 /** The section being read. */
 const active = defineModel<string>('active')
 
-// The section being read: the last whose heading has passed the offset line. At the very end of
-// the page it is the last one, even if its heading never gets that far up.
+// The element that scrolls, or none for the window.
+function container() {
+  return typeof props.scroller === 'string' ? document.querySelector<HTMLElement>(props.scroller) : (props.scroller ?? null)
+}
+
+// The section being read: the last whose heading has passed the offset line, measured from the
+// top of what scrolls. At the very end of the page it is the last one, even if its heading never
+// gets that far up.
 function read() {
+  const scroller = container()
+  const top = scroller ? scroller.getBoundingClientRect().top : 0
   let current = props.items[0]?.id
   for (const item of props.items) {
     const heading = document.getElementById(item.id)
-    if (heading && heading.getBoundingClientRect().top <= props.offset + 1) current = item.id
+    if (heading && heading.getBoundingClientRect().top - top <= props.offset + 1) current = item.id
   }
-  const end = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+  const end = scroller
+    ? scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 2
+    : window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
   return end ? props.items.at(-1)?.id : current
 }
 
@@ -64,7 +80,7 @@ function onScroll() {
     active.value = read()
   })
 }
-useEventListener(() => window, 'scroll', onScroll, { passive: true })
+useEventListener(() => container() ?? window, 'scroll', onScroll, { passive: true })
 onBeforeUnmount(() => {
   cancelAnimationFrame(frame)
   clearTimeout(landing)

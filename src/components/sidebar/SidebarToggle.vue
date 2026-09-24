@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { labelFor } from '../../utils/labels'
 import { useRequiredSidebarContext } from './sidebar.context'
 
 const props = withDefaults(defineProps<{ label?: string; class?: HTMLAttributes['class'] }>(), {
-  label: 'Toggle sidebar',
+  label: labelFor('toggleSidebar'),
 })
 
 const sidebar = useRequiredSidebarContext('SidebarToggle')

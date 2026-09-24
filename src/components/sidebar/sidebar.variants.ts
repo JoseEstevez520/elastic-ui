@@ -5,7 +5,7 @@ import { cva } from 'class-variance-authority'
  * than wrap), so heights never change as the width does. No line sets it apart from the page:
  * its tone does.
  */
-export const sidebarVariants = cva('shrink-0 overflow-hidden text-fg', {
+export const sidebarVariants = /* @__PURE__ */ cva('shrink-0 overflow-hidden text-fg', {
   variants: {
     variant: {
       plain: 'bg-[color:var(--sidebar-bg,var(--color-bg-subtle))] [--nav-tree-indicator:var(--color-bg-inset)]',

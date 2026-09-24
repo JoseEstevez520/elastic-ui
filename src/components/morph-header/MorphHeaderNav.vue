@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { labelFor } from '../../utils/labels'
 import { useMorphHeaderPlacement } from './morph-header.context'
 
 const props = withDefaults(
@@ -8,7 +9,7 @@ const props = withDefaults(
     label?: string
     class?: HTMLAttributes['class']
   }>(),
-  { label: 'Main' },
+  { label: labelFor('mainNav') },
 )
 const placement = useMorphHeaderPlacement()
 </script>

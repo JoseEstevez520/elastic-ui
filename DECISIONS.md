@@ -43,6 +43,7 @@ A component is not done until it works in every situation below, and each critic
 - Listeners passive, observers disconnected on unmount, state updated only when it actually changes.
 - Images `loading="lazy"` and `decoding="async"`.
 - Dependencies external to the bundle (`vue`, `motion-v`, `reka-ui`…), never bundled twice.
+- Tree-shakable: every top-level call that builds a value (`cva(...)`) is marked `/* @__PURE__ */`, so a project that imports one part does not carry the rest.
 
 ## Scope
 

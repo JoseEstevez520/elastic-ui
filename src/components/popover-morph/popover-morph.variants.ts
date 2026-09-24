@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * The surface is the trigger's box at rest and the panel when open. It is pinned to the corner
  * the panel opens from, so it grows away from the trigger, and clips the panel while it grows.
  */
-export const popoverMorphSurfaceVariants = cva(
+export const popoverMorphSurfaceVariants = /* @__PURE__ */ cva(
   [
     'absolute overflow-hidden',
     'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]',
@@ -24,7 +24,7 @@ export const popoverMorphSurfaceVariants = cva(
 )
 
 /** Pinned to the same corner as the surface, at its own full size, so growing never reflows it. */
-export const popoverMorphPanelVariants = cva(
+export const popoverMorphPanelVariants = /* @__PURE__ */ cva(
   'absolute w-[var(--popover-width,18rem)] max-h-[70dvh] overflow-y-auto overscroll-contain scrollbar-subtle text-sm text-fg outline-none',
   {
     variants: {

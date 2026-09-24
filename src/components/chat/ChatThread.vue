@@ -2,6 +2,7 @@
 import { onBeforeUnmount, onMounted, provide, ref, useTemplateRef, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { ChatThreadReadyKey } from './chat.keys'
+import { useLabels } from '../../utils/labels'
 
 /**
  * The messages, scrolling on their own. It stays at the end as the conversation grows, but
@@ -52,13 +53,14 @@ onBeforeUnmount(() => {
   resized?.disconnect()
   added?.disconnect()
 })
+const labels = useLabels()
 </script>
 
 <template>
   <div
     ref="el"
     role="log"
-    :aria-label="label ?? 'Conversation'"
+    :aria-label="label ?? labels.conversation"
     :class="cn('min-h-0 flex-1 overflow-y-auto overscroll-contain scrollbar-subtle', props.class)"
     @scroll.passive="onScroll"
   >

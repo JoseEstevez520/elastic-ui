@@ -12,6 +12,7 @@ Where there is a morphing version, use it. The library's personality is things t
 | A short menu | `PopoverMorph role="menu"` + `PopoverMorphItem` | it has submenus, scrolls, or the trigger is near an edge: `Menu` |
 | A dialog | `DialogMorph` | there is no button to grow from (opened by the app, a route, a shortcut) |
 | Picking one value | `Select` | — |
+| Filtering a list, switching a view | `SegmentedControl` | the choice shows its own panel of content: `Tabs` |
 | Cards that open | `ExpandableCard` in an `ExpandableCardGroup` | the content is a page of its own: link to it |
 
 ```vue
@@ -53,10 +54,12 @@ Neither, just replace it:
 </Button>
 ```
 
-## 4. Icons wherever they help
+## 4. Icons where they help, not everywhere
 
-Give things an icon whenever one exists that says the same as the label: buttons, menu items, NavTree items and groups, badges, inputs.
+An icon earns its place when it helps find something at a glance: buttons, menu items, inputs, and the first level of a navigation. Past that it is noise: an icon or a coloured dot on every row, a badge on every card tire more than they tell.
 
+- In a NavTree, give icons to the top-level items and groups only; subgroups and pages are text. A folded Sidebar still needs its top level's icons for its rail.
+- No decorative marks (dots, badges) where they don't say something the text doesn't.
 - **Lucide** (`@lucide/vue`) for general icons, **Simple Icons** (`simple-icons`) for brand and technology logos, in their own colour.
 - Pass the component, not a rendered icon: `:icon="Search"`.
 - An icon alone needs a name: `aria-label` on its button, `label` on the part.
@@ -87,3 +90,23 @@ Never hardcode a colour, a duration or a curve. Motion comes from the library's 
 - A field without a visible label gets an `aria-label`; one that needs fixing gets `invalid` and a message linked with `aria-describedby`.
 - `NavTree` is bound to the current route with `v-model`, so the active item carries `aria-current`.
 - Don't take focus away from where the library puts it: into a panel as it opens, back to its trigger as it closes.
+
+## 8. Setting up a project
+
+- **Installing before npm.** Pack the library (`npm pack` in its folder) and install the `.tgz` from the project (`vendor/elastic-ui-x.y.z.tgz`). Installing the folder itself writes a path from your disk into `package.json` and links the library's own `node_modules`, with its own Vue.
+- **CSS.** `@import "tailwindcss";`, then `@import "elastic-ui/tokens.css";` and `@source` pointing at the library's `dist`: it ships no compiled CSS, your Tailwind builds its classes.
+- **Your language.** Set the library's own texts once, `app.use(ElasticUi, { labels: { copy: 'Copiar', onThisPage: 'En esta página', … } })`; a prop on a part still wins.
+- **A router.** Links take `to` and render your RouterLink (`as` for another, such as NuxtLink), so navigating never reloads the page: `NavTreeItem`, `NavTreeGroup` (a section with its own page) and `Button`.
+- **A forced theme without a flash.** ThemeToggle keeps the choice in `localStorage` under `elastic-ui.theme`. Read it before the page paints, in the `<head>`:
+
+```html
+<script>
+  try {
+    const theme = localStorage.getItem('elastic-ui.theme')
+    if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme
+  } catch {}
+</script>
+```
+
+- **What scrolls.** Sticky parts and TableOfContents follow the window by default. If your layout scrolls a `<main>` instead, pass it to TableOfContents as `scroller`, or let the window scroll.
+

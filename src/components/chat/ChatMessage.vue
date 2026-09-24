@@ -4,6 +4,7 @@ import { cn } from '../../utils/cn'
 import TextMorph from '../text-morph/TextMorph.vue'
 import ChatStream from './ChatStream.vue'
 import { chatMessageVariants } from './chat.variants'
+import { useLabels } from '../../utils/labels'
 
 /**
  * One message. Yours sits on the right in a soft, round bubble and just shows: you wrote it,
@@ -21,6 +22,7 @@ const props = defineProps<{
   status?: string
   class?: HTMLAttributes['class']
 }>()
+const labels = useLabels()
 </script>
 
 <template>
@@ -33,7 +35,7 @@ const props = defineProps<{
       <Transition leave-active-class="transition-opacity duration-300" leave-to-class="opacity-0">
         <!-- What it is doing, until its first words; anything above it already says so. -->
         <p v-if="streaming && !text && !$slots.before" role="status" class="text-shimmer w-fit [grid-area:1/1]">
-          <TextMorph :text="`${status ?? 'Thinking'}…`" />
+          <TextMorph :text="`${status ?? labels.thinking}…`" />
         </p>
       </Transition>
       <div class="[grid-area:1/1]"><ChatStream :text="text" :streaming="streaming" /></div>

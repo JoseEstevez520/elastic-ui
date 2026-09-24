@@ -9,7 +9,7 @@ const glass = [
 ]
 
 /** The surface's three shapes: a wide bar at the top, a pill once scrolled, a panel when open. */
-export const morphHeaderSurfaceVariants = cva(
+export const morphHeaderSurfaceVariants = /* @__PURE__ */ cva(
   'pointer-events-auto relative flex flex-col text-fg transition-colors duration-300 ease-glide',
   {
     variants: {
@@ -24,7 +24,7 @@ export const morphHeaderSurfaceVariants = cva(
 
 export const morphHeaderGlassClass = ['pointer-events-none absolute inset-0 origin-center', glass]
 
-export const morphHeaderLinkVariants = cva(
+export const morphHeaderLinkVariants = /* @__PURE__ */ cva(
   'text-base text-[color:var(--morph-header-link,var(--color-fg))] transition-colors duration-300 ease-glide',
   {
     variants: {

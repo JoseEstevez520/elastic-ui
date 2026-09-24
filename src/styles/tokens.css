@@ -273,15 +273,15 @@
     height: 0.75rem;
     pointer-events: none;
   }
+  /* The corners curving into the sidebar's edge are painted, not shadows: the tab's colour
+     outside a quarter circle, so nothing darker than the page ever shows around the tab. */
   &::before {
     top: -0.75rem;
-    border-bottom-right-radius: 0.625rem;
-    box-shadow: 0.3rem 0.3rem 0 0.3rem var(--tab-color);
+    background: radial-gradient(circle at 0 0, transparent 0.75rem, var(--tab-color) calc(0.75rem + 0.5px));
   }
   &::after {
     bottom: -0.75rem;
-    border-top-right-radius: 0.625rem;
-    box-shadow: 0.3rem -0.3rem 0 0.3rem var(--tab-color);
+    background: radial-gradient(circle at 0 100%, transparent 0.75rem, var(--tab-color) calc(0.75rem + 0.5px));
   }
 }
 

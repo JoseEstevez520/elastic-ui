@@ -4,6 +4,7 @@ import { ChevronRightIcon, StopIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import IconSwap from '../icon-swap/IconSwap.vue'
 import { composerButtonClass, composerDropClass, composerFieldClass, composerShapeClass } from './chat.variants'
+import { labelFor, useLabels } from '../../utils/labels'
 
 /**
  * Where the conversation is written, as in Curio: a filled pill with a round button of the same
@@ -19,7 +20,7 @@ const props = withDefaults(
     label?: string
     class?: HTMLAttributes['class']
   }>(),
-  { placeholder: 'Ask anything…', label: 'Message' },
+  { placeholder: labelFor('messagePlaceholder'), label: labelFor('message') },
 )
 const emit = defineEmits<{ send: [text: string]; stop: [] }>()
 
@@ -50,6 +51,7 @@ const press = () => (props.responding ? emit('stop') : send())
 // may be translucent (over an Aurora), and only then shadowed; the text and the icon sit above,
 // never filtered.
 const goo = `${useId()}-goo`
+const labels = useLabels()
 </script>
 
 <template>
@@ -78,7 +80,7 @@ const goo = `${useId()}-goo`
       <div :class="composerDropClass" class="absolute right-0 bottom-0" :style="{ translate: active ? '0 0' : '-4px 0' }">
         <button
           type="submit"
-          :aria-label="responding ? 'Stop' : 'Send'"
+          :aria-label="responding ? labels.stop : labels.send"
           :aria-disabled="(!responding && !ready) || undefined"
           :class="[composerButtonClass, active && 'hover:text-accent']"
         >

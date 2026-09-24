@@ -2,6 +2,7 @@
 import { animate } from 'motion-v'
 import { computed, onBeforeUnmount, ref, watch, type Component, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { labelFor } from '../../utils/labels'
 import { prefersReducedMotion } from '../../utils/motion'
 import { AlertIcon, CheckIcon } from '../../icons/internal'
 import Button from '../button/Button.vue'
@@ -41,7 +42,7 @@ const props = withDefaults(
     size?: ButtonVariants['size']
     class?: HTMLAttributes['class']
   }>(),
-  { errorLabel: 'Something went wrong', variant: 'outline' },
+  { errorLabel: labelFor('somethingWentWrong'), variant: 'outline' },
 )
 const state = defineModel<ProgressButtonState>('state', { default: 'idle' })
 const emit = defineEmits<{ click: [event: MouseEvent] }>()

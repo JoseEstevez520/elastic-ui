@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * Colors read `--button-*` first, so a project can restyle every button without touching
  * variants; each falls back to the global token.
  */
-export const buttonVariants = cva(
+export const buttonVariants = /* @__PURE__ */ cva(
   [
     'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap font-medium select-none',
     'rounded-[var(--button-radius,var(--radius-md))]',

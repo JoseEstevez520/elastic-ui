@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
-export const tabsListVariants = cva(
+export const tabsListVariants = /* @__PURE__ */ cva(
   // Scrolls sideways instead of overflowing when the tabs don't fit, as on a phone. `isolate`
   // keeps the indicator's negative z-index above the list's own background.
   'relative isolate flex max-w-full items-center overflow-x-auto [scrollbar-width:none]',
@@ -15,7 +15,7 @@ export const tabsListVariants = cva(
   },
 )
 
-export const tabsTriggerVariants = cva(
+export const tabsTriggerVariants = /* @__PURE__ */ cva(
   [
     'inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap text-sm font-medium',
     'text-fg-muted transition-colors duration-150 hover:text-fg data-[state=active]:text-fg',
@@ -34,7 +34,7 @@ export const tabsTriggerVariants = cva(
 )
 
 /** Positioned from the list's left edge; its `x` and width are set by TabsList. */
-export const tabsIndicatorVariants = cva('pointer-events-none absolute left-0 -z-10', {
+export const tabsIndicatorVariants = /* @__PURE__ */ cva('pointer-events-none absolute left-0 -z-10', {
   variants: {
     variant: {
       pill: 'inset-y-0 rounded-full bg-[color:var(--tabs-indicator,var(--color-bg-muted))]',

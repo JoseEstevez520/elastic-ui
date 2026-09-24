@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, useSlots, watch, type Component, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useLink, type LinkTo } from '../../utils/link'
 import { Passthrough } from '../../utils/Passthrough'
 import { textOf } from '../../utils/textOf'
 import SidebarTypewriter from '../sidebar/SidebarTypewriter.vue'
@@ -11,8 +12,12 @@ import { navTreeIconClass, navTreeLabelVariants, navTreeRowClass } from './nav-t
 const props = defineProps<{
   /** Identifies the item; it is active while it equals the NavTree's `v-model`. */
   value: string
-  /** Renders a link; without it the item is a button. */
+  /** Renders a link; without it (or `to`) the item is a button. */
   href?: string
+  /** Renders the app's RouterLink to this location, so navigating never reloads the page. */
+  to?: LinkTo
+  /** The link component to render, such as NuxtLink, given `to` or `href`. */
+  as?: string | Component
   /** Shown before the label, and alone when a Sidebar folds to its rail. */
   icon?: Component
   class?: HTMLAttributes['class']
@@ -26,6 +31,7 @@ const slots = useSlots()
 const text = computed(() => (sidebar ? textOf(slots.default) : undefined))
 const index = tree.nextIndex()
 
+const link = useLink(props)
 const active = computed(() => tree.active.value === props.value)
 
 // The active item is never left hidden inside a folded group.
@@ -47,10 +53,10 @@ onBeforeUnmount(() => active.value && group?.holdActive(false))
     <!-- In a sidebar folded to its rail only the icon shows; the label comes back as a tooltip. -->
     <component :is="sidebar ? Tooltip : Passthrough" side="right" :disabled="!railed">
       <component
-        :is="href ? 'a' : 'button'"
-        :href="href"
-        :type="href ? undefined : 'button'"
-        :aria-current="active ? (href ? 'page' : 'true') : undefined"
+        :is="link?.is ?? 'button'"
+        v-bind="link?.attrs"
+        :type="link ? undefined : 'button'"
+        :aria-current="active ? (link ? 'page' : 'true') : undefined"
         :data-nav-tree-active="(active && !group?.railedAway.value) || undefined"
         :class="cn(navTreeRowClass, active && 'text-fg', props.class)"
         @click="tree.select(value)"

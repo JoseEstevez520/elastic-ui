@@ -17,7 +17,7 @@ export const navTreeIconClass = 'size-4 shrink-0'
  * margin, which folds with it; a gap would stay and push the icon off centre. A label that is not
  * plain text fades instead.
  */
-export const navTreeLabelVariants = cva('min-w-0 flex-1', {
+export const navTreeLabelVariants = /* @__PURE__ */ cva('min-w-0 flex-1', {
   variants: {
     placement: {
       standalone: '[&:not(:first-child)]:ml-2',
@@ -54,7 +54,7 @@ export type NavTreeLabelPlacement = 'standalone' | 'sidebar' | 'rail'
  * The active item's background; NavTree places and sizes it over the active item. In a
  * `connected` sidebar it runs on to the sidebar's edge as a tab of the page.
  */
-export const navTreeIndicatorVariants = cva(
+export const navTreeIndicatorVariants = /* @__PURE__ */ cva(
   [
     'pointer-events-none absolute top-0 left-0 -z-10',
     '[--tab-color:var(--nav-tree-indicator,var(--color-bg-muted))] bg-[color:var(--tab-color)]',
@@ -70,7 +70,7 @@ export const navTreeIndicatorVariants = cva(
 )
 
 /** A group's children, indented behind a hairline that shows the level without boxing it. */
-export const navTreeChildrenVariants = cva(
+export const navTreeChildrenVariants = /* @__PURE__ */ cva(
   'ml-3.5 flex flex-col gap-0.5 border-l border-[color:var(--nav-tree-guide,var(--color-border))] py-0.5 pl-2',
   {
     variants: {
