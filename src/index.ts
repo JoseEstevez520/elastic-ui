@@ -1,5 +1,7 @@
+export * from './components/accordion'
 export * from './components/button'
 export * from './components/card'
+export * from './components/collapsible'
 export * from './components/expandable-card'
 export * from './components/morph-header'
 export * from './components/tabs'
