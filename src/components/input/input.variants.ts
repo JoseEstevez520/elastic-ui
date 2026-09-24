@@ -16,6 +16,12 @@ export const fieldClass = [
   'disabled:cursor-not-allowed disabled:opacity-50',
 ]
 
+/** A field with no line: the text alone, inside a surface that frames it. */
+export const fieldBareClass = [
+  'w-full min-w-0 bg-transparent text-sm text-fg placeholder:text-fg-faint outline-none',
+  'disabled:cursor-not-allowed disabled:opacity-50',
+]
+
 export const inputVariants = cva(fieldClass, {
   variants: {
     size: {

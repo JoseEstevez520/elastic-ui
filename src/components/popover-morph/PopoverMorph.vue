@@ -36,6 +36,19 @@ const props = withDefaults(
 )
 
 const open = defineModel<boolean>('open', { default: false })
+
+// It stays above its neighbours until it has folded all the way back, not only while open: a
+// panel still shrinking under the next button along would be drawn behind it.
+const FOLD = 300
+const folding = ref(false)
+let foldTimer: ReturnType<typeof setTimeout> | undefined
+watch(open, (isOpen) => {
+  clearTimeout(foldTimer)
+  folding.value = !isOpen
+  if (!isOpen) foldTimer = setTimeout(() => (folding.value = false), FOLD)
+})
+onBeforeUnmount(() => clearTimeout(foldTimer))
+
 const close = () => (open.value = false)
 providePopoverMorphContext({ close })
 const isMenu = computed(() => props.role === 'menu')
@@ -101,7 +114,7 @@ watch(open, async (isOpen) => {
 </script>
 
 <template>
-  <div ref="root" :class="cn('relative inline-block align-top', open && 'z-50')">
+  <div ref="root" :class="cn('relative inline-block align-top', (open || folding) && 'z-50')">
     <div :class="popoverMorphSurfaceVariants({ align, side, open })" :style="surfaceStyle">
       <div
         :id="panelId"
