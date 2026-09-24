@@ -16,21 +16,17 @@ const props = withDefaults(
     position?: ToasterPosition
     /** Milliseconds a toast stays, unless it sets its own. */
     duration?: number
-    /** Caps the toasts on screen; a new one past it retires the oldest. None by default: they
-        stack up, each leaving when its time is up. */
+    /** Toasts on screen at once. A new one past it retires the oldest, which fades out as the
+        rest move up to make room, as in Sonner. */
     max?: number
     label?: string
     class?: HTMLAttributes['class']
   }>(),
-  { position: 'bottom-right', duration: 5000, max: Infinity, label: 'Notifications' },
+  { position: 'bottom-right', duration: 5000, max: 3, label: 'Notifications' },
 )
 
 const { toasts } = useToasts()
 const atTop = computed(() => props.position?.startsWith('top'))
-
-watch(toasts, (all) => {
-  if (all.length > props.max) all.slice(0, all.length - props.max).forEach((t) => dismissToast(t.id))
-})
 
 // Nothing ever overlaps. Toasts come in one at a time, each once the one before has nearly
 // arrived, and never while one is fading out: sliding in over a toast still on its way, or over
@@ -41,13 +37,19 @@ const displayed = shallowRef<Toast[]>([])
 let nextEntryAt = 0
 let entryTimer: ReturnType<typeof setTimeout> | undefined
 
+// Toasts retired to make room for a new one. They leave as it arrives, so the next one needn't
+// wait for them to fold away.
+const retiring = new Set<number>()
+
 function sync() {
   clearTimeout(entryTimer)
   const queued = toasts.value
   const ids = new Set(queued.map((t) => t.id))
   const kept = displayed.value.filter((t) => ids.has(t.id))
   const now = Date.now()
-  if (kept.length < displayed.value.length) nextEntryAt = Math.max(nextEntryAt, now + EXIT)
+  const left = displayed.value.filter((t) => !ids.has(t.id))
+  if (left.some((t) => !retiring.has(t.id))) nextEntryAt = Math.max(nextEntryAt, now + EXIT)
+  left.forEach((t) => retiring.delete(t.id))
 
   const onScreen = new Set(kept.map((t) => t.id))
   const waiting = queued.filter((t) => !onScreen.has(t.id))
@@ -56,7 +58,14 @@ function sync() {
     waiting.shift()
     nextEntryAt = now + ENTRY_GAP
   }
-  displayed.value = queued.filter((t) => onScreen.has(t.id))
+  const next = queued.filter((t) => onScreen.has(t.id))
+  // Past the cap, the oldest on screen fades out as the new one comes in.
+  while (next.length > props.max) {
+    const oldest = next.shift()!
+    retiring.add(oldest.id)
+    dismissToast(oldest.id)
+  }
+  displayed.value = next
   if (waiting.length) entryTimer = setTimeout(sync, nextEntryAt - now)
 }
 watch(toasts, sync, { immediate: true })

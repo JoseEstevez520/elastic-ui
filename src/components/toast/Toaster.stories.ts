@@ -54,7 +54,7 @@ export const BottomCenter: Story = { args: { position: 'bottom-center' } }
 
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
 
-/** Many in a row: they stack up one after another, each leaving when its time is up. */
+/** Many in a row: past three, the oldest fades out as each new one arrives. */
 export const Many: Story = {
   render: () => ({
     components: { Button, Toaster },

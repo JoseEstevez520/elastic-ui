@@ -1,8 +1,8 @@
 import { cva } from 'class-variance-authority'
 
 /** Pinned to a corner or the middle of an edge, with the page's gutter around it. */
-// Never taller than the screen. Packed against its edge, a long stack runs off the far side, so
-// the oldest toasts are the ones cut and the newest always shows.
+// Never taller than the screen, even with a low `max` and long toasts. Packed against its edge, a
+// stack too tall runs off the far side, so the oldest are the ones cut and the newest shows.
 export const toasterVariants = cva('pointer-events-none fixed z-[100] flex max-h-dvh w-full max-w-sm flex-col overflow-hidden p-4', {
   variants: {
     position: {

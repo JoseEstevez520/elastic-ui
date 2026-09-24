@@ -31,7 +31,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | AnimatedList | Base | Motion layout; items slide to their new place, leaving ones fade out before the rest close the gap, new ones wait for room; first items come in as a wave; `#empty` |
 | DialogMorph | Special | Reka UI Dialog; the button's box travels to the middle and grows into the dialog, folds back on close; label fades out in place; content scrolls only once the box has landed |
 | NavTree | Base | Side navigation on Collapsible; one indicator slides to the active item and takes on the clip of the groups around it; groups holding the active item open on their own; `aria-current` |
-| Toast | Base | `toast()` from anywhere, one `<Toaster>`; arrives from the edge, fades and folds its place away; entrances queued so nothing overlaps; pauses on hover and focus; `aria-live`; six positions |
+| Toast | Base | `toast()` from anywhere, one `<Toaster>`; arrives from the edge, fades and folds its place away; entrances queued so nothing overlaps; three at most, the oldest fading out as a new one arrives (as in Sonner); pauses on hover and focus; `aria-live`; six positions |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
