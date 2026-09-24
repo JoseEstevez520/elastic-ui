@@ -30,7 +30,30 @@ On a screen, one movement draws the eye. When a morph is the main one, everythin
 - Don't open two morphs at once, and don't start one while another is still landing.
 - Prefer the library's ready-made animated pieces (ThemeToggle, CopyButton, BadgeCount) to animating details yourself.
 
-## 3. Icons wherever they help
+## 3. Appearing, or becoming
+
+Two different moments, two different movements:
+
+| Moment | Use | For example |
+|---|---|---|
+| **Something appears**: content that was not there | `blur-in` and the wave, built into the parts | a group's items as it opens, a dialog's body, a menu's options, a list loading, a toast arriving |
+| **Something becomes something else**: the same place, a new value | `TextMorph` | "Save" → "Saving…" → "Saved", "Follow" → "Following", "Pending" → "In review", 3 → 4 unread, "All (24)" → "All (8)", "Due in 3 days" → "Due in 2 days" |
+
+The short rule: if the user just caused the change, or it is a value they follow, it morphs; if it is new content, it comes into focus.
+
+Neither, just replace it:
+
+- Long text or paragraphs that change: morphing them is dizzying.
+- Text on something already transforming (a button turning into a dialog): one thing leads.
+- Values that change all the time (a live feed, a clock's seconds): a morph on every tick is noise.
+
+```vue
+<Button :icon="saved ? Check : Save" @click="save">
+  <TextMorph :text="saved ? 'Saved' : 'Save'" />
+</Button>
+```
+
+## 4. Icons wherever they help
 
 Give things an icon whenever one exists that says the same as the label: buttons, menu items, NavTree items and groups, badges, inputs.
 
@@ -43,7 +66,7 @@ Give things an icon whenever one exists that says the same as the label: buttons
 <Button variant="ghost" size="icon" aria-label="Settings"><Settings /></Button>
 ```
 
-## 4. Customize from the outside in
+## 5. Customize from the outside in
 
 1. **Tokens** for the whole project: `:root { --color-accent: …; --radius-md: …; }`.
 2. **Component tokens** for every instance of one part: `--card-radius`, `--popover-bg`, `--sidebar-bg`…
@@ -52,13 +75,13 @@ Give things an icon whenever one exists that says the same as the label: buttons
 
 Never hardcode a colour, a duration or a curve. Motion comes from the library's eases (`--ease-emphasized`, `--ease-soft`, `--ease-glide`), and a component's timing is part of its design: change the component, not one use of it.
 
-## 5. Text that fits the motion
+## 6. Text that fits the motion
 
 - Keep labels short; the library is built for another language making them longer, but not for paragraphs in a button.
 - A line that doesn't fit ends in a fading edge (`mask-fade-r`, `ExpandableCardText`), never an ellipsis.
 - Inside anything that morphs, don't let a height depend on the width: keep such text to one line.
 
-## 6. Accessible as you use it
+## 7. Accessible as you use it
 
 - Every `DialogMorph` has a `DialogMorphTitle`.
 - A field without a visible label gets an `aria-label`; one that needs fixing gets `invalid` and a message linked with `aria-describedby`.

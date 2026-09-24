@@ -33,7 +33,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "reka-ui": "^2.10.5",
-    "tailwind-merge": "^3.7.0"
+    "tailwind-merge": "^3.7.0",
+    "torph": "^0.1.3"
   },
   "devDependencies": {
     "@lucide/vue": "^1.48.0",

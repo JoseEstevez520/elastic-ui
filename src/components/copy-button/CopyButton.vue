@@ -3,6 +3,7 @@ import { onBeforeUnmount, ref, type HTMLAttributes } from 'vue'
 import Button from '../button/Button.vue'
 import type { ButtonVariants } from '../button/button.variants'
 import IconSwap from '../icon-swap/IconSwap.vue'
+import TextMorph from '../text-morph/TextMorph.vue'
 import { CheckIcon, CopyIcon } from './copy-button.icons'
 
 /**
@@ -47,7 +48,7 @@ onBeforeUnmount(() => clearTimeout(timer))
     @click="copy"
   >
     <IconSwap :icon="copied ? CheckIcon : CopyIcon" />
-    <template v-if="size !== 'icon'">{{ copied ? copiedLabel : label }}</template>
+    <TextMorph v-if="size !== 'icon'" :text="copied ? copiedLabel : label" />
     <span class="sr-only" aria-live="polite">{{ copied ? copiedLabel : '' }}</span>
   </Button>
 </template>

@@ -18,7 +18,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // Consumers bring their own copies of these.
-      external: ['vue', 'motion-v', 'reka-ui', 'class-variance-authority', 'clsx', 'tailwind-merge'],
+      external: ['vue', 'motion-v', 'reka-ui', 'class-variance-authority', 'clsx', 'tailwind-merge', /^torph/],
     },
   },
 })

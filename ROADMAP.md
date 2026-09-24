@@ -37,7 +37,8 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Badge, BadgeCount | Base | `soft`, `outline`, `solid`; `icon`, a colour dot; `compact` folds to the icon and unfolds its label on hover and focus; `removable`; BadgeCount's old number blurs out upwards as the new one comes in |
 | Input, Textarea | Base | A hairline that darkens on focus, no halo; `icon`, `invalid`; Textarea grows with its text |
 | Checkbox, Switch | Base | Reka UI; the check is drawn along its stroke and turns into the dash for in between; the Switch's knob slides on the library's ease |
-| CopyButton | Base | Copy turns into a check, and back after two seconds |
+| CopyButton | Base | Copy turns into a check, and back after two seconds; its label morphs with TextMorph |
+| TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. For text that becomes something else (see "Appearing is not becoming") |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
@@ -50,8 +51,11 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **Search that grows from an icon.**
-3. **Command palette.** DialogMorph with a search field and a list.
+2. **One way to change text.** BadgeCount rolls its number with its own animation; move it onto TextMorph, whose numbers roll by place value, so every changing text in the library moves the same way.
+3. **Dynamic Island.** A pill that changes shape with each state (a song, a timer, an upload), morphing between them and using TextMorph inside; only moving when its state changes.
+4. **Search that grows from an icon.**
+5. **Feedback morph.** A "Feedback" button that becomes a small form and a thank-you, on PopoverMorph.
+6. **Command palette.** DialogMorph with a search field and a list.
 
 ## Later / ideas
 
