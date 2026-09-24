@@ -30,8 +30,8 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 ## Now
 
-- [ ] **One way of appearing everywhere.** ExpandableCard body and the MorphHeader panel use `blur-in` / `stagger-children`, like Collapsible and Accordion.
-- [ ] **Close faster than open.** Opening keeps ~0.5s so the eye can follow where things come from; closing drops to ~0.3s (Material guidance: exits shorter than entrances).
+- [x] **One way of appearing everywhere.** ExpandableCard body (`stagger-children`) and the MorphHeader panel links (`stagger-items`) come into focus as one wave, like Collapsible and Accordion.
+- [x] **Close faster than open.** Opening keeps ~0.5s so the eye can follow where things come from; closing drops to 0.3s (`morphCloseTransition`) for the card's return and the header panel folding back.
 
 ## Next
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
+import { morphCloseTransition } from '../../utils/motion'
 import { useExpandableCardRegion } from './expandable-card.context'
 
 /**
@@ -16,5 +17,13 @@ const { id, placement } = useExpandableCardRegion()
 
 <template>
   <div v-if="placement === 'placeholder'"><slot /></div>
-  <motion.div v-else layout="position" :layout-id="`${id}-${name}`"><slot /></motion.div>
+  <!-- In the cell it is landing back, which is faster than leaving (see morphCloseTransition). -->
+  <motion.div
+    v-else
+    layout="position"
+    :layout-id="`${id}-${name}`"
+    :transition="placement === 'cell' ? morphCloseTransition : undefined"
+  >
+    <slot />
+  </motion.div>
 </template>

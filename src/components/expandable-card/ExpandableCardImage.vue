@@ -2,6 +2,7 @@
 import { motion } from 'motion-v'
 import type { HTMLAttributes } from 'vue'
 import { imageFade } from '../card/card.variants'
+import { morphCloseTransition } from '../../utils/motion'
 import { cn } from '../../utils/cn'
 import { useExpandableCardRegion } from './expandable-card.context'
 
@@ -28,6 +29,8 @@ const props = withDefaults(
 
 const { id, placement } = useExpandableCardRegion()
 const open = placement === 'overlay'
+// Landing back in the cell is faster than leaving it.
+const transition = open ? undefined : morphCloseTransition
 
 // The open banner's height; the cell's follows from the ratio.
 const frameStyle = open
@@ -38,9 +41,10 @@ const frameClass = cn('relative flex items-center overflow-hidden', props.fade &
 
 <template>
   <div v-if="placement === 'placeholder'" :style="frameStyle" :class="frameClass" />
-  <motion.div v-else :layout-id="`${id}-media`" :style="frameStyle" :class="frameClass">
+  <motion.div v-else :layout-id="`${id}-media`" :transition="transition" :style="frameStyle" :class="frameClass">
     <motion.img
       :layout-id="`${id}-media-image`"
+      :transition="transition"
       :src="src"
       :alt="alt"
       loading="lazy"

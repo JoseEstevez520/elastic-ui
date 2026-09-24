@@ -95,7 +95,17 @@ const groupId = useId()
 <template>
   <LayoutGroup :id="groupId">
     <MotionConfig :transition="morphTransition" reduced-motion="user">
-      <div ref="root" :style="rootStyle" class="relative transition-[min-height] duration-[520ms] ease-emphasized motion-reduce:transition-none">
+      <!-- Grows at the open pace and shrinks at the faster close pace. -->
+      <div
+        ref="root"
+        :style="rootStyle"
+        :class="
+          cn(
+            'relative transition-[min-height] ease-emphasized motion-reduce:transition-none',
+            liftedId ? 'duration-[520ms]' : 'duration-300',
+          )
+        "
+      >
         <!-- `auto-rows-fr` makes every row as tall as the tallest card, not just each row. -->
         <div ref="grid" :class="cn('grid auto-rows-fr grid-cols-1 gap-4 lg:grid-cols-2', props.class)">
           <slot />

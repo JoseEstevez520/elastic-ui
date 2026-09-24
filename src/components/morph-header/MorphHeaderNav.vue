@@ -16,7 +16,13 @@ const placement = useMorphHeaderPlacement()
 <template>
   <nav
     :aria-label="label"
-    :class="cn(placement === 'panel' ? 'flex w-full flex-col' : 'flex items-center gap-5', props.class)"
+    :class="
+      cn(
+        // In the panel the links come into focus as one wave, once the panel has nearly grown.
+        placement === 'panel' ? 'flex w-full flex-col stagger-items [--stagger-delay:0.3s]' : 'flex items-center gap-5',
+        props.class,
+      )
+    "
   >
     <slot />
   </nav>

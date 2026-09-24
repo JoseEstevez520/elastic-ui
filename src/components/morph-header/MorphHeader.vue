@@ -4,7 +4,7 @@ import { computed, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch
 import { useEventListener } from '../../composables/useEventListener'
 import { useScrolled } from '../../composables/useScrolled'
 import { cn } from '../../utils/cn'
-import { morphTransition } from '../../utils/motion'
+import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
 import MorphHeaderRegion from './MorphHeaderRegion.vue'
 import { provideMorphHeaderContext } from './morph-header.context'
 import { morphHeaderGlassClass, morphHeaderSurfaceVariants, morphHeaderWidth } from './morph-header.variants'
@@ -33,6 +33,14 @@ const expanded = ref(false)
 watch(open, (isOpen) => {
   if (isOpen) expanded.value = true
 })
+
+// The panel folds back into the pill faster than it grew (see morphCloseTransition). Scrolling
+// between bar and pill keeps the regular pace.
+const collapsing = ref(false)
+function onPanelHidden() {
+  collapsing.value = !open.value
+  expanded.value = open.value
+}
 
 const scrolled = useScrolled(() => props.scrollThreshold)
 const responsive = computed(() => props.menu === 'responsive')
@@ -102,8 +110,14 @@ watch(open, (isOpen) => {
     ref="header"
     :class="cn('pointer-events-none fixed inset-x-0 top-0 z-50 flex flex-col items-center', props.class)"
   >
-    <MotionConfig :transition="morphTransition" reduced-motion="user">
-      <motion.div layout :initial="false" :style="surfacePaint" :class="morphHeaderSurfaceVariants({ shape })">
+    <MotionConfig :transition="collapsing ? morphCloseTransition : morphTransition" reduced-motion="user">
+      <motion.div
+        layout
+        :initial="false"
+        :style="surfacePaint"
+        :class="morphHeaderSurfaceVariants({ shape })"
+        @layout-animation-complete="collapsing = false"
+      >
         <!-- The glass is its own layer, faded in on scroll. Fading the whole surface instead
              would dim the blur along with it and read as flat rather than frosted. -->
         <motion.div
@@ -160,13 +174,15 @@ watch(open, (isOpen) => {
 
         <!-- The panel is part of the surface, never a detached slab. Its height is capped so the
              surface's vertical scale, and with it the distortion, stays bounded. -->
-        <AnimatePresence :initial="false" :on-exit-complete="() => (expanded = open)">
+        <!-- Links come into focus as one wave once the panel has nearly grown (`stagger-items` in
+             MorphHeaderNav); leaving, the whole panel fades at once. -->
+        <AnimatePresence :initial="false" :on-exit-complete="onPanelHidden">
           <motion.div
             v-if="open"
             :id="panelId"
-            :initial="{ opacity: 0 }"
-            :animate="{ opacity: 1, transition: { duration: 0.22, delay: 0.3, ease: 'linear' } }"
-            :exit="{ opacity: 0, transition: { duration: 0.16, ease: 'linear' } }"
+            :initial="false"
+            :animate="{ opacity: 1 }"
+            :exit="{ opacity: 0, transition: contentOut }"
             :class="
               cn(
                 'relative z-10 mt-2 max-h-[calc(100dvh-6rem)] w-full overflow-y-auto overscroll-contain',
@@ -177,7 +193,10 @@ watch(open, (isOpen) => {
             <MorphHeaderRegion placement="panel">
               <slot />
             </MorphHeaderRegion>
-            <div v-if="$slots.actions" class="flex items-center gap-2 px-3 py-3">
+            <div
+              v-if="$slots.actions"
+              class="flex items-center gap-2 px-3 py-3 animate-[blur-in_0.6s_var(--ease-soft)_0.45s_both] motion-reduce:animate-none"
+            >
               <slot name="actions" />
             </div>
           </motion.div>

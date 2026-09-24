@@ -13,6 +13,7 @@ A Vue component library for my own projects, built to adapt to very different us
 
 ### Motion rules
 
+- **Close faster than open.** Opening takes ~0.5s so the eye can follow where things come from; closing takes 0.3s, since on the way out you only want it gone (Material: exits shorter than entrances). Content leaves at once, before the shape folds.
 - **Text never scales.** Morphing parts animate their position only (`layout="position"`); boxes take their new size at once and text reflows. A scaled box is stretched text.
 - **One way to appear: a fade.** Content that shows up fades in once the shape has nearly arrived, and fades out before it leaves. No wipes, slides or typewriters on top of a morph; that is too much motion. Content being read comes into focus rather than switching on (`blur-in`: opacity and a 2px blur, as in Magic UI's Blur Fade, without its offset). Several blocks do it as one flowing wave: 0.6s each, only 40ms apart so the fades overlap instead of reading as steps, capped at the eighth (`stagger-children`); they leave all at once.
 - **Truncate with a fading edge, not an ellipsis**, in anything that morphs. An ellipsis is on or off and cannot be animated; a `mask-image` edge can. When the line gets room, the visible part stays still and the edge plus the hidden rest fade in with the same timing as everything else (`ExpandableCardText`).

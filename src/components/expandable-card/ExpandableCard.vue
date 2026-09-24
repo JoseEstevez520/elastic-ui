@@ -2,7 +2,7 @@
 import { motion } from 'motion-v'
 import { computed, nextTick, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { contentIn, contentOut } from '../../utils/motion'
+import { contentOut, morphCloseTransition } from '../../utils/motion'
 import ExpandableCardMorph from './ExpandableCardMorph.vue'
 import ExpandableCardRegion from './ExpandableCardRegion.vue'
 import { useExpandableCardGroup } from './expandable-card.context'
@@ -112,6 +112,7 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
       :layout-id="`${id}-card`"
       :initial="false"
       :animate="{ opacity: dimmed ? 0 : 1, transition: dimmed ? contentOut : siblingsIn }"
+      :transition="{ layout: morphCloseTransition }"
       :style="paint"
       :class="
         cn(
@@ -172,17 +173,21 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
         </ExpandableCardRegion>
       </button>
 
-      <!-- Faded rather than unmounted: the card drops out of the overlay in the same update
-           the fade ends, so there is never a frame where it is mounted without its body. -->
+      <!-- The body comes into focus as one wave once the card has nearly arrived, like every
+           content in the library. Leaving, it is faded rather than unmounted: the card drops out
+           of the overlay in the same update the fade ends, so there is never a frame where it is
+           mounted without its body. -->
       <motion.div
         :id="bodyId"
         layout
-        :initial="{ opacity: 0 }"
-        :animate="{ opacity: expanded ? 1 : 0, transition: expanded ? contentIn : contentOut }"
+        :initial="false"
+        :animate="{ opacity: expanded ? 1 : 0, transition: expanded ? { duration: 0 } : contentOut }"
         class="relative flex flex-1 flex-col px-4 pb-4 sm:px-6 sm:pb-6"
         @animation-complete="!expanded && group.onBodyHidden(id)"
       >
-        <slot name="body" />
+        <div class="flex flex-1 flex-col stagger-children [--stagger-delay:0.3s]">
+          <slot name="body" />
+        </div>
       </motion.div>
     </motion.article>
   </div>
