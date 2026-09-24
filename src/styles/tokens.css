@@ -77,7 +77,7 @@
   /* A fade that also comes into focus, as in Magic UI's Blur Fade: text sharpens rather than
      switching on. No offset: sliding on top of a morph is too much motion. */
   @keyframes blur-in {
-    from { opacity: 0; filter: blur(3px); }
+    from { opacity: 0; filter: blur(2px); }
   }
   @keyframes fade-out {
     to { opacity: 0; }
