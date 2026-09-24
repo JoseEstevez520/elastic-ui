@@ -68,7 +68,7 @@ useEventListener<MediaQueryListEvent>(() => window.matchMedia(DESKTOP_QUERY), 'c
     ref="header"
     :class="cn('pointer-events-none fixed inset-x-0 top-0 z-50 flex flex-col items-center', props.class)"
   >
-    <MotionConfig :transition="morphTransition">
+    <MotionConfig :transition="morphTransition" reduced-motion="user">
       <motion.div layout :initial="false" :style="surfacePaint" :class="morphHeaderSurfaceVariants({ shape })">
         <!-- The glass is its own layer, faded in on scroll. Fading the whole surface instead
              would dim the blur along with it and read as flat rather than frosted. -->

@@ -48,10 +48,10 @@ export const WithImage: Story = {
     setup: () => ({ args, IMAGE }),
     template: `
       <Card v-bind="args" class="w-80">
-        <CardImage :src="IMAGE" alt="Laptop with code" class="aspect-video" />
+        <CardImage :src="IMAGE" alt="Laptop with code" fade class="aspect-video" />
         <CardHeader>
           <CardTitle>With an image</CardTitle>
-          <CardDescription>The image sits flush because it is the first part.</CardDescription>
+          <CardDescription>The image sits flush and its bottom edge fades into the card.</CardDescription>
         </CardHeader>
         <CardFooter>
           <Button size="sm" class="w-full">View project</Button>

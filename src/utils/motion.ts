@@ -6,3 +6,7 @@ export const morphTransition = { type: 'tween', duration: 0.52, ease: EASE_EMPHA
 /** Content fading in once a morph is mostly done, and out before it starts back. */
 export const contentIn = { duration: 0.22, delay: 0.3, ease: 'linear' } as const
 export const contentOut = { duration: 0.16, ease: 'linear' } as const
+
+export function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
-import { computed, useId, type HTMLAttributes } from 'vue'
+import { computed, nextTick, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { contentIn, contentOut } from '../../utils/motion'
 import ExpandableCardMorph from './ExpandableCardMorph.vue'
@@ -31,6 +31,27 @@ const lifted = computed(() => group.liftedId.value === id)
 const expanded = computed(() => lifted.value && group.openId.value === id)
 const dimmed = computed(() => group.activeId.value !== null && group.activeId.value !== id)
 
+// The button that had focus unmounts when the card lifts or lands, so focus follows the card:
+// into the open copy when it opens, and back to the cell when it closes from inside. A close
+// by clicking elsewhere leaves focus where that click put it.
+// A click anywhere on the open card closes it, except on something interactive inside the body
+// or at the end of a text selection.
+function closeFromCard(event: MouseEvent) {
+  const target = event.target as Element
+  if (target.closest('a, button, input, select, textarea, label, [role="button"]')) return
+  if (window.getSelection()?.toString()) return
+  group.close()
+}
+
+const cellButton = useTemplateRef<HTMLButtonElement>('cellButton')
+const openButton = useTemplateRef<HTMLButtonElement>('openButton')
+watch(lifted, async (isLifted) => {
+  const hadFocus = !isLifted && openButton.value?.closest('article')?.contains(document.activeElement)
+  await nextTick()
+  if (isLifted) openButton.value?.focus({ preventScroll: true })
+  else if (hadFocus) cellButton.value?.focus({ preventScroll: true })
+})
+
 // Radius and edge live inline on the element that owns the `layoutId`, where Motion corrects
 // them against its scale. A CSS border would stretch to several pixels mid-morph.
 const paint = computed(() => ({
@@ -49,8 +70,10 @@ const brandEdge =
 const brandEdgeOnHover =
   'hover:[--expandable-card-edge:color-mix(in_srgb,var(--expandable-card-brand,var(--color-border-strong))_60%,var(--color-border))]'
 const siblingsIn = { duration: 0.22, ease: 'linear' } as const
-const head = 'relative w-full cursor-pointer p-6 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent'
-const headRow = 'flex w-full items-start gap-4'
+const head = 'relative block w-full cursor-pointer text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent'
+// 16px of padding on phones, the margin Material and Apple's guidelines use on compact widths.
+// Parts may wrap, so a `basis-full` part (a subtitle) gets a line of its own at full width.
+const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-4 sm:p-6'
 </script>
 
 <template>
@@ -62,11 +85,12 @@ const headRow = 'flex w-full items-start gap-4'
       :initial="false"
       :animate="{ opacity: dimmed ? 0 : 1, transition: dimmed ? contentOut : siblingsIn }"
       :style="paint"
-      :class="cn(surface, brandEdgeOnHover, 'h-full', dimmed && 'pointer-events-none')"
+      :class="cn(surface, brandEdgeOnHover, 'h-full overflow-hidden', dimmed && 'pointer-events-none')"
       @layout-animation-complete="group.onReturned(id)"
     >
-      <button type="button" :aria-expanded="false" :class="head" @click="group.open(id)">
+      <button ref="cellButton" type="button" :aria-expanded="false" :class="head" @click="group.open(id)">
         <ExpandableCardRegion :id="id" placement="cell" :expanded="false" :text-widths="textWidths">
+          <slot name="media" />
           <ExpandableCardMorph name="head" :class="headRow"><slot /></ExpandableCardMorph>
         </ExpandableCardRegion>
       </button>
@@ -76,6 +100,7 @@ const headRow = 'flex w-full items-start gap-4'
     <div v-else aria-hidden="true" :style="{ borderRadius: `${radius}px` }" class="invisible h-full">
       <div :class="head">
         <ExpandableCardRegion :id="id" placement="placeholder" :expanded="false" :text-widths="textWidths">
+          <slot name="media" />
           <div :class="headRow"><slot /></div>
         </ExpandableCardRegion>
       </div>
@@ -85,10 +110,20 @@ const headRow = 'flex w-full items-start gap-4'
       v-if="lifted"
       :layout-id="`${id}-card`"
       :style="paint"
-      :class="cn(surface, brandEdge, 'absolute inset-x-0 top-0 z-20 flex h-full flex-col overflow-hidden')"
+      data-expandable-card-open
+      :class="cn(surface, brandEdge, 'absolute inset-x-0 top-0 z-20 flex min-h-full cursor-pointer flex-col overflow-hidden')"
+      @click="closeFromCard"
     >
-      <button type="button" :aria-expanded="true" :aria-controls="bodyId" :class="head" @click="group.close()">
+      <button
+        ref="openButton"
+        type="button"
+        :aria-expanded="true"
+        :aria-controls="bodyId"
+        :class="head"
+        @click.stop="group.close()"
+      >
         <ExpandableCardRegion :id="id" placement="overlay" :expanded="expanded" :text-widths="textWidths">
+          <slot name="media" />
           <ExpandableCardMorph name="head" :class="headRow"><slot /></ExpandableCardMorph>
         </ExpandableCardRegion>
       </button>
@@ -100,7 +135,7 @@ const headRow = 'flex w-full items-start gap-4'
         layout
         :initial="{ opacity: 0 }"
         :animate="{ opacity: expanded ? 1 : 0, transition: expanded ? contentIn : contentOut }"
-        class="relative flex flex-1 flex-col px-6 pb-6"
+        class="relative flex flex-1 flex-col px-4 pb-4 sm:px-6 sm:pb-6"
         @animation-complete="!expanded && group.onBodyHidden(id)"
       >
         <slot name="body" />

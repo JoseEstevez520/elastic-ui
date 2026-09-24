@@ -70,3 +70,30 @@ html.theme-switching *::before,
 html.theme-switching *::after {
   transition: none !important;
 }
+
+/*
+ * Fades an element's bottom edge out. A linear fade shows a visible line where it starts and
+ * ends; easing its stops like an animation curve hides both (Andreas Larsen, "Easing Linear
+ * Gradients": https://css-tricks.com/easing-linear-gradients/). The curve is an ease-in-out, so
+ * the fade is flat at both ends and neither edge can be seen.
+ */
+@utility mask-fade-b {
+  mask-image: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 1) 20%,
+    rgb(0 0 0 / 0.997) 25.7%,
+    rgb(0 0 0 / 0.977) 31.4%,
+    rgb(0 0 0 / 0.931) 37.1%,
+    rgb(0 0 0 / 0.855) 42.9%,
+    rgb(0 0 0 / 0.754) 48.6%,
+    rgb(0 0 0 / 0.632) 54.3%,
+    rgb(0 0 0 / 0.5) 60%,
+    rgb(0 0 0 / 0.368) 65.7%,
+    rgb(0 0 0 / 0.246) 71.4%,
+    rgb(0 0 0 / 0.145) 77.1%,
+    rgb(0 0 0 / 0.069) 82.9%,
+    rgb(0 0 0 / 0.023) 88.6%,
+    rgb(0 0 0 / 0.003) 94.3%,
+    rgb(0 0 0 / 0) 100%
+  );
+}

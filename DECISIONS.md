@@ -18,6 +18,26 @@ A Vue component library for my own projects, built to adapt to very different us
 - **Truncate with a fading edge, not an ellipsis**, in anything that morphs. An ellipsis is on or off and cannot be animated; a `mask-image` edge can. When the line gets room, the visible part stays still and the edge plus the hidden rest fade in with the same timing as everything else (`ExpandableCardText`).
 - **Heights don't depend on width** in anything that morphs, so a line count change never lands as a jump mid-animation.
 
+## Situations
+
+A component is not done until it works in every situation below, and each critical one has its own story so it keeps being checked.
+
+- **Count**: 1, 2, an odd number, many.
+- **Content**: very long and empty text, with and without media, mixed.
+- **Size**: mobile (one column), desktop, resizing while open.
+- **Theme**: light and dark.
+- **Keyboard**: Tab, Enter, Escape, and focus never lost when an element unmounts.
+- **Reduced motion**: `prefers-reduced-motion` is respected (`MotionConfig reduced-motion="user"`).
+- **Coexistence**: two instances on the same page.
+- **Server rendering**: no `window`, `document` or observers touched outside `onMounted`.
+
+## Performance
+
+- Animate only `transform` and `opacity` (GPU-composited). Layout properties only where there is no alternative, and only for the length of a transition.
+- Listeners passive, observers disconnected on unmount, state updated only when it actually changes.
+- Images `loading="lazy"` and `decoding="async"`.
+- Dependencies external to the bundle (`vue`, `motion-v`, `reka-ui`…), never bundled twice.
+
 ## Scope
 
 - **A minimal base** (Button, Input, Badge…): enough for the special components to be built from. Not competing with shadcn on count.

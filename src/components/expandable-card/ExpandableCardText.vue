@@ -6,12 +6,12 @@ import { contentIn, contentOut } from '../../utils/motion'
 import { useExpandableCardRegion } from './expandable-card.context'
 
 /**
- * One line of head text that never wraps, so the head's height never depends on its width.
+ * Head text kept to one line in the cell, so the cell's height never depends on its width.
  *
  * A line that does not fit fades out at its edge instead of ending in an ellipsis. An ellipsis
- * is either there or not and cannot be animated, so swapping it for the full line always lands
- * as a jump; a fading edge can. In the open card the faded edge and the hidden rest fade in
- * together with the body, and fade back out before the card returns to its cell.
+ * is either there or not and cannot be animated, so swapping it for the full text always lands
+ * as a jump; a fading edge can. In the open card the text may wrap, and everything that was
+ * hidden fades in together with the body, then back out before the card returns to its cell.
  */
 const props = withDefaults(
   defineProps<{
@@ -51,23 +51,34 @@ onBeforeUnmount(() => {
 
 const edgeMask = `linear-gradient(to right, #000 calc(100% - ${FADE}px), transparent)`
 
-// Where the line was cut in the cell. At `--rest: 0` this draws the same fading edge the cell
-// showed; at `--rest: 1` the whole line.
+// Where the line was cut in the cell. The open card lets the text wrap, so it is readable in
+// full even when the open card is no wider than the cell, as on one column. Two masks add up:
+// the first line up to the cut stays as the cell showed it, and everything else, the faded edge
+// and any further lines, fades in with `--rest`.
 const cutAt = region.placement === 'overlay' ? region.textWidths.get(props.name) : undefined
+const rest = 'rgb(0 0 0 / var(--rest))'
 const openingMask =
   cutAt === undefined
     ? undefined
-    : `linear-gradient(to right, #000 ${cutAt - FADE}px, rgb(0 0 0 / var(--rest)) ${cutAt}px)`
+    : {
+        maskImage: `linear-gradient(to right, #000 ${cutAt - FADE}px, ${rest} ${cutAt}px), linear-gradient(${rest}, ${rest})`,
+        maskSize: '100% 1lh, 100% 100%',
+        maskRepeat: 'no-repeat',
+        maskComposite: 'add',
+      }
 </script>
 
 <template>
+  <!-- The mask sits on the wrapper, which also carries the text styles so `1lh` is this text's
+       line height. -->
   <motion.div
     v-if="openingMask"
     :initial="{ '--rest': 0 }"
     :animate="{ '--rest': region.expanded ? 1 : 0, transition: region.expanded ? contentIn : contentOut }"
-    :style="{ maskImage: openingMask }"
+    :style="openingMask"
+    :class="props.class"
   >
-    <component :is="as" :class="cn('overflow-hidden whitespace-nowrap', props.class)"><slot /></component>
+    <component :is="as"><slot /></component>
   </motion.div>
   <component
     :is="as"
