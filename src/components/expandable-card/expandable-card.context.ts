@@ -22,6 +22,8 @@ export interface ExpandableCardRegionContext {
   id: string
   placement: 'cell' | 'overlay' | 'placeholder'
   expanded: boolean
+  /** Rendered width of each `ExpandableCardText` in the cell, keyed by name, for the reveal. */
+  textWidths: Map<string, number>
 }
 
 const GroupKey: InjectionKey<ExpandableCardGroupContext> = Symbol('ExpandableCardGroup')

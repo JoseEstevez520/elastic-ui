@@ -7,8 +7,8 @@ import { useExpandableCardRegion } from './expandable-card.context'
  * needs its own shared `layoutId`: without one it has no previous box to animate from and lands
  * straight on its final position, as if flying in from outside.
  *
- * Keep morphing pieces at the same size in both states, since a size change is drawn as a
- * stretch.
+ * Only the position animates. A size change would be drawn as a scale, and scaled text is
+ * stretched text; the box takes its new size at once and the text inside reflows instead.
  */
 defineProps<{ name: string }>()
 const { id, placement } = useExpandableCardRegion()
@@ -16,5 +16,5 @@ const { id, placement } = useExpandableCardRegion()
 
 <template>
   <div v-if="placement === 'placeholder'"><slot /></div>
-  <motion.div v-else :layout-id="`${id}-${name}`"><slot /></motion.div>
+  <motion.div v-else layout="position" :layout-id="`${id}-${name}`"><slot /></motion.div>
 </template>

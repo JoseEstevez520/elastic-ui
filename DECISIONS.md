@@ -2,6 +2,28 @@
 
 A Vue component library for my own projects, built to adapt to very different use cases.
 
+## Philosophy
+
+**Clean interfaces where things transform instead of appearing.**
+
+1. **Transform, don't replace.** When something changes state, the same surface changes shape: the bar becomes a pill and then a panel, the card grows to cover the grid.
+2. **Motion with intent.** One easing for the whole library, content that fades in once the shape has nearly arrived, no gratuitous bounces.
+3. **Visual calm.** Few colors, hairline borders, careful typography. Motion is the protagonist, not decoration.
+4. **Accessible by default.** Keyboard, Escape, focus and `prefers-reduced-motion`.
+
+### Motion rules
+
+- **Text never scales.** Morphing parts animate their position only (`layout="position"`); boxes take their new size at once and text reflows. A scaled box is stretched text.
+- **One way to appear: a fade.** Content that shows up fades in once the shape has nearly arrived, and fades out before it leaves. No wipes, slides or typewriters on top of a morph; that is too much motion.
+- **Truncate with a fading edge, not an ellipsis**, in anything that morphs. An ellipsis is on or off and cannot be animated; a `mask-image` edge can. When the line gets room, the visible part stays still and the edge plus the hidden rest fade in with the same timing as everything else (`ExpandableCardText`).
+- **Heights don't depend on width** in anything that morphs, so a line count change never lands as a jump mid-animation.
+
+## Scope
+
+- **A minimal base** (Button, Input, Badge…): enough for the special components to be built from. Not competing with shadcn on count.
+- **The core is components that transform**: MorphHeader, ExpandableCard, and in the same spirit a Dialog born from its trigger, Popover/Dropdown growing from its trigger, Tabs with a sliding indicator, a Toast that expands on hover, a Search that grows from an icon.
+- **Out of scope**: data tables, charts, complex calendars.
+
 ## Stack
 
 - **Vue 3** + TypeScript

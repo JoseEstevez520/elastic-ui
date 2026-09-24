@@ -24,6 +24,9 @@ const id = props.value ?? useId()
 const bodyId = `${id}-body`
 const group = useExpandableCardGroup()
 
+// Filled by the cell's texts as they unmount, read by the overlay's texts as they mount.
+const textWidths = new Map<string, number>()
+
 const lifted = computed(() => group.liftedId.value === id)
 const expanded = computed(() => lifted.value && group.openId.value === id)
 const dimmed = computed(() => group.activeId.value !== null && group.activeId.value !== id)
@@ -63,7 +66,7 @@ const headRow = 'flex w-full items-start gap-4'
       @layout-animation-complete="group.onReturned(id)"
     >
       <button type="button" :aria-expanded="false" :class="head" @click="group.open(id)">
-        <ExpandableCardRegion :id="id" placement="cell" :expanded="false">
+        <ExpandableCardRegion :id="id" placement="cell" :expanded="false" :text-widths="textWidths">
           <ExpandableCardMorph name="head" :class="headRow"><slot /></ExpandableCardMorph>
         </ExpandableCardRegion>
       </button>
@@ -72,7 +75,7 @@ const headRow = 'flex w-full items-start gap-4'
     <!-- Holds the cell's height while the card is out of it. -->
     <div v-else aria-hidden="true" :style="{ borderRadius: `${radius}px` }" class="invisible h-full">
       <div :class="head">
-        <ExpandableCardRegion :id="id" placement="placeholder" :expanded="false">
+        <ExpandableCardRegion :id="id" placement="placeholder" :expanded="false" :text-widths="textWidths">
           <div :class="headRow"><slot /></div>
         </ExpandableCardRegion>
       </div>
@@ -85,7 +88,7 @@ const headRow = 'flex w-full items-start gap-4'
       :class="cn(surface, brandEdge, 'absolute inset-x-0 top-0 z-20 flex h-full flex-col overflow-hidden')"
     >
       <button type="button" :aria-expanded="true" :aria-controls="bodyId" :class="head" @click="group.close()">
-        <ExpandableCardRegion :id="id" placement="overlay" :expanded="expanded">
+        <ExpandableCardRegion :id="id" placement="overlay" :expanded="expanded" :text-widths="textWidths">
           <ExpandableCardMorph name="head" :class="headRow"><slot /></ExpandableCardMorph>
         </ExpandableCardRegion>
       </button>

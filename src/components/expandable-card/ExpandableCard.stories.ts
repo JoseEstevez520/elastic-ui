@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { CardDescription, CardTitle } from '../card'
+import { CardTitle } from '../card'
 import ExpandableCard from './ExpandableCard.vue'
 import ExpandableCardGroup from './ExpandableCardGroup.vue'
 import ExpandableCardIndicator from './ExpandableCardIndicator.vue'
 import ExpandableCardMark from './ExpandableCardMark.vue'
 import ExpandableCardMorph from './ExpandableCardMorph.vue'
+import ExpandableCardText from './ExpandableCardText.vue'
 
 const PROJECTS = [
   {
@@ -52,8 +53,8 @@ const meta = {
       ExpandableCardMorph,
       ExpandableCardIndicator,
       ExpandableCardMark,
+      ExpandableCardText,
       CardTitle,
-      CardDescription,
     },
     setup: () => ({ PROJECTS }),
     template: `
@@ -73,7 +74,9 @@ const meta = {
 
             <ExpandableCardMorph name="heading" class="min-w-0">
               <CardTitle class="truncate">{{ project.name }}</CardTitle>
-              <CardDescription class="mt-1 truncate">{{ project.tagline }}</CardDescription>
+              <ExpandableCardText name="tagline" class="mt-1 text-sm text-fg-muted">
+                {{ project.tagline }}
+              </ExpandableCardText>
             </ExpandableCardMorph>
 
             <ExpandableCardMorph name="period" class="ml-auto shrink-0 text-xs text-fg-faint">
