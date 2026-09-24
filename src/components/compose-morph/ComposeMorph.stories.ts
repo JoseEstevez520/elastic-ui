@@ -54,18 +54,6 @@ export const Reply: Story = {
   }),
 }
 
-/** The five ways to send (`send`), side by side; `icon` is the default. ⌘↵ sends with any of them. */
-export const SendStyles: Story = {
-  render: () => ({
-    components: { ComposeMorph },
-    setup: () => ({ send, looks: ['button', 'ghost', 'icon', 'link', 'shortcut'] }),
-    template: `
-      <div class="flex flex-wrap items-start gap-3">
-        <ComposeMorph v-for="look in looks" :key="look" :submit="send" :send="look" :label="look" />
-      </div>`,
-  }),
-}
-
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
 
 /** Sending fails: the button says so and the message stays for another try. */

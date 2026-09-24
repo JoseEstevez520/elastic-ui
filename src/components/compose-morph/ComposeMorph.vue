@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, ref, watch, type Component } from 'vue'
 import Textarea from '../input/Textarea.vue'
 import PopoverMorph from '../popover-morph/PopoverMorph.vue'
 import type { ProgressButtonState } from '../progress-button/ProgressButton.vue'
-import ComposeSend, { type ComposeSendStyle } from './ComposeSend.vue'
+import ComposeSend from './ComposeSend.vue'
 
 export interface Composed {
   message: string
@@ -13,8 +13,8 @@ export interface Composed {
 
 /**
  * A button that becomes a small form for writing something short: a comment, a reply, a note,
- * feedback. It holds a message, an optional rating and a send button that turns into its own
- * progress. Once sent, the panel turns into a thank-you and folds back into the button by
+ * feedback. It holds a message, an optional rating and a quiet send button that turns into its
+ * own progress. Once sent, the panel turns into a thank-you and folds back into the button by
  * itself. `submit` does the sending; if it fails, the message stays for another try.
  */
 const props = withDefaults(
@@ -29,9 +29,7 @@ const props = withDefaults(
     sentLabel?: string
     errorLabel?: string
     thanks?: string
-    /** How it offers to send (see `ComposeSendStyle`); ⌘↵ sends with any of them. */
-    send?: ComposeSendStyle
-    /** The icon of the `icon` send style; a chevron by default. */
+    /** The send button's icon; a chevron by default. ⌘↵ sends too. */
     sendIcon?: Component
     align?: 'start' | 'end'
     side?: 'bottom' | 'top'
@@ -45,7 +43,6 @@ const props = withDefaults(
     sentLabel: 'Sent',
     errorLabel: "Couldn't send",
     thanks: 'Sent, thanks!',
-    send: 'icon',
     align: 'start',
     side: 'bottom',
   },
@@ -136,13 +133,9 @@ const submitForm = () => canSend.value && submit()
         </div>
         <div class="ml-auto">
           <ComposeSend
-            :look="send"
             :state="sending"
             :ready="hasMessage"
-            :label="sendLabel"
-            :working-label="sendingLabel"
-            :done-label="sentLabel"
-            :error-label="errorLabel"
+            :labels="{ idle: sendLabel, working: `${sendingLabel}…`, done: sentLabel, error: errorLabel }"
             :icon="sendIcon"
             @send="submitForm"
           />
