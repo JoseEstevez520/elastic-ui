@@ -4,7 +4,7 @@ import Button from '../button/Button.vue'
 import type { ButtonVariants } from '../button/button.variants'
 import IconSwap from '../icon-swap/IconSwap.vue'
 import TextMorph from '../text-morph/TextMorph.vue'
-import { CheckIcon, CopyIcon } from './copy-button.icons'
+import { CheckIcon, CopyIcon } from '../../icons/internal'
 
 /**
  * Copies `value` to the clipboard. Its icon turns into a check once copied, and back after a

@@ -1,6 +1,6 @@
 import { h, type FunctionalComponent } from 'vue'
 
-// The library ships no icon set, so the two icons this button needs are drawn here, on Lucide's
+// The library ships no icon set, so the few icons its own parts need are drawn here, on Lucide's
 // 24px grid and stroke so they sit with a project's own icons.
 const stroke = {
   viewBox: '0 0 24 24',
@@ -18,3 +18,6 @@ export const CopyIcon: FunctionalComponent = () =>
   ])
 
 export const CheckIcon: FunctionalComponent = () => h('svg', stroke, [h('path', { d: 'M20 6 9 17l-5-5' })])
+
+export const AlertIcon: FunctionalComponent = () =>
+  h('svg', stroke, [h('circle', { cx: 12, cy: 12, r: 9 }), h('path', { d: 'M12 8v4M12 16h.01' })])

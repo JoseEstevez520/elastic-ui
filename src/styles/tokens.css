@@ -35,7 +35,8 @@
   --color-accent-subtle: light-dark(#eff4ff, #16233d);
   --color-accent-fg: light-dark(#ffffff, #0a0a0a);
 
-  /* Danger: only for what went wrong, such as a field that needs fixing. */
+  /* Outcome colours, only for what they mean: something that went well, something that went wrong. */
+  --color-success: light-dark(#16a34a, #4ade80);
   --color-danger: light-dark(#dc2626, #f87171);
 
   /* The knob of a Switch: white on the track in light, a step off white in dark. */
@@ -99,6 +100,11 @@
   }
   @keyframes popover-out {
     to { opacity: 0; transform: scale(0.99); }
+  }
+  /* A band crossing from before the start edge to past the end. */
+  @keyframes progress-sweep {
+    from { translate: -100% 0; }
+    to { translate: 300% 0; }
   }
   @keyframes fade-in {
     from { opacity: 0; }

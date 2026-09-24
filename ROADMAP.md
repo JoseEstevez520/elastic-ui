@@ -38,7 +38,9 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Input, Textarea | Base | A hairline that darkens on focus, no halo; `icon`, `invalid`; Textarea grows with its text |
 | Checkbox, Switch | Base | Reka UI; the check is drawn along its stroke and turns into the dash for in between; the Switch's knob slides on the library's ease |
 | CopyButton | Base | Copy turns into a check, and back after two seconds; its label morphs with TextMorph |
+| ProgressButton | Base | A button that becomes its own progress: the amount fills it and counts up beside the morphing label, then the fill turns green (done) or red (error) and it goes back to itself; a sweep when there is no amount |
 | TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. For text that becomes something else (see "Appearing is not becoming") |
+| DynamicIsland | Special | A pill that morphs into each state's size and shape (a song, a timer, an upload), content leaving and coming into focus; only moves when its state changes; inline by default, `floating` to hold it at the top |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
@@ -52,13 +54,13 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
 2. **One way to change text.** BadgeCount rolls its number with its own animation; move it onto TextMorph, whose numbers roll by place value, so every changing text in the library moves the same way.
-3. **Dynamic Island.** A pill that changes shape with each state (a song, a timer, an upload), morphing between them and using TextMorph inside; only moving when its state changes.
-4. **Search that grows from an icon.**
-5. **Feedback morph.** A "Feedback" button that becomes a small form and a thank-you, on PopoverMorph.
-6. **Command palette.** DialogMorph with a search field and a list.
+3. **Search that grows from an icon.**
+4. **Feedback morph.** A "Feedback" button that becomes a small form and a thank-you, on PopoverMorph.
+5. **Command palette.** DialogMorph with a search field and a list.
 
 ## Later / ideas
 
+- Where the DynamicIsland lives in a page with chrome: inside MorphHeader's pill, in the Sidebar's footer, or on its own at the bottom centre. For now it is inline, and needs a hidden state that morphs in from a point.
 - NavTree indicator variants, such as SkillNet's "connected" pill that takes the page colour and fuses with the sidebar's edge.
 - AnimatedList: items crossing while reordering (for now they slide past each other).
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).

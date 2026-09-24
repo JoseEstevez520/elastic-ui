@@ -1,0 +1,55 @@
+import { cva } from 'class-variance-authority'
+
+/**
+ * The progress fills the button from the start edge, behind its label, as a tint of the text
+ * colour, so it reads on any variant. It grows by scaling a layer, never by resizing anything,
+ * and glides towards each new amount for longer than updates usually take to arrive, so steady
+ * steps run together into one continuous fill. When the work ends, the fill does not go: it
+ * turns into the outcome, taking its colour where it stands.
+ */
+export const progressFillVariants = cva(
+  [
+    'pointer-events-none absolute inset-0 origin-left',
+    'transition-[scale,background-color,opacity] duration-500 ease-out motion-reduce:transition-none',
+  ],
+  {
+    variants: {
+      outcome: {
+        none: 'bg-current opacity-[0.12]',
+        done: 'bg-[color:var(--color-success)] opacity-[0.14]',
+        error: 'bg-[color:var(--color-danger)] opacity-[0.14]',
+      },
+    },
+  },
+)
+
+/** The label and icon take the outcome's colour along with the fill. */
+export const progressOutcomeText = {
+  done: 'text-[color:var(--color-success)]',
+  error: 'text-[color:var(--color-danger)]',
+} as const
+
+/** With no amount to show, a soft band keeps sweeping across instead. */
+export const progressSweepClass = [
+  'pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-current opacity-[0.12]',
+  'animate-[progress-sweep_1.2s_var(--ease-in-out)_infinite] motion-reduce:hidden',
+]
+
+/**
+ * The amount beside the label. Its own padding stands in for the button's gap (cancelled by the
+ * negative margin), so the space before it folds away with it.
+ */
+export const amountVariants = cva(
+  [
+    'relative -ml-2 overflow-hidden text-left whitespace-nowrap tabular-nums',
+    'transition-[width,padding,opacity] duration-300 ease-emphasized motion-reduce:transition-none',
+  ],
+  {
+    variants: {
+      shown: {
+        true: 'w-[calc(4ch+0.5rem)] pl-2',
+        false: 'w-0 pl-0 opacity-0',
+      },
+    },
+  },
+)
