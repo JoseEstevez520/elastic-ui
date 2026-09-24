@@ -6,7 +6,8 @@ const props = defineProps<SelectValueProps>()
 </script>
 
 <template>
-  <SelectValue v-bind="props" class="truncate">
+  <!-- `min-w-0` lets it shrink inside the trigger's flex row, so a long label truncates. -->
+  <SelectValue v-bind="props" class="min-w-0 truncate">
     <slot />
   </SelectValue>
 </template>

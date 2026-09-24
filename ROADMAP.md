@@ -27,7 +27,8 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | MorphHeader | Special | Bar → pill → panel; collapses to the menu when the links don't fit (measured); `menu="always"` |
 | Popover | Base | Reka UI; fades in from 97% at the corner facing its trigger, with a shadow; closes faster |
 | PopoverMorph | Special | The trigger's box grows into the panel and folds back; label blurs out, content comes into focus; `align`, `side` |
-| Select | Base | Reka UI; the list appears from its trigger like a Popover (shared `floatingPanelClass`); groups, separator, `multiple`, form-ready |
+| Select | Base | Reka UI; the list appears from its trigger like a Popover (shared `floatingPanelClass`), options in a wave from the trigger outwards (none past eight); groups, separator, `multiple`, form-ready |
+| AnimatedList | Base | Motion layout; items slide to their new place, leaving ones fade out before the rest close the gap, new ones wait for room; first items come in as a wave; `#empty` |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
@@ -39,14 +40,14 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **Animated list.** Items slide to their new place when a list is filtered or reordered (Motion layout animations).
-3. **Dialog born from its trigger.** The button becomes the dialog and returns to it on close; Reka UI for the focus trap.
-4. **Tree / Sidebar navigation** built on Collapsible.
-5. **Toast.** Arrives from an edge and leaves through it.
-6. **Badge, Input** as the forms and tags need them.
+2. **Dialog born from its trigger.** The button becomes the dialog and returns to it on close; Reka UI for the focus trap.
+3. **Tree / Sidebar navigation** built on Collapsible.
+4. **Toast.** Arrives from an edge and leaves through it.
+5. **Badge, Input** as the forms and tags need them.
 
 ## Later / ideas
 
+- AnimatedList: items crossing while reordering (for now they slide past each other).
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
 - Priority+ variant for MorphHeader (show what fits, the rest in a "More" menu).
 - Documentation beyond Storybook once the API settles.

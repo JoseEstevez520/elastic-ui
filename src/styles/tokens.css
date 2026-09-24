@@ -160,6 +160,17 @@
   & > :nth-child(7) { --stagger-index: 6; }
   & > :nth-child(n + 8) { --stagger-index: 7; }
 
+  /* A floating panel opened upwards (Reka UI's `data-side="top"`) runs the wave from the bottom,
+     so it always starts at the trigger. */
+  [data-side="top"] & > :nth-last-child(1) { --stagger-index: 0; }
+  [data-side="top"] & > :nth-last-child(2) { --stagger-index: 1; }
+  [data-side="top"] & > :nth-last-child(3) { --stagger-index: 2; }
+  [data-side="top"] & > :nth-last-child(4) { --stagger-index: 3; }
+  [data-side="top"] & > :nth-last-child(5) { --stagger-index: 4; }
+  [data-side="top"] & > :nth-last-child(6) { --stagger-index: 5; }
+  [data-side="top"] & > :nth-last-child(7) { --stagger-index: 6; }
+  [data-side="top"] & > :nth-last-child(n + 8) { --stagger-index: 7; }
+
   @media (prefers-reduced-motion: reduce) {
     & > * { animation: none; }
   }

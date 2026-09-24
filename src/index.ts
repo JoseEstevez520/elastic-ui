@@ -1,4 +1,5 @@
 export * from './components/accordion'
+export * from './components/animated-list'
 export * from './components/button'
 export * from './components/card'
 export * from './components/collapsible'

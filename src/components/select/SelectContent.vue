@@ -36,7 +36,10 @@ const forwarded = useForwardPropsEmits(delegated, emits)
       position="popper"
       :class="cn(floatingPanelClass, selectContentClass, props.class)"
     >
-      <SelectViewport class="p-1">
+      <!-- Options come into focus as one wave from the trigger outwards (see `stagger-items`). A
+           list long enough to scroll opens on the chosen option, maybe mid-list, where a wave
+           counted from the first option would land all at once; there the panel's fade is enough. -->
+      <SelectViewport class="p-1 stagger-items [--stagger-delay:0.05s] [&:has(>:nth-child(9))>*]:animate-none">
         <slot />
       </SelectViewport>
     </SelectContent>

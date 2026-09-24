@@ -123,6 +123,24 @@ export const LongLabels: Story = {
   }),
 }
 
+/** Near the bottom of the screen the list opens upwards, and its wave runs from the trigger up. */
+export const OpensUpwards: Story = {
+  parameters: { layout: 'fullscreen' },
+  render: () => ({
+    components: parts,
+    setup: () => ({ fruits }),
+    template: `
+      <div class="flex h-screen items-end p-4">
+        <Select>
+          <SelectTrigger class="w-56"><SelectValue placeholder="Pick a fruit" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem v-for="fruit in fruits" :key="fruit" :value="fruit">{{ fruit }}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>`,
+  }),
+}
+
 export const Disabled: Story = {
   render: () => ({
     components: parts,
