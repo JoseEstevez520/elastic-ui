@@ -64,12 +64,24 @@ function clipAround(row: HTMLElement) {
   }
 }
 
+// A group that opens brings its items in as a wave; the indicator comes in with its own item,
+// on that item's delay and pace, never ahead of the text it sits under.
+const COME_IN = { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] as const }
+function fadeInWith(row: HTMLElement) {
+  const entrance = row.closest('li')?.getAnimations()[0]
+  const timing = entrance?.effect?.getComputedTiming()
+  if (!entrance || !timing) return FADE
+  const waited = Number(entrance.currentTime ?? 0)
+  const delay = Math.max(0, (timing.delay ?? 0) - waited) / 1000
+  return { ...COME_IN, delay }
+}
+
 function place(slide: boolean) {
   const row = list.value?.querySelector<HTMLElement>('[data-nav-tree-active]')
   const around = row ? clipAround(row) : { visible: false, clip: undefined }
   if (around.visible !== shown) {
     shown = around.visible
-    animate(opacity, shown ? 1 : 0, FADE)
+    animate(opacity, shown ? 1 : 0, shown && row ? fadeInWith(row) : FADE)
   }
   clip.value = around.clip
   if (!row || !list.value) return
