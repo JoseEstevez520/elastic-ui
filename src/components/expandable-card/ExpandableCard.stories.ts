@@ -54,6 +54,7 @@ const LONG_DESCRIPTION = Array(6)
   .join(' ')
 
 interface GridArgs {
+  variant: 'default' | 'ghost'
   /** How many projects each group shows. */
   count: number
   /** `mixed` puts an image on every other card. */
@@ -92,6 +93,7 @@ const projectGrid = (args: GridArgs) => ({
           v-for="(project, index) in PROJECTS.slice(0, args.count)"
           :key="project.name"
           :value="project.name + '-' + group"
+          :variant="args.variant"
           :brand="args.brandColors ? project.brand : undefined"
         >
           <template v-if="hasImage(index)" #media>
@@ -123,15 +125,7 @@ const projectGrid = (args: GridArgs) => ({
 
           <template #body>
             <p class="text-fg-secondary">{{ description(project) }}</p>
-            <ul class="mt-auto flex flex-wrap gap-2 pt-4">
-              <li
-                v-for="tag in project.tags"
-                :key="tag"
-                class="rounded-md border border-border px-2.5 py-1 text-xs text-fg-muted"
-              >
-                {{ tag }}
-              </li>
-            </ul>
+            <p class="mt-auto pt-4 text-sm text-fg-muted">{{ project.tags.join(' · ') }}</p>
           </template>
         </ExpandableCard>
       </ExpandableCardGroup>
@@ -141,9 +135,10 @@ const projectGrid = (args: GridArgs) => ({
 const meta = {
   title: 'Special/ExpandableCard',
   parameters: { layout: 'padded' },
-  args: { count: 4, images: 'none', brandColors: false, longText: false, groups: 1 },
+  args: { variant: 'default', count: 4, images: 'none', brandColors: false, longText: false, groups: 1 },
   argTypes: {
     count: { control: { type: 'range', min: 1, max: PROJECTS.length, step: 1 } },
+    variant: { control: 'inline-radio', options: ['default', 'ghost'] },
     images: { control: 'inline-radio', options: ['none', 'all', 'mixed'] },
     groups: { control: { type: 'range', min: 1, max: 2, step: 1 } },
   },
@@ -157,6 +152,11 @@ export const ProjectGrid: Story = {}
 
 export const WithImages: Story = {
   args: { images: 'all' },
+}
+
+/** Only the content at rest; the box appears on hover, keyboard focus and when open. */
+export const Ghost: Story = {
+  args: { variant: 'ghost', images: 'all' },
 }
 
 export const BrandColors: Story = {

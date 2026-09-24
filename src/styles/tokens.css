@@ -64,6 +64,13 @@
   color-scheme: dark;
 }
 
+/* Registered so the ExpandableCard's edge color can transition instead of switching. */
+@property --expandable-card-edge {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: transparent;
+}
+
 /* Set by useTheme() for two frames while the theme swaps. */
 html.theme-switching *,
 html.theme-switching *::before,

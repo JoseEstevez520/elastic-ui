@@ -6,9 +6,9 @@ A Vue component library for my own projects, built to adapt to very different us
 
 **Clean interfaces where things transform instead of appearing.**
 
-1. **Transform, don't replace.** When something changes state, the same surface changes shape: the bar becomes a pill and then a panel, the card grows to cover the grid.
-2. **Motion with intent.** One easing for the whole library, content that fades in once the shape has nearly arrived, no gratuitous bounces.
-3. **Visual calm.** Few colors, hairline borders, careful typography. Motion is the protagonist, not decoration.
+1. **Continuity: nothing appears or disappears without a transition.** The interface behaves like a physical space: everything comes from somewhere and goes somewhere, so the eye can follow it. The card grows out of its cell, the header stretches into a panel, the tab indicator travels to the new tab. A click never swaps the whole screen at once.
+2. **Transform, not spectacle.** Shape and position change with the one emphasized ease, and nothing more: no stretching, no bouncing, no gooey effects. Motion is there to explain what happened, not to show off.
+3. **Fewer boxes.** Order comes from space, typography and color first. Borders and backgrounds only where they add something, such as an interactive surface or real grouping. A box can appear when it is needed (on hover, when open) rather than sit there at rest.
 4. **Accessible by default.** Keyboard, Escape, focus and `prefers-reduced-motion`.
 
 ### Motion rules
