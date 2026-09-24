@@ -17,7 +17,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 
 | Component | Tier | Notes |
 |---|---|---|
-| Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases, `mask-fade-b`, `blur-in`, `stagger-children`, disclosure keyframes |
+| Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases, `shadow-overlay`, `mask-fade-b`, `blur-in`, `stagger-children` / `stagger-items`, `scrollbar-subtle`, disclosure and popover keyframes |
 | Button | Base | `solid`, `outline`, `ghost`, `link`; sizes; `icon`, `loading`, `href` |
 | Card | Base | Composable parts; `CardImage` with `fade` |
 | ThemeToggle | Base | Sun/moon from Adam Argyle's theme switch (Apache-2.0); `useTheme()` |
@@ -29,6 +29,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | PopoverMorph | Special | The trigger's box grows into the panel and folds back; label blurs out, content comes into focus; `align`, `side` |
 | Select | Base | Reka UI; the list appears from its trigger like a Popover (shared `floatingPanelClass`), options in a wave from the trigger outwards (none past eight); groups, separator, `multiple`, form-ready |
 | AnimatedList | Base | Motion layout; items slide to their new place, leaving ones fade out before the rest close the gap, new ones wait for room; first items come in as a wave; `#empty` |
+| DialogMorph | Special | Reka UI Dialog; the button's box travels to the middle and grows into the dialog, folds back on close; label fades out in place; content scrolls only once the box has landed |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
@@ -40,15 +41,15 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
-2. **Dialog born from its trigger.** The button becomes the dialog and returns to it on close; Reka UI for the focus trap.
-3. **Tree / Sidebar navigation** built on Collapsible.
-4. **Toast.** Arrives from an edge and leaves through it.
-5. **Badge, Input** as the forms and tags need them.
+2. **Tree / Sidebar navigation** built on Collapsible.
+3. **Toast.** Arrives from an edge and leaves through it.
+4. **Badge, Input** as the forms and tags need them.
 
 ## Later / ideas
 
 - AnimatedList: items crossing while reordering (for now they slide past each other).
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
+- Organize Storybook and the docs by family (actions, forms, overlays, disclosure, collections, navigation) instead of Base / Special, with each morph variant next to its plain one.
 - Priority+ variant for MorphHeader (show what fits, the rest in a "More" menu).
 - Documentation beyond Storybook once the API settles.
 - Publishing to npm.

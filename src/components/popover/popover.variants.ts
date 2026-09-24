@@ -13,5 +13,5 @@ export const floatingPanelClass = [
 
 export const popoverContentClass = [
   'w-[var(--popover-width,18rem)] max-w-[var(--reka-popover-content-available-width)]',
-  'max-h-[var(--reka-popover-content-available-height)] overflow-y-auto p-4',
+  'max-h-[var(--reka-popover-content-available-height)] overflow-y-auto overscroll-contain scrollbar-subtle p-4',
 ]

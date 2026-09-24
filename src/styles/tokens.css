@@ -122,15 +122,18 @@
  * movement. Capped at the eighth piece. `--stagger-delay` holds the wave back, for content that
  * waits for a morph to nearly arrive.
  *
- *   stagger-children  for prose: staggers block children (paragraphs, lists, headings), so text
- *                     with inline links inside is never split; without blocks it comes in as one.
+ *   stagger-children  for content: staggers every child but inline text (paragraphs, lists, forms,
+ *                     headings…), so text with inline links is never split; without blocks it
+ *                     comes in as one.
  *   stagger-items     for a list of items (nav links, menu entries): staggers every child.
  */
 @utility stagger-children {
-  &:not(:has(> :is(p, div, ul, ol, li, dl, pre, blockquote, figure, table, section, h1, h2, h3, h4, h5, h6))) {
+  /* Every child but inline text (links, emphasis, code…) is a block of the wave, so prose with
+     inline elements is never split; without any block it comes in as one. */
+  &:not(:has(> :not(a, abbr, b, bdi, bdo, br, cite, code, data, dfn, em, i, kbd, mark, q, s, samp, small, span, strong, sub, sup, time, u, var, wbr))) {
     animation: blur-in 0.45s var(--ease-soft) var(--stagger-delay, 0.12s) both;
   }
-  & > :is(p, div, ul, ol, li, dl, pre, blockquote, figure, table, section, h1, h2, h3, h4, h5, h6) {
+  & > :not(a, abbr, b, bdi, bdo, br, cite, code, data, dfn, em, i, kbd, mark, q, s, samp, small, span, strong, sub, sup, time, u, var, wbr) {
     animation: blur-in 0.45s var(--ease-soft) both;
     animation-delay: calc(var(--stagger-delay, 0.12s) + 40ms * var(--stagger-index, 0));
   }
@@ -173,6 +176,45 @@
 
   @media (prefers-reduced-motion: reduce) {
     & > * { animation: none; }
+  }
+}
+
+/*
+ * A scrollbar that belongs to the interface: a rounded line in the border color, a step darker
+ * while hovered, with no arrows and no track. For anything that scrolls inside a surface.
+ *
+ * Chromium and Safari draw it from the `::-webkit-scrollbar` parts, which they ignore as soon
+ * as `scrollbar-color` or `scrollbar-width` is set, so those two go to Firefox only.
+ */
+@utility scrollbar-subtle {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  /* Runs along the middle of the surface, clear of its rounded corners, not its whole height. */
+  &::-webkit-scrollbar-track {
+    margin-block: var(--scrollbar-inset, 24px);
+  }
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+  /* A transparent border clipped out of the background leaves a 6px line with room around it. */
+  &::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background: var(--color-border-strong) padding-box;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-fg-faint);
+  }
+
+  @supports (-moz-appearance: none) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
   }
 }
 

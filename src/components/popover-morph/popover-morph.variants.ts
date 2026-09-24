@@ -25,7 +25,7 @@ export const popoverMorphSurfaceVariants = cva(
 
 /** Pinned to the same corner as the surface, at its own full size, so growing never reflows it. */
 export const popoverMorphPanelVariants = cva(
-  'absolute w-[var(--popover-width,18rem)] max-h-[70dvh] overflow-y-auto p-4 text-sm text-fg outline-none',
+  'absolute w-[var(--popover-width,18rem)] max-h-[70dvh] overflow-y-auto overscroll-contain scrollbar-subtle p-4 text-sm text-fg outline-none',
   {
     variants: {
       align: { start: 'left-0', end: 'right-0' },
