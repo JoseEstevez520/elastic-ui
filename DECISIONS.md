@@ -30,6 +30,7 @@ A component is not done until it works in every situation below, and each critic
 - **Reduced motion**: `prefers-reduced-motion` is respected (`MotionConfig reduced-motion="user"`).
 - **Coexistence**: two instances on the same page.
 - **Server rendering**: no `window`, `document` or observers touched outside `onMounted`.
+- **Languages**: labels can be much longer in another language. Layout decisions are measured from the content where possible (the MorphHeader collapses to its menu when the links don't fit), not guessed from a breakpoint.
 
 ## Performance
 

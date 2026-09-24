@@ -1,7 +1,8 @@
 import { cva } from 'class-variance-authority'
 
 // Lines up with a centered content column by default: 86% of the viewport, 60% from `sm`.
-const width = 'w-[var(--morph-header-width,86%)] sm:w-[var(--morph-header-width,60%)]'
+export const morphHeaderWidth = 'w-[var(--morph-header-width,86%)] sm:w-[var(--morph-header-width,60%)]'
+const width = morphHeaderWidth
 const glass = [
   'backdrop-blur-xl backdrop-saturate-150',
   'bg-[color:var(--morph-header-bg,color-mix(in_srgb,var(--color-bg)_72%,transparent))]',

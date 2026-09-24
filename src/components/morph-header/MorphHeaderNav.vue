@@ -16,7 +16,7 @@ const placement = useMorphHeaderPlacement()
 <template>
   <nav
     :aria-label="label"
-    :class="cn(placement === 'inline' ? 'flex items-center gap-5' : 'flex w-full flex-col', props.class)"
+    :class="cn(placement === 'panel' ? 'flex w-full flex-col' : 'flex items-center gap-5', props.class)"
   >
     <slot />
   </nav>

@@ -20,7 +20,7 @@ const placement = useMorphHeaderPlacement()
     :layout="placement === 'inline'"
     :href="href"
     :aria-current="active ? 'page' : undefined"
-    :class="cn(morphHeaderLinkVariants({ placement }), props.class)"
+    :class="cn(morphHeaderLinkVariants({ placement: placement === 'panel' ? 'panel' : 'inline' }), props.class)"
     @click="placement === 'panel' && close()"
   >
     <slot />

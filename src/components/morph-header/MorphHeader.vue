@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { AnimatePresence, MotionConfig, motion } from 'motion-v'
-import { computed, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { useScrolled } from '../../composables/useScrolled'
 import { cn } from '../../utils/cn'
 import { morphTransition } from '../../utils/motion'
 import MorphHeaderRegion from './MorphHeaderRegion.vue'
 import { provideMorphHeaderContext } from './morph-header.context'
-import { morphHeaderGlassClass, morphHeaderSurfaceVariants } from './morph-header.variants'
-
-/** From this width up the nav sits inline and the mobile panel is closed. Matches `lg`. */
-const DESKTOP_QUERY = '(min-width: 64rem)'
+import { morphHeaderGlassClass, morphHeaderSurfaceVariants, morphHeaderWidth } from './morph-header.variants'
 
 const props = withDefaults(
   defineProps<{
     /** Pixels of scroll before the bar turns into a pill. */
     scrollThreshold?: number
     /**
-     * `responsive`: links inline from `lg` up, behind the menu button below it.
+     * `responsive`: links inline whenever they fit in the bar, behind the menu button otherwise.
      * `always`: only the logo and the menu button, at every width.
      */
     menu?: 'responsive' | 'always'
@@ -39,6 +36,34 @@ watch(open, (isOpen) => {
 
 const scrolled = useScrolled(() => props.scrollThreshold)
 const responsive = computed(() => props.menu === 'responsive')
+
+// Whether the inline nav fits is measured, not guessed from a breakpoint, so it holds for any
+// number of links, any label length and any language. An invisible, inert copy of the nav and
+// actions gives their natural width; a box with the bar's width gives the room there is. Until
+// the first measurement (and in server rendering) the `lg` breakpoint stands in.
+const MIN_GAP = 40
+const logo = useTemplateRef<HTMLElement>('logo')
+const measureBar = useTemplateRef<HTMLElement>('measureBar')
+const measureNav = useTemplateRef<HTMLElement>('measureNav')
+const fits = ref<boolean>()
+let fitObserver: ResizeObserver | undefined
+
+onMounted(() => {
+  const measure = () => {
+    if (!measureBar.value || !measureNav.value) return
+    const needed = (logo.value?.offsetWidth ?? 0) + MIN_GAP + measureNav.value.offsetWidth
+    fits.value = needed <= measureBar.value.offsetWidth
+  }
+  fitObserver = new ResizeObserver(measure)
+  for (const el of [logo.value, measureBar.value, measureNav.value]) if (el) fitObserver.observe(el)
+})
+onBeforeUnmount(() => fitObserver?.disconnect())
+
+const inline = computed(() => responsive.value && fits.value !== false)
+// Class sets for the inline nav and for the menu button and panel, before and after measuring.
+const inlineClass = computed(() => (fits.value === undefined ? 'hidden lg:flex' : 'flex'))
+const menuClass = computed(() => (responsive.value && fits.value === undefined ? 'lg:hidden' : undefined))
+const showMenu = computed(() => !responsive.value || fits.value !== true)
 const shape = computed(() => (expanded.value ? 'panel' : scrolled.value ? 'pill' : 'bar'))
 
 // Radius and hairline live inline on the element that owns `layout`, so Motion can correct them
@@ -58,8 +83,17 @@ useEventListener<KeyboardEvent>(() => document, 'keydown', (event) => {
 useEventListener<PointerEvent>(() => document, 'pointerdown', (event) => {
   if (open.value && event.target instanceof Node && !header.value?.contains(event.target)) close()
 })
-useEventListener<MediaQueryListEvent>(() => window.matchMedia(DESKTOP_QUERY), 'change', (event) => {
-  if (responsive.value && event.matches) close()
+// Once the links fit inline again the panel has nothing left to show.
+watch(fits, (nowFits) => {
+  if (responsive.value && nowFits) close()
+})
+
+// Focus inside the panel would be lost when it unmounts, so it goes back to the menu button.
+const menuButton = useTemplateRef<HTMLElement>('menuButton')
+const panelId = useId()
+watch(open, (isOpen) => {
+  const panel = document.getElementById(panelId)
+  if (!isOpen && panel?.contains(document.activeElement)) menuButton.value?.focus({ preventScroll: true })
 })
 </script>
 
@@ -94,10 +128,10 @@ useEventListener<MediaQueryListEvent>(() => window.matchMedia(DESKTOP_QUERY), 'c
           "
         >
           <motion.div layout class="flex shrink-0 items-center">
-            <slot name="logo" />
+            <div ref="logo" class="flex items-center"><slot name="logo" /></div>
           </motion.div>
 
-          <motion.div v-if="responsive" layout class="hidden items-center gap-5 lg:flex">
+          <motion.div v-if="inline" layout :class="cn('items-center gap-5', inlineClass)">
             <MorphHeaderRegion placement="inline">
               <slot />
             </MorphHeaderRegion>
@@ -106,19 +140,22 @@ useEventListener<MediaQueryListEvent>(() => window.matchMedia(DESKTOP_QUERY), 'c
             </motion.div>
           </motion.div>
 
-          <motion.button
-            layout
-            type="button"
-            :aria-label="menuLabel"
-            :aria-expanded="open"
-            :class="cn('flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-accent', responsive && 'lg:hidden')"
-            @click="open = !open"
-          >
-            <svg class="size-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path v-if="open" d="M18 6 6 18M6 6l12 12" />
-              <path v-else d="M4 5h16M4 12h16M4 19h16" />
-            </svg>
-          </motion.button>
+          <motion.div v-if="showMenu" layout :class="cn('flex shrink-0', menuClass)">
+            <button
+              ref="menuButton"
+              type="button"
+              :aria-label="menuLabel"
+              :aria-expanded="open"
+              :aria-controls="panelId"
+              class="flex size-9 cursor-pointer items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-accent"
+              @click="open = !open"
+            >
+              <svg class="size-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path v-if="open" d="M18 6 6 18M6 6l12 12" />
+                <path v-else d="M4 5h16M4 12h16M4 19h16" />
+              </svg>
+            </button>
+          </motion.div>
         </motion.div>
 
         <!-- The panel is part of the surface, never a detached slab. Its height is capped so the
@@ -126,13 +163,14 @@ useEventListener<MediaQueryListEvent>(() => window.matchMedia(DESKTOP_QUERY), 'c
         <AnimatePresence :initial="false" :on-exit-complete="() => (expanded = open)">
           <motion.div
             v-if="open"
+            :id="panelId"
             :initial="{ opacity: 0 }"
             :animate="{ opacity: 1, transition: { duration: 0.22, delay: 0.3, ease: 'linear' } }"
             :exit="{ opacity: 0, transition: { duration: 0.16, ease: 'linear' } }"
             :class="
               cn(
                 'relative z-10 mt-2 max-h-[calc(100dvh-6rem)] w-full overflow-y-auto overscroll-contain',
-                responsive && 'lg:hidden',
+                menuClass,
               )
             "
           >
@@ -146,5 +184,16 @@ useEventListener<MediaQueryListEvent>(() => window.matchMedia(DESKTOP_QUERY), 'c
         </AnimatePresence>
       </motion.div>
     </MotionConfig>
+
+    <!-- Measures whether the inline nav fits; see `fits`. Inert, so it is never focused or read. -->
+    <div v-if="responsive" aria-hidden="true" inert class="invisible absolute inset-x-0 top-0 h-0 overflow-hidden">
+      <div ref="measureBar" :class="morphHeaderWidth" />
+      <div ref="measureNav" class="flex w-max items-center gap-5 whitespace-nowrap">
+        <MorphHeaderRegion placement="measure">
+          <slot />
+        </MorphHeaderRegion>
+        <div v-if="$slots.actions" class="flex items-center gap-2"><slot name="actions" /></div>
+      </div>
+    </div>
   </header>
 </template>

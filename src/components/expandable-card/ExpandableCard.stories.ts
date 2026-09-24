@@ -123,9 +123,6 @@ const projectGrid = (args: GridArgs) => ({
 
           <template #body>
             <p class="text-fg-secondary">{{ description(project) }}</p>
-          <a href="#" class="mt-3 self-start text-sm text-accent hover:text-accent-hover" @click.prevent>
-            View project ↗
-          </a>
             <ul class="mt-auto flex flex-wrap gap-2 pt-4">
               <li
                 v-for="tag in project.tags"

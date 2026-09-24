@@ -5,8 +5,11 @@ export interface MorphHeaderContext {
   close: () => void
 }
 
-/** Where the nav is being rendered: in the bar on desktop, or in the open panel on mobile. */
-export type MorphHeaderPlacement = 'inline' | 'panel'
+/**
+ * Where the nav is being rendered: inline in the bar, in the open panel, or in the invisible
+ * copy that measures whether the inline nav fits.
+ */
+export type MorphHeaderPlacement = 'inline' | 'panel' | 'measure'
 
 const MorphHeaderContextKey: InjectionKey<MorphHeaderContext> = Symbol('MorphHeaderContext')
 const MorphHeaderPlacementKey: InjectionKey<MorphHeaderPlacement> = Symbol('MorphHeaderPlacement')
