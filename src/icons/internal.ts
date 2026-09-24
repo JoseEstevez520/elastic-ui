@@ -24,3 +24,7 @@ export const AlertIcon: FunctionalComponent = () =>
 
 /** A chevron pointing forward: the quietest way to say "go on". */
 export const ChevronRightIcon: FunctionalComponent = () => h('svg', stroke, [h('path', { d: 'm9 18 6-6-6-6' })])
+
+/** A rounded square: stop. */
+export const StopIcon: FunctionalComponent = () =>
+  h('svg', { viewBox: '0 0 24 24', fill: 'currentColor' }, [h('rect', { x: 6, y: 6, width: 12, height: 12, rx: 2.5 })])

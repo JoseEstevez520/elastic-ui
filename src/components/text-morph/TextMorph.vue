@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TextMorph } from 'torph/vue'
-import { EASE_EMPHASIZED } from '../../utils/motion'
+import { bezier, EASE_EMPHASIZED } from '../../utils/motion'
 
 /**
  * Text that turns into other text: the letters both share fly to their new places, rearranging
@@ -12,7 +12,7 @@ withDefaults(defineProps<{ text: string; as?: string; class?: string }>(), { as:
 
 // Quick enough to read as the word simply becoming the other one, not as a show.
 const DURATION = 350
-const EASE = `cubic-bezier(${EASE_EMPHASIZED.join(',')})`
+const EASE = bezier(EASE_EMPHASIZED)
 </script>
 
 <template>

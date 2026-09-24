@@ -41,6 +41,8 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | ProgressButton | Base | A button that becomes its own progress: the amount fills it and counts up beside the morphing label, then the fill turns green (done) or red (error) and it goes back to itself; a sweep when there is no amount |
 | SearchMorph | Special | A magnifier that widens into the field around it (button, `/` or ⌘K), folding back when left empty; no box once open, as Apple's, or `soft` as Vercel's |
 | ComposeMorph | Special | A button that becomes a small form to write something short (a comment, a reply, a note, feedback with an optional rating); sends with a quiet chevron that turns into its own progress, or ⌘↵; turns into a thank-you and folds back by itself |
+| SelectionMenu | Special | Taken from Curio: selecting text snaps to whole words and paints one rounded band per line, with a bar of actions above it (`SelectionMenuItem`) |
+| Chat | Special | `Chat`, `ChatThread`, `ChatMessage`, `ChatComposer`. Your message just shows in a round bubble; the answer flows in as a wave at a steady pace, however unevenly the model sends it (Streamdown, llm-ui, FlowToken); until its first words, one shimmering line says what it is doing, morphing from step to step; the composer's button pulls out of its pill like a drop, and turns into stop while answering |
 | TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. For text that becomes something else (see "Appearing is not becoming") |
 | DynamicIsland | Special | A pill that morphs into each state's size and shape (a song, a timer, an upload), content leaving and coming into focus; only moves when its state changes; inline by default, `floating` to hold it at the top |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
@@ -57,6 +59,15 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 1. **Try the library in a real Vue project** (e.g. a branch of `ies-teis-daw2/extra/herramientas/web-del-repo`, same stack). Check that `@source` finds the classes, tokens can be overridden and nothing is bundled twice. The biggest remaining risk.
 2. **Command palette.** DialogMorph with a search field and a list.
 
+### AI chat, next
+
+Done so far: the composer (its button pulling out like a drop, send turning into stop), the answer flowing in as a wave, and one shimmering line for what it is doing. A reasoning panel was tried and left out: a single line reads better.
+
+1. **Tools that evolve.** "Searching the web…" → "3 sources" → cards; steps with a status, as AI Elements' Tool and Chain of Thought.
+2. **Selecting in answers.** SelectionMenu over the thread: explain, quote into the composer, copy.
+3. **Message actions.** Copy, retry, edit, quiet until hovered.
+4. **Markdown in answers.** Lists, code blocks with CopyButton, flowing in as the same wave.
+
 ## Later / ideas
 
 - Where the DynamicIsland lives in a page with chrome: inside MorphHeader's pill, in the Sidebar's footer, or on its own at the bottom centre. For now it is inline, and needs a hidden state that morphs in from a point.
@@ -70,4 +81,4 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 ## Out of scope
 
-Data tables, charts, complex calendars and date pickers. Gooey, stretching or bouncing effects (see Philosophy in `DECISIONS.md`).
+Data tables, charts, complex calendars and date pickers. Bouncing or stretching effects (see Philosophy in `DECISIONS.md`).

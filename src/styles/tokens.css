@@ -106,6 +106,11 @@
     from { translate: -100% 0; }
     to { translate: 300% 0; }
   }
+  /* A sheen crossing its text from before the start to past the end. */
+  @keyframes sheen {
+    from { background-position: 100% 0; }
+    to { background-position: -50% 0; }
+  }
   @keyframes fade-in {
     from { opacity: 0; }
   }
@@ -270,6 +275,24 @@
     bottom: -0.75rem;
     border-top-right-radius: 0.625rem;
     box-shadow: 0.3rem -0.3rem 0 0.3rem var(--tab-color);
+  }
+}
+
+/*
+ * Text that is working on something ("Thinking…"): a soft sheen runs across its letters, left to
+ * right, over and over, as prompt-kit's Text Shimmer does. The letters are the page's muted text
+ * with a brighter band passing through them.
+ */
+@utility text-shimmer {
+  color: transparent;
+  background: linear-gradient(90deg, var(--color-fg-muted) 40%, var(--color-fg) 50%, var(--color-fg-muted) 60%);
+  background-size: 250% 100%;
+  background-clip: text;
+  animation: sheen 2s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    color: var(--color-fg-muted);
   }
 }
 

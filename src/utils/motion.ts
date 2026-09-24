@@ -7,6 +7,9 @@ export const EASE_SOFT = [0.25, 0.1, 0.25, 1] as const
 /** Mirrors `--ease-glide` in tokens.css. */
 export const EASE_GLIDE = [0.38, 0.49, 0, 1] as const
 
+/** An ease as a CSS `cubic-bezier()`, for the Web Animations API and inline styles. */
+export const bezier = (ease: readonly number[]) => `cubic-bezier(${ease.join(',')})`
+
 export const morphTransition = { type: 'tween', duration: 0.52, ease: EASE_EMPHASIZED } as const
 
 /**
