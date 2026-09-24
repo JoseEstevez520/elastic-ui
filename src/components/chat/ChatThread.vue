@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, provide, ref, useTemplateRef, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { ChatThreadReadyKey } from './chat.keys'
 import { useLabels } from '../../utils/labels'
+import { ChatThreadReadyKey } from './chat.keys'
 
 /**
  * The messages, scrolling on their own. It stays at the end as the conversation grows, but

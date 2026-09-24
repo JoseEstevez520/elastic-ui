@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useLabels } from '../../utils/labels'
 import TextMorph from '../text-morph/TextMorph.vue'
 import ChatStream from './ChatStream.vue'
 import { chatMessageVariants } from './chat.variants'
-import { useLabels } from '../../utils/labels'
 
 /**
  * One message. Yours sits on the right in a soft, round bubble and just shows: you wrote it,

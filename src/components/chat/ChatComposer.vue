@@ -2,9 +2,9 @@
 import { computed, ref, useId, type HTMLAttributes } from 'vue'
 import { ChevronRightIcon, StopIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
+import { labelFor, useLabels } from '../../utils/labels'
 import IconSwap from '../icon-swap/IconSwap.vue'
 import { composerButtonClass, composerDropClass, composerFieldClass, composerShapeClass } from './chat.variants'
-import { labelFor, useLabels } from '../../utils/labels'
 
 /**
  * Where the conversation is written, as in Curio: a filled pill with a round button of the same

@@ -2,9 +2,9 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
+import { labelFor } from '../../utils/labels'
 import { prefersReducedMotion } from '../../utils/motion'
 import { tocIndicatorClass, tocLinkVariants, tocTrackClass } from './table-of-contents.variants'
-import { labelFor } from '../../utils/labels'
 
 export interface TableOfContentsItem {
   /** The heading's `id`, the link's target. */

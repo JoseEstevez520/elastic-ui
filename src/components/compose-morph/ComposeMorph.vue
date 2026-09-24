@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch, type Component } from 'vue'
+import { labelFor, useLabels } from '../../utils/labels'
 import Textarea from '../input/Textarea.vue'
 import PopoverMorph from '../popover-morph/PopoverMorph.vue'
 import type { ProgressButtonState } from '../progress-button/ProgressButton.vue'
 import ComposeSend from './ComposeSend.vue'
-import { labelFor, useLabels } from '../../utils/labels'
 
 export interface Composed {
   message: string

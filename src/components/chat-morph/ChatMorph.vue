@@ -3,9 +3,9 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplate
 import { useEventListener } from '../../composables/useEventListener'
 import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
+import { labelFor, useLabels } from '../../utils/labels'
 import Aurora, { type AuroraActivity } from '../aurora/Aurora.vue'
 import { chatMorphTriggerState, chatMorphPanelVariants, chatMorphSurfaceVariants, chatMorphTriggerClass } from './chat-morph.variants'
-import { labelFor, useLabels } from '../../utils/labels'
 
 /**
  * An orb that becomes a chat box of its own. The button is a small circle of drifting aurora, no

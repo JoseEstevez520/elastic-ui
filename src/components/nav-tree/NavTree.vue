@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { animate, motion, useMotionValue } from 'motion-v'
 import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
-import { EASE_EMPHASIZED, EASE_SOFT, prefersReducedMotion } from '../../utils/motion'
 import { labelFor } from '../../utils/labels'
+import { EASE_EMPHASIZED, EASE_SOFT, prefersReducedMotion } from '../../utils/motion'
 import { useSidebarVariant } from '../sidebar/sidebar.context'
 import { provideNavTreeContext } from './nav-tree.context'
 import { navTreeIndicatorVariants } from './nav-tree.variants'
