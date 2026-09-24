@@ -88,10 +88,18 @@ const holdsActive = computed(() => heldActive.value > 0)
 
 const parent = useNavTreeGroupContext()
 
-// The group's own page: while it is the active one, the groups around it open to show it and
-// count it, as they do for an item.
+// The group's own page: while it is the active one, it opens to show what it holds, and the groups
+// around it open to show it and count it, as they do for an item.
 const active = computed(() => props.value !== undefined && tree.active.value === props.value)
-watch(active, (isActive) => isActive && parent?.reveal(), { immediate: true })
+watch(
+  active,
+  (isActive) => {
+    if (!isActive) return
+    open.value = true
+    parent?.reveal()
+  },
+  { immediate: true },
+)
 watch(
   active,
   (isActive, wasActive) => {
@@ -173,7 +181,7 @@ provideNavTreeGroupContext({
           </span>
         </CollapsibleTrigger>
       </component>
-      <CollapsibleContent :class="byRail ? navTreeRailContentClass : settled ? disclosureContentClass : 'overflow-hidden'">
+      <CollapsibleContent data-nav-tree-content :class="byRail ? navTreeRailContentClass : settled ? disclosureContentClass : 'overflow-hidden'">
         <ul role="list" :class="navTreeChildrenVariants({ wave: changed && !byRail })">
           <slot />
         </ul>

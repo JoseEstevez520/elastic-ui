@@ -54,7 +54,9 @@ function clipAround(row: HTMLElement) {
   let bottom = box.bottom
   let closing = false
   for (let el = row.parentElement; el && el !== list.value; el = el.parentElement) {
-    if (el.dataset.state === 'closed') closing = true
+    // Only a group's content hides what is in it; a group's own header stays in view while the
+    // group is closed.
+    if (el.dataset.state === 'closed' && 'navTreeContent' in el.dataset) closing = true
     if (getComputedStyle(el).overflowY !== 'visible') {
       const rect = el.getBoundingClientRect()
       top = Math.max(top, rect.top)
