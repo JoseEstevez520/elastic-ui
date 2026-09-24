@@ -195,7 +195,7 @@ watch(open, (isOpen) => {
             </MorphHeaderRegion>
             <div
               v-if="$slots.actions"
-              class="flex items-center gap-2 px-3 py-3 animate-[blur-in_0.6s_var(--ease-soft)_0.45s_both] motion-reduce:animate-none"
+              class="flex items-center gap-2 px-3 py-3 animate-[blur-in_0.45s_var(--ease-soft)_0.3s_both] motion-reduce:animate-none"
             >
               <slot name="actions" />
             </div>

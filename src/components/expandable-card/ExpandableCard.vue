@@ -185,7 +185,7 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
         class="relative flex flex-1 flex-col px-4 pb-4 sm:px-6 sm:pb-6"
         @animation-complete="!expanded && group.onBodyHidden(id)"
       >
-        <div class="flex flex-1 flex-col stagger-children [--stagger-delay:0.3s]">
+        <div class="flex flex-1 flex-col stagger-children [--stagger-delay:0.15s]">
           <slot name="body" />
         </div>
       </motion.div>

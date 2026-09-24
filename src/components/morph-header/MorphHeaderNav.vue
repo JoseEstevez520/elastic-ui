@@ -19,7 +19,7 @@ const placement = useMorphHeaderPlacement()
     :class="
       cn(
         // In the panel the links come into focus as one wave, once the panel has nearly grown.
-        placement === 'panel' ? 'flex w-full flex-col stagger-items [--stagger-delay:0.3s]' : 'flex items-center gap-5',
+        placement === 'panel' ? 'flex w-full flex-col stagger-items [--stagger-delay:0.15s]' : 'flex items-center gap-5',
         props.class,
       )
     "
