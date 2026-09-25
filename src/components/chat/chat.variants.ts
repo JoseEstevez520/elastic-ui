@@ -58,3 +58,12 @@ export const chatGlassStyle = {
   '--chat-bubble-shadow': '0 2px 6px rgb(0 0 0 / 0.03)',
   '--chat-bubble-blur': '16px',
 }
+
+/**
+ * A disclosure that folds on an even curve rather than the quick start of the others, so a large
+ * piece (an edit) goes softly, blurring away as its room closes.
+ */
+export const chatToolContentClass = [
+  'overflow-hidden motion-reduce:animate-none',
+  'data-[state=open]:animate-disclosure-open data-[state=closed]:animate-[disclosure-close_0.4s_var(--ease-in-out)]',
+]

@@ -4,10 +4,9 @@ import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, type Compo
 import { ChevronRightIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { afterPaint } from '../../utils/motion'
-import { disclosureContentClass } from '../collapsible/collapsible.variants'
 import StatusText from '../status-text/StatusText.vue'
 import { ChatMessageKey, ChatThreadReadyKey } from './chat.keys'
-import { chatToolTriggerClass } from './chat.variants'
+import { chatToolContentClass, chatToolTriggerClass } from './chat.variants'
 
 /**
  * One step the answer took, such as a search, told in a single line that evolves with it. While
@@ -89,10 +88,13 @@ const text = computed(() => (becoming.value ? from! : props.label))
         ]"
       />
     </CollapsibleTrigger>
-    <CollapsibleContent v-if="$slots.default" :class="disclosureContentClass">
+    <CollapsibleContent
+      v-if="$slots.default"
+      :class="chatToolContentClass"
+    >
       <!-- What it holds brings its own entrance (ChatSources comes in as a wave); it only leaves here.
            Failing, it holds what went wrong. -->
-      <div class="pt-2 pb-1 [[data-state=closed]>&]:animate-content-out motion-reduce:animate-none">
+      <div class="pt-2 pb-1 [[data-state=closed]>&]:animate-[blur-out_0.35s_var(--ease-soft)_both] motion-reduce:animate-none">
         <slot />
       </div>
     </CollapsibleContent>
