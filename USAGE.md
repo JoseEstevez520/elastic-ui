@@ -2,6 +2,15 @@
 
 Rules for building with the library, for people and for coding agents alike. How the library itself is made lives in `DECISIONS.md`; this is how to use it well in a project.
 
+## What is the library's, and what is the page's
+
+If you would use it unchanged in another project, it belongs to the library; if it says something about a subject, it belongs to the page.
+
+- **The library** is how things look and behave: the parts, the engines without their content (AgentReplay plays any session, TerminalReplay any terminal), the visual language (tokens, tints, the diagram classes, `Diagram`), the generic layout (`article`, `side-by-side`, SidebarLayoutHeader), the behaviours (when something starts, when the scroll line shows) and these rules.
+- **The page** is what is said: its text and order, each concrete diagram (drawn with the library's classes), each session's script, its data (a timetable, a navigation tree, the colours of its sections) and what only that site needs.
+- **Storybook's examples** carry content only to show the parts working; how to explain a subject is decided in the project, not there.
+- A drawing or a session that ends up repeated in two projects can move into the library as a part of its own; while it lives in one, it stays with the page.
+
 ## 1. Morph by default
 
 Where there is a morphing version, use it. The library's personality is things turning into other things, and a plain panel appearing from nowhere is the exception, not the rule.
