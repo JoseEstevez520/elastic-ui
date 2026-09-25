@@ -1,4 +1,5 @@
 export { default as SidebarLayout } from './SidebarLayout.vue'
+export { default as SidebarLayoutHeader } from './SidebarLayoutHeader.vue'
 export { default as Sidebar } from './Sidebar.vue'
 export { default as SidebarToggle } from './SidebarToggle.vue'
 export type { SidebarVariant } from './sidebar.context'

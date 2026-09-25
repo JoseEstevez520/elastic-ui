@@ -25,8 +25,8 @@ const props = withDefaults(
     /** The heading above the list, also its accessible name. */
     title?: string
     /**
-     * How far from the top of the viewport a heading counts as reached, in pixels: below a fixed
-     * header, set it to the header's height and a little more.
+     * How far from the top a heading counts as reached, in pixels. By default, a little below a
+     * SidebarLayoutHeader (its `--page-header-height`), or near the top without one.
      */
     offset?: number
     /**
@@ -36,7 +36,7 @@ const props = withDefaults(
     scroller?: HTMLElement | string
     class?: HTMLAttributes['class']
   }>(),
-  { title: labelFor('onThisPage'), offset: 96 },
+  { title: labelFor('onThisPage') },
 )
 
 /** The section being read. */
@@ -50,13 +50,21 @@ function container() {
 // The section being read: the last whose heading has passed the offset line, measured from the
 // top of what scrolls. At the very end of the page it is the last one, even if its heading never
 // gets that far up.
+// The reading line: the given offset, or a little below the page's header.
+function line() {
+  if (props.offset !== undefined) return props.offset
+  const host = container() ?? document.documentElement
+  return (Number.parseFloat(getComputedStyle(host).getPropertyValue('--page-header-height')) || 0) + 32
+}
+
 function read() {
   const scroller = container()
+  const reached = line()
   const top = scroller ? scroller.getBoundingClientRect().top : 0
   let current = props.items[0]?.id
   for (const item of props.items) {
     const heading = document.getElementById(item.id)
-    if (heading && heading.getBoundingClientRect().top - top <= props.offset + 1) current = item.id
+    if (heading && heading.getBoundingClientRect().top - top <= reached + 1) current = item.id
   }
   const end = scroller
     ? scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 2

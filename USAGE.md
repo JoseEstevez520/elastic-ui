@@ -132,6 +132,7 @@ Around the aurora:
 - **The Sidebar holds the sections**, a handful, without folding groups. The section of the page you are on is the active one.
 - **Breadcrumbs hold the rest**: the path to the page, and its siblings behind each chevron.
 - **TableOfContents** for the headings of a long page. Three levels in three places, each short.
+- **The page's bar is `SidebarLayoutHeader`**, first in the page's column: breadcrumbs on the left, search and theme on the right. It stays at the top, brings the sidebar's toggle on a phone, and tells TableOfContents and headings its height, so no offset is set by hand.
 
 ## 13. Setting up a project
 

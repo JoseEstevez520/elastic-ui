@@ -37,7 +37,10 @@ export const Filter: Story = {
   }),
 }
 
-/** Reorder and every item slides to its new place. */
+/**
+ * Reorder: the items that change place fade out where they are and come into focus at their new
+ * place as a wave, never sliding across one another.
+ */
 export const Sort: Story = {
   render: () => ({
     components: { AnimatedList, Button },
@@ -87,7 +90,10 @@ export const AddRemove: Story = {
   }),
 }
 
-/** A grid of cards: sliding works in two dimensions. */
+/**
+ * A grid of cards: removing one reflows the rest across rows, so they fade out and come into focus
+ * at their new places rather than cutting across one another; shuffling does the same.
+ */
 export const Grid: Story = {
   render: () => ({
     components: { AnimatedList, Button },
@@ -135,7 +141,7 @@ export const MixedHeights: Story = {
     setup() {
       const notes = ref([
         'Short note.',
-        'A much longer note that wraps over several lines, to check that items of different heights still slide cleanly past each other.',
+        'A much longer note that wraps over several lines, to check that items of different heights change places cleanly.',
         'Another short one.',
         'Medium length note that takes about two lines at this width.',
       ])

@@ -427,7 +427,7 @@ html.theme-switching *::after {
     color: var(--color-fg);
     font-weight: 600;
     letter-spacing: -0.01em;
-    scroll-margin-top: var(--prose-scroll-margin, 6rem);
+    scroll-margin-top: var(--prose-scroll-margin, calc(var(--page-header-height, 0px) + 1.5rem));
   }
   & :where(h1):not([class]):not(:where(.not-prose *)) {
     font-size: 2em;

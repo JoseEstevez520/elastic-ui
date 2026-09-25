@@ -1,14 +1,16 @@
 <script setup lang="ts" generic="T">
 import { AnimatePresence, MotionConfig, motion } from 'motion-v'
-import { computed, onMounted, ref, watch, type HTMLAttributes } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
+import { contentOut, EASE_EMPHASIZED, morphCloseTransition, prefersReducedMotion } from '../../utils/motion'
 
 /**
- * A list whose items slide to their new place when it is filtered, sorted or changed, instead of
- * jumping. Items render from `items` and a scoped slot rather than as child parts: Motion measures
- * each item's layout when this list re-renders, and a part that did not update itself would miss
- * the measurement and jump.
+ * A list whose items find their new place when it is filtered, sorted or changed, instead of
+ * jumping, and never over one another. The items that go fade out first; then the rest move: along
+ * one line, all the same way (a list closing a gap), they slide; where any would cut across another
+ * (a reorder, cards reflowing in a grid), they fade out where they were and come into focus at their
+ * new place, as a wave. Items render from `items` and a scoped slot, so the list can measure each
+ * one before and after a change.
  */
 const props = withDefaults(
   defineProps<{
@@ -69,7 +71,6 @@ const leave = computed(() =>
 const EXIT = contentOut.duration
 const MAKE_ROOM = 0.3
 const moveDelay = ref(0)
-const transition = computed(() => ({ ...morphTransition, delay: moveDelay.value }))
 
 // Enter delays in ms, set once per item: changing one mid-animation restarts it. The first items,
 // or a whole new set, come in as one wave like the rest of the library (`stagger-items`).
@@ -80,11 +81,92 @@ onMounted(() => (wave = false))
 // loads does; an item only comes in once it arrives afterwards.
 const quiet = new Set(props.appear ? [] : props.items.map(keyOf))
 
+// Where each item was before a change, measured just before the list re-renders.
+const els = new Map<string | number, HTMLElement>()
+function setEl(key: string | number, el: unknown) {
+  const node = (el as { $el?: unknown } | null)?.$el ?? el
+  if (node instanceof HTMLElement) els.set(key, node)
+  else els.delete(key)
+}
+let before = new Map<string | number, DOMRect>()
+const moving = new Set<Animation>()
+
+// After a change, the items that stayed but moved find their new place. When they all go the same
+// way along one line, as a list closing a gap, they slide there. When any would cut across another
+// (in opposite directions, as in a reorder, or diagonally, as cards reflowing in a grid), sliding
+// would cross them over one another: those fade out where they were and come into focus at their
+// new place instead, as a wave.
+const SLIDE = { duration: 450, easing: `cubic-bezier(${EASE_EMPHASIZED.join(',')})` }
+function settle() {
+  if (prefersReducedMotion()) return
+  for (const animation of moving) animation.cancel()
+  moving.clear()
+  const movers: { el: HTMLElement; dx: number; dy: number; top: number; left: number }[] = []
+  for (const [key, was] of before) {
+    const el = els.get(key)
+    if (!el || !el.isConnected) continue
+    const now = el.getBoundingClientRect()
+    const dx = was.left - now.left
+    const dy = was.top - now.top
+    if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) movers.push({ el, dx, dy, top: now.top, left: now.left })
+  }
+  const diagonal = movers.some((m) => Math.abs(m.dx) > 0.5 && Math.abs(m.dy) > 0.5)
+  const opposite = (axis: 'dx' | 'dy') => movers.some((m) => m[axis] > 0.5) && movers.some((m) => m[axis] < -0.5)
+  const crossing = diagonal || opposite('dx') || opposite('dy')
+  const delay = moveDelay.value * 1000
+  if (!crossing) {
+    for (const { el, dx, dy } of movers)
+      moving.add(el.animate([{ translate: `${dx}px ${dy}px` }, { translate: '0px 0px' }], { ...SLIDE, delay, fill: 'backwards' }))
+    return
+  }
+  // In reading order of where they land, 40ms apart and none past the eighth.
+  movers.sort((a, b) => a.top - b.top || a.left - b.left)
+  movers.forEach(({ el, dx, dy }, i) => {
+    const from = `${dx}px ${dy}px`
+    moving.add(
+      el.animate(
+        [
+          { translate: from, opacity: 1, filter: 'blur(0px)' },
+          { translate: from, opacity: 0, filter: 'blur(0px)', offset: 0.25 },
+          { translate: '0px 0px', opacity: 0, filter: 'blur(2px)', offset: 0.25 },
+          { translate: '0px 0px', opacity: 1, filter: 'blur(0px)' },
+        ],
+        { duration: 600, delay: delay + Math.min(i, 7) * 40, easing: 'ease-out', fill: 'backwards' },
+      ),
+    )
+  })
+}
+watch(() => props.items.map(keyOf), () => nextTick(settle), { flush: 'post' })
+
+// Folding items (`collapse`) stay in the flow until they have folded away, and only then do the
+// rest reflow: measured just before one goes, and settled once it has.
+function onExitDone(key: string | number) {
+  if (!props.collapse || props.items.some((item) => keyOf(item) === key)) return
+  before = new Map([...els].filter(([k, el]) => k !== key && el.isConnected).map(([k, el]) => [k, el.getBoundingClientRect()]))
+  requestAnimationFrame(settle)
+}
+
+// The empty state waits for the last items to be gone.
+const emptyShown = ref(!props.items.length)
+let emptyTimer: ReturnType<typeof setTimeout> | undefined
+watch(
+  () => props.items.length === 0,
+  (empty) => {
+    clearTimeout(emptyTimer)
+    if (!empty) return (emptyShown.value = false)
+    const gone = props.collapse ? (EXIT + morphCloseTransition.duration) * 1000 : EXIT * 1000
+    emptyTimer = setTimeout(() => (emptyShown.value = true), gone)
+  },
+)
+onBeforeUnmount(() => clearTimeout(emptyTimer))
+onBeforeUnmount(() => moving.forEach((animation) => animation.cancel()))
+
 // Runs before the list re-renders, so the delays are in place for the change that triggers them.
 // Watching the keys, not the array, also catches changes made in place (`push`, `splice`).
 watch(
   () => props.items.map(keyOf),
   (keys, previous) => {
+    before = new Map([...els].filter(([, el]) => el.isConnected).map(([key, el]) => [key, el.getBoundingClientRect()]))
     const current = new Set(keys)
     const removed = previous.some((key) => !current.has(key))
     for (const key of delays.keys()) if (!current.has(key)) delays.delete(key)
@@ -102,19 +184,20 @@ function enterDelay(item: T, index: number) {
 </script>
 
 <template>
-  <MotionConfig :transition="transition" reduced-motion="user">
+  <MotionConfig reduced-motion="user">
     <!-- `relative` anchors items taken out of the flow by the default `popLayout` mode. Collapse
          mode keeps the leaving item in the flow while its size folds away. -->
     <component :is="as" v-bind="$attrs" :class="cn('relative', props.class)">
       <AnimatePresence :mode="presenceMode" :initial="false">
-        <!-- `position` only, so text never scales. The fade-in fills backwards only: a fill that
-             lasted would override the opacity Motion sets on the way out. -->
+        <!-- The fade-in fills backwards only: a fill that lasted would override the opacity Motion
+             sets on the way out. -->
         <component
           :is="itemComponent"
           v-for="(item, index) in items"
           :key="keyOf(item)"
-          layout="position"
+          :ref="(el: unknown) => setEl(keyOf(item), el)"
           :exit="leave"
+          @animation-complete="onExitDone(keyOf(item))"
           :style="{ animationDelay: enterDelay(item, index) }"
           :class="
             cn(
@@ -129,6 +212,9 @@ function enterDelay(item: T, index: number) {
       </AnimatePresence>
     </component>
   </MotionConfig>
-  <!-- Beside the list rather than instead of it, so the last item can still fade out. -->
-  <slot v-if="!items.length" name="empty" />
+  <!-- Beside the list rather than instead of it, and only once the last items have faded out, so
+       it never shows over them. -->
+  <Transition enter-active-class="animate-blur-in motion-reduce:animate-none">
+    <div v-if="emptyShown"><slot name="empty" /></div>
+  </Transition>
 </template>

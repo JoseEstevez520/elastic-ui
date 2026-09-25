@@ -6,12 +6,13 @@ import NavTreeGroup from '../nav-tree/NavTreeGroup.vue'
 import NavTreeItem from '../nav-tree/NavTreeItem.vue'
 import Sidebar from './Sidebar.vue'
 import SidebarLayout from './SidebarLayout.vue'
+import SidebarLayoutHeader from './SidebarLayoutHeader.vue'
 import SidebarToggle from './SidebarToggle.vue'
 
 // The library ships no icons; Lucide stands in for a project's own.
 const icons = { home: House, book: BookOpen, wrench: Wrench, bot: Bot, calendar: Calendar, settings: Settings }
 
-const parts = { NavTree, NavTreeGroup, NavTreeItem, Sidebar, SidebarLayout, SidebarToggle }
+const parts = { NavTree, NavTreeGroup, NavTreeItem, Sidebar, SidebarLayout, SidebarLayoutHeader, SidebarToggle }
 
 const meta = {
   title: 'Navigation/Sidebar',
@@ -46,13 +47,13 @@ const meta = {
           </template>
         </Sidebar>
         <main class="min-w-0 flex-1">
-          <header class="flex h-14 items-center gap-2 px-4">
-            <!-- On a phone the sidebar's own toggle is off screen with it; this one opens it. -->
-            <SidebarToggle class="md:hidden" />
+          <!-- Held at the top as the page scrolls; on a phone it carries the toggle that opens the panel. -->
+          <SidebarLayoutHeader>
             <span class="text-sm text-fg-muted">{{ page }}</span>
-          </header>
+          </SidebarLayoutHeader>
           <div class="max-w-2xl p-6 text-sm text-fg-secondary">
-            <p>The toggle in the sidebar's header folds it to a rail of icons, whose labels come back as tooltips. Opening a group from the rail unfolds the sidebar. Below 768px the sidebar becomes a panel that slides in from the left.</p>
+            <p>The toggle in the sidebar's header folds it to a rail of icons, whose labels come back as tooltips. Opening a group from the rail unfolds the sidebar. Below 768px the sidebar becomes a panel that slides in from the left, opened from the page's header.</p>
+            <p v-for="n in 30" :key="n" class="mt-4">Scroll: the page's header stays at the top, a hairline appearing under it once the page moves.</p>
           </div>
         </main>
       </SidebarLayout>`,
