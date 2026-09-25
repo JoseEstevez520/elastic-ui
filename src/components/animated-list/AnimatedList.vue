@@ -2,7 +2,7 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion-v'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { contentOut, EASE_EMPHASIZED, morphCloseTransition, prefersReducedMotion } from '../../utils/motion'
+import { contentOut, EASE_EMPHASIZED, EASE_SOFT, morphCloseTransition, prefersReducedMotion } from '../../utils/motion'
 
 /**
  * A list whose items find their new place when it is filtered, sorted or changed, instead of
@@ -39,7 +39,6 @@ defineSlots<{
 
 const keyOf = (item: T) => props.itemKey?.(item) ?? (item as string | number)
 const itemComponent = computed(() => (props.as === 'div' ? motion.div : motion.li))
-const presenceMode = computed(() => (props.collapse ? 'sync' : 'popLayout'))
 const leave = computed(() =>
   props.collapse === 'vertical'
     ? {
@@ -113,37 +112,43 @@ function settle() {
   const diagonal = movers.some((m) => Math.abs(m.dx) > 0.5 && Math.abs(m.dy) > 0.5)
   const opposite = (axis: 'dx' | 'dy') => movers.some((m) => m[axis] > 0.5) && movers.some((m) => m[axis] < -0.5)
   const crossing = diagonal || opposite('dx') || opposite('dy')
-  const delay = moveDelay.value * 1000
   if (!crossing) {
     for (const { el, dx, dy } of movers)
-      moving.add(el.animate([{ translate: `${dx}px ${dy}px` }, { translate: '0px 0px' }], { ...SLIDE, delay, fill: 'backwards' }))
+      moving.add(el.animate([{ translate: `${dx}px ${dy}px` }, { translate: '0px 0px' }], { ...SLIDE, fill: 'backwards' }))
     return
   }
-  // In reading order of where they land, 40ms apart and none past the eighth.
+  // All fade out together where they were, so none is still there when another arrives in its
+  // place; then they come into focus where they land, in reading order, 40ms apart and none past
+  // the eighth.
+  const OUT = 150
   movers.sort((a, b) => a.top - b.top || a.left - b.left)
   movers.forEach(({ el, dx, dy }, i) => {
     const from = `${dx}px ${dy}px`
+    moving.add(el.animate([{ translate: from, opacity: 1 }, { translate: from, opacity: 0 }], { duration: OUT, easing: 'linear' }))
     moving.add(
-      el.animate(
-        [
-          { translate: from, opacity: 1, filter: 'blur(0px)' },
-          { translate: from, opacity: 0, filter: 'blur(0px)', offset: 0.25 },
-          { translate: '0px 0px', opacity: 0, filter: 'blur(2px)', offset: 0.25 },
-          { translate: '0px 0px', opacity: 1, filter: 'blur(0px)' },
-        ],
-        { duration: 600, delay: delay + Math.min(i, 7) * 40, easing: 'ease-out', fill: 'backwards' },
-      ),
+      el.animate([{ opacity: 0, filter: 'blur(2px)' }, { opacity: 1, filter: 'blur(0px)' }], {
+        duration: 450,
+        delay: OUT + Math.min(i, 7) * 40,
+        easing: `cubic-bezier(${EASE_SOFT.join(',')})`,
+        fill: 'backwards',
+      }),
     )
   })
 }
 watch(() => props.items.map(keyOf), () => nextTick(settle), { flush: 'post' })
 
-// Folding items (`collapse`) stay in the flow until they have folded away, and only then do the
-// rest reflow: measured just before one goes, and settled once it has.
+// Leaving items stay where they are, in the flow, while they fade (or fold, with `collapse`); only
+// once they are gone do the rest take the room. Taking each out of the flow as it starts to leave
+// would move the next up before it is measured, and several leaving at once would pile up on one
+// spot. So the rest are measured just before the leavers go, and settled once they have.
+let settling = 0
 function onExitDone(key: string | number) {
-  if (!props.collapse || props.items.some((item) => keyOf(item) === key)) return
-  before = new Map([...els].filter(([k, el]) => k !== key && el.isConnected).map(([k, el]) => [k, el.getBoundingClientRect()]))
-  requestAnimationFrame(settle)
+  if (props.items.some((item) => keyOf(item) === key) || settling) return
+  before = new Map([...els].filter(([, el]) => el.isConnected).map(([k, el]) => [k, el.getBoundingClientRect()]))
+  settling = requestAnimationFrame(() => {
+    settling = 0
+    settle()
+  })
 }
 
 // The empty state waits for the last items to be gone.
@@ -171,7 +176,7 @@ watch(
     const removed = previous.some((key) => !current.has(key))
     for (const key of delays.keys()) if (!current.has(key)) delays.delete(key)
     for (const key of quiet) if (!current.has(key)) quiet.delete(key)
-    moveDelay.value = removed && !props.collapse ? EXIT : 0
+    moveDelay.value = removed ? (props.collapse ? EXIT + morphCloseTransition.duration : EXIT) : 0
     wave = !keys.some((key) => delays.has(key))
   },
 )
@@ -185,10 +190,9 @@ function enterDelay(item: T, index: number) {
 
 <template>
   <MotionConfig reduced-motion="user">
-    <!-- `relative` anchors items taken out of the flow by the default `popLayout` mode. Collapse
-         mode keeps the leaving item in the flow while its size folds away. -->
+    <!-- Leaving items stay in the flow while they fade or fold away (see `onExitDone`). -->
     <component :is="as" v-bind="$attrs" :class="cn('relative', props.class)">
-      <AnimatePresence :mode="presenceMode" :initial="false">
+      <AnimatePresence :initial="false">
         <!-- The fade-in fills backwards only: a fill that lasted would override the opacity Motion
              sets on the way out. -->
         <component
