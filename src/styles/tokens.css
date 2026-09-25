@@ -586,7 +586,8 @@ html.theme-switching *::after {
  *   diagram-emphasis  the one thing the diagram is about: thicker, in its colour
  *   diagram-grid      a guide: dashed, fainter still
  * A part's colour is `--diagram-color` (the accent by default), set on it or on a group, the
- * same colour for the same concept on every page. `diagram-chip` is the tinted part for HTML.
+ * same colour for the same concept on every page. `diagram-chip` is the tinted part for HTML, and
+ * `diagram-area` a larger one that holds others.
  */
 @utility diagram {
   overflow: visible;
@@ -640,6 +641,16 @@ html.theme-switching *::after {
   stroke-dasharray: 2 6;
   vector-effect: non-scaling-stroke;
 }
+/* The tinted part for HTML at a larger size: an area that holds other parts, as the harness round a model. */
+@utility diagram-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: var(--radius-xl);
+  background: color-mix(in oklab, var(--diagram-color, var(--color-accent)) 10%, var(--color-bg));
+  color: color-mix(in oklab, var(--diagram-color, var(--color-accent)) 75%, var(--color-fg));
+}
 @utility diagram-chip {
   display: inline-flex;
   align-items: center;
@@ -665,5 +676,27 @@ html.theme-switching *::after {
       opacity: 1;
       animation: none !important;
     }
+  }
+}
+
+/*
+ * An article (USAGE 11): one column, and everything in it (text, figures, code, tables) held to
+ * the same two edges, so there is always one width to lean on. With `prose` on the same element
+ * for the type. What does not fit that width gets a version of its own for it, never spills out.
+ * `side-by-side` puts its children in a row that stacks on its own once they no longer fit,
+ * measured from them (Every Layout's Switcher).
+ */
+@utility article {
+  width: min(var(--article-width, 46rem), 100% - 2.5rem);
+  margin-inline: auto;
+}
+
+@utility side-by-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--side-by-side-gap, 1.5rem);
+  & > * {
+    flex: 1 1 var(--side-by-side-min, 18rem);
+    min-width: 0;
   }
 }

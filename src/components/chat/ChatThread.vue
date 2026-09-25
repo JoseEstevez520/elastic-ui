@@ -8,9 +8,9 @@ import ScrollIndicator from '../scroll-indicator/ScrollIndicator.vue'
 import { ChatThreadReadyKey } from './chat.keys'
 
 /**
- * The messages, scrolling. Sending glides your message to the top, once, leaving the room below
- * for the answer to grow into, and the view holds still while it does, as ChatGPT and Claude now
- * do. Once the answer reaches the bottom, the view follows it down, gliding at the pace the text
+ * The messages, scrolling. While the whole conversation fits, nothing moves. Once it no longer
+ * does, sending glides your message to the top, once, leaving the room below for the answer to
+ * grow into, and the view holds still while it does, as ChatGPT and Claude now do. Once the answer reaches the bottom, the view follows it down, gliding at the pace the text
  * comes rather than jumping to it. Scrolling up to reread lets go of it, with a button back to
  * the end, which follows it again.
  */
@@ -122,8 +122,10 @@ onMounted(() => {
   added = new MutationObserver((records) => {
     const first = records.flatMap((r) => [...r.addedNodes]).find((n): n is HTMLElement => n instanceof HTMLElement)
     if (!first) return
-    anchor = first
     following.value = true
+    // Everything still fits: nothing to bring up, and nothing moves. It is followed once it outgrows
+    // the view, as any answer is.
+    anchor = el.value && end() > el.value.clientHeight ? first : undefined
     fit()
     // Once the room is there to scroll into.
     nextTick(follow)
@@ -162,8 +164,9 @@ const labels = useLabels()
     </div>
 
     <!-- A short line for a scrollbar, running only where the messages read: clear of the box's
-         corners and of the fades a surface puts over its ends. -->
-    <ScrollIndicator :target="`[data-scroll-id='${scrollId}']`" :length="32" :inset="40" />
+         corners and of the fades a surface puts over its ends. It shows for the reader's own
+         scrolling, not for the thread following its answer, nor as a chat first appears. -->
+    <ScrollIndicator :target="`[data-scroll-id='${scrollId}']`" :length="32" :inset="40" :flash-on-mount="false" />
 
     <!-- Only once the reader has scrolled up with more below: it comes into focus, and fades as the
          end comes back into view. -->

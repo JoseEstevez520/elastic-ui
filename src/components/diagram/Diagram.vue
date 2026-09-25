@@ -31,7 +31,8 @@ onMounted(() => {
       shown.value = true
       observer?.disconnect()
     },
-    { threshold: 0.35 },
+    // Nearly all of it in view, not peeking in at the bottom edge.
+    { threshold: 0.8 },
   )
   if (root.value) observer.observe(root.value)
 })

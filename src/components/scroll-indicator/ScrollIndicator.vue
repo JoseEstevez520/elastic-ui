@@ -7,9 +7,10 @@ import { cn } from '../../utils/cn'
  * wide, growing a little under the pointer, it slides down the edge as you go, however long the
  * page. Hidden at rest, it shows for a moment when it first appears, so you know there is more
  * (as Apple's scroll indicators flash when a view appears), then while you scroll and while the
- * pointer is near the edge, fading soon after; it can be dragged. Call `flash()` when the content
- * changes, such as on a new page. The native scrollbar, whose
- * length the browser sets, is hidden while it is there.
+ * pointer is near the edge, fading soon after; it can be dragged. A scroll the page makes on its
+ * own, as a chat following its answer, does not show it. Call `flash()` when the content changes,
+ * such as on a new page. The native scrollbar, whose length the browser sets, is hidden while it is
+ * there.
  *
  * On its own it follows the page. For something that scrolls inside the page, put it beside that
  * element in a positioned box and pass the element as `target`.
@@ -57,9 +58,18 @@ function show(ms: number) {
   clearTimeout(linger)
   linger = setTimeout(() => (scrolling.value = false), ms)
 }
+// Only a scroll someone makes shows the line: one the page makes on its own (a chat following
+// its answer) moves it unseen. A wheel, a finger, a key or a drag just before counts as someone.
+let touched = 0
+const HANDS = 600
+const byHand = () => (touched = performance.now())
+const NAV_KEYS = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '])
+function onKey(event: Event) {
+  if (event instanceof KeyboardEvent && NAV_KEYS.has(event.key)) byHand()
+}
 function onScroll() {
   measure()
-  show(LINGER)
+  if (performance.now() - touched < HANDS || dragging.value) show(LINGER)
 }
 
 // A flash is held a little longer than after a scroll: nothing moved to draw the eye to it.
@@ -99,6 +109,8 @@ onMounted(() => {
   const s = scroller()
   s.classList.add('scrollbar-none')
   ;(page() ? window : s).addEventListener('scroll', onScroll, { passive: true })
+  for (const event of ['wheel', 'touchmove', 'pointerdown'] as const) (page() ? window : s).addEventListener(event, byHand, { passive: true })
+  ;(page() ? window : s).addEventListener('keydown', onKey)
   window.addEventListener('pointermove', onPointerMove, { passive: true })
   window.addEventListener('resize', measure)
   observer = new ResizeObserver(measure)
@@ -110,6 +122,8 @@ onBeforeUnmount(() => {
   const s = scroller()
   s.classList.remove('scrollbar-none')
   ;(page() ? window : s).removeEventListener('scroll', onScroll)
+  for (const event of ['wheel', 'touchmove', 'pointerdown'] as const) (page() ? window : s).removeEventListener(event, byHand)
+  ;(page() ? window : s).removeEventListener('keydown', onKey)
   window.removeEventListener('pointermove', onPointerMove)
   window.removeEventListener('resize', measure)
   observer?.disconnect()

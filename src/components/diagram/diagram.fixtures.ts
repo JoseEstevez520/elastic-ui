@@ -1,6 +1,6 @@
 // For the stories only: diagrams drawn with the diagram classes, shared by Diagram's and
 // PageSection's stories.
-import { Box, FileCode, Hammer, Layers } from '@lucide/vue'
+import { Box, Brain, FileCode, FilePen, FolderOpen, Hammer, Layers, ScrollText, ShieldCheck, SquareTerminal, User } from '@lucide/vue'
 
 export const PARTS_SVG = `<svg viewBox="0 0 640 260" class="diagram w-full">
           <g class="diagram-in">
@@ -60,3 +60,42 @@ export const STEPS = [
   { label: 'Image', icon: Layers, color: '#2563eb' },
   { label: 'Container', icon: Box, color: '#0d9488' },
 ]
+
+// What an agent is, as the TEIS web draws it: the model a box, the harness a larger box round it
+// with what it gives the model, between you and your project.
+export const HARNESS = {
+  you: User,
+  model: Brain,
+  project: FolderOpen,
+  tools: [
+    { label: 'Read files', icon: FileCode },
+    { label: 'Edit files', icon: FilePen },
+    { label: 'Run commands', icon: SquareTerminal },
+    { label: 'Instructions', icon: ScrollText },
+    { label: 'Permissions', icon: ShieldCheck },
+  ],
+}
+
+export const HARNESS_TEMPLATE = `
+  <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+    <span class="diagram-chip diagram-in justify-center self-center" style="--diagram-color: var(--color-fg-muted)">
+      <component :is="harness.you" class="size-4" :stroke-width="1.5" aria-hidden="true" />You
+    </span>
+    <span class="diagram-in self-center text-fg-faint max-sm:rotate-90" aria-hidden="true">⇄</span>
+    <div class="diagram-area diagram-in flex-1" style="--diagram-color: #0d9488">
+      <span class="text-sm font-semibold">Harness <span class="font-normal text-fg-muted">· what you give the model</span></span>
+      <span class="diagram-chip px-4 py-3" style="--diagram-color: #7c3aed">
+        <component :is="harness.model" class="size-5" :stroke-width="1.5" aria-hidden="true" />
+        Model <span class="font-normal text-fg-secondary">· thinks</span>
+      </span>
+      <ul class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm font-medium sm:grid-cols-3">
+        <li v-for="tool in harness.tools" :key="tool.label" class="flex items-center gap-2">
+          <component :is="tool.icon" class="size-4 shrink-0" :stroke-width="1.5" aria-hidden="true" />{{ tool.label }}
+        </li>
+      </ul>
+    </div>
+    <span class="diagram-in self-center text-fg-faint max-sm:rotate-90" aria-hidden="true">⇄</span>
+    <span class="diagram-chip diagram-in justify-center self-center" style="--diagram-color: #ca8a04">
+      <component :is="harness.project" class="size-4" :stroke-width="1.5" aria-hidden="true" />Your project
+    </span>
+  </div>`

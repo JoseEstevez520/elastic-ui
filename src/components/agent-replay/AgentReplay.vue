@@ -21,8 +21,9 @@ import type { AgentReplayEvent, AgentReplayStep } from './agent-replay.types'
  * on its way (searching, reading, running, editing), each step shimmering while it runs and turning
  * into what it did, then its answer flowing in. A step may stop to ask your permission, or be
  * refused; a subagent's step plays its own small session inside it. Beside it, a note for each
- * moment says what to notice. At rest it shows what you asked; it plays on its own once in view
- * (one at a time, when several are on screen), over an Aurora that follows the work, and can be
+ * moment says what to notice, the last one standing out once it has played, as the conclusion. At
+ * rest it shows what you asked; it plays on its own once it is in full view (one at a time, when
+ * several are on screen), over an Aurora that follows the work, and can be
  * paused and stepped through, back and forth. Given new `events`, it plays them
  * from the start. To compare two sessions, set them side by side (`layout="stacked"`) or one after
  * the other.
@@ -214,6 +215,7 @@ watch(
 onBeforeUnmount(stopTimers)
 
 const note = computed(() => (shown.value ? current.value?.note : props.intro))
+const finished = computed(() => shown.value === props.events.length && phase.value === 'settled')
 const counter = computed(() => labels.stepOf.replace('{current}', String(shown.value)).replace('{total}', String(props.events.length)))
 
 // A step opens on its own while a subagent works inside it, and an edit once made: they are what
@@ -299,15 +301,22 @@ const controlClass =
     </Aurora>
 
     <!-- What to notice, one note per moment, with the controls. -->
-    <div :class="['flex flex-col justify-between gap-6', layout !== 'stacked' && 'lg:py-4']">
-      <div aria-live="polite" class="min-h-24">
+    <div :class="['flex flex-col justify-between', layout === 'stacked' ? 'gap-3' : 'gap-6 lg:py-4']">
+      <div aria-live="polite" :class="layout === 'stacked' ? 'min-h-14' : 'min-h-24'">
         <Transition
           mode="out-in"
           enter-active-class="animate-blur-in motion-reduce:animate-none"
           leave-active-class="transition-opacity duration-150"
           leave-to-class="opacity-0"
         >
-          <p v-if="note" :key="`${shown}-${events.length}-${note}`" class="text-base leading-relaxed text-fg-secondary">{{ note }}</p>
+          <!-- The last note is what the session was for: once it has played, it stands out. -->
+          <p
+            v-if="note"
+            :key="`${shown}-${events.length}-${note}-${finished}`"
+            :class="['text-base leading-relaxed', finished ? 'font-medium text-fg' : 'text-fg-secondary']"
+          >
+            {{ note }}
+          </p>
         </Transition>
       </div>
       <div class="flex items-center gap-1">

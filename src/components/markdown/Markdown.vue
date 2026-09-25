@@ -74,6 +74,10 @@ export default defineComponent({
     }
 
     function fence(token: Token): VNode {
+      return part(token)
+    }
+
+    function part(token: Token): VNode {
       const { language, attrs } = parseInfo(token.info)
       const code = token.content.replace(/\n$/, '')
       const title = attrs.title ?? attrs.file

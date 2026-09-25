@@ -113,6 +113,9 @@ Around the aurora:
 - **Real-looking, and said to be an example.** Sessions are scripted: keep them plausible (real file names, real commands, real output) and say they are made up.
 - **Code that changes, shown changing**: CodeWalkthrough to build it step by step, CodeDiff for one edit. A CodeBlock alone for code that simply is.
 - **Short notes.** A note says what to notice now, in a sentence or two; the explanation around the part carries the rest.
+- **It starts where it is looked at.** What plays on its own starts once it is in full view, and a moment after, not while it only peeks in at an edge; the library's parts already do.
+- **Every part to watch or play with ends in its conclusion, where it can be seen**: a session's last note stands out once it has played, and the text right after it says the conclusion again in bold. Whoever only glances at the end still leaves with the idea.
+- **The text around it frames it, and does not retell it**: a sentence before says what to watch for, a sentence after says what it showed.
 
 ## 10. Diagrams
 
@@ -129,27 +132,18 @@ Draw each idea for what it is, as a small SVG made for it, rather than feeding i
 
 ## 11. Composing a page
 
-Not a template to fill: a page is composed from what it has to say. What the best explaining pages share (Distill's articles, Tufte's handouts, Nielsen Norman's eye-tracking, Every Layout's primitives):
+Not a template to fill: a page is composed from what it has to say. What the best explaining pages share (Nielsen Norman's eye-tracking, Every Layout's primitives, Distill's and Tufte's figures tied to their text):
 
-- **A figure sits by the text it explains**, right after the paragraph that calls for it, or in the margin beside it; never in a region of its own further down the page. Reading and looking are one movement.
+- **A figure sits by the text it explains**, right after the paragraph that calls for it; never in a region of its own further down the page. Reading and looking are one movement.
 - **Aligned by default.** Text and figures in one column read and scan best. Putting figures on alternating sides slows scanning; keep it for the odd moment, and only with figures that carry information, never with decoration.
-- **Each thing as wide as it needs, and no wider**, rather than equal columns:
-
-  | Width | For |
-  |---|---|
-  | Text (about 65 characters) | Paragraphs, lists, asides (Callout), small code |
-  | A little wider | Most figures, code, tables |
-  | The page | A figure that needs the room: a timetable, a wide diagram, a comparison inside one figure |
-  | The screen | Rarely: one image or figure that is the page's moment |
-  | The margin | A note, a definition, a small figure beside the line it belongs to |
-
-- **No empty room.** Space separates ideas; it is never a hole left by a layout. A small figure is not put in a big column: it goes with its text, or in the margin. If two things side by side leave one short and one long, they go one after the other.
-- **Side by side only when both fit and both matter at once**, as a term and its figure, or two small figures to compare; when there is no room it becomes one after the other on its own, measured from the content, not from a fixed breakpoint.
+- **One width for everything.** Text, figures, code and tables share the same two edges, so there is always one line to lean on; `class="prose article"` holds an article to it. A few widths on one page read as disorder. What does not fit that width, such as a whole week's timetable or a wide diagram, gets a version of its own for it (a day at a time, a diagram drawn upright), rather than spilling past the edges. Notes go in the text, as a Callout, not in a margin.
+- **No empty room.** Space separates ideas; it is never a hole left by a layout. A small figure is not put in a big column: it goes with its text. If two things side by side leave one short and one long, they go one after the other.
+- **Side by side only when both fit and both matter at once**, as a term and its figure, or two short files; `side-by-side` stacks them on its own when there is no room, measured from the content, not from a fixed breakpoint.
 - **One thing to play with per screen.** Two interactive parts next to each other split the attention.
 - **A process told in steps can hold its figure** in view while the steps scroll beside it (CodeWalkthrough), when the figure changes with the steps; a figure that does not change goes with its text instead.
 - **Say it, then show it.** A new idea opens with a sentence that defines it, then the figure that makes it concrete, then the detail.
 - **Rhythm:** more space between ideas than inside one, so each reads as a unit without a box; after something dense, something light.
-- **On a phone** everything is one column, each figure after the text that calls for it, and the margin's notes back in the text where they belong.
+- **On a phone** it is the same column, narrower: each figure after the text that calls for it.
 
 ## 12. Going deeper without leaving the page
 
