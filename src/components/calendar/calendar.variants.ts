@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority'
 /** A day: a round-cornered square, the accent once chosen, quieter outside the month. */
 export const calendarDayVariants = /* @__PURE__ */ cva(
   [
-    'relative flex size-9 cursor-pointer items-center justify-center rounded-[var(--radius-md)] text-sm tabular-nums text-fg outline-none',
+    'relative flex h-9 w-full max-w-11 cursor-pointer items-center justify-center rounded-[var(--radius-md)] text-sm tabular-nums text-fg outline-none',
     'transition-colors duration-150 hover:bg-bg-muted focus-ring',
     'data-[outside-view]:text-fg-faint',
     'data-[disabled]:pointer-events-none data-[disabled]:text-fg-faint data-[disabled]:line-through',

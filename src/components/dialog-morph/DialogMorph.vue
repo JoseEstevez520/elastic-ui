@@ -20,6 +20,11 @@ import {
  * outside, scroll lock and ARIA come from Reka UI's Dialog.
  */
 const props = defineProps<{
+  /**
+   * Asks something that needs an answer, such as confirming a deletion (`role="alertdialog"`): a
+   * click outside does not close it; only its buttons and Escape do.
+   */
+  alert?: boolean
   /** Applied to the dialog. */
   class?: HTMLAttributes['class']
 }>()
@@ -67,7 +72,12 @@ const id = useId()
         <DialogPortal>
           <DialogOverlay :class="dialogMorphOverlayClass" />
           <div v-if="lifted" class="pointer-events-none fixed inset-0 z-50 grid place-items-center p-4">
-            <DialogContent as-child @close-auto-focus.prevent>
+            <DialogContent
+              as-child
+              :role="alert ? 'alertdialog' : 'dialog'"
+              @close-auto-focus.prevent
+              @interact-outside="alert && $event.preventDefault()"
+            >
               <motion.div
                 :layout-id="`${id}-surface`"
                 :transition="{ layout: morphTransition }"

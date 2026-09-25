@@ -25,6 +25,11 @@ export const buttonVariants = /* @__PURE__ */ cva(
           'border border-[color:var(--button-border,var(--color-border-strong))]',
           'bg-transparent text-fg hover:bg-bg-muted',
         ],
+        // Only for what cannot be undone, such as deleting: the danger colour says so.
+        danger: [
+          'bg-[color:var(--color-danger)] text-[color:var(--color-accent-fg)]',
+          'hover:bg-[color:color-mix(in_oklab,var(--color-danger)_88%,var(--color-fg))]',
+        ],
         ghost: 'bg-transparent text-fg-secondary hover:bg-bg-muted hover:text-fg',
         link: 'h-auto px-0 text-accent underline-offset-4 hover:underline active:scale-100',
       },

@@ -81,8 +81,9 @@ const fieldAttrs = useFieldGroup()
       </DatePickerTrigger>
     </DatePickerField>
     </DatePickerAnchor>
-    <!-- The month grows from the field, as a Popover's panel does. -->
-    <DatePickerContent :side-offset="6" :collision-padding="16" align="start" :class="cn(floatingPanelClass, 'shadow-overlay p-3')">
+    <!-- The month grows from the field, as a Popover's panel does, and as wide as it, as a Select's
+         list is; never narrower than a month needs. -->
+    <DatePickerContent :side-offset="6" :collision-padding="16" align="start" :class="cn(floatingPanelClass, 'shadow-overlay w-(--reka-popover-trigger-width) min-w-[17.5rem] p-3')">
       <DatePickerCalendar v-slot="{ grid, weekDays }">
         <CalendarBody :grid="grid" :week-days="weekDays" />
       </DatePickerCalendar>

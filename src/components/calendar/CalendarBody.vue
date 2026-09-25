@@ -17,7 +17,8 @@ import { ChevronLeftIcon, ChevronRightIcon } from '../../icons/internal'
 import TextMorph from '../text-morph/TextMorph.vue'
 import { calendarDayVariants, calendarNavClass } from './calendar.variants'
 
-// Internal: a month's grid with its heading and arrows, inside Calendar or DatePicker's panel.
+// Internal: a month's grid with its heading and arrows, inside Calendar or DatePicker's panel. The
+// seven days share whatever width it is given.
 defineProps<{
   grid: { value: DateValue; rows: DateValue[][] }[]
   weekDays: string[]
@@ -35,13 +36,13 @@ defineProps<{
   </CalendarHeader>
   <CalendarGrid v-for="month in grid" :key="month.value.toString()" class="w-full border-collapse select-none">
     <CalendarGridHead>
-      <CalendarGridRow class="flex">
-        <CalendarHeadCell v-for="day in weekDays" :key="day" class="w-9 pb-1 text-xs font-normal text-fg-muted">{{ day }}</CalendarHeadCell>
+      <CalendarGridRow class="grid grid-cols-7">
+        <CalendarHeadCell v-for="day in weekDays" :key="day" class="pb-1 text-xs font-normal text-fg-muted">{{ day }}</CalendarHeadCell>
       </CalendarGridRow>
     </CalendarGridHead>
     <CalendarGridBody>
-      <CalendarGridRow v-for="(week, i) in month.rows" :key="i" class="flex">
-        <CalendarCell v-for="date in week" :key="date.toString()" :date="date" class="p-0">
+      <CalendarGridRow v-for="(week, i) in month.rows" :key="i" class="grid grid-cols-7">
+        <CalendarCell v-for="date in week" :key="date.toString()" :date="date" class="flex justify-center p-0">
           <CalendarCellTrigger :day="date" :month="month.value" :class="calendarDayVariants()" />
         </CalendarCell>
       </CalendarGridRow>

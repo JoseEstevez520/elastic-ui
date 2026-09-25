@@ -1,5 +1,6 @@
 export * from './components/accordion'
 export * from './components/agent-replay'
+export * from './components/alert-dialog'
 export * from './components/animated-list'
 export * from './components/aurora'
 export * from './components/badge'
