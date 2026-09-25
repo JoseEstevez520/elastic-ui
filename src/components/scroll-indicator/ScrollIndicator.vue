@@ -20,15 +20,15 @@ const props = withDefaults(
     target?: HTMLElement | string
     /** The line's length, in pixels. */
     length?: number
+    /** Room kept clear at each end of the edge, in pixels: where the text starts and ends. */
+    inset?: number
     /** Show for a moment when it first appears. */
     flashOnMount?: boolean
     class?: HTMLAttributes['class']
   }>(),
-  { length: 40, flashOnMount: true },
+  { length: 40, inset: 8, flashOnMount: true },
 )
 
-// Room kept clear at each end of the edge.
-const INSET = 8
 // How long it stays after the last scroll.
 const LINGER = 900
 
@@ -48,7 +48,7 @@ function measure() {
   const max = s.scrollHeight - s.clientHeight
   scrollable.value = max > 1
   progress.value = max > 0 ? s.scrollTop / max : 0
-  track.value = (page() ? window.innerHeight : s.clientHeight) - INSET * 2
+  track.value = (page() ? window.innerHeight : s.clientHeight) - props.inset * 2
 }
 
 let linger: ReturnType<typeof setTimeout> | undefined
@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
 })
 
 const shown = computed(() => scrollable.value && (scrolling.value || near.value || dragging.value))
-const top = computed(() => INSET + progress.value * Math.max(0, track.value - props.length))
+const top = computed(() => props.inset + progress.value * Math.max(0, track.value - props.length))
 </script>
 
 <template>

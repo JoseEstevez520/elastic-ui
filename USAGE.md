@@ -90,7 +90,43 @@ Never hardcode a colour, a duration or a curve. Motion comes from the library's 
 - `NavTree` is bound to the current route with `v-model`, so the active item carries `aria-current`.
 - Don't take focus away from where the library puts it: into a panel as it opens, back to its trigger as it closes.
 
-## 8. Setting up a project
+## 8. Colour: grey by default, the aurora for AI
+
+The interface is grey. Colour means something, and there are only three kinds:
+
+- **Outcomes**: success, warning, danger, for what went well, what needs care, what went wrong. Nothing else takes those colours.
+- **The accent**, for what you can act on or where you are. A project may set it to a neutral grey; the parts still work.
+- **The aurora**, the one decorative colour, and only behind AI at work: ChatMorph, AgentReplay, an Aurora behind a chat.
+
+Around the aurora:
+
+- **One per screen**, and never as page decoration: it says "AI works here".
+- **Its colours are its own**, not the accent's, so a grey accent does not turn it grey. Change them with `--aurora-1` to `--aurora-4`, all four together, keeping them light and apart in hue.
+- **Nothing on top of it but the library's glass.** No gradient, image or fill of your own behind the composer, the bubbles or the steps, and no dark fill over it: they read as holes in the colour. The glass comes with the parts (`chatGlassStyle`).
+- **Text over it in `fg` and `fg-secondary` only**, never `fg-faint`, which is for placeholders. If a colour you chose makes text hard to read, it is the colour that changes, not the text.
+- **No shadows of your own**, and no glass inside glass.
+
+## 9. Explaining with AI parts
+
+- **A session, not a picture.** To show how an agent works, play one back (AgentReplay) with a note for each moment, rather than drawing boxes and arrows.
+- **Compare side by side or one after another**, never through a selector: two AgentReplays with `layout="stacked"` in two columns, or each under its own heading. With several on screen, one plays at a time.
+- **Real-looking, and said to be an example.** Sessions are scripted: keep them plausible (real file names, real commands, real output) and say they are made up.
+- **Code that changes, shown changing**: CodeWalkthrough to build it step by step, CodeDiff for one edit. A CodeBlock alone for code that simply is.
+- **Short notes.** A note says what to notice now, in a sentence or two; the explanation around the part carries the rest.
+
+## 10. Scrolling
+
+- **The page scrolls, not a box inside it**, unless the box is a surface of its own (a chat, a panel). Sticky parts and TableOfContents expect the window.
+- **A scrollbar is a short line** (ScrollIndicator): hidden at rest, it shows for a moment when the page opens and while you scroll. Put one in the page's layout; ChatThread brings its own.
+- **Inside a box, text fades at the edges it scrolls under** and the line runs only where the text reads (`inset`), never along the box's corners.
+
+## 11. Finding your way
+
+- **The Sidebar holds the sections**, a handful, without folding groups. The section of the page you are on is the active one.
+- **Breadcrumbs hold the rest**: the path to the page, and its siblings behind each chevron.
+- **TableOfContents** for the headings of a long page. Three levels in three places, each short.
+
+## 12. Setting up a project
 
 - **Installing before npm.** Pack the library (`npm pack` in its folder) and install the `.tgz` from the project (`vendor/elastic-ui-x.y.z.tgz`). Installing the folder itself writes a path from your disk into `package.json` and links the library's own `node_modules`, with its own Vue.
 - **CSS.** `@import "tailwindcss";`, then `@import "elastic-ui/tokens.css";` and `@source` pointing at the library's `dist`: it ships no compiled CSS, your Tailwind builds its classes.

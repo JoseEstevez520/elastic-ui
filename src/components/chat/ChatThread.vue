@@ -161,8 +161,9 @@ const labels = useLabels()
       <div aria-hidden="true" :style="{ height: `${room}px` }" />
     </div>
 
-    <!-- A short line for a scrollbar, clear of the fades a surface may put over the messages. -->
-    <ScrollIndicator :target="`[data-scroll-id='${scrollId}']`" :length="32" />
+    <!-- A short line for a scrollbar, running only where the messages read: clear of the box's
+         corners and of the fades a surface puts over its ends. -->
+    <ScrollIndicator :target="`[data-scroll-id='${scrollId}']`" :length="32" :inset="40" />
 
     <!-- Only once the reader has scrolled up with more below: it comes into focus, and fades as the
          end comes back into view. -->

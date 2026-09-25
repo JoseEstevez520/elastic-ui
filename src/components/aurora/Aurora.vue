@@ -13,7 +13,8 @@ export type AuroraActivity = 'rest' | 'thinking' | 'answering'
  * hurry; answering, they spread out and flow at an easier pace; at rest they drift slowly again.
  * The speed changes by easing the lights' own animations up and down, so they never jump.
  *
- * Its colours are `--aurora-1` to `--aurora-4`, the first from the accent.
+ * Its colours are its own (blue, violet, peach, pink), not the accent: a project with a neutral
+ * accent keeps a coloured aurora. Change them with `--aurora-1` to `--aurora-4`.
  */
 const props = withDefaults(
   defineProps<{
@@ -28,14 +29,14 @@ const props = withDefaults(
 // Each light: where it rests, how big it is, how far and how slowly it drifts. The periods don't
 // share a factor, so the four never line up into a visible loop.
 const lights = [
-  { color: 'var(--aurora-1, color-mix(in oklab, var(--color-accent) 70%, transparent))', place: '-top-[15%] -left-[15%] w-[80%]', drift: '12% 10%', period: 23 },
+  { color: 'var(--aurora-1, light-dark(oklch(0.68 0.16 255 / 0.7), oklch(0.6 0.17 255 / 0.65)))', place: '-top-[15%] -left-[15%] w-[80%]', drift: '12% 10%', period: 23 },
   { color: 'var(--aurora-2, light-dark(oklch(0.72 0.17 295 / 0.7), oklch(0.55 0.22 295 / 0.65)))', place: '-top-[5%] -right-[20%] w-[75%]', drift: '-14% 12%', period: 29 },
   { color: 'var(--aurora-3, light-dark(oklch(0.84 0.11 60 / 0.75), oklch(0.66 0.15 45 / 0.5)))', place: 'top-[40%] -left-[10%] w-[70%]', drift: '10% -12%', period: 37 },
   { color: 'var(--aurora-4, light-dark(oklch(0.76 0.14 350 / 0.6), oklch(0.58 0.2 355 / 0.5)))', place: 'top-[55%] -right-[15%] w-[70%]', drift: '-10% -10%', period: 31 },
 ]
 
 const WASH =
-  'linear-gradient(160deg, color-mix(in oklab, var(--aurora-1, var(--color-accent)) 18%, transparent), color-mix(in oklab, var(--aurora-2, oklch(0.65 0.2 295)) 18%, transparent) 55%, color-mix(in oklab, var(--aurora-3, oklch(0.8 0.12 55)) 16%, transparent))'
+  'linear-gradient(160deg, color-mix(in oklab, var(--aurora-1, oklch(0.65 0.16 255)) 18%, transparent), color-mix(in oklab, var(--aurora-2, oklch(0.65 0.2 295)) 18%, transparent) 55%, color-mix(in oklab, var(--aurora-3, oklch(0.8 0.12 55)) 16%, transparent))'
 
 // How much faster than at rest the lights drift in each activity.
 const PACE: Record<AuroraActivity, number> = { rest: 1, thinking: 6, answering: 2.5 }

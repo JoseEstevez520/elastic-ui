@@ -79,7 +79,6 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 1. **Markdown into the library's parts.** A markdown-it plugin (or a `Prose` part) that renders code fences as CodeBlock, GitHub alerts as Callout, and lets CodeWalkthrough, CodeDiff and AgentReplay be written in the `.md`. The TEIS web does this by hand today.
 2. **Prose.** Type for an article: headings, lists, tables, links, inline code, quotes, in the library's tokens and spacing, so a notes site does not invent its own.
 3. **A time grid**, from the TEIS web's timetable: blocks as long as they last, the "now" line in today's column, a single day on a phone.
-4. **Navigation pattern in USAGE:** sections in the Sidebar, the pages under them in Breadcrumbs' siblings.
 
 ### AI chat, next
 
