@@ -16,10 +16,12 @@ const props = withDefaults(
     /** A key per item that stays the same while the list changes. Defaults to the item itself. */
     itemKey?: (item: T) => string | number
     as?: 'ul' | 'ol' | 'div'
+    /** Whether the items there on the first render come in as a wave, or just show. */
+    appear?: boolean
     class?: HTMLAttributes['class']
     itemClass?: HTMLAttributes['class']
   }>(),
-  { as: 'ul' },
+  { as: 'ul', appear: true },
 )
 
 // Two roots (the list and the empty state), so attributes go to the list.
@@ -46,6 +48,9 @@ const transition = computed(() => ({ ...morphTransition, delay: moveDelay.value 
 const delays = new Map<string | number, number>()
 let wave = true
 onMounted(() => (wave = false))
+// Without `appear`, what is there on the first render just shows, as anything open when a page
+// loads does; an item only comes in once it arrives afterwards.
+const quiet = new Set(props.appear ? [] : props.items.map(keyOf))
 
 // Runs before the list re-renders, so the delays are in place for the change that triggers them.
 // Watching the keys, not the array, also catches changes made in place (`push`, `splice`).
@@ -55,6 +60,7 @@ watch(
     const current = new Set(keys)
     const removed = previous.some((key) => !current.has(key))
     for (const key of delays.keys()) if (!current.has(key)) delays.delete(key)
+    for (const key of quiet) if (!current.has(key)) quiet.delete(key)
     moveDelay.value = removed ? EXIT : 0
     wave = !keys.some((key) => delays.has(key))
   },
@@ -82,7 +88,9 @@ function enterDelay(item: T, index: number) {
           layout="position"
           :exit="{ opacity: 0, transition: contentOut }"
           :style="{ animationDelay: enterDelay(item, index) }"
-          :class="cn('animate-[blur-in_0.45s_var(--ease-soft)_backwards] motion-reduce:animate-none', itemClass)"
+          :class="
+            cn(!quiet.has(keyOf(item)) && 'animate-[blur-in_0.45s_var(--ease-soft)_backwards] motion-reduce:animate-none', itemClass)
+          "
         >
           <slot :item="item" :index="index" />
         </component>

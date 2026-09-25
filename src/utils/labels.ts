@@ -33,6 +33,14 @@ export const defaultLabels = {
   // Search
   search: 'Search',
   searchPlaceholder: 'Search…',
+  // Filters
+  filter: 'Filter',
+  filterBy: 'Filter by',
+  back: 'Back',
+  removeFilter: 'Remove filter',
+  clearFilters: 'Clear',
+  oneResult: '1 result',
+  results: '{count} results',
   commandPlaceholder: 'Type a command or search…',
   noResults: 'No results',
   // Theme

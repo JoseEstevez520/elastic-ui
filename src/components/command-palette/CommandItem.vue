@@ -3,7 +3,8 @@ import { ListboxItem } from 'reka-ui'
 import { computed, onBeforeUnmount, ref, useId, useSlots, watch, type Component, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { textOf } from '../../utils/textOf'
-import { matchesQuery, useCommandGroup, useCommandPaletteContext } from './command-palette.context'
+import { matchesQuery } from '../../utils/search'
+import { useCommandGroup, useCommandPaletteContext } from './command-palette.context'
 import {
   commandIconClass,
   commandItemClass,
