@@ -575,3 +575,95 @@ html.theme-switching *::after {
     margin-bottom: 0;
   }
 }
+
+/*
+ * Hand-drawn diagrams (USAGE 10). On the `<svg>`, `diagram` sets the type; its shapes take:
+ *   diagram-part      a tinted part, no border, corners at --radius-md (Timetable's blocks)
+ *   diagram-label     a part's name, in its colour mixed with the text's
+ *   diagram-text      a quieter note
+ *   diagram-line      what connects or measures: 1px, --color-border-strong
+ *   diagram-quiet     a line that steps back: faint and dashed
+ *   diagram-emphasis  the one thing the diagram is about: thicker, in its colour
+ *   diagram-grid      a guide: dashed, fainter still
+ * A part's colour is `--diagram-color` (the accent by default), set on it or on a group, the
+ * same colour for the same concept on every page. `diagram-chip` is the tinted part for HTML.
+ */
+@utility diagram {
+  overflow: visible;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  fill: var(--color-fg-secondary);
+}
+@utility diagram-part {
+  fill: color-mix(in oklab, var(--diagram-color, var(--color-accent)) 14%, var(--color-bg));
+  stroke: none;
+  rx: var(--radius-md);
+  ry: var(--radius-md);
+}
+@utility diagram-label {
+  fill: color-mix(in oklab, var(--diagram-color, var(--color-accent)) 75%, var(--color-fg));
+  font-size: 13px;
+  font-weight: 600;
+}
+@utility diagram-text {
+  fill: var(--color-fg-secondary);
+  font-size: 12px;
+}
+@utility diagram-line {
+  fill: none;
+  stroke: var(--color-border-strong);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+@utility diagram-quiet {
+  fill: none;
+  stroke: var(--color-fg-faint);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+@utility diagram-emphasis {
+  fill: none;
+  stroke: var(--diagram-color, var(--color-accent));
+  stroke-width: 2.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+@utility diagram-grid {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 0.75;
+  stroke-dasharray: 2 6;
+  vector-effect: non-scaling-stroke;
+}
+@utility diagram-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.45em 0.75em;
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--diagram-color, var(--color-accent)) 14%, var(--color-bg));
+  color: color-mix(in oklab, var(--diagram-color, var(--color-accent)) 75%, var(--color-fg));
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* A diagram's parts marked `diagram-in` come in once, one after another, when the frame shows. */
+@utility diagram-frame {
+  &[data-waiting] .diagram-in {
+    opacity: 0;
+  }
+  &[data-shown] .diagram-in {
+    animation: blur-in 0.45s var(--ease-soft) calc(min(var(--diagram-index, 0), 7) * 60ms) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    & .diagram-in {
+      opacity: 1;
+      animation: none !important;
+    }
+  }
+}
