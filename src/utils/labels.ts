@@ -19,6 +19,7 @@ export const defaultLabels = {
   sendError: "Couldn't send",
   stop: 'Stop',
   somethingWentWrong: 'Something went wrong',
+  next: 'Next',
   // Navigation
   menu: 'Menu',
   mainNav: 'Main',
