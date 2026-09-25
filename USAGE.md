@@ -120,13 +120,20 @@ Around the aurora:
 - **A scrollbar is a short line** (ScrollIndicator): hidden at rest, it shows for a moment when the page opens and while you scroll. Put one in the page's layout; ChatThread brings its own.
 - **Inside a box, text fades at the edges it scrolls under** and the line runs only where the text reads (`inset`), never along the box's corners.
 
-## 11. Finding your way
+## 11. Writing notes and guides
+
+- **Write Markdown and render it with `Markdown`**: it gives the article its type (Prose) and turns what you write into the parts. No hand-made HTML for code, alerts or tables.
+- Code in fences with its file: ` ```js title="server.js" `. A change as a ` ```diff ` fence. A step-by-step build as a ` ```walkthrough ` fence, a session as ` ```agent-replay `.
+- Asides as GitHub's alerts (`> [!TIP]`), one kind for each thing: note, tip, important, warning, caution. Not two in a row.
+- Headings at two levels (`##`, `###`) under the page's title, which is the only `#`; `headingsOf(source)` gives them to a TableOfContents.
+
+## 12. Finding your way
 
 - **The Sidebar holds the sections**, a handful, without folding groups. The section of the page you are on is the active one.
 - **Breadcrumbs hold the rest**: the path to the page, and its siblings behind each chevron.
 - **TableOfContents** for the headings of a long page. Three levels in three places, each short.
 
-## 12. Setting up a project
+## 13. Setting up a project
 
 - **Installing before npm.** Pack the library (`npm pack` in its folder) and install the `.tgz` from the project (`vendor/elastic-ui-x.y.z.tgz`). Installing the folder itself writes a path from your disk into `package.json` and links the library's own `node_modules`, with its own Vue.
 - **CSS.** `@import "tailwindcss";`, then `@import "elastic-ui/tokens.css";` and `@source` pointing at the library's `dist`: it ships no compiled CSS, your Tailwind builds its classes.

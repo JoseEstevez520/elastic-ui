@@ -52,6 +52,8 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | ScrollIndicator | Base | A scrollbar reduced to a short line of fixed length, as iOS's but always the same size: hidden at rest, it flashes as it appears (Apple's `flashScrollIndicators`), shows while scrolling or near the edge, can be dragged; in every ChatThread |
 | CodeDiff | Base | A file's change: removed lines tinted red, added green, `+n −n` on the caption, untouched runs folded; plays the edit once in view (the lines that go turn red, the new ones open in), with replay |
 | AgentReplay | Special | A session with an agent played back to explain it: your request, each step shimmering while it runs and turning into what it did (a search, a read, an edit as a CodeDiff, a command's output), steps that ask permission (Allow / Deny) or are refused, a subagent's own session inside its step, the answer flowing in; a note per moment beside it; shows the request at rest and plays once in view, one at a time, over an Aurora that follows the work, with play, pause, back and forth; compared side by side (`layout="stacked"`) or one after another, never through a selector |
+| Prose | Base | An article's type in the library's tokens: grey text with darker headings, hairline-underlined links, soft inline code, lists with faint markers, quotes behind a hairline, tables as wide as the text with hairline rows; only plain elements, so parts inside keep their look (`not-prose` opts out) |
+| Markdown | Special | Markdown rendered as the library's parts inside Prose: code fences, diffs, walkthroughs, agent replays, GitHub alerts, anchored headings, router links; other fences through `components` |
 | TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. Plain text at rest, Torph only while it changes, so letters keep their kerning. For text that becomes something else (see "Appearing is not becoming") |
 | DynamicIsland | Special | A pill that morphs into each state's size and shape (a song, a timer, an upload), content leaving and coming into focus; only moves when its state changes; inline by default, `floating` to hold it at the top |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
@@ -76,8 +78,8 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 ### For guides and notes (from the TEIS web)
 
-1. **Markdown into the library's parts.** A markdown-it plugin (or a `Prose` part) that renders code fences as CodeBlock, GitHub alerts as Callout, and lets CodeWalkthrough, CodeDiff and AgentReplay be written in the `.md`. The TEIS web does this by hand today.
-2. **Prose.** Type for an article: headings, lists, tables, links, inline code, quotes, in the library's tokens and spacing, so a notes site does not invent its own.
+1. ~~**Markdown into the library's parts.**~~ Done: `Markdown` (markdown-it) turns fences into CodeBlock, `diff` into CodeDiff, `walkthrough` and `agent-replay` (JSON) into their parts, GitHub alerts into Callouts, headings into anchors (`headingsOf` for TableOfContents), links within the site into RouterLink.
+2. ~~**Prose.**~~ Done: the `prose` utility and `Prose`, styling only plain elements so the library's parts keep their look.
 3. **A time grid**, from the TEIS web's timetable: blocks as long as they last, the "now" line in today's column, a single day on a phone.
 
 ### AI chat, next

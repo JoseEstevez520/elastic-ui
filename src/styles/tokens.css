@@ -392,3 +392,178 @@ html.theme-switching *::after {
     rgb(0 0 0 / 0) 100%
   );
 }
+
+/*
+ * Type for an article, such as a page of notes written in Markdown: headings, paragraphs, lists,
+ * links, inline code, quotes, tables and images, in the library's tokens. It only styles plain
+ * elements, the ones Markdown writes: anything with a class of its own (a CodeBlock, a Callout)
+ * keeps its look and is only spaced like a paragraph, and `not-prose` opts a block out entirely.
+ * Grey text, the heading a step darker; links underlined in a hairline that darkens on hover.
+ */
+@utility prose {
+  --prose-flow: 1.25em;
+  color: var(--prose-color, var(--color-fg-secondary));
+  font-size: 1rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+
+  & :where(p, ul, ol, blockquote, table, pre, figure):not([class]):not(:where(.not-prose, .not-prose *)) {
+    margin-block: var(--prose-flow);
+  }
+  /* The library's own parts, and anything else with a look of its own: spaced like a paragraph. */
+  & > :where([class]):not(.not-prose) {
+    margin-block: calc(var(--prose-flow) * 1.4);
+  }
+
+  & :where(h1, h2, h3, h4):not([class]):not(:where(.not-prose *)) {
+    color: var(--color-fg);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    scroll-margin-top: var(--prose-scroll-margin, 6rem);
+  }
+  & :where(h1):not([class]):not(:where(.not-prose *)) {
+    font-size: 2em;
+    line-height: 1.2;
+    margin-block: 0 0.8em;
+  }
+  & :where(h2):not([class]):not(:where(.not-prose *)) {
+    font-size: 1.45em;
+    line-height: 1.3;
+    margin-block: 2em 0.7em;
+  }
+  & :where(h3):not([class]):not(:where(.not-prose *)) {
+    font-size: 1.2em;
+    line-height: 1.4;
+    margin-block: 1.7em 0.5em;
+  }
+  & :where(h4):not([class]):not(:where(.not-prose *)) {
+    font-size: 1em;
+    margin-block: 1.5em 0.4em;
+  }
+
+  & :where(strong, b):not([class]):not(:where(.not-prose *)) {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+
+  & :where(a):not([class]):not(:where(.not-prose *)) {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 150ms var(--ease-soft);
+  }
+  & :where(a):not([class]):not(:where(.not-prose *)):hover {
+    text-decoration-color: currentColor;
+  }
+
+  & :where(:not(pre) > code):not([class]):not(:where(.not-prose *)) {
+    padding: 0.15em 0.35em;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-muted);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+  & :where(kbd):not([class]):not(:where(.not-prose *)) {
+    padding: 0.1em 0.4em;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+  }
+
+  & :where(ul, ol):not([class]):not(:where(.not-prose *)) {
+    padding-left: 1.4em;
+  }
+  & :where(ul):not([class]):not(:where(.not-prose *)) {
+    list-style: disc;
+  }
+  & :where(ol):not([class]):not(:where(.not-prose *)) {
+    list-style: decimal;
+  }
+  & :where(ul, ol):not([class]) > li {
+    margin-block: 0.35em;
+    padding-left: 0.2em;
+  }
+  & :where(ul, ol):not([class]) > li::marker {
+    color: var(--color-fg-faint);
+  }
+  & :where(ul, ol):not([class]) :where(ul, ol) {
+    margin-block: 0.35em;
+  }
+
+  /* A quote steps back behind a hairline, with no box. */
+  & :where(blockquote):not([class]):not(:where(.not-prose *)) {
+    padding-left: 1em;
+    border-left: 2px solid var(--color-border-strong);
+    color: var(--color-fg-muted);
+  }
+
+  & :where(hr):not([class]):not(:where(.not-prose *)) {
+    margin-block: 2.5em;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  & :where(img, video):not([class]):not(:where(.not-prose *)) {
+    border-radius: var(--radius-lg);
+  }
+  & :where(figcaption):not([class]):not(:where(.not-prose *)) {
+    margin-top: 0.6em;
+    color: var(--color-fg-muted);
+    font-size: 0.875em;
+  }
+
+  /* A table takes the text's whole width, with rows set apart by hairlines only. One wider than
+     the text scrolls sideways inside `.prose-table` (Markdown puts every table in one). */
+  & :where(table):not([class]):not(:where(.not-prose *)) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    line-height: 1.6;
+  }
+  & :where(.prose-table) {
+    overflow-x: auto;
+  }
+  & :where(.prose-table) > table {
+    margin-block: 0;
+  }
+  & :where(table):not([class]) :where(th, td) {
+    padding: 0.55em 1.2em 0.55em 0;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+  }
+  & :where(table):not([class]) :where(th) {
+    border-bottom-color: var(--color-border-strong);
+    color: var(--color-fg);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* A code block Markdown wrote on its own, when it is not a CodeBlock: the same soft fill. */
+  & :where(pre):not([class]):not(:where(.not-prose *)) {
+    padding: 0.9em 1.1em;
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-subtle);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 0.8125em;
+    line-height: 1.7;
+  }
+
+  /* Last, so they win over the spacing above: a heading brings what follows close, and nothing
+     adds room at the article's ends. */
+  & :where(h1, h2, h3, h4):not([class]) + * {
+    margin-top: 0;
+  }
+  & > :first-child {
+    margin-top: 0;
+  }
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}

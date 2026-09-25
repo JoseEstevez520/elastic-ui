@@ -33,6 +33,7 @@
     "@lucide/vue": "^1.48.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "markdown-it": "^14.3.2",
     "reka-ui": "^2.10.5",
     "tailwind-merge": "^3.7.0",
     "torph": "^0.1.3"
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@storybook/vue3-vite": "^10.6.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/markdown-it": "^14.2.0",
     "@types/node": "^26.6.2",
     "@vitejs/plugin-vue": "^6.0.9",
     "motion-v": "^2.4.4",
