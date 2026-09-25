@@ -25,8 +25,11 @@ export const filtersListClass = 'p-1.5'
 /** "Filter by" over the categories, as a menu's group label. */
 export const filtersHeadingClass = 'px-2.5 pt-1.5 pb-1 text-xs font-medium text-fg-muted'
 
-/** The way back and the search field, set apart above a hairline. */
-export const filtersHeaderClass = 'border-b border-border p-1.5'
+/**
+ * The way back and the search field, above the options with no line between: the space and the
+ * back row's quieter colour already set them apart.
+ */
+export const filtersHeaderClass = 'px-1.5 pt-1.5'
 
 /** A category, or the way back from one: a row that leads somewhere. */
 export const filtersRowClass = [

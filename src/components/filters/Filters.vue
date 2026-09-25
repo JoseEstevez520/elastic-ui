@@ -118,7 +118,7 @@ const summary = computed(() =>
 
 <template>
   <div :class="cn(filtersClass, props.class)">
-    <!-- The panel's own padding is left to its parts: a header above a hairline, and lists. -->
+    <!-- The panel's own padding is left to its parts: a header and lists. -->
     <PopoverMorph v-model:open="open" :label="label" class="p-0">
       <template #trigger>
         <FilterIcon aria-hidden="true" class="size-4" />
@@ -138,7 +138,6 @@ const summary = computed(() =>
         </div>
 
         <div v-else :key="category.key" class="animate-blur-in motion-reduce:animate-none">
-          <!-- The way back and the search sit apart, above a hairline, as the palette's field does. -->
           <div v-if="!single || searchable" :class="filtersHeaderClass">
             <button v-if="!single" type="button" :class="cn(filtersRowClass, 'text-fg-muted')" @click="turn()">
               <ChevronLeftIcon aria-hidden="true" :class="filtersRowIconClass" />
