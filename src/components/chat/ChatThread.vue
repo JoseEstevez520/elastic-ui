@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, type HTMLAttributes } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, provide, ref, useId, useTemplateRef, type HTMLAttributes } from 'vue'
 import { ArrowDownIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
 import { prefersReducedMotion } from '../../utils/motion'
+import ScrollIndicator from '../scroll-indicator/ScrollIndicator.vue'
 import { ChatThreadReadyKey } from './chat.keys'
 
 /**
@@ -16,6 +17,8 @@ import { ChatThreadReadyKey } from './chat.keys'
 const props = defineProps<{ label?: string; class?: HTMLAttributes['class'] }>()
 
 const el = useTemplateRef<HTMLElement>('el')
+// Found by the scroll line beside it.
+const scrollId = useId()
 const list = useTemplateRef<HTMLElement>('list')
 
 // Answers there when the thread first shows just show; only new ones come in.
@@ -142,9 +145,10 @@ const labels = useLabels()
     <!-- `relative`: the messages' offsets are measured against it. -->
     <div
       ref="el"
+      :data-scroll-id="scrollId"
       role="log"
       :aria-label="label ?? labels.conversation"
-      :class="cn('relative min-h-0 flex-1 overflow-y-auto overscroll-contain scrollbar-subtle', props.class)"
+      :class="cn('relative min-h-0 flex-1 overflow-y-auto overscroll-contain', props.class)"
       @scroll.passive="onScroll"
       @wheel.passive="onWheel"
       @touchstart.passive="onTouchStart"
@@ -156,6 +160,9 @@ const labels = useLabels()
       </div>
       <div aria-hidden="true" :style="{ height: `${room}px` }" />
     </div>
+
+    <!-- A short line for a scrollbar, clear of the fades a surface may put over the messages. -->
+    <ScrollIndicator :target="`[data-scroll-id='${scrollId}']`" :length="32" />
 
     <!-- Only once the reader has scrolled up with more below: it comes into focus, and fades as the
          end comes back into view. -->

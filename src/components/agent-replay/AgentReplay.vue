@@ -1,3 +1,10 @@
+<script lang="ts">
+import { ref as moduleRef } from 'vue'
+
+// How many replays on the page are playing, shared by all of them.
+const playersNow = moduleRef(0)
+</script>
+
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon, ReplayIcon } from '../../icons/internal'
@@ -20,8 +27,9 @@ import type { AgentReplayEvent, AgentReplayStep } from './agent-replay.types'
  * on its way (searching, reading, running, editing), each step shimmering while it runs and turning
  * into what it did, then its answer flowing in. A step may stop to ask your permission, or be
  * refused; a subagent's step plays its own small session inside it. Beside it, a note for each
- * moment says what to notice. It plays on its own once in view, over an Aurora that follows the
- * work, and can be paused and stepped through, back and forth. Given new `events`, it plays them
+ * moment says what to notice. At rest it shows what you asked; it plays on its own once in view
+ * (one at a time, when several are on screen), over an Aurora that follows the work, and can be
+ * paused and stepped through, back and forth. Given new `events`, it plays them
  * from the start. To compare two sessions, set them side by side (`layout="stacked"`) or one after
  * the other.
  */
@@ -41,7 +49,9 @@ const labels = useLabels()
 // How far it has got: `shown` events are on screen; the last is in `phase`, and the rest have
 // finished. A step that asks waits in `asking` until it is answered (`decision`).
 type Phase = 'settled' | 'running' | 'asking'
-const shown = ref(0)
+// At rest it already shows what you asked, so it is never an empty box before it plays.
+const base = () => (props.events[0]?.kind === 'prompt' ? 1 : 0)
+const shown = ref(base())
 const phase = ref<Phase>('settled')
 const decision = ref<'allowed' | 'denied'>()
 const playing = ref(false)
@@ -164,7 +174,9 @@ function reveal() {
 function play() {
   if (shown.value >= props.events.length && phase.value === 'settled') restart()
   playing.value = true
-  if (phase.value === 'settled') reveal()
+  // Right after your message, it thinks a moment before the first step.
+  if (phase.value === 'settled' && current.value?.kind === 'prompt') wait(THINK, reveal)
+  else if (phase.value === 'settled') reveal()
   else if (phase.value === 'asking') ask(current.value as AgentReplayStep)
   else settle()
 }
@@ -184,41 +196,45 @@ function previous() {
   pause()
   phase.value = 'settled'
   decision.value = undefined
-  shown.value = Math.max(0, shown.value - 1)
+  shown.value = Math.max(base(), shown.value - 1)
   const event = current.value
   nested.value = event?.kind === 'step' && event.session ? event.session.length : 0
 }
 function restart() {
   pause()
   phase.value = 'settled'
-  shown.value = 0
+  shown.value = base()
 }
 
-// It starts on its own the first time it comes into view, and plays new events from the start.
+// It starts on its own the first time it comes into view, but only one plays at a time: with
+// several on screen, the next waits for the one playing to finish. New events play from the start.
 const root = useTemplateRef<HTMLElement>('root')
+const inView = ref(false)
+let started = false
+watch(playing, (now, before) => {
+  if (now && !before) playersNow.value++
+  if (!now && before) playersNow.value--
+})
+watch([inView, playersNow], () => {
+  if (started || !inView.value || playersNow.value > 0) return
+  started = true
+  play()
+})
 let observer: IntersectionObserver | undefined
-let seen = false
 onMounted(() => {
-  observer = new IntersectionObserver(
-    ([entry]) => {
-      if (!entry?.isIntersecting) return
-      observer?.disconnect()
-      seen = true
-      play()
-    },
-    { threshold: 0.5 },
-  )
+  observer = new IntersectionObserver(([entry]) => (inView.value = !!entry?.isIntersecting), { threshold: 0.5 })
   if (root.value) observer.observe(root.value)
 })
 watch(
   () => props.events,
   () => {
     restart()
-    if (seen) play()
+    if (started) play()
   },
 )
 onBeforeUnmount(() => {
   observer?.disconnect()
+  if (playing.value) playersNow.value--
   stopTimers()
 })
 
@@ -287,7 +303,7 @@ const controlClass =
                   </template>
                 </div>
                 <CodeDiff v-else-if="step.event.diff" v-bind="step.event.diff" class="mt-1" />
-                <CodeBlock v-else-if="step.event.output" :code="step.event.output" class="mt-1" />
+                <CodeBlock v-else-if="step.event.output" :code="step.event.output" wrap class="mt-1" />
               </ChatTool>
               <!-- Asking: your answer, or the script's after a moment. -->
               <div v-if="isLast(step.i) && phase === 'asking'" class="mb-3 ml-6 flex animate-blur-in gap-2 motion-reduce:animate-none">
@@ -301,6 +317,7 @@ const controlClass =
           v-if="answer?.kind === 'answer' && answer.code && !answering"
           :code="answer.code.code"
           :title="answer.code.file"
+          wrap
           class="animate-blur-in motion-reduce:animate-none"
         />
       </ChatThread>
@@ -322,7 +339,7 @@ const controlClass =
         <button type="button" :class="controlClass" :aria-label="playing ? labels.pause : labels.play" @click="playing ? pause() : play()">
           <component :is="playing ? PauseIcon : PlayIcon" class="size-4" aria-hidden="true" />
         </button>
-        <button type="button" :class="controlClass" :aria-label="labels.previous" :disabled="shown === 0" @click="previous">
+        <button type="button" :class="controlClass" :aria-label="labels.previous" :disabled="shown <= (events[0]?.kind === 'prompt' ? 1 : 0)" @click="previous">
           <ChevronLeftIcon class="size-4" aria-hidden="true" />
         </button>
         <button

@@ -18,6 +18,8 @@ const props = defineProps<{
   title?: string
   /** Shown on the caption when there is no title. */
   language?: string
+  /** Long lines wrap instead of scrolling sideways, for a narrow column. */
+  wrap?: boolean
   class?: HTMLAttributes['class']
 }>()
 
@@ -60,7 +62,7 @@ const mask = computed(() => {
     <pre
       ref="pre"
       tabindex="0"
-      :class="cn(codeBlockPreClass, caption && 'pt-0')"
+      :class="cn(codeBlockPreClass, caption && 'pt-0', wrap && 'whitespace-pre-wrap [overflow-wrap:anywhere]')"
       :style="mask"
       @scroll.passive="measure"
     ><code><slot>{{ text }}</slot></code></pre>

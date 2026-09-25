@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority'
 
-export const chatMessageVariants = /* @__PURE__ */ cva('text-base leading-relaxed whitespace-pre-wrap text-fg', {
+export const chatMessageVariants = /* @__PURE__ */ cva('[overflow-wrap:anywhere] text-base leading-relaxed whitespace-pre-wrap text-fg', {
   variants: {
     role: {
       // A soft, round bubble with no border, taking at most most of the row.

@@ -269,6 +269,14 @@
  * ellipsis (see ExpandableCardText): the edge can animate, an ellipsis cannot. Text that ends
  * short of the box never reaches the fade, so it only shows on a line that does not fit.
  */
+/* No scrollbar at all, for what draws its own (ScrollIndicator); it still scrolls. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility mask-fade-r {
   mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
 }
