@@ -301,10 +301,11 @@
 
 /*
  * The same sheen on text that keeps its own colour, such as a button's label while it works: a
- * solid button's text is not the page's.
+ * solid button's text is not the page's. Fainter only down to 70%, not 45%: light text on a
+ * coloured fill loses far more of its contrast as it fades than dark text on the page does.
  */
 @utility shimmer {
-  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.45) 40%, #000 50%, rgb(0 0 0 / 0.45) 60%);
+  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.7) 40%, #000 50%, rgb(0 0 0 / 0.7) 60%);
   mask-size: 250% 100%;
   animation: sheen 2s linear infinite;
 
