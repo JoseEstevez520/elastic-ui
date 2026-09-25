@@ -57,6 +57,7 @@ A component is not done until it works in every situation below, and each critic
 - **Vue 3** + TypeScript
 - **Tailwind v4**: tokens are defined as CSS variables with `@theme`
 - **motion-v** for animations (declarative, `layout` / `layoutId` for morphs)
+- **Lucide** for the few icons the library's own parts need (a cross, a check, chevrons…), as most projects use it for theirs; named by meaning in `icons/internal.ts`
 
 ## Distribution
 

@@ -4,5 +4,5 @@ import { CheckIcon } from '../../icons/internal'
 </script>
 
 <template>
-  <CheckIcon aria-hidden="true" stroke-width="2.5" class="size-3.5" />
+  <CheckIcon aria-hidden="true" class="size-3.5" />
 </template>

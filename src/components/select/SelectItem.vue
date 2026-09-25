@@ -14,7 +14,7 @@ const delegated = useDelegatedProps(props)
 <template>
   <SelectItem v-bind="delegated" :class="cn(selectItemClass, props.class)">
     <SelectItemIndicator class="absolute left-2.5 flex items-center">
-      <CheckIcon aria-hidden="true" stroke-width="2.5" class="size-3.5" />
+      <CheckIcon aria-hidden="true" class="size-3.5" />
     </SelectItemIndicator>
     <SelectItemText>
       <slot />

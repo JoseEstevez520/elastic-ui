@@ -41,7 +41,7 @@ const emit = defineEmits<{ remove: [] }>()
       :class="badgeRemoveClass"
       @click="emit('remove')"
     >
-      <XIcon aria-hidden="true" stroke-width="2.5" class="size-3" />
+      <XIcon aria-hidden="true" class="size-3" />
     </button>
   </span>
 </template>

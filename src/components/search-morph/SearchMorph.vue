@@ -101,7 +101,7 @@ const labels = useLabels()
       :class="searchMorphClearClass"
       @click="clear"
     >
-      <XIcon aria-hidden="true" stroke-width="2.5" class="size-3.5" />
+      <XIcon aria-hidden="true" class="size-3.5" />
     </button>
 
     <!-- At rest the whole box is this button; open, it steps aside for the field. -->
