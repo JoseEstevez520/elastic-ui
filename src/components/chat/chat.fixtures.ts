@@ -11,7 +11,7 @@ export interface Message {
   role: 'user' | 'assistant'
   text: string
   /** A search it ran before answering. */
-  tool?: { label: string; state: 'running' | 'done'; sources: Source[] }
+  tool?: { label: string; state: 'running' | 'done' | 'error'; sources: Source[] }
 }
 
 export const SOURCES: Source[] = [
@@ -30,8 +30,11 @@ export const REPLIES = [
   'Sure. Open the terminal in your project and run it from there, so it can see your files.',
 ]
 
-/** A fake model: status steps, then the answer in uneven bursts, as a real one streams. */
-export function fakeModel(start: Omit<Message, 'id'>[]) {
+/**
+ * A fake model: status steps, then the answer in uneven bursts, as a real one streams. With
+ * `searchFails` its search goes wrong, and it answers from what it knows.
+ */
+export function fakeModel(start: Omit<Message, 'id'>[], { searchFails = false } = {}) {
   let id = 1
   const messages = ref<Message[]>(start.map((m) => ({ ...m, id: id++ })))
   const responding = ref(false)
@@ -52,7 +55,9 @@ export function fakeModel(start: Omit<Message, 'id'>[]) {
     stream = setTimeout(() => {
       live.tool = { label: 'Searching the web', state: 'running', sources: SOURCES }
       stream = setTimeout(() => {
-        live.tool = { ...live.tool!, label: `Read ${SOURCES.length} sources`, state: 'done' }
+        live.tool = searchFails
+          ? { ...live.tool!, label: "Couldn't search the web", state: 'error', sources: [] }
+          : { ...live.tool!, label: `Read ${SOURCES.length} sources`, state: 'done' }
         stream = setTimeout(answer, 700)
       }, 1800)
     }, 1100)

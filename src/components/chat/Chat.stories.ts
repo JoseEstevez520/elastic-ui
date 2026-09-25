@@ -10,40 +10,46 @@ import ChatSource from './ChatSource.vue'
 import ChatSources from './ChatSources.vue'
 import ChatTool from './ChatTool.vue'
 
+// The chat both stories run, with a model that answers as it streams (see chat.fixtures).
+const chat = (options?: { searchFails?: boolean }) => ({
+  components: { Chat, ChatComposer, ChatMessage, ChatSource, ChatSources, ChatThread, ChatTool },
+  setup: () => ({
+    ...fakeModel(
+      [
+        { role: 'user', text: 'What is a harness?' },
+        { role: 'assistant', text: REPLIES[0]!, tool: { label: `Read ${SOURCES.length} sources`, state: 'done', sources: SOURCES } },
+      ],
+      options,
+    ),
+    Globe,
+  }),
+  template: `
+    <Chat class="h-screen">
+      <ChatThread>
+        <ChatMessage
+          v-for="m in messages"
+          :key="m.id"
+          :role="m.role"
+          :text="m.role === 'assistant' ? m.text : undefined"
+          :streaming="m.id === streamingId"
+          :status="status"
+        >
+          <template v-if="m.tool" #before>
+            <ChatTool :label="m.tool.label" :state="m.tool.state" :icon="Globe">
+              <ChatSources><ChatSource v-for="s in m.tool.sources" :key="s.url" v-bind="s" /></ChatSources>
+            </ChatTool>
+          </template>
+          <template v-if="m.role === 'user'">{{ m.text }}</template>
+        </ChatMessage>
+      </ChatThread>
+      <ChatComposer :responding="responding" @send="send" @stop="stop" />
+    </Chat>`,
+})
+
 const meta = {
   title: 'Special/Chat',
   parameters: { layout: 'fullscreen' },
-  render: () => ({
-    components: { Chat, ChatComposer, ChatMessage, ChatSource, ChatSources, ChatThread, ChatTool },
-    setup: () => ({
-      ...fakeModel([
-        { role: 'user', text: 'What is a harness?' },
-        { role: 'assistant', text: REPLIES[0]!, tool: { label: `Read ${SOURCES.length} sources`, state: 'done', sources: SOURCES } },
-      ]),
-      Globe,
-    }),
-    template: `
-      <Chat class="h-screen">
-        <ChatThread>
-          <ChatMessage
-            v-for="m in messages"
-            :key="m.id"
-            :role="m.role"
-            :text="m.role === 'assistant' ? m.text : undefined"
-            :streaming="m.id === streamingId"
-            :status="status"
-          >
-            <template v-if="m.tool" #before>
-              <ChatTool :label="m.tool.label" :state="m.tool.state" :icon="Globe">
-                <ChatSources><ChatSource v-for="s in m.tool.sources" :key="s.url" v-bind="s" /></ChatSources>
-              </ChatTool>
-            </template>
-            <template v-if="m.role === 'user'">{{ m.text }}</template>
-          </ChatMessage>
-        </ChatThread>
-        <ChatComposer :responding="responding" @send="send" @stop="stop" />
-      </Chat>`,
-  }),
+  render: () => chat(),
 } satisfies Meta
 
 export default meta
@@ -77,3 +83,10 @@ export const WholeAnswer: Story = {
   }),
 }
 
+/**
+ * The search fails: its icon turns into the alert and its shimmering line into what went wrong,
+ * both in the danger colour, and the answer comes from what the model knows.
+ */
+export const SearchFails: Story = {
+  render: () => chat({ searchFails: true }),
+}

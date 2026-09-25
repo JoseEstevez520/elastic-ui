@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui'
-import { computed, inject, ref, useSlots, type Component, type HTMLAttributes } from 'vue'
+import { computed, inject, onBeforeUnmount, ref, useSlots, type Component, type HTMLAttributes } from 'vue'
 import { AlertIcon, ChevronRightIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { disclosureContentClass } from '../collapsible/collapsible.variants'
 import IconSwap from '../icon-swap/IconSwap.vue'
-import TextMorph from '../text-morph/TextMorph.vue'
-import { ChatThreadReadyKey } from './chat.keys'
+import StatusText from '../status-text/StatusText.vue'
+import { ChatMessageStepsKey, ChatThreadReadyKey } from './chat.keys'
 import { chatToolTriggerClass } from './chat.variants'
 
 /**
@@ -34,6 +34,11 @@ const expandable = computed(() => props.state === 'done' && !!slots.default)
 // A step arriving in a conversation already on screen comes into focus; one there when the
 // conversation opened just shows.
 const arrived = inject(ChatThreadReadyKey, ref(true)).value
+
+// Its message stops saying it is thinking: this line says what is going on instead.
+const steps = inject(ChatMessageStepsKey, null)
+if (steps) steps.value++
+onBeforeUnmount(() => steps && steps.value--)
 </script>
 
 <template>
@@ -44,18 +49,24 @@ const arrived = inject(ChatThreadReadyKey, ref(true)).value
     :class="cn('mb-3 text-sm', arrived && 'animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none', props.class)"
   >
     <CollapsibleTrigger :class="chatToolTriggerClass">
+      <!-- Failing, the icon turns into the alert as the words turn into what went wrong, both in the
+           danger colour and at the same pace (see StatusText). -->
       <IconSwap
         v-if="icon || state === 'error'"
         :icon="state === 'error' ? AlertIcon : icon!"
-        :class="state === 'error' ? 'text-[color:var(--color-danger)]' : 'text-fg-muted'"
+        :class="
+          cn(
+            'transition-colors duration-350 ease-emphasized motion-reduce:transition-none',
+            state === 'error' ? 'text-[color:var(--color-danger)]' : 'text-fg-muted',
+          )
+        "
       />
-      <span
-        :class="[
-          state === 'running' ? 'text-shimmer' : 'text-fg-muted transition-colors duration-150',
-          expandable && 'group-hover/tool:text-fg',
-        ]" :role="state === 'running' ? 'status' : undefined">
-        <TextMorph :text="label" />
-      </span>
+      <StatusText
+        :text="label"
+        :working="state === 'running'"
+        :error="state === 'error'"
+        :class="[state !== 'running' && 'text-fg-muted', expandable && 'group-hover/tool:text-fg']"
+      />
       <ChevronRightIcon
         aria-hidden="true"
         :class="[

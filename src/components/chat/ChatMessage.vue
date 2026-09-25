@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
+import { provide, ref, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
-import TextMorph from '../text-morph/TextMorph.vue'
+import StatusText from '../status-text/StatusText.vue'
 import ChatStream from './ChatStream.vue'
+import { ChatMessageStepsKey } from './chat.keys'
 import { chatMessageVariants } from './chat.variants'
 
 /**
@@ -23,6 +24,9 @@ const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
 const labels = useLabels()
+
+const steps = ref(0)
+provide(ChatMessageStepsKey, steps)
 </script>
 
 <template>
@@ -34,9 +38,13 @@ const labels = useLabels()
     <div v-if="role === 'assistant' && text !== undefined" class="grid">
       <Transition leave-active-class="transition-opacity duration-300" leave-to-class="opacity-0">
         <!-- What it is doing, until its first words; anything above it already says so. -->
-        <p v-if="streaming && !text && !$slots.before" role="status" class="text-shimmer w-fit [grid-area:1/1]">
-          <TextMorph :text="`${status ?? labels.thinking}…`" />
-        </p>
+        <StatusText
+          v-if="streaming && !text && !steps"
+          as="p"
+          working
+          :text="`${status ?? labels.thinking}…`"
+          class="w-fit [grid-area:1/1]"
+        />
       </Transition>
       <div class="[grid-area:1/1]"><ChatStream :text="text" :streaming="streaming" /></div>
     </div>
