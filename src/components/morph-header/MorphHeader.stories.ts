@@ -50,7 +50,7 @@ const page = (args: HeaderArgs) => ({
 })
 
 const meta = {
-  title: 'Special/MorphHeader',
+  title: 'Navigation/MorphHeader',
   parameters: { layout: 'fullscreen' },
   args: { menu: 'responsive', scrollThreshold: 40, links: 5, longLabels: false, actions: true },
   argTypes: {

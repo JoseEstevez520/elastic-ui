@@ -4,7 +4,7 @@ import Switch from '../switch/Switch.vue'
 import Checkbox from './Checkbox.vue'
 
 const meta = {
-  title: 'Base/Checkbox & Switch',
+  title: 'Forms/Checkbox & Switch',
   component: Checkbox,
   render: () => ({
     components: { Checkbox },

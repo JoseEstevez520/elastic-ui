@@ -20,5 +20,5 @@ export const selectionBarClass = [
 export const selectionItemClass = [
   'flex h-8 cursor-pointer items-center gap-1.5 rounded-[var(--radius-sm)] px-2.5 whitespace-nowrap',
   'text-fg-secondary transition-colors duration-150 hover:bg-bg-muted hover:text-fg',
-  'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent',
+  'focus-ring-inset',
 ]

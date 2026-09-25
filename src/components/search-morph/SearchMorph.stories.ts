@@ -5,7 +5,7 @@ import SearchMorph from './SearchMorph.vue'
 const PAGES = ['Web client', 'Web server', 'Deployment', 'Design', 'Timetable', 'Tools', 'AI', 'Final project ideas']
 
 const meta = {
-  title: 'Special/SearchMorph',
+  title: 'Navigation/SearchMorph',
   // Top-aligned: centering would re-center the search as it widens, and the icon would drift.
   render: () => ({
     components: { SearchMorph },

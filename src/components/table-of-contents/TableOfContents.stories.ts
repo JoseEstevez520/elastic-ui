@@ -17,7 +17,7 @@ const PARAGRAPH =
   'A coding agent reads your project, decides what to change and changes it, then looks at what happened and decides again. Each part of that loop is simple on its own; what makes it useful is how they fit together, and how much of your project the model can see while it works.'
 
 const meta = {
-  title: 'Special/TableOfContents',
+  title: 'Navigation/TableOfContents',
   component: TableOfContents,
   parameters: { layout: 'fullscreen' },
   args: { items },

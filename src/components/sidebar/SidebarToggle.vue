@@ -20,7 +20,7 @@ const sidebar = useRequiredSidebarContext('SidebarToggle')
     :class="
       cn(
         'flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-md)] text-fg-muted transition-colors hover:bg-bg-muted hover:text-fg',
-        'focus-visible:outline-2 focus-visible:outline-accent',
+        'focus-ring',
         props.class,
       )
     "

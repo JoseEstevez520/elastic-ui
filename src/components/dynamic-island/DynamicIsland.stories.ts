@@ -9,7 +9,7 @@ import DynamicIsland from './DynamicIsland.vue'
 const icons = { Pause, Phone, PhoneOff, Play, SkipForward, Timer, Upload }
 
 const meta = {
-  title: 'Special/DynamicIsland',
+  title: 'Content/DynamicIsland',
   parameters: { layout: 'fullscreen' },
   render: () => ({
     components: { Button, DynamicIsland, TextMorph },

@@ -4,7 +4,7 @@ import Button from '../button/Button.vue'
 import Aurora from './Aurora.vue'
 
 const meta = {
-  title: 'Special/Aurora',
+  title: 'AI/Aurora',
   component: Aurora,
   parameters: { layout: 'fullscreen' },
   render: () => ({

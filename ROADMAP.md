@@ -99,10 +99,9 @@ Done so far: the composer (its button pulling out like a drop, send turning into
 - NavTree indicator variants, such as SkillNet's "connected" pill that takes the page colour and fuses with the sidebar's edge.
 - AnimatedList: items crossing while reordering (for now they slide past each other).
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
-- Organize Storybook and the docs by family (actions, forms, overlays, disclosure, collections, navigation) instead of Base / Special, with each morph variant next to its plain one.
 - Priority+ variant for MorphHeader (show what fits, the rest in a "More" menu).
 - Documentation beyond Storybook once the API settles.
-- Publishing to npm.
+- Publishing to npm: ready (README, licence, `prepublishOnly`), waiting for a name, as `elastic-ui` is taken.
 
 ## Out of scope
 

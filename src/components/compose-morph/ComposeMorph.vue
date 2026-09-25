@@ -126,7 +126,7 @@ const labels = useLabels()
             :aria-label="`${i + 1} of ${ratings.length}`"
             :class="[
               'flex size-8 cursor-pointer items-center justify-center rounded-full text-base transition-[opacity,background-color] duration-150',
-              'focus-visible:outline-2 focus-visible:outline-accent',
+              'focus-ring',
               rating === undefined || rating === i ? 'opacity-100' : 'opacity-40 hover:opacity-80',
               rating === i && 'bg-bg-muted',
             ]"

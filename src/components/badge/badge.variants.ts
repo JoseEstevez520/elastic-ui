@@ -63,7 +63,7 @@ export const badgeLabelVariants = /* @__PURE__ */ cva('', {
 export const badgeRemoveClass = [
   '-mr-1 flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full opacity-60',
   'transition-[opacity,background-color] duration-150 hover:bg-[color:color-mix(in_srgb,currentColor_12%,transparent)] hover:opacity-100',
-  'focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-accent',
+  'focus-visible:opacity-100 focus-ring',
 ]
 
 /**

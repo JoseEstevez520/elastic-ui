@@ -6,7 +6,7 @@ import AnimatedList from './AnimatedList.vue'
 const fruits = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Grapes', 'Lemon', 'Mango', 'Orange', 'Pineapple']
 
 const meta = {
-  title: 'Base/AnimatedList',
+  title: 'Content/AnimatedList',
   // Top-aligned: centering would re-center the list as its height changes.
 } satisfies Meta
 

@@ -98,7 +98,7 @@ const boxOnArrival = [
 // A `ghost` card opened without its box showing (by touch) materializes the box as it grows.
 const noBoxOnArrival = 'starting:bg-transparent starting:[--expandable-card-edge:transparent]'
 const siblingsIn = { duration: 0.22, ease: 'linear' } as const
-const head = 'relative block w-full cursor-pointer text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent'
+const head = 'relative block w-full cursor-pointer text-left focus-ring-inset'
 // 16px of padding on phones, the margin Material and Apple's guidelines use on compact widths.
 // Parts may wrap, so a `basis-full` part (a subtitle) gets a line of its own at full width.
 const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-4 sm:p-6'

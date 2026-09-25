@@ -9,7 +9,7 @@ import PopoverTrigger from './PopoverTrigger.vue'
 const parts = { Button, Popover, PopoverTrigger, PopoverContent, PopoverClose }
 
 const meta = {
-  title: 'Base/Popover',
+  title: 'Overlays/Popover',
   render: () => ({
     components: parts,
     template: `

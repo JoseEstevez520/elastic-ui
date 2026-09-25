@@ -15,7 +15,7 @@ function useCleanQueue() {
 let saved = 0
 
 const meta = {
-  title: 'Base/Toast',
+  title: 'Overlays/Toast',
   parameters: { layout: 'fullscreen' },
   render: (args) => ({
     components: { Button, Toaster },

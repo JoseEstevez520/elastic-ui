@@ -48,7 +48,7 @@ const fromCenter = { transformOrigin: 'center', transformBox: 'fill-box' } as co
       :aria-label="dark ? lightLabel : darkLabel"
       :class="
         cn(
-          'flex size-7 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors duration-150 hover:text-fg focus-visible:outline-2 focus-visible:outline-accent',
+          'flex size-7 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors duration-150 hover:text-fg focus-ring',
           props.class,
         )
       "

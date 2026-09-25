@@ -14,7 +14,7 @@ const icons = { home: House, book: BookOpen, wrench: Wrench, bot: Bot, calendar:
 const parts = { NavTree, NavTreeGroup, NavTreeItem, Sidebar, SidebarLayout, SidebarToggle }
 
 const meta = {
-  title: 'Special/Sidebar',
+  title: 'Navigation/Sidebar',
   parameters: { layout: 'fullscreen' },
   args: { variant: 'plain' },
   argTypes: { variant: { control: 'inline-radio', options: ['plain', 'connected'] } },

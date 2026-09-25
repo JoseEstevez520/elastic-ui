@@ -11,6 +11,7 @@ export const defaultLabels = {
   close: 'Close',
   clear: 'Clear',
   dismiss: 'Dismiss',
+  remove: 'Remove',
   copy: 'Copy',
   copied: 'Copied',
   send: 'Send',

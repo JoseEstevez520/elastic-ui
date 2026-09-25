@@ -4,7 +4,7 @@ import Tooltip from './Tooltip.vue'
 import TooltipGroup from './TooltipGroup.vue'
 
 const meta = {
-  title: 'Base/Tooltip',
+  title: 'Overlays/Tooltip',
   render: () => ({
     components: { Button, Tooltip },
     template: `

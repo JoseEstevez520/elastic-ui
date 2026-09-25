@@ -4,7 +4,7 @@ import Button from '../button/Button.vue'
 import StatusText from './StatusText.vue'
 
 const meta = {
-  title: 'Base/StatusText',
+  title: 'Text/StatusText',
   component: StatusText,
   args: { text: 'Searching the web…', working: true },
 } satisfies Meta<typeof StatusText>

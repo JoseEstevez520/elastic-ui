@@ -19,7 +19,7 @@ export const tabsTriggerVariants = /* @__PURE__ */ cva(
   [
     'inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap text-sm font-medium',
     'text-fg-muted transition-colors duration-150 hover:text-fg data-[state=active]:text-fg',
-    'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent',
+    'focus-ring-inset',
     'disabled:pointer-events-none disabled:opacity-50',
   ],
   {

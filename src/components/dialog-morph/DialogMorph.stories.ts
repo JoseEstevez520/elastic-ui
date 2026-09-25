@@ -9,7 +9,7 @@ import DialogMorphTitle from './DialogMorphTitle.vue'
 const parts = { Button, DialogMorph, DialogMorphTitle, DialogMorphDescription, DialogMorphClose }
 
 const meta = {
-  title: 'Special/DialogMorph',
+  title: 'Overlays/DialogMorph',
   render: () => ({
     components: parts,
     template: `

@@ -174,7 +174,7 @@ watch(open, (isOpen) => {
               :aria-label="menuLabel"
               :aria-expanded="open"
               :aria-controls="panelId"
-              class="flex size-9 cursor-pointer items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-accent"
+              class="flex size-9 cursor-pointer items-center justify-center rounded-full focus-ring"
               @click="open = !open"
             >
               <svg class="size-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">

@@ -44,7 +44,7 @@ const withChoice = (template: string) => ({
 })
 
 const meta = {
-  title: 'Special/CommandPalette',
+  title: 'Overlays/CommandPalette',
   render: () => withChoice(`<CommandPalette>${commands}</CommandPalette>`),
 } satisfies Meta<typeof CommandPalette>
 

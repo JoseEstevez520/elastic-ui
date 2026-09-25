@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import ThemeToggle from './ThemeToggle.vue'
 
 const meta = {
-  title: 'Base/ThemeToggle',
+  title: 'Actions/ThemeToggle',
   component: ThemeToggle,
 } satisfies Meta<typeof ThemeToggle>
 

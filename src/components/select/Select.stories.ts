@@ -13,7 +13,7 @@ const parts = { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, S
 const fruits = ['Apple', 'Banana', 'Blueberry', 'Grapes', 'Pineapple']
 
 const meta = {
-  title: 'Base/Select',
+  title: 'Forms/Select',
   render: () => ({
     components: parts,
     setup: () => ({ fruits }),

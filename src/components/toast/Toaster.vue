@@ -182,7 +182,7 @@ const labels = useLabels()
                 <button
                   v-if="t.action"
                   type="button"
-                  class="mt-2 cursor-pointer text-sm font-medium text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent"
+                  class="mt-2 cursor-pointer text-sm font-medium text-accent hover:underline focus-ring"
                   @click="t.action.onClick(); dismissToast(t.id)"
                 >
                   {{ t.action.label }}
@@ -191,7 +191,7 @@ const labels = useLabels()
               <button
                 type="button"
                 :aria-label="labels.dismiss"
-                class="-m-1 flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-sm)] text-fg-faint transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
+                class="-m-1 flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-sm)] text-fg-faint transition-colors hover:text-fg focus-ring"
                 @click="dismissToast(t.id)"
               >
                 <XIcon aria-hidden="true" class="size-3.5" />

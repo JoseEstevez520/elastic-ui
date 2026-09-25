@@ -5,7 +5,7 @@ export const codeBlockClass = [
 
 export const codeBlockPreClass = [
   'overflow-x-auto scrollbar-subtle px-4 py-3.5 font-mono text-[13px] leading-relaxed text-fg',
-  'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent',
+  'focus-ring-inset',
 ]
 
 // On a caption bar when there is a name to show; otherwise floating in the corner, shown on hover

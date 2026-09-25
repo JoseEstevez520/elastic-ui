@@ -15,7 +15,7 @@ const count = ref(0)
 const LONG = `docker run --rm -it -p 8080:80 -v "$(pwd)/html:/usr/share/nginx/html:ro" --name apuntes-web nginx:alpine`
 
 const meta = {
-  title: 'Base/CodeBlock',
+  title: 'Code/CodeBlock',
   component: CodeBlock,
   args: { code: COMPONENT, title: 'Counter.vue' },
   render: (args) => ({

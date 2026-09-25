@@ -142,7 +142,7 @@ provideNavTreeGroupContext({
             :is="link.is"
             v-bind="link.attrs"
             :aria-current="active ? 'page' : undefined"
-            class="flex min-w-0 flex-1 items-center rounded-[inherit] py-1.5 pl-2.5 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+            class="flex min-w-0 flex-1 items-center rounded-[inherit] py-1.5 pl-2.5 outline-none focus-ring-inset"
             @click="go"
           >
             <component :is="icon" v-if="icon" aria-hidden="true" :class="navTreeIconClass" />

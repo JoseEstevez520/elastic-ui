@@ -55,7 +55,7 @@ app.listen(PORT, () => {
 )
 
 const meta = {
-  title: 'Special/CodeWalkthrough',
+  title: 'Code/CodeWalkthrough',
   component: CodeWalkthrough,
   parameters: { layout: 'fullscreen' },
   render: () => ({

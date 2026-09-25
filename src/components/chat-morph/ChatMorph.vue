@@ -121,7 +121,7 @@ const labels = useLabels()
           <button
             type="button"
             :aria-label="labels.close"
-            class="absolute top-3 right-3 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
+            class="absolute top-3 right-3 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:text-fg focus-ring"
             @click="close"
           >
             <XIcon class="size-4" />

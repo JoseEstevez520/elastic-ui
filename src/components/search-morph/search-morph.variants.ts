@@ -53,5 +53,5 @@ export const searchMorphInputVariants = /* @__PURE__ */ cva(
 export const searchMorphClearClass = [
   'absolute top-1/2 right-2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full',
   'text-fg-faint transition-[color,opacity] duration-150 hover:text-fg',
-  'focus-visible:outline-2 focus-visible:outline-accent',
+  'focus-ring',
 ]

@@ -28,6 +28,10 @@ const preview: Preview = {
     // motion could not be judged.
     layout: 'padded',
     backgrounds: { disable: true },
+    // By family, with each morphing part next to its plain one.
+    options: {
+      storySort: { order: ['Actions', 'Forms', 'Overlays', 'Disclosure', 'Navigation', 'Content', 'Text', 'Code', 'AI'] },
+    },
   },
 }
 

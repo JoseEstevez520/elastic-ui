@@ -5,7 +5,7 @@ const PARAGRAPH =
   'A coding agent reads your project, decides what to change and changes it, then looks at what happened and decides again. Each part of that loop is simple on its own; what makes it useful is how they fit together.'
 
 const meta = {
-  title: 'Base/ScrollIndicator',
+  title: 'Navigation/ScrollIndicator',
   component: ScrollIndicator,
   parameters: { layout: 'fullscreen' },
   render: () => ({

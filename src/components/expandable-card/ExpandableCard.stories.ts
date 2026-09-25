@@ -133,7 +133,7 @@ const projectGrid = (args: GridArgs) => ({
 })
 
 const meta = {
-  title: 'Special/ExpandableCard',
+  title: 'Disclosure/ExpandableCard',
   args: { variant: 'default', count: 4, images: 'none', brandColors: false, longText: false, groups: 1 },
   argTypes: {
     count: { control: { type: 'range', min: 1, max: PROJECTS.length, step: 1 } },

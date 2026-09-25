@@ -103,7 +103,7 @@ const tasks = ({
 })
 
 const meta = {
-  title: 'Special/Filters',
+  title: 'Forms/Filters',
   component: Filters,
   args: { categories: CATEGORIES },
   render: () => tasks(),

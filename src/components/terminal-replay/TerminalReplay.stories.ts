@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import TerminalReplay from './TerminalReplay.vue'
 
 const meta = {
-  title: 'Special/TerminalReplay',
+  title: 'Code/TerminalReplay',
   component: TerminalReplay,
   args: {
     title: '~/tasks-api',

@@ -65,7 +65,7 @@ const walk = (start: string, width = 'w-[40rem]') => ({
 })
 
 const meta = {
-  title: 'Base/Breadcrumbs',
+  title: 'Navigation/Breadcrumbs',
   component: Breadcrumbs,
   args: { items: trail(['modules', 'dwec', '3']) },
   render: () => walk('#/modules/dwec/3'),

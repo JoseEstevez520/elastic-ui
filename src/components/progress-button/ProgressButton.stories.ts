@@ -30,7 +30,7 @@ function useFakeJob(step = 9, every = 250, fails = false) {
 }
 
 const meta = {
-  title: 'Base/ProgressButton',
+  title: 'Actions/ProgressButton',
   render: () => ({
     components: { ProgressButton },
     setup: () => ({ ...useFakeJob(), icons }),

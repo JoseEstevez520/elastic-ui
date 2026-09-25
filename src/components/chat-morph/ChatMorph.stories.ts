@@ -10,7 +10,7 @@ import { fakeModel } from '../chat/chat.fixtures'
 import ChatMorph from './ChatMorph.vue'
 
 const meta = {
-  title: 'Special/ChatMorph',
+  title: 'AI/ChatMorph',
   component: ChatMorph,
   parameters: { layout: 'fullscreen' },
   render: () => ({

@@ -7,7 +7,7 @@ import SelectionMenuItem from './SelectionMenuItem.vue'
 const icons = { Copy, Languages, MessageSquare, Sparkles }
 
 const meta = {
-  title: 'Special/SelectionMenu',
+  title: 'Overlays/SelectionMenu',
   // Top-aligned, and with room above the text, so the bar has somewhere to sit.
   render: () => ({
     components: { SelectionMenu, SelectionMenuItem },

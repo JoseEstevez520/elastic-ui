@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority'
 export const navTreeRowClass = [
   'relative flex w-full cursor-pointer items-center rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-sm',
   'text-fg-secondary transition-colors duration-150 hover:text-fg',
-  'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent',
+  'focus-ring-inset',
 ]
 
 export const navTreeIconClass = 'size-4 shrink-0'

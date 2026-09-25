@@ -9,7 +9,7 @@ const send = async (composed: Composed) => {
 }
 
 const meta = {
-  title: 'Special/ComposeMorph',
+  title: 'Actions/ComposeMorph',
   // Top-aligned: centering would re-center the button as it grows into the form.
   render: () => ({
     components: { ComposeMorph },

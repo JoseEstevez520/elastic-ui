@@ -2,6 +2,7 @@
 import type { Component, HTMLAttributes } from 'vue'
 import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
+import { useLabels } from '../../utils/labels'
 import { badgeLabelVariants, badgeRemoveClass, badgeVariants, type BadgeVariants } from './badge.variants'
 
 const props = defineProps<{
@@ -23,6 +24,7 @@ const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
 const emit = defineEmits<{ remove: [] }>()
+const labels = useLabels()
 </script>
 
 <template>
@@ -37,7 +39,7 @@ const emit = defineEmits<{ remove: [] }>()
     <button
       v-if="removable"
       type="button"
-      :aria-label="removeLabel ?? 'Remove'"
+      :aria-label="removeLabel ?? labels.remove"
       :class="badgeRemoveClass"
       @click="emit('remove')"
     >

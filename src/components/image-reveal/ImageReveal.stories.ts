@@ -14,7 +14,7 @@ const LANDSCAPE = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://w
 </svg>`)}`
 
 const meta = {
-  title: 'Special/ImageReveal',
+  title: 'AI/ImageReveal',
   component: ImageReveal,
   args: { alt: 'Mountains at sunset' },
   render: () => ({

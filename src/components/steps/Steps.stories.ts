@@ -9,7 +9,7 @@ import StepsNext from './StepsNext.vue'
 const parts = { Button, CodeBlock, Steps, StepsItem, StepsNext }
 
 const meta = {
-  title: 'Base/Steps',
+  title: 'Disclosure/Steps',
   render: () => ({
     components: parts,
     template: `

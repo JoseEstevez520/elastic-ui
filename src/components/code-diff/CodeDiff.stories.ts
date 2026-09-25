@@ -4,7 +4,7 @@ import { AFTER, BEFORE } from './code-diff.fixtures'
 
 
 const meta = {
-  title: 'Base/CodeDiff',
+  title: 'Code/CodeDiff',
   component: CodeDiff,
   args: { before: BEFORE, after: AFTER, file: 'server.js' },
   render: (args) => ({

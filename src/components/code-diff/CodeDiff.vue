@@ -126,14 +126,14 @@ const shown = (index: number) => lines.value[index]!.type !== 'added' || phase.v
         v-if="animate"
         type="button"
         :aria-label="replayLabel"
-        class="flex size-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
+        class="flex size-8 cursor-pointer items-center justify-center rounded-full transition-colors hover:text-fg focus-ring"
         @click="play"
       >
         <ReplayIcon class="size-3.5" aria-hidden="true" />
       </button>
       <CopyButton :value="after" class="size-8" />
     </figcaption>
-    <pre tabindex="0" class="overflow-x-auto pb-3 font-mono text-[13px] leading-relaxed scrollbar-subtle focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"><code class="block min-w-fit"><template v-for="row in rows" :key="row.kind === 'line' ? row.index : `fold-${row.start}`"><button
+    <pre tabindex="0" class="overflow-x-auto pb-3 font-mono text-[13px] leading-relaxed scrollbar-subtle focus-ring-inset"><code class="block min-w-fit"><template v-for="row in rows" :key="row.kind === 'line' ? row.index : `fold-${row.start}`"><button
       v-if="row.kind === 'fold'"
       type="button"
       class="block w-full cursor-pointer px-4 py-1 text-left font-sans text-xs text-fg-muted transition-colors hover:text-fg"
@@ -147,7 +147,7 @@ const shown = (index: number) => lines.value[index]!.type !== 'added' || phase.v
     ><div class="overflow-hidden"><div
       :class="[
         codeDiffLineVariants({ type: typeOf(row.index) }),
-        lines[row.index]!.type === 'added' && (shown(row.index) ? 'animate-[blur-in_0.45s_var(--ease-soft)_both]' : 'opacity-0'),
+        lines[row.index]!.type === 'added' && (shown(row.index) ? 'animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none' : 'opacity-0'),
       ]"
       :style="lines[row.index]!.type === 'added' ? { animationDelay: `${150 + Math.min(addedOrder.get(row.index) ?? 0, 8) * 40}ms` } : undefined"
     ><span v-if="lines[row.index]!.type !== 'same'" class="sr-only">{{ lines[row.index]!.type === 'added' ? labels.addedLine : labels.removedLine }}: </span><span aria-hidden="true" :class="codeDiffSignVariants({ type: typeOf(row.index) })">{{ lines[row.index]!.type === 'added' ? '+' : lines[row.index]!.type === 'removed' ? '−' : ' ' }}</span><span>{{ lines[row.index]!.text || ' ' }}</span></div></div></div></template></code></pre>

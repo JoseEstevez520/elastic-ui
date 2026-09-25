@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import CopyButton from './CopyButton.vue'
 
 const meta = {
-  title: 'Base/CopyButton',
+  title: 'Actions/CopyButton',
   component: CopyButton,
   args: { value: 'npm install elastic-ui' },
 } satisfies Meta<typeof CopyButton>

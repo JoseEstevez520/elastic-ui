@@ -8,7 +8,7 @@ import Textarea from './Textarea.vue'
 const icons = { Mail, Search }
 
 const meta = {
-  title: 'Base/Input',
+  title: 'Forms/Input',
   component: Input,
   render: () => ({
     components: { Input },

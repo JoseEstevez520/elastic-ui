@@ -18,7 +18,7 @@ const TECH = [siVuedotjs, siTailwindcss, siNodedotjs, siPostgresql, siLaravel, s
 )
 
 const meta = {
-  title: 'Base/Badge',
+  title: 'Content/Badge',
   component: Badge,
   args: { variant: 'soft', size: 'md' },
   argTypes: {

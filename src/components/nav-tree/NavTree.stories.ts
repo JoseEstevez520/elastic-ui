@@ -7,7 +7,7 @@ import NavTreeItem from './NavTreeItem.vue'
 const parts = { NavTree, NavTreeGroup, NavTreeItem }
 
 const meta = {
-  title: 'Base/NavTree',
+  title: 'Navigation/NavTree',
   // Top-aligned: centering would re-center the tree as groups open.
   render: () => ({
     components: parts,

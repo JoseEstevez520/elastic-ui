@@ -4,7 +4,7 @@ import CodeBlock from '../code-block/CodeBlock.vue'
 import Prose from './Prose.vue'
 
 const meta = {
-  title: 'Base/Prose',
+  title: 'Text/Prose',
   component: Prose,
   parameters: { layout: 'fullscreen' },
   render: () => ({

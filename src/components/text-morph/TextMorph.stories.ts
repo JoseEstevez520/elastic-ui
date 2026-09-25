@@ -5,7 +5,7 @@ import Button from '../button/Button.vue'
 import TextMorph from './TextMorph.vue'
 
 const meta = {
-  title: 'Base/TextMorph',
+  title: 'Text/TextMorph',
   render: () => ({
     components: { Button, TextMorph },
     setup() {

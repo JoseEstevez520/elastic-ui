@@ -36,7 +36,7 @@ const parts = {
 const icons = { Archive, Copy, FolderInput, Link, Pencil, Share2, Trash2 }
 
 const meta = {
-  title: 'Base/Menu',
+  title: 'Overlays/Menu',
   render: () => ({
     components: parts,
     setup: () => ({ icons }),

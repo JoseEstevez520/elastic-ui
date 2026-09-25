@@ -12,7 +12,7 @@ const parts = { Card, CardHeader, CardTitle, CardDescription, CardContent, CardF
 const IMAGE = 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80'
 
 const meta = {
-  title: 'Base/Card',
+  title: 'Content/Card',
   component: Card,
   argTypes: {
     variant: { control: 'inline-radio', options: ['default', 'outline', 'ghost'] },

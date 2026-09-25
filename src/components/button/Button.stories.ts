@@ -8,7 +8,7 @@ const ArrowIcon = () =>
   ])
 
 const meta = {
-  title: 'Base/Button',
+  title: 'Actions/Button',
   component: Button,
   argTypes: {
     variant: { control: 'inline-radio', options: ['solid', 'outline', 'ghost', 'link'] },

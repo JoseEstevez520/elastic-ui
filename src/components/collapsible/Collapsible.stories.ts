@@ -6,7 +6,7 @@ import CollapsibleTrigger from './CollapsibleTrigger.vue'
 const parts = { Collapsible, CollapsibleTrigger, CollapsibleContent }
 
 const meta = {
-  title: 'Base/Collapsible',
+  title: 'Disclosure/Collapsible',
   // Top-aligned: centering would re-center the section as it grows.
   render: () => ({
     components: parts,

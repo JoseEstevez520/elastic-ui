@@ -50,7 +50,7 @@ const chat = (options?: { searchFails?: boolean; answerFails?: boolean; failsMid
 })
 
 const meta = {
-  title: 'Special/Chat',
+  title: 'AI/Chat',
   parameters: { layout: 'fullscreen' },
   render: () => chat(),
 } satisfies Meta

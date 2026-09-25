@@ -100,7 +100,7 @@ const GUIDE = [
 ].join('\n')
 
 const meta = {
-  title: 'Special/Markdown',
+  title: 'Text/Markdown',
   component: Markdown,
   parameters: { layout: 'fullscreen' },
   args: { source: GUIDE },

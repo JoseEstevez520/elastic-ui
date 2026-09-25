@@ -61,7 +61,7 @@ const events: AgentReplayEvent[] = [
 ]
 
 const meta = {
-  title: 'Special/AgentReplay',
+  title: 'AI/AgentReplay',
   component: AgentReplay,
   parameters: { layout: 'fullscreen' },
   args: { events, intro: 'A session with a coding agent, played back step by step.' },

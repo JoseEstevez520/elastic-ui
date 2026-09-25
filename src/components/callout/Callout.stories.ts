@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Callout from './Callout.vue'
 
 const meta = {
-  title: 'Base/Callout',
+  title: 'Content/Callout',
   component: Callout,
   render: () => ({
     components: { Callout },

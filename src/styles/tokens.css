@@ -148,6 +148,14 @@
   }
 }
 
+/* The same ring drawn inside the edge, for what fills its row or scrolls (a list row, a code block). */
+@utility focus-ring-inset {
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+}
+
 /*
  * The library's one way of appearing: content comes into focus as one wave running down it.
  * Each piece takes 0.45s and the next starts only 40ms later, well under the 30% of the duration
