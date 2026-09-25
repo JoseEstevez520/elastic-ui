@@ -73,6 +73,7 @@ export const defaultLabels = {
   caution: 'Caution',
   // Forms
   optional: 'optional',
+  pickDate: 'Pick a date',
   comment: 'Comment',
   commentPlaceholder: 'Write a comment…',
   rating: 'Rating',
