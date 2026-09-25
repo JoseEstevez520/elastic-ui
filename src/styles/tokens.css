@@ -415,7 +415,10 @@ html.theme-switching *::after {
   line-height: 1.75;
   overflow-wrap: break-word;
 
-  & :where(p, ul, ol, blockquote, table, pre, figure):not([class]):not(:where(.not-prose, .not-prose *)) {
+  /* The article's own flow: blocks in the text, or in a plain element of it (a quote, a list item).
+     Inside one of the library's parts (anything with a class of its own), the part spaces its
+     content itself, and prose adds nothing to it. */
+  & :where(p, ul, ol, blockquote, table, pre, figure):not([class]):where(.prose > *, :not([class]) > *):not(:where(.not-prose, .not-prose *)) {
     margin-block: var(--prose-flow);
   }
   /* The library's own parts, and anything else with a look of its own: spaced like a paragraph. */
