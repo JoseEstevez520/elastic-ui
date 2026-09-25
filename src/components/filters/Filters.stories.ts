@@ -82,7 +82,13 @@ const tasks = ({
   template: `
     <div class="flex max-w-full flex-col gap-6 ${width}">
       <Filters v-model="chosen" :categories="categories" :count="count ? shown.length : undefined" />
-      <AnimatedList :items="shown" :item-key="(t) => t.id" class="flex flex-col gap-2">
+      <AnimatedList
+        :items="shown"
+        :item-key="(t) => t.id"
+        collapse="vertical"
+        class="flex flex-col"
+        item-class="pb-2 last:pb-0"
+      >
         <template #default="{ item }">
           <div class="flex items-center justify-between gap-4 rounded-lg border border-border px-4 py-3 text-sm">
             <span class="text-fg">{{ item.title }}</span>
@@ -151,7 +157,7 @@ export const Cards: Story = {
     template: `
       <div class="flex w-[40rem] max-w-full flex-col gap-6">
         <Filters v-model="chosen" :categories="categories" :count="shown.length" />
-        <AnimatedList :items="shown" :item-key="(c) => c.id" as="div" class="grid gap-4 sm:grid-cols-2">
+        <AnimatedList :items="shown" :item-key="(c) => c.id" as="div" collapse="vertical" class="grid gap-4 sm:grid-cols-2">
           <template #default="{ item }">
             <Card size="sm" class="h-full gap-1 px-4">
               <CardTitle as="h4" size="sm">{{ item.title }}</CardTitle>

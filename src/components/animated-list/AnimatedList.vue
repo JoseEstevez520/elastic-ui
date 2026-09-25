@@ -2,7 +2,7 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion-v'
 import { computed, onMounted, ref, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { contentOut, morphTransition } from '../../utils/motion'
+import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
 
 /**
  * A list whose items slide to their new place when it is filtered, sorted or changed, instead of
@@ -18,6 +18,8 @@ const props = withDefaults(
     as?: 'ul' | 'ol' | 'div'
     /** Whether the items there on the first render come in as a wave, or just show. */
     appear?: boolean
+    /** Fold items in this direction after they fade, keeping them in the flow while leaving. */
+    collapse?: 'vertical' | 'horizontal'
     class?: HTMLAttributes['class']
     itemClass?: HTMLAttributes['class']
   }>(),
@@ -35,6 +37,32 @@ defineSlots<{
 
 const keyOf = (item: T) => props.itemKey?.(item) ?? (item as string | number)
 const itemComponent = computed(() => (props.as === 'div' ? motion.div : motion.li))
+const presenceMode = computed(() => (props.collapse ? 'sync' : 'popLayout'))
+const leave = computed(() =>
+  props.collapse === 'vertical'
+    ? {
+        opacity: 0,
+        height: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        transition: {
+          opacity: contentOut,
+          height: { ...morphCloseTransition, delay: contentOut.duration },
+          paddingTop: { ...morphCloseTransition, delay: contentOut.duration },
+          paddingBottom: { ...morphCloseTransition, delay: contentOut.duration },
+        },
+      }
+    : props.collapse === 'horizontal'
+      ? {
+          opacity: 0,
+          width: 0,
+          transition: {
+            opacity: contentOut,
+            width: { ...morphCloseTransition, delay: contentOut.duration },
+          },
+        }
+      : { opacity: 0, transition: contentOut },
+)
 
 // Nothing ever overlaps. Leaving items fade out first, and only then do the rest slide into the
 // gap; items that arrive wait until the rest have mostly made room for them.
@@ -61,7 +89,7 @@ watch(
     const removed = previous.some((key) => !current.has(key))
     for (const key of delays.keys()) if (!current.has(key)) delays.delete(key)
     for (const key of quiet) if (!current.has(key)) quiet.delete(key)
-    moveDelay.value = removed ? EXIT : 0
+    moveDelay.value = removed && !props.collapse ? EXIT : 0
     wave = !keys.some((key) => delays.has(key))
   },
 )
@@ -75,10 +103,10 @@ function enterDelay(item: T, index: number) {
 
 <template>
   <MotionConfig :transition="transition" reduced-motion="user">
-    <!-- `relative`: leaving items are taken out of the flow (`popLayout`) and positioned against
-         the list while they fade. -->
+    <!-- `relative` anchors items taken out of the flow by the default `popLayout` mode. Collapse
+         mode keeps the leaving item in the flow while its size folds away. -->
     <component :is="as" v-bind="$attrs" :class="cn('relative', props.class)">
-      <AnimatePresence mode="popLayout" :initial="false">
+      <AnimatePresence :mode="presenceMode" :initial="false">
         <!-- `position` only, so text never scales. The fade-in fills backwards only: a fill that
              lasted would override the opacity Motion sets on the way out. -->
         <component
@@ -86,10 +114,14 @@ function enterDelay(item: T, index: number) {
           v-for="(item, index) in items"
           :key="keyOf(item)"
           layout="position"
-          :exit="{ opacity: 0, transition: contentOut }"
+          :exit="leave"
           :style="{ animationDelay: enterDelay(item, index) }"
           :class="
-            cn(!quiet.has(keyOf(item)) && 'animate-[blur-in_0.45s_var(--ease-soft)_backwards] motion-reduce:animate-none', itemClass)
+            cn(
+              props.collapse && 'overflow-hidden',
+              !quiet.has(keyOf(item)) && 'animate-[blur-in_0.45s_var(--ease-soft)_backwards] motion-reduce:animate-none',
+              itemClass,
+            )
           "
         >
           <slot :item="item" :index="index" />
