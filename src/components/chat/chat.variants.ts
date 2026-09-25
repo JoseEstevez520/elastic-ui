@@ -47,3 +47,14 @@ export const chatSourceClass = [
   'group/source flex min-w-0 items-center gap-2.5 rounded-sm py-0.5 text-sm',
   'focus-ring',
 ]
+
+// Over the aurora, the composer and your messages turn to glass: a white veil that lets the
+// colour through (never a dark fill, which reads as a hole in it), lifted by a barely-there
+// shadow. Set through the chat's tokens, so a project can still override them.
+export const chatGlassStyle = {
+  '--chat-composer-bg': 'light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08))',
+  '--chat-bubble': 'light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08))',
+  '--chat-composer-shadow': 'drop-shadow(0 2px 6px rgb(0 0 0 / 0.04))',
+  '--chat-bubble-shadow': '0 2px 6px rgb(0 0 0 / 0.03)',
+  '--chat-bubble-blur': '16px',
+}

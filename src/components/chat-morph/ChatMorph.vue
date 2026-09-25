@@ -5,6 +5,7 @@ import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import Aurora, { type AuroraActivity } from '../aurora/Aurora.vue'
+import { chatGlassStyle } from '../chat/chat.variants'
 import { chatMorphTriggerState, chatMorphPanelVariants, chatMorphSurfaceVariants, chatMorphTriggerClass } from './chat-morph.variants'
 
 /**
@@ -35,17 +36,6 @@ const props = withDefaults(
   }>(),
   { label: labelFor('askAi'), title: labelFor('assistant'), floating: true, settled: false, activity: 'rest' },
 )
-
-// Over the aurora, the composer and your messages turn to glass: a white veil that lets the
-// colour through (never a dark fill, which reads as a hole in it), lifted by a barely-there
-// shadow. Set through the chat's tokens, so a project can still override them.
-const GLASS = {
-  '--chat-composer-bg': 'light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08))',
-  '--chat-bubble': 'light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08))',
-  '--chat-composer-shadow': 'drop-shadow(0 2px 6px rgb(0 0 0 / 0.04))',
-  '--chat-bubble-shadow': '0 2px 6px rgb(0 0 0 / 0.03)',
-  '--chat-bubble-blur': '16px',
-}
 
 const open = defineModel<boolean>('open', { default: false })
 const close = () => (open.value = false)
@@ -138,7 +128,7 @@ const labels = useLabels()
           </button>
           <!-- The conversation ends below the cross's row, never under it, and fades out gently, on an
                eased curve, as it reaches that edge. -->
-          <div :style="GLASS" class="mt-12 flex min-h-0 flex-1 flex-col [mask-image:linear-gradient(to_bottom,transparent,rgb(0_0_0/0.03)_0.5rem,rgb(0_0_0/0.15)_1rem,rgb(0_0_0/0.35)_1.5rem,rgb(0_0_0/0.6)_2rem,rgb(0_0_0/0.82)_2.5rem,rgb(0_0_0/0.95)_3rem,#000_3.5rem)]">
+          <div :style="chatGlassStyle" class="mt-12 flex min-h-0 flex-1 flex-col [mask-image:linear-gradient(to_bottom,transparent,rgb(0_0_0/0.03)_0.5rem,rgb(0_0_0/0.15)_1rem,rgb(0_0_0/0.35)_1.5rem,rgb(0_0_0/0.6)_2rem,rgb(0_0_0/0.82)_2.5rem,rgb(0_0_0/0.95)_3rem,#000_3.5rem)]">
             <slot :close="close" />
           </div>
         </div>

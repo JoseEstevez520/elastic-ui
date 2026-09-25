@@ -48,7 +48,9 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | TableOfContents | Special | "On this page": a mark on a hairline slides to the section being read and takes its height; a click scrolls there with the mark going straight to it; `offset` for a fixed header; placed at once on load |
 | CodeBlock | Base | A soft fill, no border; its file or language on a quiet caption with a CopyButton, or the button waiting in the corner of a bare snippet; long lines scroll and fade at the side that has more; highlighted markup through the slot, plain `code` copied |
 | Callout | Base | GitHub's alerts (note, tip, important, warning, caution): an icon and a soft tint of its colour, no border; `--color-warning` added for it |
-| SegmentedControl | Base | One choice among a few, as a filter or a view switch; a radio group (no panels, unlike Tabs) whose selected surface slides to the next option |
+| CodeWalkthrough | Special | A guide that builds code step by step (Stripe, Code Hike): steps on one side, the code held in view on the other, turning into each step's code in three beats (lines that go fade, lines that stay slide, new ones come in as a wave); what the step adds, or its `highlight`, stands out |
+| CodeDiff | Base | A file's change: removed lines tinted red, added green, `+n −n` on the caption, untouched runs folded; plays the edit once in view (the lines that go turn red, the new ones open in), with replay |
+| AgentReplay | Special | A session with an agent played back to explain it: your request, each step shimmering while it runs and turning into what it did (a search, a read, an edit as a CodeDiff, a command's output), steps that ask permission (Allow / Deny) or are refused, a subagent's own session inside its step, the answer flowing in; a note per moment beside it; plays once in view over an Aurora that follows the work, with play, pause, back and forth; compared side by side (`layout="stacked"`) or one after another, never through a selector |
 | TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. Plain text at rest, Torph only while it changes, so letters keep their kerning. For text that becomes something else (see "Appearing is not becoming") |
 | DynamicIsland | Special | A pill that morphs into each state's size and shape (a song, a timer, an upload), content leaving and coming into focus; only moves when its state changes; inline by default, `floating` to hold it at the top |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
@@ -67,9 +69,16 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 ## Next
 
-1. ~~**Try the library in a real Vue project**~~ Done with the TEIS web (web-del-repo). What it brought: groups open on load no longer animate; `to`/`as` for router links on NavTreeItem, NavTreeGroup (a section with its own page) and Button; `toggleLabel` on Sidebar; app-wide texts (`ElasticUi` labels); TableOfContents `scroller`; SegmentedControl for filters; the connected tab's corners painted without shadows; tree-shaking (`@__PURE__`); USAGE notes on installing with `npm pack`, the theme script and what scrolls.
+1. ~~**Try the library in a real Vue project**~~ Done with the TEIS web (web-del-repo). What it brought: groups open on load no longer animate; `to`/`as` for router links on NavTreeItem, NavTreeGroup (a section with its own page) and Button; `toggleLabel` on Sidebar; app-wide texts (`ElasticUi` labels); TableOfContents `scroller`; the connected tab's corners painted without shadows; tree-shaking (`@__PURE__`); USAGE notes on installing with `npm pack`, the theme script and what scrolls.
 2. ~~**Command palette.**~~ Done. Nested pages (Linear's "Change status…") left for later.
 3. ~~**Steps.**~~ Done. The TEIS web's `AgentesPorPasos` can move onto it.
+
+### For guides and notes (from the TEIS web)
+
+1. **Markdown into the library's parts.** A markdown-it plugin (or a `Prose` part) that renders code fences as CodeBlock, GitHub alerts as Callout, and lets CodeWalkthrough, CodeDiff and AgentReplay be written in the `.md`. The TEIS web does this by hand today.
+2. **Prose.** Type for an article: headings, lists, tables, links, inline code, quotes, in the library's tokens and spacing, so a notes site does not invent its own.
+3. **A time grid**, from the TEIS web's timetable: blocks as long as they last, the "now" line in today's column, a single day on a phone.
+4. **Navigation pattern in USAGE:** sections in the Sidebar, the pages under them in Breadcrumbs' siblings.
 
 ### AI chat, next
 
@@ -93,4 +102,4 @@ Done so far: the composer (its button pulling out like a drop, send turning into
 
 ## Out of scope
 
-Data tables, charts, complex calendars and date pickers. Bouncing or stretching effects (see Philosophy in `DECISIONS.md`).
+Data tables, charts, complex calendars and date pickers. Bouncing or stretching effects (see Philosophy in `DECISIONS.md`). A segmented control (a capsule with a sliding surface) was tried and left out: Tabs switch views, Filters narrow lists.

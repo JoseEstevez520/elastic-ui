@@ -12,7 +12,6 @@ Where there is a morphing version, use it. The library's personality is things t
 | A short menu | `PopoverMorph role="menu"` + `PopoverMorphItem` | it has submenus, scrolls, or the trigger is near an edge: `Menu` |
 | A dialog | `DialogMorph` | there is no button to grow from (opened by the app, a route, a shortcut) |
 | Picking one value | `Select` | — |
-| Filtering a list, switching a view | `SegmentedControl` | the choice shows its own panel of content: `Tabs` |
 | Cards that open | `ExpandableCard` in an `ExpandableCardGroup` | the content is a page of its own: link to it |
 
 ```vue

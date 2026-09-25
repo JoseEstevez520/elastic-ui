@@ -43,6 +43,20 @@ export const defaultLabels = {
   results: '{count} results',
   commandPlaceholder: 'Type a command or search…',
   noResults: 'No results',
+  // Code
+  replay: 'Replay',
+  unchangedLines: '{count} unchanged lines',
+  addedLine: 'Added',
+  removedLine: 'Removed',
+  // Replay
+  play: 'Play',
+  pause: 'Pause',
+  previous: 'Previous',
+  restart: 'Restart',
+  stepOf: 'Step {current} of {total}',
+  allow: 'Allow',
+  deny: 'Deny',
+  askingPermission: 'Waiting for your OK',
   // Theme
   switchToLight: 'Switch to light theme',
   switchToDark: 'Switch to dark theme',
