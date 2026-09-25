@@ -10,8 +10,10 @@ export interface Message {
   id: number
   role: 'user' | 'assistant'
   text: string
-  /** A search it ran before answering. */
-  tool?: { label: string; state: 'running' | 'done' | 'error'; sources: Source[] }
+  /** A search it ran before answering; failing, what went wrong. */
+  tool?: { label: string; state: 'running' | 'done' | 'error'; sources: Source[]; detail?: string }
+  /** The answer failed: what went wrong. */
+  error?: string
 }
 
 export const SOURCES: Source[] = [
@@ -32,9 +34,13 @@ export const REPLIES = [
 
 /**
  * A fake model: status steps, then the answer in uneven bursts, as a real one streams. With
- * `searchFails` its search goes wrong, and it answers from what it knows.
+ * `searchFails` its search goes wrong, and it answers from what it knows; with `answerFails` the
+ * whole answer does, while it is still thinking, and with `failsMidway` once some words have come.
  */
-export function fakeModel(start: Omit<Message, 'id'>[], { searchFails = false } = {}) {
+export function fakeModel(
+  start: Omit<Message, 'id'>[],
+  { searchFails = false, answerFails = false, failsMidway = false } = {},
+) {
   let id = 1
   const messages = ref<Message[]>(start.map((m) => ({ ...m, id: id++ })))
   const responding = ref(false)
@@ -52,11 +58,25 @@ export function fakeModel(start: Omit<Message, 'id'>[], { searchFails = false } 
 
     // It thinks, then searches: one line saying so, which turns into what it found.
     status.value = 'Thinking'
+    if (answerFails) {
+      stream = setTimeout(() => {
+        live.error = 'Something went wrong. Try again in a moment.'
+        responding.value = false
+        streamingId.value = undefined
+      }, 1600)
+      return
+    }
     stream = setTimeout(() => {
       live.tool = { label: 'Searching the web', state: 'running', sources: SOURCES }
       stream = setTimeout(() => {
         live.tool = searchFails
-          ? { ...live.tool!, label: "Couldn't search the web", state: 'error', sources: [] }
+          ? {
+              ...live.tool!,
+              label: "Couldn't search the web",
+              state: 'error',
+              sources: [],
+              detail: "The search didn't answer in time, so this comes from what the model already knows.",
+            }
           : { ...live.tool!, label: `Read ${SOURCES.length} sources`, state: 'done' }
         stream = setTimeout(answer, 700)
       }, 1800)
@@ -66,6 +86,10 @@ export function fakeModel(start: Omit<Message, 'id'>[], { searchFails = false } 
     // hundred characters a second), with the odd longer pause.
     const answer = () => {
       live.text += (live.text ? ' ' : '') + words.splice(0, 2 + Math.floor(Math.random() * 7)).join(' ')
+      if (failsMidway && live.text.length > 120) {
+        live.error = 'The connection dropped. Try again in a moment.'
+        words.length = 0
+      }
       if (!words.length) {
         responding.value = false
         streamingId.value = undefined

@@ -9,10 +9,11 @@ import { fakeModel, REPLIES, SOURCES } from './chat.fixtures'
 import ChatSource from './ChatSource.vue'
 import ChatSources from './ChatSources.vue'
 import ChatTool from './ChatTool.vue'
+import ChatToolDetail from './ChatToolDetail.vue'
 
 // The chat both stories run, with a model that answers as it streams (see chat.fixtures).
-const chat = (options?: { searchFails?: boolean }) => ({
-  components: { Chat, ChatComposer, ChatMessage, ChatSource, ChatSources, ChatThread, ChatTool },
+const chat = (options?: { searchFails?: boolean; answerFails?: boolean; failsMidway?: boolean }) => ({
+  components: { Chat, ChatComposer, ChatMessage, ChatSource, ChatSources, ChatThread, ChatTool, ChatToolDetail },
   setup: () => ({
     ...fakeModel(
       [
@@ -33,10 +34,12 @@ const chat = (options?: { searchFails?: boolean }) => ({
           :text="m.role === 'assistant' ? m.text : undefined"
           :streaming="m.id === streamingId"
           :status="status"
+          :error="m.error"
         >
           <template v-if="m.tool" #before>
             <ChatTool :label="m.tool.label" :state="m.tool.state" :icon="Globe">
-              <ChatSources><ChatSource v-for="s in m.tool.sources" :key="s.url" v-bind="s" /></ChatSources>
+              <ChatSources v-if="m.tool.sources.length"><ChatSource v-for="s in m.tool.sources" :key="s.url" v-bind="s" /></ChatSources>
+              <ChatToolDetail v-else>{{ m.tool.detail }}</ChatToolDetail>
             </ChatTool>
           </template>
           <template v-if="m.role === 'user'">{{ m.text }}</template>
@@ -84,9 +87,19 @@ export const WholeAnswer: Story = {
 }
 
 /**
- * The search fails: its icon turns into the alert and its shimmering line into what went wrong,
- * both in the danger colour, and the answer comes from what the model knows.
+ * The search fails, but the answer comes all the same, from what the model knows: no failure for
+ * whoever reads it. The step says so quietly, and opens to tell what went wrong.
  */
 export const SearchFails: Story = {
   render: () => chat({ searchFails: true }),
+}
+
+/** The answer fails: the thinking line turns into what went wrong, in the danger colour, and no text comes. */
+export const AnswerFails: Story = {
+  render: () => chat({ answerFails: true }),
+}
+
+/** The answer fails once some words have come: they stay, and what went wrong comes below them. */
+export const FailsMidway: Story = {
+  render: () => chat({ failsMidway: true }),
 }

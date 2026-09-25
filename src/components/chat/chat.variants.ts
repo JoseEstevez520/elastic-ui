@@ -38,6 +38,10 @@ export const chatToolTriggerClass = [
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
 ]
 
+/** The fine thread what a step holds hangs from, down from under its icon. */
+export const chatThreadLineClass =
+  'ml-[7px] border-l border-[color:var(--chat-line,color-mix(in_oklab,var(--color-fg)_12%,transparent))] pl-4'
+
 // No box: a line of text, brightening under the pointer.
 export const chatSourceClass = [
   'group/source flex min-w-0 items-center gap-2.5 rounded-sm py-0.5 text-sm',

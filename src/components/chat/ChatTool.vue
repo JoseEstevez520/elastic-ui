@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui'
-import { computed, inject, onBeforeUnmount, ref, useSlots, type Component, type HTMLAttributes } from 'vue'
-import { AlertIcon, ChevronRightIcon } from '../../icons/internal'
+import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, type Component, type HTMLAttributes } from 'vue'
+import { ChevronRightIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { disclosureContentClass } from '../collapsible/collapsible.variants'
-import IconSwap from '../icon-swap/IconSwap.vue'
 import StatusText from '../status-text/StatusText.vue'
-import { ChatMessageStepsKey, ChatThreadReadyKey } from './chat.keys'
+import { ChatMessageKey, ChatThreadReadyKey } from './chat.keys'
 import { chatToolTriggerClass } from './chat.variants'
 
 /**
  * One step the answer took, such as a search, told in a single line that evolves with it. While
  * it runs the line shimmers ("Searching the web"); done, its words morph into what it found
  * ("Read 3 sources"), and if there is more to see a chevron fades in and the line opens to show
- * it (ChatSources, as a wave). Put it in ChatMessage's `before` slot, one per step.
+ * it (ChatSources, as a wave). Failing, it says so just as quietly, since the answer goes on
+ * without it, and opens to what went wrong (ChatToolDetail). The first step of an answer takes
+ * over its thinking line. Put it in ChatMessage's `before` slot, one per step.
  */
 const props = withDefaults(
   defineProps<{
@@ -28,17 +29,26 @@ const props = withDefaults(
 
 const open = defineModel<boolean>('open', { default: false })
 const slots = useSlots()
-// Only a finished step with something to show opens.
-const expandable = computed(() => props.state === 'done' && !!slots.default)
+// Only a finished step with something to show opens: what it found, or what went wrong. A step
+// failing is no failure of the answer, which goes on without it, so it stays as quiet as the rest.
+const expandable = computed(() => props.state !== 'running' && !!slots.default)
 
 // A step arriving in a conversation already on screen comes into focus; one there when the
 // conversation opened just shows.
 const arrived = inject(ChatThreadReadyKey, ref(true)).value
 
-// Its message stops saying it is thinking: this line says what is going on instead.
-const steps = inject(ChatMessageStepsKey, null)
-if (steps) steps.value++
-onBeforeUnmount(() => steps && steps.value--)
+// The first step of an answer still thinking takes over its thinking line: it starts from those
+// words, where they stood, and morphs into its own, the text sliding over to make room for the icon
+// as it comes into focus. Thinking becomes searching, rather than one line leaving as another comes.
+const message = inject(ChatMessageKey, null)
+const from = message && message.steps.value === 0 ? message.thinking.value : undefined
+if (message) message.steps.value++
+onBeforeUnmount(() => message && message.steps.value--)
+
+const becoming = ref(!!from)
+// Two frames: the first paints where it starts from, so the change after it is animated.
+onMounted(() => from && requestAnimationFrame(() => requestAnimationFrame(() => (becoming.value = false))))
+const text = computed(() => (becoming.value ? from! : props.label))
 </script>
 
 <template>
@@ -46,27 +56,30 @@ onBeforeUnmount(() => steps && steps.value--)
     v-model:open="open"
     :disabled="!expandable"
     :unmount-on-hide="false"
-    :class="cn('mb-3 text-sm', arrived && 'animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none', props.class)"
+    :class="cn('mb-3', arrived && !from && 'animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none', props.class)"
   >
     <CollapsibleTrigger :class="chatToolTriggerClass">
-      <!-- Failing, the icon turns into the alert as the words turn into what went wrong, both in the
-           danger colour and at the same pace (see StatusText). -->
-      <IconSwap
-        v-if="icon || state === 'error'"
-        :icon="state === 'error' ? AlertIcon : icon!"
+      <component
+        :is="icon"
+        v-if="icon"
+        aria-hidden="true"
         :class="
-          cn(
-            'transition-colors duration-350 ease-emphasized motion-reduce:transition-none',
-            state === 'error' ? 'text-[color:var(--color-danger)]' : 'text-fg-muted',
-          )
+          cn('size-4 shrink-0 text-fg-muted', from && 'animate-[blur-in_0.35s_var(--ease-soft)_both] motion-reduce:animate-none')
         "
       />
-      <StatusText
-        :text="label"
-        :working="state === 'running'"
-        :error="state === 'error'"
-        :class="[state !== 'running' && 'text-fg-muted', expandable && 'group-hover/tool:text-fg']"
-      />
+      <!-- Starts over the icon's place, where the thinking line's words stood (an icon and the gap). -->
+      <span
+        :class="[
+          'flex min-w-0 transition-[translate] duration-350 ease-emphasized motion-reduce:transition-none',
+          becoming && icon && '-translate-x-6',
+        ]"
+      >
+        <StatusText
+          :text="text"
+          :working="state === 'running'"
+          :class="[state !== 'running' && 'text-fg-muted', expandable && 'group-hover/tool:text-fg']"
+        />
+      </span>
       <ChevronRightIcon
         aria-hidden="true"
         :class="[
@@ -77,7 +90,8 @@ onBeforeUnmount(() => steps && steps.value--)
       />
     </CollapsibleTrigger>
     <CollapsibleContent v-if="$slots.default" :class="disclosureContentClass">
-      <!-- What it holds brings its own entrance (ChatSources comes in as a wave); it only leaves here. -->
+      <!-- What it holds brings its own entrance (ChatSources comes in as a wave); it only leaves here.
+           Failing, it holds what went wrong. -->
       <div class="pt-2 pb-1 [[data-state=closed]>&]:animate-content-out motion-reduce:animate-none">
         <slot />
       </div>

@@ -4,7 +4,14 @@ import type { InjectionKey, Ref } from 'vue'
 export const ChatThreadReadyKey: InjectionKey<Readonly<Ref<boolean>>> = Symbol('ChatThreadReady')
 
 /**
- * A message's steps (ChatTool) tell it they are there, so it stops saying it is thinking: a slot
- * filled in mid-answer does not re-render the message on its own.
+ * What a message shares with its steps (ChatTool). Each step counts itself in, so the message stops
+ * saying it is thinking: a slot filled in mid-answer does not re-render the message on its own.
+ * The first step takes over the thinking line, its words morphing from what that line said.
  */
-export const ChatMessageStepsKey: InjectionKey<Ref<number>> = Symbol('ChatMessageSteps')
+export interface ChatMessageContext {
+  steps: Ref<number>
+  /** The thinking line's words while it shows. */
+  thinking: Readonly<Ref<string | undefined>>
+}
+
+export const ChatMessageKey: InjectionKey<ChatMessageContext> = Symbol('ChatMessage')
