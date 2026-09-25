@@ -158,7 +158,7 @@ Not a template to fill: a page is composed from what it has to say. What the bes
 
 - **Detail opens where it is.** A term, a case, an example the reader may want: an ExpandableCard, a Collapsible, a PopoverMorph or a DialogMorph grows out of it and folds back. The reader keeps their place.
 - **A new page is for a new topic**, not for more of the same one.
-- **Between pages, only the content changes.** The Sidebar, the header and the search stay still; the sidebar's tab slides to the new page and the breadcrumbs morph their words. The old content leaves at once, the new comes in as a wave, block by block, and the scroll goes back to the top before it does. No fades of the whole page, no slides from the side.
+- **Between pages, only the content changes.** The Sidebar, the header and the search stay still; the sidebar's tab slides to the new page and the breadcrumbs morph their words. It happens at every click, so it stays light: the old content fades, the scroll goes back to the top, the new fades in, about a third of a second in all. No wave, no blur, no slides from the side. `PageTransition` round the RouterView's page does all of it.
 
 ## 13. Scrolling
 
