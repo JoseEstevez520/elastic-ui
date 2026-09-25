@@ -110,17 +110,17 @@ const dialogPaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-bo
                 :style="dialogPaint"
                 :class="cn(dialogMorphSurfaceClass, props.class)"
               >
-                <!-- The content comes into focus as one wave once the box has arrived, like every
-                     content in the library. A box this far from its button travels longer than a
-                     card or a panel, so the wave waits longer: content showing mid-journey reads
-                     as things sliding inside it. Leaving, it fades before the box folds back. -->
+                <!-- The content comes into focus as one wave, like every content in the library,
+                     from halfway through the box's journey (as ChatMorph's): early enough to feel
+                     alive, late enough that the box has slowed and nothing reads as sliding inside
+                     it. Leaving, it fades before the box folds back. -->
                 <motion.div
                   layout
                   :initial="false"
                   :animate="{ opacity: open ? 1 : 0, transition: open ? { duration: 0 } : contentOut }"
                   :class="
                     cn(
-                      'min-h-0 overscroll-contain scrollbar-subtle stagger-children p-6 [--stagger-delay:0.3s]',
+                      'min-h-0 overscroll-contain scrollbar-subtle stagger-children p-6 [--stagger-delay:0.25s]',
                       settled ? 'overflow-y-auto' : 'overflow-hidden',
                     )
                   "

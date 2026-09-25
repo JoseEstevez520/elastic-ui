@@ -53,7 +53,7 @@ type Story = StoryObj<typeof meta>
 /** Export turns into its own progress, then into "Exported", and back. */
 export const Default: Story = {}
 
-/** No amount to report: a soft band sweeps across while it works. */
+/** No amount to report: the label shimmers while it works. */
 export const WithoutAmount: Story = {
   render: () => ({
     components: { ProgressButton },

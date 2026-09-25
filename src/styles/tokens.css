@@ -103,11 +103,6 @@
   @keyframes popover-out {
     to { opacity: 0; transform: scale(0.99); }
   }
-  /* A band crossing from before the start edge to past the end. */
-  @keyframes progress-sweep {
-    from { translate: -100% 0; }
-    to { translate: 300% 0; }
-  }
   /* A sheen crossing its text from before the start to past the end. */
   @keyframes sheen {
     from { mask-position: 100% 0; }
@@ -301,6 +296,22 @@
     animation: none;
     mask-image: none;
     color: var(--color-fg-muted);
+  }
+}
+
+/*
+ * The same sheen on text that keeps its own colour, such as a button's label while it works: a
+ * solid button's text is not the page's.
+ */
+@utility shimmer {
+  mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.45) 40%, #000 50%, rgb(0 0 0 / 0.45) 60%);
+  mask-size: 250% 100%;
+  animation: sheen 2s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    mask-image: none;
+    opacity: 0.7;
   }
 }
 

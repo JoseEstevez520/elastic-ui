@@ -38,7 +38,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Input, Textarea | Base | A hairline that darkens on focus, no halo; `icon`, `invalid`; Textarea grows with its text |
 | Checkbox, Switch | Base | Reka UI; the check is drawn along its stroke and turns into the dash for in between; the Switch's knob slides on the library's ease |
 | CopyButton | Base | Copy turns into a check, and back after two seconds; its label morphs with TextMorph |
-| ProgressButton | Base | A button that becomes its own progress: the amount fills it and counts up beside the morphing label, then the fill turns green (done) or red (error) and it goes back to itself; a sweep when there is no amount |
+| ProgressButton | Base | A button that becomes its own progress: the amount fills it and counts up beside the morphing label, then the fill turns green (done) or red (error) and it goes back to itself; with no amount, the label shimmers |
 | SearchMorph | Special | A magnifier that widens into the field around it (button, `/` or ⌘K), folding back when left empty; no box once open, as Apple's, or `soft` as Vercel's |
 | ComposeMorph | Special | A button that becomes a small form to write something short (a comment, a reply, a note, feedback with an optional rating); sends with a quiet chevron that turns into its own progress, or ⌘↵; turns into a thank-you and folds back by itself |
 | SelectionMenu | Special | Taken from Curio: selecting text snaps to whole words and paints one rounded band per line, with a bar of actions above it (`SelectionMenuItem`) |
@@ -73,9 +73,10 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 Done so far: the composer (its button pulling out like a drop, send turning into stop), the answer flowing in as a wave, one shimmering line for what it is doing, the steps it takes (ChatTool) and ChatMorph over an Aurora. A reasoning panel was tried and left out: a single line reads better.
 
-1. **Selecting in answers.** SelectionMenu over the thread: explain, quote into the composer, copy.
-2. **Message actions.** Copy, retry, edit, quiet until hovered.
-3. **Markdown in answers.** Lists, code blocks with CopyButton, flowing in as the same wave.
+1. **Try again after a failure.** A quiet "Try again" beside an answer's error, which for now only says what went wrong.
+2. **Selecting in answers.** SelectionMenu over the thread: explain, quote into the composer, copy.
+3. **Message actions.** Copy, retry, edit, quiet until hovered.
+4. **Markdown in answers.** Lists, code blocks with CopyButton, flowing in as the same wave.
 
 ## Later / ideas
 

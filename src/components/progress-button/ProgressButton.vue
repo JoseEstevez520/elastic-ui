@@ -13,7 +13,6 @@ import {
   amountVariants,
   progressFillVariants,
   progressOutcomeText,
-  progressSweepClass,
 } from './progress-button.variants'
 
 export type ProgressButtonState = 'idle' | 'working' | 'done' | 'error'
@@ -36,7 +35,7 @@ const props = withDefaults(
     doneLabel: string
     errorLabel?: string
     icon?: Component
-    /** 0 to 100 while working. Without it, a band sweeps across instead. */
+    /** 0 to 100 while working. Without it, the label shimmers instead. */
     progress?: number
     variant?: ButtonVariants['variant']
     size?: ButtonVariants['size']
@@ -125,9 +124,12 @@ const shownIcon = computed(() => (state.value === 'done' ? CheckIcon : state.val
         <span :class="progressFillVariants({ outcome: outcome ?? 'none' })" :style="{ scale: `${fillScale} 1` }" />
       </span>
     </Transition>
-    <span v-if="working && amount === undefined" aria-hidden="true" :class="progressSweepClass" />
-    <IconSwap v-if="shownIcon" :icon="shownIcon" class="relative" />
-    <TextMorph class="relative" :text="phase" />
+    <!-- With no amount to show, the label shimmers while it works, as everything in the library
+         says it is working. -->
+    <span :class="cn('relative inline-flex items-center gap-2', working && amount === undefined && 'shimmer')">
+      <IconSwap v-if="shownIcon" :icon="shownIcon" />
+      <TextMorph :text="phase" />
+    </span>
     <!-- Room for "100%" while working, so the button keeps its width as the amount climbs. It
          unfolds as the work starts and folds away as it ends, its room and the gap before it
          closing as it fades, so the button changes width in one movement with the label. Always

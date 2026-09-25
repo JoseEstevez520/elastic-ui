@@ -29,12 +29,6 @@ export const progressOutcomeText = {
   error: 'text-[color:var(--color-danger)]',
 } as const
 
-/** With no amount to show, a soft band keeps sweeping across instead. */
-export const progressSweepClass = [
-  'pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-current opacity-[0.12]',
-  'animate-[progress-sweep_1.2s_var(--ease-in-out)_infinite] motion-reduce:hidden',
-]
-
 /**
  * The amount beside the label. Its own padding stands in for the button's gap (cancelled by the
  * negative margin), so the space before it folds away with it.

@@ -36,19 +36,19 @@ const isDisabled = computed(() => props.disabled || props.loading)
     :disabled="link ? undefined : isDisabled"
     :aria-disabled="link && isDisabled ? true : undefined"
     :aria-busy="loading || undefined"
-    :class="cn(buttonVariants({ variant, size }), props.class)"
+    :class="cn(buttonVariants({ variant, size }), loading && 'disabled:opacity-100 aria-disabled:opacity-100', props.class)"
   >
-    <svg
-      v-if="loading"
-      class="size-4 animate-spin"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.25" stroke-width="3" />
-      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-    </svg>
-    <component :is="icon" v-else-if="icon" class="size-4" aria-hidden="true" />
-    <slot />
+    <!-- Loading, the whole label shimmers, icon and all, as everything in the library says it is
+         working: no spinner, and nothing changes size. It stays unpressable but not dimmed, so
+         the sheen reads. Wrapped only then, so a layout set on the button (`justify-between`)
+         still reaches its content the rest of the time. -->
+    <span v-if="loading" class="shimmer inline-flex items-center gap-[inherit]">
+      <component :is="icon" v-if="icon" class="size-4" aria-hidden="true" />
+      <slot />
+    </span>
+    <template v-else>
+      <component :is="icon" v-if="icon" class="size-4" aria-hidden="true" />
+      <slot />
+    </template>
   </component>
 </template>

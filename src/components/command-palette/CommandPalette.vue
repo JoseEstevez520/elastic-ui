@@ -224,7 +224,7 @@ const surfacePaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-b
                     :class="
                       cn(
                         'flex min-h-0 flex-col stagger-children',
-                        fromTrigger ? '[--stagger-delay:0.3s]' : '[--stagger-delay:0.05s]',
+                        fromTrigger ? '[--stagger-delay:0.25s]' : '[--stagger-delay:0.05s]',
                       )
                     "
                   >
