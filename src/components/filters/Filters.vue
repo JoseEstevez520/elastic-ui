@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { AnimatePresence, motion } from 'motion-v'
 import { computed, nextTick, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { ChevronLeftIcon, ChevronRightIcon, FilterIcon, SearchIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
+import { contentOut } from '../../utils/motion'
 import { matchesQuery } from '../../utils/search'
 import AnimatedList from '../animated-list/AnimatedList.vue'
 import Checkbox from '../checkbox/Checkbox.vue'
@@ -178,11 +180,19 @@ const summary = computed(() =>
       </template>
     </AnimatedList>
 
-    <div v-if="summary || pills.length" :class="filtersSummaryClass">
+    <div :class="filtersSummaryClass">
       <TextMorph v-if="summary" :text="summary" role="status" />
-      <button v-if="pills.length" type="button" class="cursor-pointer rounded-[var(--radius-sm)] text-fg-muted transition-colors hover:text-fg focus-ring" @click="clear">
-        {{ labels.clearFilters }}
-      </button>
+      <AnimatePresence :initial="false">
+        <motion.button
+          v-if="pills.length"
+          type="button"
+          :exit="{ opacity: 0, transition: contentOut }"
+          class="cursor-pointer rounded-[var(--radius-sm)] text-fg-muted transition-colors hover:text-fg focus-ring"
+          @click="clear"
+        >
+          {{ labels.clearFilters }}
+        </motion.button>
+      </AnimatePresence>
     </div>
   </div>
 </template>
