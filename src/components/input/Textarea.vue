@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useFieldControl } from '../../utils/field'
 import { fieldBareClass, fieldClass } from './input.variants'
 
 /**
@@ -19,12 +20,13 @@ const props = defineProps<{
 }>()
 
 const value = defineModel<string>()
+const fieldAttrs = useFieldControl(() => props.invalid)
 </script>
 
 <template>
   <textarea
     v-model="value"
-    :aria-invalid="invalid || undefined"
+    v-bind="fieldAttrs"
     :class="
       cn(
         bare ? fieldBareClass : fieldClass,

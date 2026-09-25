@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Component, HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { useFieldControl } from '../../utils/field'
 import { inputIconVariants, inputVariants, type InputVariants } from './input.variants'
 
 /**
@@ -19,6 +20,8 @@ const props = defineProps<{
 }>()
 
 const value = defineModel<string | number>()
+// In a Field: its id, what describes it, and whether it is invalid.
+const fieldAttrs = useFieldControl(() => props.invalid)
 </script>
 
 <template>
@@ -26,8 +29,7 @@ const value = defineModel<string | number>()
     <!-- After the input, so the icon can follow its focus (`peer-focus`). -->
     <input
       v-model="value"
-      v-bind="$attrs"
-      :aria-invalid="invalid || undefined"
+      v-bind="{ ...fieldAttrs, ...$attrs }"
       :class="inputVariants({ size, withIcon: !!icon })"
     />
     <component :is="icon" v-if="icon" aria-hidden="true" :class="inputIconVariants({ size })" />

@@ -72,6 +72,7 @@ export const defaultLabels = {
   warning: 'Warning',
   caution: 'Caution',
   // Forms
+  optional: 'optional',
   comment: 'Comment',
   commentPlaceholder: 'Write a comment…',
   rating: 'Rating',

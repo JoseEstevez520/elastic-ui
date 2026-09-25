@@ -81,6 +81,15 @@ Pages that explain things, as the TEIS web needs them, following USAGE's rules f
 4. ~~**Publish on npm.**~~ Not published, on purpose: it is for my own projects. `"private": true` keeps npm from publishing it; projects install it from the repository at a tag, or as a `.tgz` where they are shared (the class web).
 5. **Bring the TEIS web up to date**, when it is picked up again: SidebarLayoutHeader for its bar, Timetable for its timetable, the rules for its explanation pages.
 
+## Versions
+
+Each version comes from a kind of project: the class web gave 0.1.
+
+- **0.2 · A complete base.** Field (label, help, error round any control), RadioGroup, Combobox, DatePicker and Calendar (the calendar growing from its field; Reka UI's primitives), AlertDialog, Slider, NumberField, TagsInput, Sheet, HoverCard, Avatar, Progress, Separator, Pagination, a plain Table, Empty, Kbd, Toggle and ToggleGroup. And a visual pass of every part in light, dark and on a phone, with the props and events named the same way across parts.
+- **0.3 · Portfolio.** An image that grows into full view and folds back, a project card that opens into its case study, a filtered gallery, a Carousel.
+- **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: empty states, lists of data (a key and its value, a figure and its trend), a Sheet from its button.
+- **AI, when a project asks for it:** trying again after a failure, a message's actions, Markdown in answers.
+
 ## Next
 
 1. ~~**Try the library in a real Vue project**~~ Done with the TEIS web (web-del-repo). What it brought: groups open on load no longer animate; `to`/`as` for router links on NavTreeItem, NavTreeGroup (a section with its own page) and Button; `toggleLabel` on Sidebar; app-wide texts (`ElasticUi` labels); TableOfContents `scroller`; the connected tab's corners painted without shadows; tree-shaking (`@__PURE__`); USAGE notes on installing with `npm pack`, the theme script and what scrolls.
@@ -112,4 +121,4 @@ Done so far: the composer (its button pulling out like a drop, send turning into
 
 ## Out of scope
 
-Data tables, charts, complex calendars and date pickers. Bouncing or stretching effects (see Philosophy in `DECISIONS.md`). A segmented control (a capsule with a sliding surface) was tried and left out: Tabs switch views, Filters narrow lists.
+Data tables, charts, and calendars of events to drag around (a date picker is in). Bouncing or stretching effects (see Philosophy in `DECISIONS.md`). A segmented control (a capsule with a sliding surface) was tried and left out: Tabs switch views, Filters narrow lists.
