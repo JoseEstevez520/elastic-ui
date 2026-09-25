@@ -50,6 +50,7 @@ export const defaultLabels = {
   message: 'Message',
   messagePlaceholder: 'Ask anything…',
   conversation: 'Conversation',
+  jumpToLatest: 'Jump to latest',
   thinking: 'Thinking',
   askAi: 'Ask AI',
   assistant: 'Assistant',

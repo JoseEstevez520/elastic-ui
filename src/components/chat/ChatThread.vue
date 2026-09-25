@@ -1,71 +1,183 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, provide, ref, useTemplateRef, type HTMLAttributes } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, type HTMLAttributes } from 'vue'
+import { ArrowDownIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
+import { prefersReducedMotion } from '../../utils/motion'
 import { ChatThreadReadyKey } from './chat.keys'
 
 /**
- * The messages, scrolling on their own. It stays at the end as the conversation grows, but
- * never pulls the reader down while they have scrolled up to reread; a new message always
- * brings the end back into view.
+ * The messages, scrolling. Sending glides your message to the top, once, leaving the room below
+ * for the answer to grow into, and the view holds still while it does, as ChatGPT and Claude now
+ * do. Once the answer reaches the bottom, the view follows it down, gliding at the pace the text
+ * comes rather than jumping to it. Scrolling up to reread lets go of it, with a button back to
+ * the end, which follows it again.
  */
 const props = defineProps<{ label?: string; class?: HTMLAttributes['class'] }>()
 
 const el = useTemplateRef<HTMLElement>('el')
-// Close enough to the end to count as following it.
-const NEAR = 80
-let following = true
-let count = 0
+const list = useTemplateRef<HTMLElement>('list')
 
 // Answers there when the thread first shows just show; only new ones come in.
 const ready = ref(false)
 provide(ChatThreadReadyKey, ready)
 
-const toEnd = () => {
-  if (el.value) el.value.scrollTop = el.value.scrollHeight
-}
-const onScroll = () => {
-  if (el.value) following = el.value.scrollHeight - el.value.scrollTop - el.value.clientHeight < NEAR
+// The room below the messages, so the newest can sit at the top however little follows it. It
+// shrinks as the answer grows into it, keeping the height of the whole the same, so nothing moves.
+const room = ref(0)
+// The message the view was brought to, kept at the top until another is sent.
+let anchor: HTMLElement | undefined
+// Space kept above it, as the list keeps above the first message.
+const TOP = 24
+
+const end = () => (list.value ? list.value.offsetTop + list.value.offsetHeight : 0)
+
+function fit() {
+  if (!el.value || !anchor?.isConnected) return (room.value = 0)
+  room.value = Math.max(0, el.value.clientHeight - (end() - anchor.offsetTop) - TOP)
 }
 
-// Created on mount: observers do not exist during server rendering. A message added always
-// scrolls to it; one growing (as an answer streams in) only while the reader follows.
+// Following the end of the answer, until the reader scrolls up.
+const following = ref(true)
+// Where the view was last left, by this or by the reader: scrolling above it is the reader going up.
+let lastTop = 0
+let frame = 0
+
+// Where the view is headed: the message just sent at the top, and past it the end of the answer
+// once that outgrows the view. One movement for both, so sending and following never pull against
+// each other.
+function goal() {
+  if (!el.value) return 0
+  const bottom = end() - el.value.clientHeight
+  return anchor?.isConnected ? Math.max(anchor.offsetTop - TOP, bottom) : bottom
+}
+
+// Each frame closes part of the way, so the view glides behind the text as it comes, never
+// jumping, and catches up faster the further behind it is. Only ever down: it never pulls the
+// reader back up.
+function follow() {
+  if (!el.value || !following.value || frame) return
+  const step = () => {
+    frame = 0
+    if (!el.value || !following.value) return
+    const gap = goal() - el.value.scrollTop
+    if (gap <= 0.5) return
+    el.value.scrollTop += prefersReducedMotion() ? gap : Math.max(1, gap * 0.12)
+    lastTop = el.value.scrollTop
+    frame = requestAnimationFrame(step)
+  }
+  frame = requestAnimationFrame(step)
+}
+
+// Whether there is more below what shows, to offer the way down once the reader has let go.
+const NEAR = 80
+const below = ref(false)
+function onScroll() {
+  if (!el.value) return
+  const top = el.value.scrollTop
+  const down = top > lastTop
+  if (top < lastTop - 4) following.value = false
+  lastTop = top
+  below.value = end() - top - el.value.clientHeight > NEAR
+  // Scrolling down to the end follows again; only being near it, as right after letting go, does not.
+  if (down && !below.value) following.value = true
+}
+// The reader heading up lets go at once, before the view has moved: the glide would otherwise
+// undo each small step of a wheel or a finger before it showed.
+function letGo() {
+  following.value = false
+  cancelAnimationFrame(frame)
+  frame = 0
+}
+const onWheel = (event: WheelEvent) => event.deltaY < 0 && letGo()
+let touchY = 0
+const onTouchStart = (event: TouchEvent) => (touchY = event.touches[0]?.clientY ?? 0)
+const onTouchMove = (event: TouchEvent) => (event.touches[0]?.clientY ?? 0) > touchY + 4 && letGo()
+const onKeydown = (event: KeyboardEvent) => ['ArrowUp', 'PageUp', 'Home'].includes(event.key) && letGo()
+
+function toLatest() {
+  following.value = true
+  follow()
+}
+
+// Created on mount: observers do not exist during server rendering. Sending adds your message
+// (and the answer's place after it): the view glides to the first of them and follows from there.
+// Growing refits the room below, and follows once the answer outgrows the view.
 let resized: ResizeObserver | undefined
 let added: MutationObserver | undefined
 onMounted(() => {
-  const list = el.value?.firstElementChild
-  if (!list) return
-  count = list.childElementCount
-  resized = new ResizeObserver(() => following && toEnd())
-  resized.observe(list)
-  added = new MutationObserver(() => {
-    if (list.childElementCount > count) {
-      following = true
-      toEnd()
-    }
-    count = list.childElementCount
+  if (!el.value || !list.value) return
+  el.value.scrollTop = el.value.scrollHeight
+  lastTop = el.value.scrollTop
+  resized = new ResizeObserver(() => {
+    fit()
+    onScroll()
+    follow()
   })
-  added.observe(list, { childList: true })
-  toEnd()
+  resized.observe(list.value)
+  resized.observe(el.value)
+  added = new MutationObserver((records) => {
+    const first = records.flatMap((r) => [...r.addedNodes]).find((n): n is HTMLElement => n instanceof HTMLElement)
+    if (!first) return
+    anchor = first
+    following.value = true
+    fit()
+    // Once the room is there to scroll into.
+    nextTick(follow)
+  })
+  added.observe(list.value, { childList: true })
   requestAnimationFrame(() => (ready.value = true))
 })
 onBeforeUnmount(() => {
+  cancelAnimationFrame(frame)
   resized?.disconnect()
   added?.disconnect()
 })
+
 const labels = useLabels()
 </script>
 
 <template>
-  <div
-    ref="el"
-    role="log"
-    :aria-label="label ?? labels.conversation"
-    :class="cn('min-h-0 flex-1 overflow-y-auto overscroll-contain scrollbar-subtle', props.class)"
-    @scroll.passive="onScroll"
-  >
-    <div class="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
-      <slot />
+  <div class="relative flex min-h-0 flex-1 flex-col">
+    <!-- `relative`: the messages' offsets are measured against it. -->
+    <div
+      ref="el"
+      role="log"
+      :aria-label="label ?? labels.conversation"
+      :class="cn('relative min-h-0 flex-1 overflow-y-auto overscroll-contain scrollbar-subtle', props.class)"
+      @scroll.passive="onScroll"
+      @wheel.passive="onWheel"
+      @touchstart.passive="onTouchStart"
+      @touchmove.passive="onTouchMove"
+      @keydown="onKeydown"
+    >
+      <div ref="list" class="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-10">
+        <slot />
+      </div>
+      <div aria-hidden="true" :style="{ height: `${room}px` }" />
     </div>
+
+    <!-- Only once the reader has scrolled up with more below: it comes into focus, and fades as the
+         end comes back into view. -->
+    <Transition
+      enter-active-class="animate-[blur-in_0.3s_var(--ease-soft)] motion-reduce:animate-none"
+      leave-active-class="animate-content-out motion-reduce:animate-none"
+    >
+      <button
+        v-if="below && !following"
+        type="button"
+        :aria-label="labels.jumpToLatest"
+        :class="[
+          'absolute bottom-3 left-1/2 flex size-9 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full',
+          'border border-border text-fg-muted shadow-soft transition-colors hover:text-fg',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+          // The composer's surface, so over colour (ChatMorph's aurora) it turns to glass with it.
+          'bg-[color:var(--chat-composer-bg,var(--color-bg))] backdrop-blur-md',
+        ]"
+        @click="toLatest"
+      >
+        <ArrowDownIcon class="size-4" />
+      </button>
+    </Transition>
   </div>
 </template>

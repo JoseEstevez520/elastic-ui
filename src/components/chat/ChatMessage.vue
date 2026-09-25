@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, provide, ref, type HTMLAttributes } from 'vue'
+import { computed, provide, ref, watch, type HTMLAttributes } from 'vue'
+import { AlertIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
 import StatusText from '../status-text/StatusText.vue'
@@ -24,7 +25,8 @@ const props = defineProps<{
   status?: string
   /**
    * The answer failed and will not come: what went wrong. The line saying what it was doing turns
-   * into it, in the danger colour. A step failing (ChatTool) is not this: the answer goes on.
+   * into it, in the danger colour and with the alert beside it. A step failing (ChatTool) is not
+   * this: the answer goes on.
    */
   error?: string
   class?: HTMLAttributes['class']
@@ -43,6 +45,28 @@ function onLeave(el: Element, done: () => void) {
   // Done either way: a fade cut short must still let the line go.
   el.animate({ opacity: [1, 0] }, { duration: 300, easing: 'linear' }).finished.then(done, done)
 }
+
+// The text is revealed at its own pace, after the model has sent it (see ChatStream). What went
+// wrong waits until all of it is on show, and follows it in: shown at once, it would come in below
+// words still appearing, pushed down line by line as they did.
+const caughtUp = ref(true)
+watch(
+  () => props.text,
+  () => (caughtUp.value = false),
+)
+
+// Failing where the thinking line stands, its words start where they were and slide over to make
+// room for the alert as it comes into focus, as a first step's do (see ChatTool). Two frames: the
+// first paints where they start from, so the change after it is animated.
+const shifting = ref(false)
+watch(
+  () => props.error,
+  (error, before) => {
+    if (!error || before || steps.value || props.text) return
+    shifting.value = true
+    requestAnimationFrame(() => requestAnimationFrame(() => (shifting.value = false)))
+  },
+)
 </script>
 
 <template>
@@ -56,22 +80,32 @@ function onLeave(el: Element, done: () => void) {
         <!-- What it is doing, until its first words or its first step. Failing, it turns into what
              went wrong. Where it no longer stood, after steps took its place or below words already
              come, it comes back as that, into focus, and below the words rather than over them. -->
-        <StatusText
-          v-if="error || (thinking && !steps)"
-          as="p"
-          :working="!error"
-          :error="!!error"
-          :text="error ?? thinking!"
+        <p
+          v-if="(error && (!text || caughtUp)) || (thinking && !steps)"
           :class="
             cn(
-              'w-fit',
+              'flex w-fit items-center gap-2',
               text ? 'mt-3' : '[grid-area:1/1]',
               error && (steps || text) && 'animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none',
             )
           "
-        />
+        >
+          <AlertIcon
+            v-if="error"
+            aria-hidden="true"
+            class="size-4 shrink-0 animate-[blur-in_0.35s_var(--ease-soft)_both] text-[color:var(--color-danger)] motion-reduce:animate-none"
+          />
+          <span
+            :class="[
+              'flex min-w-0 transition-[translate] duration-350 ease-emphasized motion-reduce:transition-none',
+              shifting && '-translate-x-6',
+            ]"
+          >
+            <StatusText :working="!error" :error="!!error" :text="error ?? thinking!" />
+          </span>
+        </p>
       </Transition>
-      <div class="[grid-area:1/1]"><ChatStream :text="text" :streaming="streaming" /></div>
+      <div class="[grid-area:1/1]"><ChatStream :text="text" :streaming="streaming" @caught-up="caughtUp = true" /></div>
     </div>
     <slot v-else />
   </div>

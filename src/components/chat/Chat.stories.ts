@@ -12,7 +12,7 @@ import ChatTool from './ChatTool.vue'
 import ChatToolDetail from './ChatToolDetail.vue'
 
 // The chat both stories run, with a model that answers as it streams (see chat.fixtures).
-const chat = (options?: { searchFails?: boolean; answerFails?: boolean; failsMidway?: boolean }) => ({
+const chat = (options?: { searchFails?: boolean; answerFails?: boolean; failsMidway?: boolean; long?: boolean }) => ({
   components: { Chat, ChatComposer, ChatMessage, ChatSource, ChatSources, ChatThread, ChatTool, ChatToolDetail },
   setup: () => ({
     ...fakeModel(
@@ -39,7 +39,7 @@ const chat = (options?: { searchFails?: boolean; answerFails?: boolean; failsMid
           <template v-if="m.tool" #before>
             <ChatTool :label="m.tool.label" :state="m.tool.state" :icon="Globe">
               <ChatSources v-if="m.tool.sources.length"><ChatSource v-for="s in m.tool.sources" :key="s.url" v-bind="s" /></ChatSources>
-              <ChatToolDetail v-else>{{ m.tool.detail }}</ChatToolDetail>
+              <ChatToolDetail v-else error>{{ m.tool.detail }}</ChatToolDetail>
             </ChatTool>
           </template>
           <template v-if="m.role === 'user'">{{ m.text }}</template>
@@ -65,6 +65,15 @@ type Story = StoryObj<typeof meta>
  * in as a wave however unevenly it arrives. Your own message just shows.
  */
 export const Default: Story = {}
+
+/**
+ * A long answer: your message glides to the top, and once the answer reaches the bottom the view
+ * follows it down, gliding at the pace the text comes. Scroll up to reread and it lets go, with a
+ * button back to the end.
+ */
+export const LongAnswer: Story = {
+  render: () => chat({ long: true }),
+}
 
 /** An answer arriving whole flows in as the same wave. */
 export const WholeAnswer: Story = {

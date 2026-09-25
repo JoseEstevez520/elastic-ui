@@ -14,6 +14,8 @@ import { ChatThreadReadyKey } from './chat.keys'
  * rather than words landing one by one.
  */
 const props = defineProps<{ text: string; streaming?: boolean }>()
+/** Everything that has come is on show; what comes after the answer can follow it in. */
+const emit = defineEmits<{ caughtUp: [] }>()
 
 // The pace follows how fast text arrives, averaged, and keeps a small cushion of it unshown, so
 // the model's pauses are absorbed instead of showing as stops (as llm-ui does). Short of the
@@ -52,6 +54,7 @@ function run() {
   // Without motion, or rendering on the server, the text simply shows.
   if (typeof requestAnimationFrame === 'undefined' || prefersReducedMotion()) {
     shown.value = props.text.length
+    emit('caughtUp')
     return
   }
   if (frame) return
@@ -62,6 +65,7 @@ function run() {
     const pending = props.text.length - exact
     if (pending <= 0) {
       frame = 0
+      emit('caughtUp')
       return
     }
     const speed = props.streaming

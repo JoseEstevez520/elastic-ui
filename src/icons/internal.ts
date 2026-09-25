@@ -22,6 +22,9 @@ export const CheckIcon: FunctionalComponent = () => h('svg', stroke, [h('path', 
 export const AlertIcon: FunctionalComponent = () =>
   h('svg', stroke, [h('circle', { cx: 12, cy: 12, r: 9 }), h('path', { d: 'M12 8v4M12 16h.01' })])
 
+/** An arrow pointing down: to the end of what scrolls. */
+export const ArrowDownIcon: FunctionalComponent = () => h('svg', stroke, [h('path', { d: 'M12 5v14M19 12l-7 7-7-7' })])
+
 /** A chevron pointing forward: the quietest way to say "go on". */
 export const ChevronRightIcon: FunctionalComponent = () => h('svg', stroke, [h('path', { d: 'm9 18 6-6-6-6' })])
 

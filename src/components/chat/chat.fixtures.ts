@@ -32,14 +32,26 @@ export const REPLIES = [
   'Sure. Open the terminal in your project and run it from there, so it can see your files.',
 ]
 
+/** An answer longer than the view, to see the view follow it down. */
+export const LONG_REPLY = [
+  'A harness is the part of a coding agent that gives the model something to work with, and it is worth taking apart piece by piece.',
+  'First it reads. The model on its own sees nothing of your project: the harness lists the files, opens the ones that matter and passes their text along, trimmed to fit what the model can hold at once.',
+  'Then it decides. With that in front of it, the model says what it wants to do next: read another file, change a function, run the tests. It only says so, in text; nothing has happened yet.',
+  'Then it acts. The harness turns that text into the real thing: it applies the edit to the file, runs the command in your terminal and captures what it printed, errors included.',
+  'And then it shows. What happened goes back to the model as the next thing it reads, so it can see whether the tests pass, fix what it broke and go on. That loop runs again and again until the task is done.',
+  'The better the harness, the more of your project the model can see and the safer its actions are: it asks before running something risky, keeps a record of every change, and lets you undo any of them.',
+  'So when an agent feels like working with someone rather than asking a search box, that feeling is mostly the harness: the model thinks, but the harness is what lets it look around and do things.',
+].join('\n\n')
+
 /**
  * A fake model: status steps, then the answer in uneven bursts, as a real one streams. With
  * `searchFails` its search goes wrong, and it answers from what it knows; with `answerFails` the
  * whole answer does, while it is still thinking, and with `failsMidway` once some words have come.
+ * With `long` it answers at length.
  */
 export function fakeModel(
   start: Omit<Message, 'id'>[],
-  { searchFails = false, answerFails = false, failsMidway = false } = {},
+  { searchFails = false, answerFails = false, failsMidway = false, long = false } = {},
 ) {
   let id = 1
   const messages = ref<Message[]>(start.map((m) => ({ ...m, id: id++ })))
@@ -51,7 +63,7 @@ export function fakeModel(
   const send = (text: string) => {
     messages.value.push({ id: id++, role: 'user', text })
     responding.value = true
-    const words = REPLIES[id % REPLIES.length]!.split(' ')
+    const words = (long ? LONG_REPLY : REPLIES[id % REPLIES.length]!).split(' ')
     messages.value.push({ id: id++, role: 'assistant', text: '' })
     const live = messages.value.at(-1)!
     streamingId.value = live.id
