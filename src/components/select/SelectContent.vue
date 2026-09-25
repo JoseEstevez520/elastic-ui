@@ -1,45 +1,64 @@
 <script setup lang="ts">
-import {
-  SelectContent,
-  SelectPortal,
-  SelectViewport,
-  useForwardPropsEmits,
-  type SelectContentEmits,
-  type SelectContentProps,
-} from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
+import { ListboxContent, ListboxRoot } from 'reka-ui'
+import { nextTick, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { useDelegatedProps } from '../../utils/useDelegatedProps'
-import { floatingPanelClass } from '../popover/popover.variants'
-import { selectContentClass } from './select.variants'
+import { useSelect } from './select.context'
 
-defineOptions({ inheritAttrs: false })
+/**
+ * The options, in the panel the field grows into, coming into focus as a wave from the field
+ * down. Picking one closes it and gives the focus back to the field (with `multiple`, it stays
+ * open to pick more).
+ */
+const props = defineProps<{ class?: HTMLAttributes['class'] }>()
+const select = useSelect()
+const root = useTemplateRef<{ highlightSelected: () => Promise<void> }>('root')
+const list = useTemplateRef<InstanceType<typeof ListboxContent>>('list')
 
-// Placed below the trigger like a Popover, rather than over it where the chosen option lines up
-// with the trigger (Reka UI's `item-aligned`), so it can appear from the trigger the same way.
-const props = withDefaults(
-  defineProps<Omit<SelectContentProps, 'position'> & { class?: HTMLAttributes['class'] }>(),
-  { sideOffset: 6, collisionPadding: 16 },
-)
-const emits = defineEmits<SelectContentEmits>()
+// Opening puts the focus in the list, on the chosen option, so the keys work at once; closing from
+// inside gives it back to the field.
+watch(select.open, async (open) => {
+  const el = (list.value?.$el as HTMLElement | undefined) ?? undefined
+  if (!open) {
+    if (el?.contains(document.activeElement)) select.trigger.value?.focus({ preventScroll: true })
+    return
+  }
+  await nextTick()
+  root.value?.highlightSelected()
+})
 
-const delegated = useDelegatedProps(props)
-const forwarded = useForwardPropsEmits(delegated, emits)
+function onPick(next: unknown) {
+  select.value.value = next as string | string[]
+  if (!select.multiple.value) {
+    select.open.value = false
+    select.trigger.value?.focus({ preventScroll: true })
+  }
+}
 </script>
 
 <template>
-  <SelectPortal>
-    <SelectContent
-      v-bind="{ ...forwarded, ...$attrs }"
-      position="popper"
-      :class="cn(floatingPanelClass, selectContentClass, props.class)"
+  <Teleport defer :to="select.panel.value" :disabled="!select.panel.value">
+    <ListboxRoot
+      ref="root"
+      :model-value="select.value.value"
+      :multiple="select.multiple.value"
+      highlight-on-hover
+      class="border-t border-[color:var(--color-border)] text-sm text-fg"
+      @update:model-value="onPick"
     >
-      <!-- Options come into focus as one wave from the trigger outwards (see `stagger-items`). A
-           list long enough to scroll opens on the chosen option, maybe mid-list, where a wave
-           counted from the first option would land all at once; there the panel's fade is enough. -->
-      <SelectViewport class="p-1 stagger-items [--stagger-delay:0.05s] [&:has(>:nth-child(9))>*]:animate-none">
+      <!-- A list long enough to scroll opens on the chosen option, maybe mid-list, where a wave
+           counted from the first would land all at once; there the panel's own entrance is enough. -->
+      <ListboxContent
+        :id="select.contentId"
+        ref="list"
+        :class="
+          cn(
+            'stagger-items max-h-72 overflow-y-auto overscroll-contain p-1 outline-none scrollbar-subtle [--stagger-delay:0.05s] [&:has(>:nth-child(9))>*]:animate-none',
+            props.class,
+          )
+        "
+      >
         <slot />
-      </SelectViewport>
-    </SelectContent>
-  </SelectPortal>
+      </ListboxContent>
+    </ListboxRoot>
+  </Teleport>
 </template>

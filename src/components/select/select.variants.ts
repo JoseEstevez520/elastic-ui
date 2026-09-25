@@ -1,17 +1,7 @@
-/** Sized like a Button, with the same outline; the chevron turns while the list is open. */
+/** The field's row: what is chosen and the chevron; its outline is the FieldMorph around it. */
 export const selectTriggerClass = [
-  'group/trigger inline-flex h-10 w-full min-w-0 cursor-pointer items-center justify-between gap-2 px-3 text-left text-sm text-fg',
-  'rounded-[var(--button-radius,var(--radius-md))] border border-[color:var(--button-border,var(--color-border-strong))]',
-  'bg-transparent transition-colors duration-150 hover:bg-bg-muted',
-  'data-[placeholder]:text-fg-muted aria-invalid:border-[color:var(--color-danger)]',
-  'focus-ring',
-  'disabled:pointer-events-none disabled:opacity-50',
-]
-
-/** At least as wide as its trigger; scrolls inside when taller than the room left. */
-export const selectContentClass = [
-  'shadow-overlay min-w-(--reka-select-trigger-width) max-w-(--reka-select-content-available-width)',
-  'max-h-[min(24rem,var(--reka-select-content-available-height))] overflow-hidden',
+  'group/trigger flex h-10 w-full min-w-0 cursor-pointer items-center justify-between gap-2 rounded-[var(--input-radius,var(--radius-md))] px-3 text-left text-sm text-fg',
+  'focus-ring-inset disabled:pointer-events-none disabled:opacity-50',
 ]
 
 /** Room on the left for the check, so options line up whether chosen or not. */

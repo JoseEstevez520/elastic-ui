@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import { SelectItem, SelectItemIndicator, SelectItemText, type SelectItemProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
+import { ListboxItem, ListboxItemIndicator } from 'reka-ui'
+import { onBeforeUnmount, onMounted, useTemplateRef, type HTMLAttributes } from 'vue'
 import { CheckIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
-import { useDelegatedProps } from '../../utils/useDelegatedProps'
+import { useSelect } from './select.context'
 import { selectItemClass } from './select.variants'
 
-const props = defineProps<SelectItemProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<{
+  value: string
+  disabled?: boolean
+  class?: HTMLAttributes['class']
+}>()
+const select = useSelect()
 
-const delegated = useDelegatedProps(props)
+// Its text, for SelectValue to show once it is chosen.
+const text = useTemplateRef<HTMLElement>('text')
+onMounted(() => select.texts.set(props.value, text.value?.textContent?.trim() ?? props.value))
+onBeforeUnmount(() => select.texts.delete(props.value))
 </script>
 
 <template>
-  <SelectItem v-bind="delegated" :class="cn(selectItemClass, props.class)">
-    <SelectItemIndicator class="absolute left-2.5 flex items-center">
+  <ListboxItem :value="value" :disabled="disabled" :class="cn(selectItemClass, props.class)">
+    <ListboxItemIndicator class="absolute left-2.5 flex items-center">
       <CheckIcon aria-hidden="true" class="size-3.5" />
-    </SelectItemIndicator>
-    <SelectItemText>
-      <slot />
-    </SelectItemText>
-  </SelectItem>
+    </ListboxItemIndicator>
+    <span ref="text"><slot /></span>
+  </ListboxItem>
 </template>

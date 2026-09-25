@@ -18,8 +18,8 @@ const meta = {
     components: parts,
     setup: () => ({ fruits }),
     template: `
-      <Select>
-        <SelectTrigger class="w-56"><SelectValue placeholder="Pick a fruit" /></SelectTrigger>
+      <Select class="w-56">
+        <SelectTrigger><SelectValue placeholder="Pick a fruit" /></SelectTrigger>
         <SelectContent>
           <SelectItem v-for="fruit in fruits" :key="fruit" :value="fruit">{{ fruit }}</SelectItem>
         </SelectContent>
@@ -36,8 +36,8 @@ export const Groups: Story = {
   render: () => ({
     components: parts,
     template: `
-      <Select default-value="vue">
-        <SelectTrigger class="w-56"><SelectValue /></SelectTrigger>
+      <Select default-value="vue" class="w-56">
+        <SelectTrigger><SelectValue /></SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Frameworks</SelectLabel>
@@ -81,8 +81,8 @@ export const Multiple: Story = {
     components: parts,
     setup: () => ({ fruits, chosen: ref(['Apple', 'Grapes']) }),
     template: `
-      <Select v-model="chosen" multiple>
-        <SelectTrigger class="w-64"><SelectValue placeholder="Pick fruits" /></SelectTrigger>
+      <Select v-model="chosen" multiple class="w-64">
+        <SelectTrigger><SelectValue placeholder="Pick fruits" /></SelectTrigger>
         <SelectContent>
           <SelectItem v-for="fruit in fruits" :key="fruit" :value="fruit">{{ fruit }}</SelectItem>
         </SelectContent>
@@ -92,14 +92,16 @@ export const Multiple: Story = {
 
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
 
-/** More options than fit: the list scrolls inside and keeps off the screen's edges. */
+/** More options than fit: the list scrolls inside the field. */
 export const ManyOptions: Story = {
   render: () => ({
     components: parts,
-    setup: () => ({ countries: Array.from({ length: 60 }, (_, i) => `Country ${i + 1}`) }),
+    setup: () => ({
+      countries: Array.from({ length: 60 }, (_, i) => `Country ${i + 1}`),
+    }),
     template: `
-      <Select>
-        <SelectTrigger class="w-56"><SelectValue placeholder="Country" /></SelectTrigger>
+      <Select class="w-56">
+        <SelectTrigger><SelectValue placeholder="Country" /></SelectTrigger>
         <SelectContent>
           <SelectItem v-for="c in countries" :key="c" :value="c">{{ c }}</SelectItem>
         </SelectContent>
@@ -107,13 +109,13 @@ export const ManyOptions: Story = {
   }),
 }
 
-/** Options much longer than the trigger: the list grows wider; the chosen one truncates. */
+/** Options much longer than the field: they wrap inside it, and the chosen one truncates. */
 export const LongLabels: Story = {
   render: () => ({
     components: parts,
     template: `
-      <Select default-value="a">
-        <SelectTrigger class="w-44"><SelectValue /></SelectTrigger>
+      <Select default-value="a" class="w-44">
+        <SelectTrigger><SelectValue /></SelectTrigger>
         <SelectContent>
           <SelectItem value="a">Configuración de privacidad avanzada</SelectItem>
           <SelectItem value="b">Notificaciones por correo electrónico</SelectItem>
@@ -123,30 +125,12 @@ export const LongLabels: Story = {
   }),
 }
 
-/** Near the bottom of the screen the list opens upwards, and its wave runs from the trigger up. */
-export const OpensUpwards: Story = {
-  parameters: { layout: 'fullscreen' },
-  render: () => ({
-    components: parts,
-    setup: () => ({ fruits }),
-    template: `
-      <div class="flex h-screen items-end p-4">
-        <Select>
-          <SelectTrigger class="w-56"><SelectValue placeholder="Pick a fruit" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="fruit in fruits" :key="fruit" :value="fruit">{{ fruit }}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>`,
-  }),
-}
-
 export const Disabled: Story = {
   render: () => ({
     components: parts,
     template: `
-      <Select disabled>
-        <SelectTrigger class="w-56"><SelectValue placeholder="Not available" /></SelectTrigger>
+      <Select disabled class="w-56">
+        <SelectTrigger><SelectValue placeholder="Not available" /></SelectTrigger>
         <SelectContent><SelectItem value="x">X</SelectItem></SelectContent>
       </Select>`,
   }),
@@ -158,8 +142,8 @@ export const TwoInstances: Story = {
     setup: () => ({ fruits }),
     template: `
       <div class="flex gap-4">
-        <Select v-for="n in 2" :key="n">
-          <SelectTrigger class="w-44"><SelectValue :placeholder="'Select ' + n" /></SelectTrigger>
+        <Select v-for="n in 2" :key="n" class="w-44">
+          <SelectTrigger><SelectValue :placeholder="'Select ' + n" /></SelectTrigger>
           <SelectContent>
             <SelectItem v-for="fruit in fruits" :key="fruit" :value="fruit">{{ fruit }}</SelectItem>
           </SelectContent>

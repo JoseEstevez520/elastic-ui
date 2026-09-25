@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { SelectGroup, type SelectGroupProps } from 'reka-ui'
+import { ListboxGroup } from 'reka-ui'
 
 /** Options under a SelectLabel. */
-const props = defineProps<SelectGroupProps>()
 </script>
 
 <template>
-  <SelectGroup v-bind="props">
+  <ListboxGroup>
     <slot />
-  </SelectGroup>
+  </ListboxGroup>
 </template>
