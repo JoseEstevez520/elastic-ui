@@ -109,32 +109,73 @@ Around the aurora:
 ## 9. Explaining with AI parts
 
 - **A session, not a picture.** To show how an agent works, play one back (AgentReplay) with a note for each moment, rather than drawing boxes and arrows.
-- **Compare side by side or one after another**, never through a selector: two AgentReplays with `layout="stacked"` in two columns, or each under its own heading. With several on screen, one plays at a time.
+- **Compare inside one figure, or one after the other**, never through a selector and never as two big interactive parts side by side, which compete for the eye: each session under its own heading. With several on screen, one plays at a time.
 - **Real-looking, and said to be an example.** Sessions are scripted: keep them plausible (real file names, real commands, real output) and say they are made up.
 - **Code that changes, shown changing**: CodeWalkthrough to build it step by step, CodeDiff for one edit. A CodeBlock alone for code that simply is.
 - **Short notes.** A note says what to notice now, in a sentence or two; the explanation around the part carries the rest.
 
-## 10. Scrolling
+## 10. Diagrams
+
+Draw each idea for what it is, as a small SVG made for it, rather than feeding it to a generic diagram: a chart of how two things grow, a row of steps, the parts of a request. What makes them read at a glance:
+
+- **Tints, not outlines.** A part is a soft tint of its colour (`color-mix(in oklab, <colour> 14%, var(--color-bg))`) with no border, corners at `--radius-md`, its label in that colour mixed with the text colour, as Timetable's blocks. Lines are only for what connects or measures.
+- **Weight says what matters.** Axes and connections at 1px in `--color-border-strong`, a grid dashed and fainter (`--color-border`), and one thing, the point of the diagram, at 2.5–3px in the accent. Everything else steps back: muted, dashed or lighter. One thing leads here too.
+- **Labels on the drawing**, beside what they name, at the end of a line or inside a tint; no legend to look up.
+- **One colour per concept, the same on every page** that shows it (the model always one colour, the harness always another), and colour only where it means something.
+- **Icons thin and small** (Lucide, 16–20px, stroke 1.5) with a short label; a process as icons joined by a plain arrow.
+- **Still, unless touched.** It comes in once, as a group, when it enters the view, and then only moves when someone acts on it. A toy (something to drag, a switch) only when touching it is the point, and one per diagram.
+- **Readable at its size:** drawn in a `viewBox` that scales with the column, text never below 12px on screen; where a horizontal drawing crowds a phone, a vertical version of it.
+- **Said in words too:** `role="img"` with an `aria-label` that tells what it shows, or a `figure` with its caption.
+
+## 11. Composing a page
+
+A page explains one thing, in sections, and each section has one job. Pick the shape that fits the job:
+
+| Shape | For | How |
+|---|---|---|
+| **Define, then show** | Opening a new idea | A one-sentence definition, then the figure that makes it concrete, then the detail. The definition is what is remembered, the figure is what makes it land. |
+| **Alternating rows** | A run of related ideas, each with its figure | Figure on one side, text on the other, swapping sides from one section to the next; a line under a row may lead into the next. |
+| **Figure held, text going on** | One process in steps | The figure stays in view while the steps scroll beside it and change it (CodeWalkthrough), rather than a figure per step. |
+| **One large figure** | The page's key idea | The figure across the column, the text under it; at most one per page. |
+| **A grid of equals** | Resources, tools, options of the same kind | Cards of one size in two or three columns, filtered with Filters when there are many. |
+| **Before and after** | Showing what a change does | Both states inside one figure, or one after the other with the difference said in words; not two large parts side by side. |
+
+Whatever the shape:
+
+- **One figure per section, and one interactive part per screen.** Two things to play with next to each other split the attention; one after the other, each gets it.
+- **Text in a comfortable column** (about 65 characters); figures may be wider, never the text.
+- **Asides in the text**: a Callout sits in the column it belongs to, not beside a figure.
+- **Space says what belongs together**: more space between sections than inside one, so each section reads as a unit without boxes round it.
+- **Light and dense alternate**: after a section heavy with a figure, one that is mostly text lets the eye rest.
+- **On a phone** every shape becomes one column: text first, then its figure.
+
+## 12. Going deeper without leaving the page
+
+- **Detail opens where it is.** A term, a case, an example the reader may want: an ExpandableCard, a Collapsible, a PopoverMorph or a DialogMorph grows out of it and folds back. The reader keeps their place.
+- **A new page is for a new topic**, not for more of the same one.
+- **Between pages, only the content changes.** The Sidebar, the header and the search stay still; the sidebar's tab slides to the new page and the breadcrumbs morph their words. The old content leaves at once, the new comes in as a wave, block by block, and the scroll goes back to the top before it does. No fades of the whole page, no slides from the side.
+
+## 13. Scrolling
 
 - **The page scrolls, not a box inside it**, unless the box is a surface of its own (a chat, a panel). Sticky parts and TableOfContents expect the window.
 - **A scrollbar is a short line** (ScrollIndicator): hidden at rest, it shows for a moment when the page opens and while you scroll. Put one in the page's layout; ChatThread brings its own.
 - **Inside a box, text fades at the edges it scrolls under** and the line runs only where the text reads (`inset`), never along the box's corners.
 
-## 11. Writing notes and guides
+## 14. Writing notes and guides
 
 - **Write Markdown and render it with `Markdown`**: it gives the article its type (Prose) and turns what you write into the parts. No hand-made HTML for code, alerts or tables.
 - Code in fences with its file: ` ```js title="server.js" `. A change as a ` ```diff ` fence. A step-by-step build as a ` ```walkthrough ` fence, a session as ` ```agent-replay `.
 - Asides as GitHub's alerts (`> [!TIP]`), one kind for each thing: note, tip, important, warning, caution. Not two in a row.
 - Headings at two levels (`##`, `###`) under the page's title, which is the only `#`; `headingsOf(source)` gives them to a TableOfContents.
 
-## 12. Finding your way
+## 15. Finding your way
 
 - **The Sidebar holds the sections**, a handful, without folding groups. The section of the page you are on is the active one.
 - **Breadcrumbs hold the rest**: the path to the page, and its siblings behind each chevron.
 - **TableOfContents** for the headings of a long page. Three levels in three places, each short.
 - **The page's bar is `SidebarLayoutHeader`**, first in the page's column: breadcrumbs on the left, search and theme on the right. It stays at the top, brings the sidebar's toggle on a phone, and tells TableOfContents and headings its height, so no offset is set by hand.
 
-## 13. Setting up a project
+## 16. Setting up a project
 
 - **Installing before npm.** Pack the library (`npm pack` in its folder) and install the `.tgz` from the project (`vendor/elastic-ui-x.y.z.tgz`). Installing the folder itself writes a path from your disk into `package.json` and links the library's own `node_modules`, with its own Vue.
 - **CSS.** `@import "tailwindcss";`, then `@import "elastic-ui/tokens.css";` and `@source` pointing at the library's `dist`: it ships no compiled CSS, your Tailwind builds its classes.

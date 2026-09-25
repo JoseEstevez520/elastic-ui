@@ -56,6 +56,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Markdown | Special | Markdown rendered as the library's parts inside Prose: code fences, diffs, walkthroughs, agent replays, GitHub alerts, anchored headings, router links; other fences through `components` |
 | TerminalReplay | Special | A terminal session played back once in view: a comment says what each command is for, the command comes in word by word, runs a moment, and its output comes in line by line (✔/✖ drawn as the library's check and cross); holds its full height; replay, copy the commands; a `terminal` fence in Markdown |
 | ImageReveal | Special | An image being made: an Aurora thinking while it waits, then grains out of the light that travel to their place and form the picture before the image comes into focus. Kept, though it does not convince yet |
+| Timetable | Base | A week on real time, from the TEIS web: blocks as tall as they last, tinted in their subject's colour and linking to its page, breaks across every day, today marked; one day with tabs on a phone, coming in as a wave; `still` for an image |
 | TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. Plain text at rest, Torph only while it changes, so letters keep their kerning. For text that becomes something else (see "Appearing is not becoming") |
 | DynamicIsland | Special | A pill that morphs into each state's size and shape (a song, a timer, an upload), content leaving and coming into focus; only moves when its state changes; inline by default, `floating` to hold it at the top |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle` + `SidebarLayoutHeader` (the page's bar, held at the top with a hairline once scrolled, the toggle on a phone, its height as `--page-header-height` for TableOfContents and headings); folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
@@ -69,8 +70,13 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 ## Now
 
-- [x] **One way of appearing everywhere.** ExpandableCard body (`stagger-children`) and the MorphHeader panel links (`stagger-items`) come into focus as one wave, like Collapsible and Accordion.
-- [x] **Close faster than open.** Opening keeps ~0.5s so the eye can follow where things come from; closing drops to 0.3s (`morphCloseTransition`) for the card's return and the header panel folding back.
+Pages that explain things, as the TEIS web needs them, following USAGE's new rules for diagrams (10), composing a page (11) and going deeper in place (12).
+
+1. **SVG diagram classes.** A few utilities for hand-drawn diagrams so every drawing follows the rules without repeating styles: a tinted part (Timetable's tint, no border), a line, a quiet line, the one emphasised line, a dashed grid, a label. Tokens only.
+2. **Page sections.** A part for the shapes of USAGE 11 that repeat a grid by hand: alternating rows (figure on one side, text on the other, swapping), and a figure held while its text goes on. One column on a phone.
+3. **Page transitions.** Around the app's RouterView: the old content leaves at once, the new comes in as a wave, block by block, and the scroll is back at the top before it does; the Sidebar and SidebarLayoutHeader stay still.
+4. **Publish on npm.** Ready (README, licence, `prepublishOnly`); waiting for a name, as `elastic-ui` is taken: `@joseestevez520/elastic-ui` keeps it.
+5. **Bring the TEIS web up to date**, when it is picked up again: SidebarLayoutHeader for its bar, Timetable for its timetable, the rules for its explanation pages.
 
 ## Next
 
@@ -82,7 +88,7 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 
 1. ~~**Markdown into the library's parts.**~~ Done: `Markdown` (markdown-it) turns fences into CodeBlock, `diff` into CodeDiff, `walkthrough` and `agent-replay` (JSON) into their parts, GitHub alerts into Callouts, headings into anchors (`headingsOf` for TableOfContents), links within the site into RouterLink.
 2. ~~**Prose.**~~ Done: the `prose` utility and `Prose`, styling only plain elements so the library's parts keep their look.
-3. **A time grid**, from the TEIS web's timetable: blocks as long as they last, the "now" line in today's column, a single day on a phone.
+3. ~~**A time grid**~~ Done: `Timetable`, from the TEIS web's timetable.
 
 ### AI chat, next
 
@@ -100,7 +106,6 @@ Done so far: the composer (its button pulling out like a drop, send turning into
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
 - Priority+ variant for MorphHeader (show what fits, the rest in a "More" menu).
 - Documentation beyond Storybook once the API settles.
-- Publishing to npm: ready (README, licence, `prepublishOnly`), waiting for a name, as `elastic-ui` is taken.
 
 ## Out of scope
 

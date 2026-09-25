@@ -49,6 +49,8 @@ export const defaultLabels = {
   unchangedLines: '{count} unchanged lines',
   addedLine: 'Added',
   removedLine: 'Removed',
+  // Timetable
+  day: 'Day',
   // Images
   creatingImage: 'Creating image',
   // Replay
