@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { DatePickerAnchor, DatePickerCalendar, DatePickerContent, DatePickerField, DatePickerInput, DatePickerRoot, DatePickerTrigger } from 'reka-ui'
 import { CalendarDays } from '@lucide/vue'
-import { computed, type HTMLAttributes } from 'vue'
-import { cn } from '../../utils/cn'
+import { DateFieldInput, DateFieldRoot } from 'reka-ui'
+import { computed, nextTick, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { toDateValue, toIso } from '../../utils/date'
 import { useFieldGroup } from '../../utils/field'
 import { labelFor } from '../../utils/labels'
-import CalendarBody from '../calendar/CalendarBody.vue'
-import { comboboxAnchorClass } from '../combobox/combobox.variants'
-import { floatingPanelClass } from '../popover/popover.variants'
+import Calendar from '../calendar/Calendar.vue'
+import FieldMorph from '../field-morph/FieldMorph.vue'
 
 /**
  * A date in a form. Typed straight into its parts (day, month, year, in the order of `locale`),
- * or picked in a month that grows from the field, as a Popover does. Dates go in and out as
- * "YYYY-MM-DD". In a Field, it is linked to the label, the help and the error.
+ * or picked in a month that the field grows into: its outline stretches down to hold the month and
+ * folds back once a day is picked. Dates go in and out as "YYYY-MM-DD". In a Field, it is linked to
+ * the label, the help and the error.
  */
 const props = withDefaults(
   defineProps<{
@@ -38,55 +37,74 @@ const value = defineModel<string>()
 const date = computed({ get: () => toDateValue(value.value), set: (v) => (value.value = toIso(v)) })
 // Its parts are a group, named after a Field's label.
 const fieldAttrs = useFieldGroup()
+
+const open = ref(false)
+const morph = useTemplateRef<InstanceType<typeof FieldMorph>>('morph')
+const button = useTemplateRef<HTMLButtonElement>('button')
+
+// Opening puts the focus on the chosen day, or today, so the arrow keys work at once; picking a
+// day closes it and gives the focus back to the button.
+watch(open, async (isOpen) => {
+  await nextTick()
+  if (isOpen) {
+    const panel = morph.value?.panel
+    ;(panel?.querySelector<HTMLElement>('[data-selected]') ?? panel?.querySelector<HTMLElement>('[data-today]'))?.focus({ preventScroll: true })
+  }
+})
+function pick(next: string | undefined) {
+  value.value = next
+  open.value = false
+  button.value?.focus({ preventScroll: true })
+}
 </script>
 
 <template>
-  <DatePickerRoot
-    v-model="date"
-    :min-value="toDateValue(min)"
-    :max-value="toDateValue(max)"
-    :locale="locale"
-    :week-starts-on="weekStartsOn"
-    :is-date-disabled="isDateDisabled ? (d) => isDateDisabled!(d.toString()) : undefined"
-    :disabled="disabled"
-    :name="name"
-    fixed-weeks
-  >
-    <!-- The whole field is what the month grows from, lined up with its start. -->
-    <DatePickerAnchor as-child>
-    <DatePickerField
+  <FieldMorph ref="morph" v-model:open="open" :class="props.class">
+    <DateFieldRoot
       v-slot="{ segments }"
+      v-model="date"
       v-bind="fieldAttrs"
       :aria-invalid="invalid || fieldAttrs['aria-invalid']"
-      :class="cn(comboboxAnchorClass, 'h-10 w-full px-3 text-sm', props.class)"
+      :min-value="toDateValue(min)"
+      :max-value="toDateValue(max)"
+      :locale="locale"
+      :is-date-unavailable="isDateDisabled ? (d) => isDateDisabled!(d.toString()) : undefined"
+      :disabled="disabled"
+      :name="name"
+      class="flex h-10 w-full items-center px-3 text-sm"
     >
       <!-- The date's parts, each typed or moved with the arrow keys; the separators between them. -->
       <template v-for="segment in segments" :key="segment.part">
-        <DatePickerInput
-          v-if="segment.part === 'literal'"
-          :part="segment.part"
-          class="text-fg-faint"
-        >{{ segment.value }}</DatePickerInput>
-        <DatePickerInput
+        <DateFieldInput v-if="segment.part === 'literal'" :part="segment.part" class="text-fg-faint">{{ segment.value }}</DateFieldInput>
+        <DateFieldInput
           v-else
           :part="segment.part"
           class="rounded-[4px] px-0.5 tabular-nums text-fg outline-none focus:bg-bg-muted data-[placeholder]:text-fg-faint"
-        >{{ segment.value }}</DatePickerInput>
+        >{{ segment.value }}</DateFieldInput>
       </template>
-      <DatePickerTrigger
+      <button
+        ref="button"
+        type="button"
         :aria-label="pickLabel"
+        :aria-expanded="open"
+        :disabled="disabled"
         class="-mr-1.5 ml-auto flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:text-fg focus-ring"
+        @click="open = !open"
       >
         <CalendarDays class="size-4" aria-hidden="true" />
-      </DatePickerTrigger>
-    </DatePickerField>
-    </DatePickerAnchor>
-    <!-- The month grows from the field, as a Popover's panel does, and as wide as it, as a Select's
-         list is; never narrower than a month needs. -->
-    <DatePickerContent :side-offset="6" :collision-padding="16" align="start" :class="cn(floatingPanelClass, 'shadow-overlay w-(--reka-popover-trigger-width) min-w-[17.5rem] p-3')">
-      <DatePickerCalendar v-slot="{ grid, weekDays }">
-        <CalendarBody :grid="grid" :week-days="weekDays" />
-      </DatePickerCalendar>
-    </DatePickerContent>
-  </DatePickerRoot>
+      </button>
+    </DateFieldRoot>
+    <template #panel>
+      <Calendar
+        :model-value="value"
+        :min="min"
+        :max="max"
+        :locale="locale"
+        :week-starts-on="weekStartsOn"
+        :is-date-disabled="isDateDisabled"
+        class="w-full px-3 pt-1 pb-3"
+        @update:model-value="pick"
+      />
+    </template>
+  </FieldMorph>
 </template>

@@ -40,7 +40,7 @@ const date = computed({ get: () => toDateValue(value.value), set: (v) => (value.
     :week-starts-on="weekStartsOn"
     :is-date-disabled="isDateDisabled ? (d) => isDateDisabled!(d.toString()) : undefined"
     fixed-weeks
-    :class="cn('w-fit', props.class)"
+    :class="cn('w-fit min-w-[16rem]', props.class)"
   >
     <CalendarBody :grid="grid" :week-days="weekDays" />
   </CalendarRoot>
