@@ -24,6 +24,8 @@ export const defaultLabels = {
   menu: 'Menu',
   mainNav: 'Main',
   sections: 'Sections',
+  breadcrumb: 'Breadcrumb',
+  pagesAtThisLevel: 'Pages at this level',
   sidebar: 'Sidebar',
   toggleSidebar: 'Toggle sidebar',
   onThisPage: 'On this page',

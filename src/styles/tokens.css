@@ -260,6 +260,11 @@
   mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
 }
 
+/* The same edge at a row's left end, for a row scrolled along to its end (Breadcrumbs). */
+@utility mask-fade-l {
+  mask-image: linear-gradient(to left, #000 calc(100% - 24px), transparent);
+}
+
 /*
  * A tab that is part of the surface beside it, as SkillNet's active nav item is part of the page:
  * rounded on its open side, flat where it meets the edge, and with the corners above and below
