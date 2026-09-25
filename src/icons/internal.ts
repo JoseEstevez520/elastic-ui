@@ -22,6 +22,10 @@ export const CheckIcon: FunctionalComponent = () => h('svg', stroke, [h('path', 
 export const AlertIcon: FunctionalComponent = () =>
   h('svg', stroke, [h('circle', { cx: 12, cy: 12, r: 9 }), h('path', { d: 'M12 8v4M12 16h.01' })])
 
+/** A magnifier: search. */
+export const SearchIcon: FunctionalComponent = () =>
+  h('svg', stroke, [h('circle', { cx: 11, cy: 11, r: 7 }), h('path', { d: 'm20 20-3.5-3.5' })])
+
 /** An arrow pointing down: to the end of what scrolls. */
 export const ArrowDownIcon: FunctionalComponent = () => h('svg', stroke, [h('path', { d: 'M12 5v14M19 12l-7 7-7-7' })])
 

@@ -170,7 +170,7 @@ const labels = useLabels()
         :class="[
           'absolute bottom-3 left-1/2 flex size-9 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full',
           'border border-border text-fg-muted shadow-soft transition-colors hover:text-fg',
-          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+          'focus-ring',
           // The composer's surface, so over colour (ChatMorph's aurora) it turns to glass with it.
           'bg-[color:var(--chat-composer-bg,var(--color-bg))] backdrop-blur-md',
         ]"

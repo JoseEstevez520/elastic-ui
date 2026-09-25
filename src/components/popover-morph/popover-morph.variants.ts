@@ -53,7 +53,7 @@ export const popoverMorphTriggerClass = [
   'relative z-10 inline-flex h-10 cursor-pointer items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap text-fg',
   'rounded-[var(--button-radius,var(--radius-md))]',
   'transition-[opacity,filter] ease-soft motion-reduce:transition-none',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
 ]
 
 /**

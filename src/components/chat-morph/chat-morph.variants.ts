@@ -45,7 +45,7 @@ export const chatMorphPanelVariants = /* @__PURE__ */ cva(
 export const chatMorphTriggerClass = [
   'relative z-10 flex size-12 cursor-pointer items-center justify-center rounded-full text-fg',
   'transition-[opacity,filter] ease-soft motion-reduce:transition-none',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
 ]
 
 /**

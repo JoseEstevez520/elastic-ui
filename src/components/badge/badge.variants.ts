@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /** A small label for a status or a tag. Colors read `--badge-*` first. */
 export const badgeVariants = /* @__PURE__ */ cva(
-  'group/badge inline-flex shrink-0 items-center rounded-full font-medium whitespace-nowrap outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'group/badge inline-flex shrink-0 items-center rounded-full font-medium whitespace-nowrap outline-none focus-ring',
   {
     variants: {
       variant: {

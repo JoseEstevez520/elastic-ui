@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { SearchIcon, XIcon } from '../../icons/internal'
 import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
@@ -79,10 +80,7 @@ const labels = useLabels()
 
 <template>
   <div role="search" :class="cn(searchMorphVariants({ variant, open }), props.class)" @focusout="onFocusOut">
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="searchMorphIconClass">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </svg>
+    <SearchIcon aria-hidden="true" :class="searchMorphIconClass" />
 
     <input
       ref="input"
@@ -103,9 +101,7 @@ const labels = useLabels()
       :class="searchMorphClearClass"
       @click="clear"
     >
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="size-3.5">
-        <path d="M18 6 6 18M6 6l12 12" />
-      </svg>
+      <XIcon aria-hidden="true" stroke-width="2.5" class="size-3.5" />
     </button>
 
     <!-- At rest the whole box is this button; open, it steps aside for the field. -->
@@ -114,7 +110,7 @@ const labels = useLabels()
       type="button"
       :aria-label="label"
       :aria-expanded="false"
-      class="absolute inset-0 cursor-pointer rounded-[inherit] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      class="absolute inset-0 cursor-pointer rounded-[inherit] focus-ring"
       @click="expand"
     />
   </div>

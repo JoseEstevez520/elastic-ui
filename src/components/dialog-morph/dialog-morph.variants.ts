@@ -2,7 +2,7 @@
 export const dialogMorphTriggerClass = [
   'relative inline-flex h-10 cursor-pointer items-center justify-center px-4 text-sm font-medium whitespace-nowrap text-fg',
   'bg-[color:var(--dialog-bg,var(--color-bg))]',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
 ]
 
 /**
@@ -24,3 +24,11 @@ export const dialogMorphOverlayClass = [
 
 /** The label left behind in the button's place fades out there as the box leaves. */
 export const dialogMorphLabelOutClass = 'animate-[fade-out_0.15s_linear_forwards] motion-reduce:invisible'
+
+/**
+ * Radius and edge of a box that morphs from its button (DialogMorph, CommandPalette), set inline on
+ * the elements sharing the `layoutId`, where Motion corrects them against its scale and animates
+ * between them. A CSS border would stretch mid-morph.
+ */
+export const morphTriggerPaint = { borderRadius: '8px', boxShadow: '0 0 0 1px var(--color-border-strong)' }
+export const morphSurfacePaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-border), var(--shadow-overlay)' }

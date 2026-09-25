@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { LayoutGroup, MotionConfig, motion } from 'motion-v'
 import { DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, ListboxRoot, VisuallyHidden } from 'reka-ui'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { computed, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { SearchIcon } from '../../icons/internal'
 import { useEventListener } from '../../composables/useEventListener'
+import { useMorphLift } from '../../composables/useMorphLift'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
 import { contentOut, EASE_EMPHASIZED, morphCloseTransition, morphTransition } from '../../utils/motion'
-import { dialogMorphLabelOutClass, dialogMorphOverlayClass } from '../dialog-morph/dialog-morph.variants'
+import {
+  dialogMorphLabelOutClass,
+  dialogMorphOverlayClass,
+  morphSurfacePaint,
+  morphTriggerPaint,
+} from '../dialog-morph/dialog-morph.variants'
 import { provideCommandPaletteContext, useCommandRegistry } from './command-palette.context'
 import {
   commandPositionerClass,
@@ -48,42 +55,19 @@ function openFromTrigger() {
   open.value = true
 }
 
-// `open` is the intent and `lifted` whether the palette is out, as in DialogMorph: closing first
-// fades the palette or its content, and only then takes it down.
-const lifted = ref(open.value)
+// Runs before useMorphLift's own watch, so each opening knows where it came from as it lifts.
 watch(open, (isOpen) => {
   if (!isOpen) return
   fromTrigger.value = clicked && props.trigger
   clicked = false
-  lifted.value = true
 })
-const returned = ref(false)
+
+// Out and back, settling and handing focus back to the button (see useMorphLift).
+const button = useTemplateRef<{ $el: HTMLElement }>('button')
+const { lifted, returned, settled, hide } = useMorphLift(open, button, () => fromTrigger.value)
 function onHidden() {
-  if (open.value) return
-  lifted.value = false
-  returned.value = fromTrigger.value
-  query.value = ''
+  if (hide()) query.value = ''
 }
-
-// The list clips until the box has arrived, so no scrollbar is drawn stretched mid-morph.
-const settled = ref(false)
-let settleTimer: ReturnType<typeof setTimeout> | undefined
-watch(open, (isOpen) => {
-  clearTimeout(settleTimer)
-  settled.value = false
-  if (isOpen) settleTimer = setTimeout(() => (settled.value = true), fromTrigger.value ? morphTransition.duration * 1000 : 0)
-})
-onMounted(() => open.value && (settled.value = true))
-onBeforeUnmount(() => clearTimeout(settleTimer))
-
-// Focus goes back to the button that lands back, as in DialogMorph. Opened from anywhere else,
-// Reka UI returns it to wherever it was.
-const triggerRef = useTemplateRef<{ $el: HTMLElement }>('button')
-watch(lifted, async (isLifted) => {
-  if (isLifted || !returned.value) return
-  await nextTick()
-  triggerRef.value?.$el.focus({ preventScroll: true })
-})
 
 // The first result is ready for Enter as soon as the palette opens.
 const listbox = useTemplateRef<{ highlightFirstItem: () => void; highlightItem: (value: unknown) => void }>('listbox')
@@ -136,10 +120,6 @@ function onContentDone() {
 // back. Any other change of size just happens, such as the list easing its own height while
 // filtering, instead of the box being scaled to it.
 
-// Painted inline on the elements sharing the `layoutId`, where Motion corrects them against its
-// scale (see DialogMorph).
-const triggerPaint = { borderRadius: '8px', boxShadow: '0 0 0 1px var(--color-border-strong)' }
-const surfacePaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-border), var(--shadow-overlay)' }
 </script>
 
 <template>
@@ -155,7 +135,7 @@ const surfacePaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-b
             :layout-id="`${id}-surface`"
             :layout-dependency="lifted"
             :transition="{ layout: morphCloseTransition }"
-            :style="triggerPaint"
+            :style="morphTriggerPaint"
             :class="commandTriggerClass"
             @click="openFromTrigger"
           >
@@ -170,10 +150,7 @@ const surfacePaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-b
               "
             >
               <slot name="trigger">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-3.5-3.5" />
-                </svg>
+                <SearchIcon aria-hidden="true" class="size-4" />
                 {{ label }}
               </slot>
             </motion.span>
@@ -199,7 +176,7 @@ const surfacePaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-b
                 :transition="{ layout: morphTransition }"
                 :initial="fromTrigger ? false : { opacity: 0, scale: 0.97 }"
                 :animate="appear"
-                :style="surfacePaint"
+                :style="morphSurfacePaint"
                 :class="cn(commandSurfaceClass, props.class)"
                 @animation-complete="onSurfaceDone"
               >

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Component, HTMLAttributes } from 'vue'
+import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { badgeLabelVariants, badgeRemoveClass, badgeVariants, type BadgeVariants } from './badge.variants'
 
@@ -40,9 +41,7 @@ const emit = defineEmits<{ remove: [] }>()
       :class="badgeRemoveClass"
       @click="emit('remove')"
     >
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="size-3">
-        <path d="M18 6 6 18M6 6l12 12" />
-      </svg>
+      <XIcon aria-hidden="true" stroke-width="2.5" class="size-3" />
     </button>
   </span>
 </template>

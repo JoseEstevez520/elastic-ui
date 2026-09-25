@@ -74,6 +74,8 @@
   --animate-disclosure-close: disclosure-close 0.3s var(--ease-emphasized);
   /* Content leaves at once, before the shape folds back. */
   --animate-content-out: fade-out 0.15s linear both;
+  /* Content coming into focus (see `blur-in`): the library's one way of appearing. */
+  --animate-blur-in: blur-in 0.45s var(--ease-soft) both;
 
   /*
    * Floating panels (Popover, and later Select and menus) appear from their trigger: they fade in
@@ -136,6 +138,14 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
+}
+
+/* The library's focus ring: an accent outline just off the element, only for the keyboard. */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
 }
 
 /*

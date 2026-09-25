@@ -9,7 +9,7 @@ export const buttonVariants = /* @__PURE__ */ cva(
     'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap font-medium select-none',
     'rounded-[var(--button-radius,var(--radius-md))]',
     'transition-[background-color,color,border-color,scale] duration-150 ease-out active:scale-[0.97]',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+    'focus-ring',
     'disabled:pointer-events-none disabled:opacity-50',
     'aria-disabled:pointer-events-none aria-disabled:opacity-50',
   ],

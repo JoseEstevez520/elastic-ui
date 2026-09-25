@@ -20,7 +20,7 @@ const props = defineProps<{ error?: boolean; class?: HTMLAttributes['class'] }>(
         chatThreadLineClass,
         'flex items-start gap-2 text-sm leading-relaxed',
         error ? 'text-[color:var(--color-danger)]' : 'text-fg-muted',
-        '[[data-state=open]>*>&]:animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none',
+        '[[data-state=open]>*>&]:animate-blur-in motion-reduce:animate-none',
         props.class,
       )
     "

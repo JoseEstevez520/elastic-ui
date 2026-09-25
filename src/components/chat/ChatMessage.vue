@@ -3,6 +3,7 @@ import { computed, provide, ref, watch, type HTMLAttributes } from 'vue'
 import { AlertIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
+import { afterPaint } from '../../utils/motion'
 import StatusText from '../status-text/StatusText.vue'
 import ChatStream from './ChatStream.vue'
 import { ChatMessageKey } from './chat.keys'
@@ -56,15 +57,14 @@ watch(
 )
 
 // Failing where the thinking line stands, its words start where they were and slide over to make
-// room for the alert as it comes into focus, as a first step's do (see ChatTool). Two frames: the
-// first paints where they start from, so the change after it is animated.
+// room for the alert as it comes into focus, as a first step's do (see ChatTool).
 const shifting = ref(false)
 watch(
   () => props.error,
   (error, before) => {
     if (!error || before || steps.value || props.text) return
     shifting.value = true
-    requestAnimationFrame(() => requestAnimationFrame(() => (shifting.value = false)))
+    afterPaint(() => (shifting.value = false))
   },
 )
 </script>
@@ -86,7 +86,7 @@ watch(
             cn(
               'flex w-fit items-center gap-2',
               text ? 'mt-3' : '[grid-area:1/1]',
-              error && (steps || text) && 'animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none',
+              error && (steps || text) && 'animate-blur-in motion-reduce:animate-none',
             )
           "
         >

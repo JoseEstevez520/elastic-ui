@@ -3,6 +3,7 @@ import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui
 import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, type Component, type HTMLAttributes } from 'vue'
 import { ChevronRightIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
+import { afterPaint } from '../../utils/motion'
 import { disclosureContentClass } from '../collapsible/collapsible.variants'
 import StatusText from '../status-text/StatusText.vue'
 import { ChatMessageKey, ChatThreadReadyKey } from './chat.keys'
@@ -46,8 +47,7 @@ if (message) message.steps.value++
 onBeforeUnmount(() => message && message.steps.value--)
 
 const becoming = ref(!!from)
-// Two frames: the first paints where it starts from, so the change after it is animated.
-onMounted(() => from && requestAnimationFrame(() => requestAnimationFrame(() => (becoming.value = false))))
+onMounted(() => from && afterPaint(() => (becoming.value = false)))
 const text = computed(() => (becoming.value ? from! : props.label))
 </script>
 
@@ -56,7 +56,7 @@ const text = computed(() => (becoming.value ? from! : props.label))
     v-model:open="open"
     :disabled="!expandable"
     :unmount-on-hide="false"
-    :class="cn('mb-3', arrived && !from && 'animate-[blur-in_0.45s_var(--ease-soft)_both] motion-reduce:animate-none', props.class)"
+    :class="cn('mb-3', arrived && !from && 'animate-blur-in motion-reduce:animate-none', props.class)"
   >
     <CollapsibleTrigger :class="chatToolTriggerClass">
       <component

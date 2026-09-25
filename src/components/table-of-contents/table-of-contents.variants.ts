@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority'
 export const tocLinkVariants = /* @__PURE__ */ cva(
   [
     'block py-1 text-sm leading-snug transition-colors duration-200',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+    'focus-ring',
   ],
   {
     variants: {

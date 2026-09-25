@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { AnimatePresence, MotionConfig, motion } from 'motion-v'
 import { computed, onBeforeUnmount, ref, shallowRef, watch, type HTMLAttributes } from 'vue'
+import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
@@ -193,9 +194,7 @@ const labels = useLabels()
                 class="-m-1 flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-[var(--radius-sm)] text-fg-faint transition-colors hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
                 @click="dismissToast(t.id)"
               >
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-3.5">
-                  <path d="M18 6 6 18M6 6l12 12" />
-                </svg>
+                <XIcon aria-hidden="true" class="size-3.5" />
               </button>
             </div>
           </motion.li>

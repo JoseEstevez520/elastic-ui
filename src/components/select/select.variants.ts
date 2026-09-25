@@ -4,7 +4,7 @@ export const selectTriggerClass = [
   'rounded-[var(--button-radius,var(--radius-md))] border border-[color:var(--button-border,var(--color-border-strong))]',
   'bg-transparent transition-colors duration-150 hover:bg-bg-muted',
   'data-[placeholder]:text-fg-muted',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
   'disabled:pointer-events-none disabled:opacity-50',
 ]
 

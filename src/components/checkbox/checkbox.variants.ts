@@ -8,7 +8,7 @@ export const checkboxBoxClass = [
   'transition-[background-color,border-color] duration-150 ease-out',
   'data-[state=checked]:border-[color:var(--checkbox-bg,var(--color-accent))] data-[state=checked]:bg-[color:var(--checkbox-bg,var(--color-accent))]',
   'data-[state=indeterminate]:border-[color:var(--checkbox-bg,var(--color-accent))] data-[state=indeterminate]:bg-[color:var(--checkbox-bg,var(--color-accent))]',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
   'disabled:cursor-not-allowed',
 ]
 

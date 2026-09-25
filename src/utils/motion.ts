@@ -25,3 +25,11 @@ export const contentOut = { duration: 0.16, ease: 'linear' } as const
 export function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
+
+/**
+ * Runs after the browser has painted the current state: for a change that should animate from
+ * what just appeared, since a change in the same frame would simply land.
+ */
+export function afterPaint(callback: () => void) {
+  requestAnimationFrame(() => requestAnimationFrame(callback))
+}

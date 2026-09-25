@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ListboxFilter } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
+import { SearchIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
 import { useCommandPaletteContext } from './command-palette.context'
@@ -16,10 +17,7 @@ const { query } = useCommandPaletteContext()
 
 <template>
   <div :class="cn(commandInputRowClass, props.class)">
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="commandIconClass">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
-    </svg>
+    <SearchIcon aria-hidden="true" :class="commandIconClass" />
     <ListboxFilter
       v-model="query"
       auto-focus

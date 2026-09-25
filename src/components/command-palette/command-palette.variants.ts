@@ -2,7 +2,7 @@
 export const commandTriggerClass = [
   'relative inline-flex h-10 cursor-pointer items-center gap-2 pr-4 pl-3 text-sm whitespace-nowrap text-fg-muted',
   'bg-[color:var(--command-bg,var(--color-bg))]',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
 ]
 
 /**

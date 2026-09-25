@@ -20,6 +20,6 @@ export const disclosureInnerClass = [
 
 export const disclosureTriggerClass = [
   'group/trigger flex w-full cursor-pointer items-center justify-between gap-4 py-3 text-left font-medium text-fg',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
   'disabled:pointer-events-none disabled:opacity-50',
 ]

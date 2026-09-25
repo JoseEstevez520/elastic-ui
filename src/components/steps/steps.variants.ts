@@ -45,5 +45,5 @@ export const stepsContentClass = 'flex flex-col gap-4 pt-2 pb-0 text-sm leading-
 export const stepsNextClass = [
   'group/next inline-flex cursor-pointer items-center gap-1 self-start rounded-[var(--radius-sm)] text-sm font-medium',
   'text-fg-muted transition-colors duration-150 hover:text-fg',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+  'focus-ring',
 ]
