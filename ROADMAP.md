@@ -52,6 +52,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | TextMorph | Base | Built on Torph (MIT): shared letters travel to their new places, the rest leave and arrive, numbers roll by place value; the library's pace, no scaling. For text that becomes something else (see "Appearing is not becoming") |
 | DynamicIsland | Special | A pill that morphs into each state's size and shape (a song, a timer, an upload), content leaving and coming into focus; only moves when its state changes; inline by default, `floating` to hold it at the top |
 | Sidebar | Special | `SidebarLayout` + `Sidebar` + `SidebarToggle`; folds to a rail of icons as in SkillNet (letters erased, then the width closes 180ms later; written back on unfold), labels back as tooltips; a group opened from the rail unfolds it and moves with it; long labels fade at their edge; `plain` and `connected` (SkillNet's tab of the page); slides in as a panel on a phone |
+| CommandPalette | Special | `CommandInput`, `CommandList`, `CommandGroup`, `CommandItem`, `CommandEmpty` on Reka UI's Dialog and Listbox. Clicked, its button grows into it (as DialogMorph); from an optional `shortcut` (⌘K / Ctrl+K or `/`, off by default) or `v-model:open` there is nothing to grow from, so it appears near the top as a Popover; it leaves the way it came. Finds by text, `value` and `keywords`, ignoring accents and word order; the list eases between heights (as cmdk), groups hide while empty, items coming back come into focus; the highlight survives the list shrinking under the pointer |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
@@ -63,7 +64,7 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 ## Next
 
 1. ~~**Try the library in a real Vue project**~~ Done with the TEIS web (web-del-repo). What it brought: groups open on load no longer animate; `to`/`as` for router links on NavTreeItem, NavTreeGroup (a section with its own page) and Button; `toggleLabel` on Sidebar; app-wide texts (`ElasticUi` labels); TableOfContents `scroller`; SegmentedControl for filters; the connected tab's corners painted without shadows; tree-shaking (`@__PURE__`); USAGE notes on installing with `npm pack`, the theme script and what scrolls.
-2. **Command palette.** DialogMorph with a search field and a list.
+2. ~~**Command palette.**~~ Done. Nested pages (Linear's "Change status…") left for later.
 3. **Steps.** Numbered steps joined by a line that fills as you go, for step-by-step visuals such as the TEIS web's agents.
 
 ### AI chat, next

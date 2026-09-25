@@ -30,6 +30,8 @@ export const defaultLabels = {
   // Search
   search: 'Search',
   searchPlaceholder: 'Search…',
+  commandPlaceholder: 'Type a command or search…',
+  noResults: 'No results',
   // Theme
   switchToLight: 'Switch to light theme',
   switchToDark: 'Switch to dark theme',
