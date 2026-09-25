@@ -40,7 +40,7 @@ const meta = {
     end: '15:20',
     events,
     breaks: [{ start: '11:30', end: '12:00', label: 'Break', icon: Coffee }],
-    today: 2,
+    startDay: 2,
     // Every session's start, and the break's.
     marks: [...SESSIONS.slice(0, 4), '11:30', ...SESSIONS.slice(4)],
   },
@@ -55,10 +55,10 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /**
- * A week on real time: each block as tall as it lasts, the break across every day, Wednesday marked
- * as today. Narrow the window: one day shows, today first, with tabs for the rest.
+ * A week on real time: each block as tall as it lasts, the break across every day, no day singled
+ * out. Narrow the window: one day shows (today's, here Wednesday), with tabs for the rest.
  */
 export const Default: Story = {}
 
-/** As an image would show it: the whole week, with no today. */
+/** As an image would show it: the whole week, even on a phone. */
 export const Still: Story = { args: { still: true } }

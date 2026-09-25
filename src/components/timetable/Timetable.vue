@@ -10,8 +10,9 @@ import TimetableBlock from './TimetableBlock.vue'
 import type { TimetableBreak, TimetableEvent } from './timetable.types'
 
 /**
- * A week of classes, shifts or meetings, laid out on real time: each block is as tall as it lasts,
- * a break runs across every day and today is marked. Each block is tinted in its own colour and can link to its page. On a
+ * A week of classes, shifts or meetings, laid out on real time: each block is as tall as it lasts
+ * and a break runs across every day. Nothing marks the day it is: the week reads the same any day.
+ * Each block is tinted in its own colour and can link to its page. On a
  * phone, where five columns do not fit, it shows one day, today first, with tabs for the others.
  */
 const props = withDefaults(
@@ -25,12 +26,9 @@ const props = withDefaults(
     breaks?: TimetableBreak[]
     /** The times down the side; by default where each block and break starts, and the day's end. */
     marks?: string[]
-    /** Which day is today, from 0; by default the real one, Monday being 0. */
-    today?: number
-    /**
-     * As an image would show it: the whole week, with no today, since a saved copy should not say
-     * which day it was saved on.
-     */
+    /** The day shown first on a phone, from 0; by default today's, Monday being 0. */
+    startDay?: number
+    /** The whole week even on a phone, as an image of it would show; no links or tooltips. */
     still?: boolean
     /** Names the day tabs on a phone. */
     dayLabel?: string
@@ -59,9 +57,9 @@ const realToday = () => {
   const d = new Date().getDay()
   return d >= 1 && d <= props.days.length ? d - 1 : -1
 }
-const today = computed(() => (props.still ? -1 : (props.today ?? realToday())))
+const firstDay = props.startDay ?? Math.max(0, realToday())
 
-// One day on a phone, today first.
+// One day on a phone, today's first.
 const narrow = ref(false)
 let query: MediaQueryList | undefined
 const onQuery = () => (narrow.value = !!query?.matches)
@@ -71,7 +69,7 @@ onMounted(() => {
   query.addEventListener('change', onQuery)
 })
 onBeforeUnmount(() => query?.removeEventListener('change', onQuery))
-const chosen = ref(String(Math.max(0, today.value)))
+const chosen = ref(String(firstDay))
 const shownDays = computed(() => (narrow.value && !props.still ? [Number(chosen.value)] : props.days.map((_, i) => i)))
 const column = (day: number) => shownDays.value.indexOf(day) + 2
 const shownEvents = computed(() => props.events.filter((e) => shownDays.value.includes(e.day)))
@@ -89,7 +87,7 @@ const choose = (value: string) => {
     <Tabs v-if="!still" :model-value="chosen" class="gap-0 sm:hidden" @update:model-value="choose($event as string)">
       <TabsList :aria-label="dayLabel">
         <TabsTrigger v-for="(day, i) in days" :key="day" :value="String(i)">
-          {{ day.slice(0, 3) }}<span v-if="i === today" class="ml-0.5 text-fg-faint">·</span>
+          {{ day.slice(0, 3) }}
         </TabsTrigger>
       </TabsList>
     </Tabs>
@@ -102,11 +100,10 @@ const choose = (value: string) => {
         <div
           v-for="i in shownDays"
           :key="days[i]"
-          :class="['text-center text-sm', i === today ? 'font-semibold text-fg' : 'text-fg-muted']"
+          class="text-center text-sm text-fg-muted"
           :style="{ gridColumn: column(i), gridRow: 1 }"
         >
           {{ days[i] }}
-          <span v-if="i === today" aria-hidden="true" class="mx-auto mt-0.5 block size-1 rounded-full bg-fg" />
         </div>
 
         <span

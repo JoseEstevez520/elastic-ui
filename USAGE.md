@@ -129,25 +129,27 @@ Draw each idea for what it is, as a small SVG made for it, rather than feeding i
 
 ## 11. Composing a page
 
-A page explains one thing, in sections, and each section has one job. Pick the shape that fits the job:
+Not a template to fill: a page is composed from what it has to say. What the best explaining pages share (Distill's articles, Tufte's handouts, Nielsen Norman's eye-tracking, Every Layout's primitives):
 
-| Shape | For | How |
-|---|---|---|
-| **Define, then show** | Opening a new idea | A one-sentence definition, then the figure that makes it concrete, then the detail. The definition is what is remembered, the figure is what makes it land. |
-| **Alternating rows** | A run of related ideas, each with its figure | Figure on one side, text on the other, swapping sides from one section to the next; a line under a row may lead into the next. |
-| **Figure held, text going on** | One process in steps | The figure stays in view while the steps scroll beside it and change it (CodeWalkthrough), rather than a figure per step. |
-| **One large figure** | The page's key idea | The figure across the column, the text under it; at most one per page. |
-| **A grid of equals** | Resources, tools, options of the same kind | Cards of one size in two or three columns, filtered with Filters when there are many. |
-| **Before and after** | Showing what a change does | Both states inside one figure, or one after the other with the difference said in words; not two large parts side by side. |
+- **A figure sits by the text it explains**, right after the paragraph that calls for it, or in the margin beside it; never in a region of its own further down the page. Reading and looking are one movement.
+- **Aligned by default.** Text and figures in one column read and scan best. Putting figures on alternating sides slows scanning; keep it for the odd moment, and only with figures that carry information, never with decoration.
+- **Each thing as wide as it needs, and no wider**, rather than equal columns:
 
-Whatever the shape:
+  | Width | For |
+  |---|---|
+  | Text (about 65 characters) | Paragraphs, lists, asides (Callout), small code |
+  | A little wider | Most figures, code, tables |
+  | The page | A figure that needs the room: a timetable, a wide diagram, a comparison inside one figure |
+  | The screen | Rarely: one image or figure that is the page's moment |
+  | The margin | A note, a definition, a small figure beside the line it belongs to |
 
-- **One figure per section, and one interactive part per screen.** Two things to play with next to each other split the attention; one after the other, each gets it.
-- **Text in a comfortable column** (about 65 characters); figures may be wider, never the text.
-- **Asides in the text**: a Callout sits in the column it belongs to, not beside a figure.
-- **Space says what belongs together**: more space between sections than inside one, so each section reads as a unit without boxes round it.
-- **Light and dense alternate**: after a section heavy with a figure, one that is mostly text lets the eye rest.
-- **On a phone** every shape becomes one column: text first, then its figure.
+- **No empty room.** Space separates ideas; it is never a hole left by a layout. A small figure is not put in a big column: it goes with its text, or in the margin. If two things side by side leave one short and one long, they go one after the other.
+- **Side by side only when both fit and both matter at once**, as a term and its figure, or two small figures to compare; when there is no room it becomes one after the other on its own, measured from the content, not from a fixed breakpoint.
+- **One thing to play with per screen.** Two interactive parts next to each other split the attention.
+- **A process told in steps can hold its figure** in view while the steps scroll beside it (CodeWalkthrough), when the figure changes with the steps; a figure that does not change goes with its text instead.
+- **Say it, then show it.** A new idea opens with a sentence that defines it, then the figure that makes it concrete, then the detail.
+- **Rhythm:** more space between ideas than inside one, so each reads as a unit without a box; after something dense, something light.
+- **On a phone** everything is one column, each figure after the text that calls for it, and the margin's notes back in the text where they belong.
 
 ## 12. Going deeper without leaving the page
 
