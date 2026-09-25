@@ -63,3 +63,26 @@ export function uniqueSlug(slug: string, seen: Map<string, number>) {
   seen.set(slug, count + 1)
   return count ? `${slug}-${count}` : slug
 }
+
+/**
+ * A terminal session written as it looks: `$ ` starts a command, `# ` a comment before the next
+ * one, and any other line is what the last command printed.
+ */
+export function parseTerminal(code: string) {
+  const entries: { comment?: string; command: string; output?: string }[] = []
+  let comment: string | undefined
+  for (const line of code.replace(/\n$/, '').split('\n')) {
+    if (line.startsWith('$ ')) {
+      entries.push({ comment, command: line.slice(2) })
+      comment = undefined
+    } else if (line.startsWith('# ')) {
+      comment = line.slice(2)
+    } else if (entries.length) {
+      const last = entries.at(-1)!
+      last.output = last.output === undefined ? line : `${last.output}\n${line}`
+    }
+  }
+  // Blank lines left between a command's output and the next comment are not output.
+  for (const entry of entries) entry.output = entry.output?.replace(/\n+$/, '') || undefined
+  return entries
+}

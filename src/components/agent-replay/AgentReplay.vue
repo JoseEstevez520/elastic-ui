@@ -1,12 +1,6 @@
-<script lang="ts">
-import { ref as moduleRef } from 'vue'
-
-// How many replays on the page are playing, shared by all of them.
-const playersNow = moduleRef(0)
-</script>
-
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { usePlayInTurn } from '../../composables/usePlayInTurn'
 import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon, ReplayIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
@@ -206,37 +200,18 @@ function restart() {
   shown.value = base()
 }
 
-// It starts on its own the first time it comes into view, but only one plays at a time: with
-// several on screen, the next waits for the one playing to finish. New events play from the start.
+// It starts on its own the first time it comes into view, one at a time; new events play from
+// the start.
 const root = useTemplateRef<HTMLElement>('root')
-const inView = ref(false)
-let started = false
-watch(playing, (now, before) => {
-  if (now && !before) playersNow.value++
-  if (!now && before) playersNow.value--
-})
-watch([inView, playersNow], () => {
-  if (started || !inView.value || playersNow.value > 0) return
-  started = true
-  play()
-})
-let observer: IntersectionObserver | undefined
-onMounted(() => {
-  observer = new IntersectionObserver(([entry]) => (inView.value = !!entry?.isIntersecting), { threshold: 0.5 })
-  if (root.value) observer.observe(root.value)
-})
+const { hasStarted } = usePlayInTurn(root, playing, play)
 watch(
   () => props.events,
   () => {
     restart()
-    if (started) play()
+    if (hasStarted()) play()
   },
 )
-onBeforeUnmount(() => {
-  observer?.disconnect()
-  if (playing.value) playersNow.value--
-  stopTimers()
-})
+onBeforeUnmount(stopTimers)
 
 const note = computed(() => (shown.value ? current.value?.note : props.intro))
 const counter = computed(() => labels.stepOf.replace('{current}', String(shown.value)).replace('{total}', String(props.events.length)))

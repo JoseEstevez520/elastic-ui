@@ -8,7 +8,8 @@ import CodeBlock from '../code-block/CodeBlock.vue'
 import CodeDiff from '../code-diff/CodeDiff.vue'
 import CodeWalkthrough from '../code-walkthrough/CodeWalkthrough.vue'
 import CodeWalkthroughStep from '../code-walkthrough/CodeWalkthroughStep.vue'
-import { markdown, parseInfo, slugify, splitDiff, textOf, uniqueSlug, type Token } from './markdown.utils'
+import TerminalReplay from '../terminal-replay/TerminalReplay.vue'
+import { markdown, parseInfo, parseTerminal, slugify, splitDiff, textOf, uniqueSlug, type Token } from './markdown.utils'
 
 const ALERT = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/
 
@@ -17,7 +18,8 @@ const ALERT = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/
  * into the parts, not into plain HTML:
  *
  * - a code fence into a CodeBlock (```js title="server.js"), a `diff` fence into a CodeDiff that
- *   plays the edit, with `-` and `+` lines as any diff;
+ *   plays the edit, with `-` and `+` lines as any diff, and a `terminal` fence into a TerminalReplay
+ *   (`$ ` a command, `# ` a comment, anything else what it printed);
  * - GitHub's alerts (`> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`) into Callouts;
  * - a `walkthrough` fence into a CodeWalkthrough and an `agent-replay` fence into an AgentReplay,
  *   both written as JSON (a step's `text` is Markdown too; an event's `icon` names one in `icons`);
@@ -79,6 +81,7 @@ export default defineComponent({
       if (custom) return h(custom, { code, ...attrs })
       try {
         if (language === 'diff') return h(CodeDiff, { ...splitDiff(code), file: title })
+        if (language === 'terminal') return h(TerminalReplay, { entries: parseTerminal(code), title })
         if (language === 'agent-replay') {
           const data = JSON.parse(code) as { events: (AgentReplayEvent & { icon?: string })[]; intro?: string }
           const events = data.events.map((event) =>
