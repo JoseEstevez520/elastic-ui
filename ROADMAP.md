@@ -27,7 +27,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | MorphHeader | Special | Bar → pill → panel; collapses to the menu when the links don't fit (measured); `menu="always"` |
 | Popover | Base | Reka UI; fades in from 97% at the corner facing its trigger, with a soft shadow; content comes in as a wave; closes faster |
 | PopoverMorph | Special | The trigger's box grows into the panel and folds back, staying above its neighbours until it has; label blurs out, content comes into focus; `align`, `side`; `role="menu"` with `PopoverMorphItem` (arrow keys, typeahead, closes on choosing) for short menus |
-| Select | Base | Reka UI; the list appears from its trigger like a Popover (shared `floatingPanelClass`), options in a wave from the trigger outwards (none past eight); groups, separator, `multiple`, form-ready |
+| Select | Base | Grows out of its field (FieldMorph): the outline stretches down to hold the options and folds back once one is picked; the chosen one highlighted on opening; options in a wave (none past eight); groups, separator, `multiple`, form-ready; its width on `Select` |
 | Menu | Base | Reka UI dropdown on Popover's surface; items with `icon` and `shortcut`, checks, radios, labels, separators, submenus; items in a wave from the trigger. For long lists, submenus and triggers near an edge; PopoverMorph's menu for the rest |
 | AnimatedList | Base | Leaving items fade out first; the rest slide along one line when they all go the same way, and where any would cut across another (a reorder, cards reflowing in a grid) they fade and come into focus at their new place as a wave, so nothing ever overlaps; new ones wait for room; the empty state waits for the last items to go; first items come in as a wave, or just show with `:appear="false"`; `#empty` |
 | DialogMorph | Special | Reka UI Dialog; the button's box travels to the middle and grows into the dialog, folds back on close; label fades out in place; content scrolls only once the box has landed |
@@ -68,48 +68,45 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | StatusText | Base | The library's one way of telling that something is under way: shimmers while `working`, each new text morphing from the last, and turns into what came of it; `error` turns it into what went wrong, in the danger colour, with no icon or box. Used by ChatMessage and ChatTool |
 | Breadcrumbs | Base | Where the page sits, so the sidebar can keep to the main sections (Notion, Vercel, GitHub). Given as `items`, top down: a crumb whose page changes morphs into its new name (TextMorph), crumbs added or dropped come into focus or fade; a separator with `siblings` opens the other pages at the next level, as the Finder's path bar, turning down while open; a row too long for its room scrolls, held at the current page, the rest behind a fading edge |
 | Filters | Special | As Linear and Notion: a button grows into a panel of categories (PopoverMorph), a category turns it to its options (checkboxes, a search field from eight) as the box eases to their height; what is chosen stands beside it as a pill whose values morph, pressing it reopens its category, its cross takes it away and the rest slide over (AnimatedList); `count` said beside them, morphing, with Clear. `v-model` per category; the results stay the app's |
+| Field | Base | A label, help and error round any control, linked for screen readers (`id`, `aria-describedby`, `aria-invalid`); help and error swap in place; `optional` |
+| RadioGroup | Base | Reka UI; the dot grows from the centre; `row`, a `description` per item; linked to its Field as a group |
+| Combobox | Base | Type to filter; grows out of its field as Select; options as objects or strings, `#option` slot, `emptyLabel` |
+| Calendar | Base | Reka UI on `@internationalized/date`, values as ISO strings; the month's name morphs (TextMorph); today marked with a dot; `min`, `max`, `isDateDisabled`, `locale`, `weekStartsOn` |
+| DatePicker | Base | A date typed by parts, or picked from the month that grows out of the field as wide as it (with a minimum) |
+| AlertDialog | Base | DialogMorph with `role="alertdialog"`: only its buttons close it; Cancel focused first; `danger` for what can't be undone |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
-## Now
+## Now · 0.2, a complete base
 
-Pages that explain things, as the TEIS web needs them, following USAGE's rules for diagrams (10), composing a page (11) and going deeper in place (12).
+Every part that opens from a field or a button grows out of it (USAGE 1). Each new part gets its stories, the Situations checklist and a look in light, dark and on a phone.
 
-1. ~~**SVG diagram classes.**~~ Done: `diagram`, `diagram-part`, `diagram-label`, `diagram-text`, `diagram-line`, `diagram-quiet`, `diagram-emphasis`, `diagram-grid`, `diagram-chip`, and `Diagram`, the frame that says what it shows and brings the parts marked `diagram-in` in once on view.
-2. ~~**Composing an article.**~~ Done: `article`, one column that text, figures, code and tables all share, and `side-by-side` that stacks from the content. Tried and left out: a fixed "section" template (every section zigzagged and left holes), and Distill's several widths with margin notes (no one width to lean on).
-3. ~~**Page transitions.**~~ Done: `PageTransition` round what changes (the RouterView's page): the old page fades, the scroll is back at the top, the new fades in whole, about a third of a second in all; what is outside stays still.
-4. ~~**Publish on npm.**~~ Not published, on purpose: it is for my own projects. `"private": true` keeps npm from publishing it; projects install it from the repository at a tag, or as a `.tgz` where they are shared (the class web).
-5. **Bring the TEIS web up to date**, when it is picked up again: SidebarLayoutHeader for its bar, Timetable for its timetable, the rules for its explanation pages.
+1. ~~**Forms**: Field, RadioGroup, Combobox, Calendar and DatePicker, AlertDialog; Select, Combobox and DatePicker growing out of their field.~~ Done.
+2. **Select**: with `multiple`, a click outside should close it (it only closes with Escape).
+3. **More fields**: Slider, NumberField, TagsInput (a new tag coming out of the text typed).
+4. **Panels**: Sheet (growing from its button), HoverCard.
+5. **Small parts**: Avatar, Progress, Separator, Kbd, Empty, Toggle and ToggleGroup, Pagination, a plain Table.
+6. **A pass over everything**: every part in light, dark and on a phone; props and events named the same way across parts.
+7. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz`. From now on each `.tgz` handed over bumps the version (0.1.1, 0.1.2…), so an install never keeps the old one.
 
 ## Versions
 
 Each version comes from a kind of project: the class web gave 0.1.
 
-- **0.2 · A complete base.** Field (label, help, error round any control), RadioGroup, Combobox, DatePicker and Calendar (the calendar growing from its field; Reka UI's primitives), AlertDialog, Slider, NumberField, TagsInput, Sheet, HoverCard, Avatar, Progress, Separator, Pagination, a plain Table, Empty, Kbd, Toggle and ToggleGroup. And a visual pass of every part in light, dark and on a phone, with the props and events named the same way across parts.
+- **0.2 · A complete base.** Above.
 - **0.3 · Portfolio.** An image that grows into full view and folds back, a project card that opens into its case study, a filtered gallery, a Carousel.
-- **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: empty states, lists of data (a key and its value, a figure and its trend), a Sheet from its button.
-- **AI, when a project asks for it:** trying again after a failure, a message's actions, Markdown in answers.
+- **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: empty states, lists of data (a key and its value, a figure and its trend).
+- **AI, when a project asks for it:**
+  1. **Try again after a failure.** A quiet "Try again" beside an answer's error, which for now only says what went wrong.
+  2. **Selecting in answers.** SelectionMenu over the thread: explain, quote into the composer, copy.
+  3. **Message actions.** Copy, retry, edit, quiet until hovered.
+  4. **Markdown in answers.** Lists, code blocks with CopyButton, flowing in as the same wave.
 
-## Next
+## The TEIS web
 
-1. ~~**Try the library in a real Vue project**~~ Done with the TEIS web (web-del-repo). What it brought: groups open on load no longer animate; `to`/`as` for router links on NavTreeItem, NavTreeGroup (a section with its own page) and Button; `toggleLabel` on Sidebar; app-wide texts (`ElasticUi` labels); TableOfContents `scroller`; the connected tab's corners painted without shadows; tree-shaking (`@__PURE__`); USAGE notes on installing with `npm pack`, the theme script and what scrolls.
-2. ~~**Command palette.**~~ Done. Nested pages (Linear's "Change status…") left for later.
-3. ~~**Steps.**~~ Done. The TEIS web's `AgentesPorPasos` can move onto it.
+The library's first real project (web-del-repo), installed as a `.tgz`. It gave the router links (`to`/`as`), app-wide texts (`ElasticUi` labels), the connected sidebar tab, Markdown and Prose, Timetable, Steps, and the rules for explanation pages (USAGE 10–12). What it still has to take on: SidebarLayoutHeader for its bar, Timetable for its timetable, the rules for its explanation pages.
 
-### For guides and notes (from the TEIS web)
-
-1. ~~**Markdown into the library's parts.**~~ Done: `Markdown` (markdown-it) turns fences into CodeBlock, `diff` into CodeDiff, `walkthrough` and `agent-replay` (JSON) into their parts, GitHub alerts into Callouts, headings into anchors (`headingsOf` for TableOfContents), links within the site into RouterLink.
-2. ~~**Prose.**~~ Done: the `prose` utility and `Prose`, styling only plain elements so the library's parts keep their look.
-3. ~~**A time grid**~~ Done: `Timetable`, from the TEIS web's timetable.
-
-### AI chat, next
-
-Done so far: the composer (its button pulling out like a drop, send turning into stop), the answer flowing in as a wave, one shimmering line for what it is doing, the steps it takes (ChatTool) and ChatMorph over an Aurora. A reasoning panel was tried and left out: a single line reads better.
-
-1. **Try again after a failure.** A quiet "Try again" beside an answer's error, which for now only says what went wrong.
-2. **Selecting in answers.** SelectionMenu over the thread: explain, quote into the composer, copy.
-3. **Message actions.** Copy, retry, edit, quiet until hovered.
-4. **Markdown in answers.** Lists, code blocks with CopyButton, flowing in as the same wave.
+Not published on npm, on purpose: it is for my own projects. `"private": true` keeps npm from publishing it; projects install it from the repository at a tag, or as a `.tgz`.
 
 ## Later / ideas
 
@@ -118,6 +115,8 @@ Done so far: the composer (its button pulling out like a drop, send turning into
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
 - Priority+ variant for MorphHeader (show what fits, the rest in a "More" menu).
 - Documentation beyond Storybook once the API settles.
+- CommandPalette's nested pages (Linear's "Change status…").
+- A reasoning panel for the chat was tried and left out: a single line reads better.
 
 ## Out of scope
 
