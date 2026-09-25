@@ -9,7 +9,6 @@ import PopoverMorphSeparator from './PopoverMorphSeparator.vue'
 const meta = {
   title: 'Special/PopoverMorph',
   // Top-aligned: centering would re-center the trigger as the panel grows.
-  parameters: { layout: 'padded' },
   render: () => ({
     components: { Button, PopoverMorph },
     template: `

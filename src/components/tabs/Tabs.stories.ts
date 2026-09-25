@@ -59,7 +59,6 @@ const projectFilter = (args: TabsArgs) => ({
 const meta = {
   title: 'Base/Tabs',
   // Top-aligned: centering would re-center the tabs every time the content below changes height.
-  parameters: { layout: 'padded' },
   args: { variant: 'underline', tabs: 4, longLabels: false, disabledTab: false },
   argTypes: {
     variant: { control: 'inline-radio', options: ['pill', 'underline'] },

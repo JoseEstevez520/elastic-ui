@@ -8,7 +8,6 @@ const fruits = ['Apple', 'Apricot', 'Banana', 'Blueberry', 'Cherry', 'Grapes', '
 const meta = {
   title: 'Base/AnimatedList',
   // Top-aligned: centering would re-center the list as its height changes.
-  parameters: { layout: 'padded' },
 } satisfies Meta
 
 export default meta

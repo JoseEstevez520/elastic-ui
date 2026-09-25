@@ -38,7 +38,6 @@ const faq = (args: AccordionArgs) => ({
 const meta = {
   title: 'Base/Accordion',
   // Top-aligned: centering would re-center the list as sections open.
-  parameters: { layout: 'padded' },
   args: { type: 'single', items: QUESTIONS.length, longAnswers: false },
   argTypes: {
     type: { control: 'inline-radio', options: ['single', 'multiple'] },

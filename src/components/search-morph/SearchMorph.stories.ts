@@ -7,7 +7,6 @@ const PAGES = ['Web client', 'Web server', 'Deployment', 'Design', 'Timetable', 
 const meta = {
   title: 'Special/SearchMorph',
   // Top-aligned: centering would re-center the search as it widens, and the icon would drift.
-  parameters: { layout: 'padded' },
   render: () => ({
     components: { SearchMorph },
     setup: () => ({ query: ref('') }),

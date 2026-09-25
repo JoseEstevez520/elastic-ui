@@ -23,7 +23,10 @@ const preview: Preview = {
     },
   ],
   parameters: {
-    layout: 'centered',
+    // Anchored at the top left, as on a page, rather than centred: a centred story moves as a
+    // part grows or shrinks (a pill added, a field widening), which no page would do, so its
+    // motion could not be judged.
+    layout: 'padded',
     backgrounds: { disable: true },
   },
 }

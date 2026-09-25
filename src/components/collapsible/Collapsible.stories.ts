@@ -8,7 +8,6 @@ const parts = { Collapsible, CollapsibleTrigger, CollapsibleContent }
 const meta = {
   title: 'Base/Collapsible',
   // Top-aligned: centering would re-center the section as it grows.
-  parameters: { layout: 'padded' },
   render: () => ({
     components: parts,
     template: `

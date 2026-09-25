@@ -9,7 +9,6 @@ const parts = { NavTree, NavTreeGroup, NavTreeItem }
 const meta = {
   title: 'Base/NavTree',
   // Top-aligned: centering would re-center the tree as groups open.
-  parameters: { layout: 'padded' },
   render: () => ({
     components: parts,
     setup: () => ({ page: ref('intro') }),
