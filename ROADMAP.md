@@ -78,7 +78,7 @@ Pages that explain things, as the TEIS web needs them, following USAGE's rules f
 1. ~~**SVG diagram classes.**~~ Done: `diagram`, `diagram-part`, `diagram-label`, `diagram-text`, `diagram-line`, `diagram-quiet`, `diagram-emphasis`, `diagram-grid`, `diagram-chip`, and `Diagram`, the frame that says what it shows and brings the parts marked `diagram-in` in once on view.
 2. ~~**Composing an article.**~~ Done: `article`, one column that text, figures, code and tables all share, and `side-by-side` that stacks from the content. Tried and left out: a fixed "section" template (every section zigzagged and left holes), and Distill's several widths with margin notes (no one width to lean on).
 3. ~~**Page transitions.**~~ Done: `PageTransition` round what changes (the RouterView's page): the old page fades, the scroll is back at the top, the new fades in whole, about a third of a second in all; what is outside stays still.
-4. **Publish on npm.** Ready (README, licence, `prepublishOnly`); waiting for a name, as `elastic-ui` is taken: `@joseestevez520/elastic-ui` keeps it.
+4. ~~**Publish on npm.**~~ Not published, on purpose: it is for my own projects. `"private": true` keeps npm from publishing it; projects install it from the repository at a tag, or as a `.tgz` where they are shared (the class web).
 5. **Bring the TEIS web up to date**, when it is picked up again: SidebarLayoutHeader for its bar, Timetable for its timetable, the rules for its explanation pages.
 
 ## Next

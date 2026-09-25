@@ -20,11 +20,19 @@ Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](h
 
 ## Install
 
-```bash
-npm install elastic-ui motion-v
-```
+It is not published: it lives in its private repository and is used in my own projects.
 
-The library ships no compiled CSS: your project's Tailwind builds its classes. In your main stylesheet:
+- **From the repository**, in a project of mine, at a version:
+
+  ```bash
+  npm install github:JoseEstevez520/elastic-ui#v0.1.0 motion-v
+  ```
+
+  It builds itself as it installs. `npm update` brings a newer commit; changing the tag moves to another version.
+
+- **As a package file**, where the project is shared with people who cannot reach the repository (as the class web): `npm pack` here, the `.tgz` in the project's `vendor/`, and `npm install ./vendor/elastic-ui-0.1.0.tgz`.
+
+The library ships no compiled CSS: the project's Tailwind builds its classes. In its main stylesheet:
 
 ```css
 @import "tailwindcss";
@@ -71,4 +79,4 @@ Every colour holds both themes through `light-dark()`, so the theme follows the 
 
 ## License
 
-MIT
+MIT. Not published: it is shared only with the projects that use it.
