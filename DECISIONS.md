@@ -12,6 +12,17 @@ A Vue component library for my own projects, built to adapt to very different us
 4. **Accessible by default.** Keyboard, Escape, focus and `prefers-reduced-motion`.
 5. **Objects that transform in place.** The parts with the most character are small objects rather than widgets, a bin with its lid, a folder with its pages, a file with its folded corner, drawn with a light touch of skeuomorphism: a shape you recognise, a few parts that move as parts (the lid tips open, the pages fan out, an icon travels to its row), and nothing realistic beyond that. They change in their own place instead of opening something over the page: a delete asks in its own square, a bar grows into its list over its own card. At rest they are flat and quiet; what lifts or opens takes on material (a soft shadow, a line of light along its top), and colour only appears where it means something (the danger of a delete, the tint of a kind of file). Everything else here, the morph of a real size, `blur-in`, TextMorph, "leaving comes before making room", is how these objects move. Ideas are tried in `src/lab` first (Storybook's Lab) and only then made parts; see the Lab in `ROADMAP.md`.
 
+### How objects are drawn
+
+Learnt from redoing the lab's pieces against their references (Rare UI's delete and activity card):
+
+- **Depth from tones, not shadows.** A surface a tone lighter or deeper than the one it sits on gives it volume; shadows are kept for what floats over the page, and even there kept soft.
+- **Split a shape rather than nest one in another.** When a part opens into more, it divides into halves of different tone joined along a curve (the delete's answers running to the pill's own edge, with a tail pointing at the bin); a box inside a box reads as two things.
+- **Simplify an object down to its gesture.** A bin without stripes, so its lid reads as it tips open. Fewer details, larger movements of its parts.
+- **Nothing that moves crosses visible text.** Words come into focus only once the pieces travelling past them have gone by.
+- **No outlines round things that overlap.** Icons stacked on one another just overlap; a ring in the ground's colour round each reads as a cut-out sticker.
+- **Compare with the reference before calling it done**: close-up screenshots of both, side by side, at the same states.
+
 ### Motion rules
 
 - **Close faster than open.** Opening takes ~0.5s so the eye can follow where things come from; closing takes 0.3s, since on the way out you only want it gone (Material: exits shorter than entrances). Content leaves at once, before the shape folds.

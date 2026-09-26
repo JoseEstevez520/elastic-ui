@@ -144,7 +144,7 @@ const iconAt = (i: number) =>
         v-for="(s, i) in sources"
         :key="s.name"
         aria-hidden="true"
-        class="absolute flex items-center justify-center rounded-full text-white ring-2 ring-[color:light-dark(#fff,#000)] transition-[top,left] duration-[450ms] ease-emphasized motion-reduce:transition-none"
+        class="absolute flex items-center justify-center rounded-full text-white transition-[top,left] duration-[450ms] ease-emphasized motion-reduce:transition-none"
         :style="{
           ...iconAt(i),
           width: `${ICON}px`,

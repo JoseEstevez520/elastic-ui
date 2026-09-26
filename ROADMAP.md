@@ -99,6 +99,14 @@ Every part that opens from a field or a button grows out of it (USAGE 1). Each n
 5. **A pass over everything**: every part in light, dark and on a phone; props and events named the same way across parts.
 6. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz`. From now on each `.tgz` handed over bumps the version (0.1.1, 0.1.2…), so an install never keeps the old one.
 
+## Next, in order
+
+1. **From the lab into the library**, each with its stories, the Situations checklist, and a look in light, dark and on a phone: the delete that asks in its place (for any destructive action), the activity card, icons that morph, the card that becomes its page (with the router, for its URL and the back button). The folder is redone with the same method, or dropped.
+2. **The identity over what exists** (0.2's visual pass): tones instead of shadows (PopoverMorph, Sheet, Select…), a confirmation in its place where a dialog only asks, icons that morph where a button changes state.
+3. **The rest of 0.2, with the identity from the start**: HoverCard, Avatar (icons, never initials), Progress, Kbd as a real key, Toggle, Pagination, a plain Table, Empty.
+4. **Release 0.2.0**: the TEIS web takes it up; the library's site (the `site` branch) shows it.
+5. **0.3 Portfolio**: the card that becomes its page, the folder and the image aurora at its heart.
+
 ## Lab
 
 Experiments in `src/lab`, shown under Lab in Storybook and never built into the package. The direction they explore is the library's identity (DECISIONS, Philosophy 5): objects that transform in place, with a light touch of skeuomorphism, built from what the library already does. Ideas from outside (Rare UI, Family, Apple's apps) are redone from scratch in the library's own way, never copied: Rare UI's licence forbids redistributing its components, even ported.
