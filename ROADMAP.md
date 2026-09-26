@@ -17,10 +17,10 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 
 | Component | Tier | Notes |
 |---|---|---|
-| Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases (`--ease-glide` among them), `shadow-overlay` / `shadow-soft`, `mask-fade-b`, `blur-in`, `stagger-children` / `stagger-items`, `scrollbar-subtle`, disclosure and popover keyframes |
+| Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases (`--ease-glide` among them), tone levels (`surface`, `surface-sunk`, `surface-raised`, `frame`), barely-there `shadow-overlay` / `shadow-soft` for what floats, `mask-fade-b`, `blur-in`, `stagger-children` / `stagger-items`, `scrollbar-subtle`, disclosure and popover keyframes |
 | Type scale | Base | `text-display`, `text-title`, `text-copy`, `text-label`, `text-ui`, `text-meta` with their line height, tracking and weight; every component on it (DECISIONS, "Type") |
 | Button | Base | `solid`, `outline`, `ghost`, `link`; sizes; `icon`, `loading`, `href` |
-| Card | Base | Composable parts; `CardImage` with `fade` |
+| Card | Base | Composable parts, standing a tone off the page with no border (`outline` for one); its fields a tone deeper; `CardImage` with `fade` |
 | ThemeToggle | Base | Sun/moon from Adam Argyle's theme switch (Apache-2.0); `useTheme()` |
 | Tabs | Base | Reka UI; sliding indicator; `underline` (default) and `pill` |
 | Collapsible, Accordion | Base | Reka UI; grows from its header; content comes into focus as one wave; findable with Ctrl+F |
@@ -36,7 +36,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Toast | Base | `toast()` from anywhere, one `<Toaster>`; arrives from the edge, fades and folds its place away; entrances queued so nothing overlaps; three at most, the oldest fading out as a new one arrives (as in Sonner); pauses on hover and focus; `aria-live`; six positions |
 | Tooltip | Base | Reka UI; Popover's surface, smaller; `TooltipGroup` shows the next ones at once while moving along |
 | Badge, BadgeCount | Base | `soft`, `outline`, `solid`; `icon`, a colour dot; `compact` folds to the icon and unfolds its label on hover and focus; `removable`; BadgeCount's digits roll by place value (TextMorph) |
-| Input, Textarea | Base | A hairline that darkens on focus, no halo; `icon`, `invalid`; Textarea grows with its text |
+| Input, Textarea | Base | Trays: a tone off the page, no line at rest; a soft line on hover, lifted to the raised tone on focus, red when invalid; `icon`; Textarea grows with its text |
 | Checkbox, Switch | Base | Reka UI; the check is drawn along its stroke and turns into the dash for in between; the Switch's knob slides on the library's ease |
 | CopyButton | Base | Copy turns into a check, and back after two seconds; its label morphs with TextMorph |
 | ProgressButton | Base | A button that becomes its own progress: the amount fills it and counts up beside the morphing label, then the fill turns green (done) or red (error) and it goes back to itself; with no amount, the label shimmers |
@@ -48,7 +48,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Aurora | Special | Blurred lights drifting under a fine grain over a wash of the same colours (accent, violet, peach, pink; `--aurora-1…4`); follows the work: thinking gathers and hurries them, answering spreads them, `settled` calms them to a tint, easing the pace so nothing jumps |
 | TableOfContents | Special | "On this page": a mark on a hairline slides to the section being read and takes its height; a click scrolls there with the mark going straight to it; `offset` for a fixed header; placed at once on load |
 | CodeBlock | Base | A soft fill, no border; its file or language on a quiet caption with a CopyButton, or the button waiting in the corner of a bare snippet; long lines scroll and fade at the side that has more; highlighted markup through the slot, plain `code` copied |
-| Callout | Base | GitHub's alerts (note, tip, important, warning, caution): an icon and a soft tint of its colour, no border; `--color-warning` added for it |
+| Callout | Base | GitHub's alerts (note, tip, important, warning, caution) on the surface tone, no border, the icon coloured; only warning and caution, which mean danger, take a soft tint; `--color-warning` added for it |
 | CodeWalkthrough | Special | A guide that builds code step by step (Stripe, Code Hike): steps on one side, the code held in view on the other, turning into each step's code in three beats (lines that go fade, lines that stay slide, new ones come in as a wave); what the step adds, or its `highlight`, stands out |
 | ScrollIndicator | Base | A scrollbar reduced to a short line of fixed length, as iOS's but always the same size: hidden at rest, it flashes as it appears (Apple's `flashScrollIndicators`), shows while scrolling or near the edge, can be dragged; in every ChatThread |
 | CodeDiff | Base | A file's change: removed lines tinted red, added green, `+n −n` on the caption, untouched runs folded; plays the edit once in view (the lines that go turn red, the new ones open in), with replay |
@@ -78,7 +78,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Glass | Base | The material for what sits over colour: `glass` (a white veil letting the colour through, blurred behind, a barely-there shadow) over an Aurora or a Glow, as ChatMorph's composer and messages; `glass-strong` over a photo, denser and dark in the dark theme so text reads on any part of it. Tokens `--glass-*` |
 | Term | Special | A word that explains itself where it is read, after Curio: pressed, it stays lit with SelectionMenu's band and a glance appears under it (Popover: it follows the word and flips above near the bottom), the meaning in a sentence; See more grows that glance into a large card in the middle, a real size, the page dimmed behind; its cross, Escape or the dimmed page fold it back into the glance |
 | ActionButton | Base | An action that tells how it went in its own button, after Emil Kowalski's button states: it gathers into a round one around a turning arc while it works, then widens into what happened, its icon turned into a check (IconMorph) and its word into the next (TextMorph), or into what went wrong, tinted; any icon and words (send, save, publish, hand in). For an unknown length; ProgressButton when the amount is known |
-| ConfirmButton | Base | An action that asks in its own place, no dialog: the square widens into a pill, the bin's lid tips open, the pill splits in two (the answers' half a tone deeper, its tail pointing at the icon); confirmed, it tints with the danger colour while the action runs, then a check or what went wrong. Any icon (a sign-out, a reset). After Rare UI's delete, redone |
+| ConfirmButton | Base | An action that asks in its own place, no dialog: the square widens into a pill, the bin's lid tips open, the pill splits in two (the answers' half a tone deeper, its tail pointing at the icon); confirmed, it tints with the danger colour while the action runs, then a check or what went wrong. Any icon, told `open` while it asks so its parts can move; `tone="neutral"` for what is not dangerous (an archive, a sign-out). After Rare UI's delete, redone |
 | Filters | Special | As Linear and Notion: a button grows into a panel of categories (PopoverMorph), a category turns it to its options (checkboxes, a search field from eight) as the box eases to their height; what is chosen stands beside it as a pill whose values morph, pressing it reopens its category, its cross takes it away and the rest slide over (AnimatedList); `count` said beside them, morphing, with Clear. `v-model` per category; the results stay the app's |
 | Field | Base | A label, help and error round any control, linked for screen readers (`id`, `aria-describedby`, `aria-invalid`); help and error swap in place; `optional` |
 | RadioGroup | Base | Reka UI; the dot grows from the centre; `row`, a `description` per item; linked to its Field as a group |
@@ -104,16 +104,20 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**Tone tokens**~~ Done: the levels a surface sits at (sunk, base, raised) and the frame in the page's strongest tone, replacing the tones written by hand in ConfirmButton and ActivityGrid.
    - ~~**`useMorphBox`**~~ Done, Sheet on it: the recipe of a box that becomes a panel (measure, sit on the button, grow, content out first, fold back, keep the scrollbar's room), now repeated in Sheet, FieldMorph and the card to page.
    - ~~**`travel`**~~ Done (`utils/travel.ts`), AnimatedList and TagsInput on it: things that moved go to their new place, sliding along a line or fading and refocusing where any would cross another. ActivityGrid's icons keep their own path, set by where each row is.
-5. **The identity over what exists** (the visual pass): tones instead of shadows (PopoverMorph, Sheet, Select, Menu…), a confirmation in its place where a dialog only asks, IconMorph where a button changes state (the menu, play, a disclosure).
+5. **The identity over what exists** (the visual pass):
+   - ~~**Type**~~ Done: five sizes, three weights, every part on the scale (DECISIONS, "Type").
+   - ~~**Tones**~~ Done: what floats stands on the raised surface with a hairline and a barely-there shadow; Card and ExpandableCard a tone off the page; code on the surface tone; Callout's colour only where it means danger; Tabs without their rule.
+   - ~~**Fields as trays**~~ Done: every field, and a field that grows into its list stays one.
+   - Still to do: IconMorph where a button changes state (the menu, play, a disclosure); a confirmation in its place where a dialog only asks.
 6. **The rest, with the identity from the start**:
-   - **HoverCard**: grows out of its link, which stays as its title; a term in Prose opening its definition.
+   - ~~**HoverCard**~~ Covered by `Term`: a word opening its definition where it is read.
    - **Avatar**: an icon or a photo, never initials; a group fans out on hover.
    - **Kbd** as a real key, pressed when its shortcut is.
    - **Progress**: fills on the library's ease and turns into a check.
    - **Toggle** and **ToggleGroup**, their icons morphing; **Pagination**, a mark sliding to the page.
    - Quiet, so something else leads: **Separator**, a plain **Table**, **Empty**.
 7. **Names**: props and events named the same way across parts.
-8. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz` (each `.tgz` handed over bumps the version, so an install never keeps the old one); the library's site (the `site` branch) shows it.
+8. **Release 0.2.0**: tag it; the library's site (the `site` branch) shows it.
 
 ## Lab
 
@@ -143,7 +147,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 Each version comes from a kind of project: the class web gave 0.1.
 
 - **0.2 · A complete base.** Above.
-- **0.3 · Portfolio.** An image that grows into full view and folds back, a project card that opens into its case study, a filtered gallery, a Carousel.
+- **0.3 · Portfolio.** ~~An image that grows into full view~~ (`ImageView`), ~~a project card that opens into its case study~~ (`PageCard`), a filtered gallery, a Carousel.
 - **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: empty states, lists of data (a key and its value, a figure and its trend).
 - **AI, when a project asks for it:**
   1. **Try again after a failure.** A quiet "Try again" beside an answer's error, which for now only says what went wrong.
@@ -159,7 +163,19 @@ Not published on npm, on purpose: it is for my own projects. `"private": true` k
 
 ## Later / ideas
 
-- **Completion told by the object itself**, for the actions the library already has: sending, the arrow becomes a paper plane that takes off and the button says "Sent" (TextMorph); an uploaded file goes into its folder; a download falls into its tray, filling it; saving drops a bookmark down the card's edge; handing in slides the page into its envelope. Built from IconMorph, TextMorph and ConfirmButton's bin. (A generic glint of light on success was tried and dropped: it meant nothing.)
+- **Objects in the bin's family** (ConfirmButton, FileIcon): a recognisable thing whose parts move, at a size where the gesture reads without explaining it. Next, one at a time in the lab:
+  - **Archive** (trying): the box's lid lifting straight off; maybe the box itself telling the end, its lid coming down, instead of the check.
+  - **A tear-off calendar** for DatePicker: the day in large figures, the top sheet turning back over its edge to show the new date.
+  - **Copy as a sheet that doubles**, for CopyButton: a second sheet slides out from behind the first, a tone apart, instead of the check.
+  - **A padlock** as a private/public switch: its shackle lifting and turning open.
+  - Tried and dropped: the paper plane for sending, a download falling into its tray (at 16px nobody could read it), a generic glint on success, a row that opens into a card.
+- **From other products** (Family, Things, Apple, Emil Kowalski, Rauno), to redo our own way:
+  - A **flow in steps inside a Sheet**, each step its own height, so moving on shows; a long one becomes a page (Family).
+  - **Drag to close a Sheet**, as Vaul.
+  - **Hold to confirm**, beside the bin (Rauno's Hold Enter).
+  - **Toasts stacked by tone**, fanning out on hover (Sonner).
+  - **What is pending travels to where it will live**: after confirming, the working mark leaves the button for the tab or list where the result will show, instead of a toast (Family).
+- **Principles to write down**: open from the true origin and let a morph be reversed halfway (Dynamic Island); what is used all the time, as a menu, appears at once rather than morphing, the choice blinking once.
 - Where the DynamicIsland lives in a page with chrome: inside MorphHeader's pill, in the Sidebar's footer, or on its own at the bottom centre. For now it is inline, and needs a hidden state that morphs in from a point.
 - NavTree indicator variants, such as SkillNet's "connected" pill that takes the page colour and fuses with the sidebar's edge.
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
