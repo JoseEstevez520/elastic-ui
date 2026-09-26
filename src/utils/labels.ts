@@ -75,6 +75,9 @@ export const defaultLabels = {
   // Forms
   optional: 'optional',
   pickDate: 'Pick a date',
+  /** NumberField's − and +. */
+  decrease: 'Decrease',
+  increase: 'Increase',
   comment: 'Comment',
   commentPlaceholder: 'Write a comment…',
   rating: 'Rating',
