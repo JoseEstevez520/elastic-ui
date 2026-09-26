@@ -86,6 +86,13 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Calendar | Base | Reka UI on `@internationalized/date`, values as ISO strings; the month's name morphs (TextMorph); today marked with a dot; `min`, `max`, `isDateDisabled`, `locale`, `weekStartsOn` |
 | DatePicker | Base | A date typed by parts, or picked from the month that grows out of the field as wide as it (with a minimum) |
 | AlertDialog | Base | DialogMorph with `role="alertdialog"`: only its buttons close it; Cancel focused first; `danger` for what can't be undone |
+| Avatar, AvatarGroup | Base | A round photo, or a person drawn on the surface tone, never initials; a photo that fails gives way to it, fading in; sm/md/lg. AvatarGroup overlaps them with no ring round each, opens out on hover or focus with each name as a tooltip, and counts past `max` |
+| Separator | Base | A quiet hairline, across or upright, reached for last; across it can carry a word in its middle ("or"); `decorative` hides it from screen readers |
+| Empty | Base | What a list or page says while empty: a large faint icon (any component, or a FileIcon in its slot), a title, a line of help and the actions, centred, coming in as one blur-in wave |
+| Progress | Base | A groove set into the page, filling from its start on the library's ease and gliding to each new amount; with no amount a short length travels along it calmly; complete, the track steps aside at its end and a check is drawn there in the success colour while "100%" morphs into "Complete" (TextMorph); `label`, `showValue`, `tone="accent"`; Reka UI for ARIA |
+| Toggle, ToggleGroup | Base | Buttons that stay pressed, for toolbars, shown by tone: at rest no surface, pressed on the raised tone; `icon` / `pressedIcon` morph one IconMorph glyph into the other (play into pause). The group is a tray, a pressed item a raised part on it; in `single` that part slides to the next item (as Tabs' indicator); sm/md; Reka UI's roving focus |
+| Pagination | Base | Reka UI; quiet numbers between two chevrons; the current page marked by one raised surface that slides to the page chosen; the window keeps its places (1 … 4 5 6 … 20), so moving on inside it the mark stays and the numbers roll (TextMorph); `compact` "Page 3 of 20" with its number rolling |
+| Table | Base | Table and its parts: a plain table for data, no box, no stripes, rows parted by hairlines, the header a step quieter in sentence case; `numeric` lines figures up on the right; `interactive` rows take a tone under the pointer (a tone above inside a Card); too wide, it scrolls sideways and fades at the side that has more |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
@@ -109,13 +116,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**Tones**~~ Done: what floats stands on the raised surface with a hairline and a barely-there shadow; Card and ExpandableCard a tone off the page; code on the surface tone; Callout's colour only where it means danger; Tabs without their rule.
    - ~~**Fields as trays**~~ Done: every field, and a field that grows into its list stays one.
    - Still to do: IconMorph where a button changes state (the menu, play, a disclosure); a confirmation in its place where a dialog only asks.
-6. **The rest, with the identity from the start**:
-   - ~~**HoverCard**~~ Covered by `Term`: a word opening its definition where it is read.
-   - **Avatar**: an icon or a photo, never initials; a group fans out on hover.
-   - **Kbd** as a real key, pressed when its shortcut is.
-   - **Progress**: fills on the library's ease and turns into a check.
-   - **Toggle** and **ToggleGroup**, their icons morphing; **Pagination**, a mark sliding to the page.
-   - Quiet, so something else leads: **Separator**, a plain **Table**, **Empty**.
+6. ~~**The rest, with the identity from the start**~~ Done: Avatar and AvatarGroup, Progress, Toggle and ToggleGroup, Pagination, Separator, Table, Empty. Kbd left out.
 7. **Names**: props and events named the same way across parts.
 8. **Release 0.2.0**: tag it; the library's site (the `site` branch) shows it.
 
