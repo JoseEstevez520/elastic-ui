@@ -5,7 +5,8 @@ import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { useFieldControl } from '../../utils/field'
 import { labelFor } from '../../utils/labels'
-import { contentOut, EASE_EMPHASIZED, EASE_SOFT, prefersReducedMotion } from '../../utils/motion'
+import { contentOut, prefersReducedMotion } from '../../utils/motion'
+import { placesOf, travel } from '../../utils/travel'
 import { tagsInputClass, tagsInputDeleteClass, tagsInputItemClass } from './tags-input.variants'
 
 /**
@@ -37,50 +38,16 @@ const fieldAttrs = useFieldControl(() => props.invalid)
 // A tag leaving goes as AnimatedList's items do: it fades where it stands, keeping its room, so
 // nothing is squeezed; then its room goes and the rest move to their new places. Along one line
 // they slide over; if any changes line, sliding would cut across the others, so all that move fade
-// where they were and come into focus where they land, as a wave.
+// where they were and come into focus where they land, as a wave (`travel`).
 const OUT = contentOut.duration * 1000
-const SLIDE = { duration: 450, easing: `cubic-bezier(${EASE_EMPHASIZED.join(',')})` }
 function leave(el: Element, done: () => void) {
   if (prefersReducedMotion()) return done()
   el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: OUT, easing: 'linear', fill: 'forwards' }).finished.then(
     () => {
-      const others = [...(el.parentElement?.querySelectorAll<HTMLElement>('[data-tag], input') ?? [])].filter(
-        (o) => o !== el,
-      )
-      const before = others.map((o) => o.getBoundingClientRect())
+      const others = el.parentElement?.querySelectorAll<HTMLElement>('[data-tag], input') ?? []
+      const places = placesOf([...others].filter((o) => o !== el))
       done()
-      const movers = others
-        .map((o, i) => {
-          const now = o.getBoundingClientRect()
-          return { el: o, dx: before[i]!.left - now.left, dy: before[i]!.top - now.top }
-        })
-        .filter((m) => Math.abs(m.dx) > 0.5 || Math.abs(m.dy) > 0.5)
-      if (!movers.some((m) => Math.abs(m.dy) > 0.5)) {
-        for (const m of movers) m.el.animate([{ translate: `${m.dx}px 0px` }, { translate: '0px 0px' }], SLIDE)
-        return
-      }
-      movers.forEach((m, i) => {
-        const from = `${m.dx}px ${m.dy}px`
-        m.el.animate(
-          [
-            { translate: from, opacity: 1 },
-            { translate: from, opacity: 0 },
-          ],
-          { duration: OUT, easing: 'linear' },
-        )
-        m.el.animate(
-          [
-            { opacity: 0, filter: 'blur(2px)' },
-            { opacity: 1, filter: 'blur(0px)' },
-          ],
-          {
-            duration: 450,
-            delay: OUT + Math.min(i, 7) * 40,
-            easing: `cubic-bezier(${EASE_SOFT.join(',')})`,
-            fill: 'backwards',
-          },
-        )
-      })
+      travel(places)
     },
   )
 }
