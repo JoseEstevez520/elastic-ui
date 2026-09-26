@@ -8,7 +8,7 @@ import { XIcon } from '../../icons/internal'
  * Lab: an image that grows into full view where it is. Pressed, the picture itself grows from its
  * place to the whole of it in the middle of the screen, at its own proportions, a real size
  * (useMorphBox): its crop opens out as the box takes the image's shape, the page dimmed behind as
- * under a dialog. Its caption comes into focus under it, its cross in its top right corner. Closing (a click, Escape, the cross), the
+ * under a dialog. Its caption comes into focus under it, its cross in its top right corner, white or black by the corner's own light. Closing (a click, Escape, the cross), the
  * caption goes first, then the picture folds back into its place.
  */
 const props = defineProps<{ src: string; alt: string; caption?: string; class?: HTMLAttributes['class'] }>()
@@ -49,6 +49,34 @@ const { shown, grown, visible, settled, to, style } = useMorphBox({
 const boxStyle = computed(() => style({ borderRadius: [radius.value, '12px'] }))
 // The cross sits in the picture's top right corner, where it lands.
 const INSET = 12
+// No disc behind it: the cross is white over a dark corner of the picture and black over a light
+// one, read from the corner's own pixels. A picture from elsewhere that forbids reading them keeps
+// it white.
+const crossOnLight = ref(false)
+function readCorner() {
+  const img = new Image()
+  img.crossOrigin = 'anonymous'
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 8
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    if (!ctx) return
+    // The top right corner, as much of it as the cross and its inset cover in full view.
+    const side = Math.min(img.naturalWidth, img.naturalHeight) * 0.12
+    ctx.drawImage(img, img.naturalWidth - side, 0, side, side, 0, 0, 8, 8)
+    try {
+      const px = ctx.getImageData(0, 0, 8, 8).data
+      let light = 0
+      for (let i = 0; i < px.length; i += 4) light += 0.2126 * px[i]! + 0.7152 * px[i + 1]! + 0.0722 * px[i + 2]!
+      crossOnLight.value = light / (px.length / 4) / 255 > 0.5
+    } catch {
+      crossOnLight.value = false
+    }
+  }
+  img.src = props.src
+}
+watch(open, (isOpen) => isOpen && readCorner())
+
 const closeStyle = computed(() => {
   const b = to.value
   return b && { top: `${b.top + INSET}px`, left: `${b.left + b.width - INSET - 36}px` }
@@ -109,7 +137,8 @@ useEventListener<KeyboardEvent>(
           type="button"
           aria-label="Close"
           :class="[
-            'pointer-events-auto fixed flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white/90 backdrop-blur-md hover:bg-black/50 hover:text-white focus-ring',
+            'pointer-events-auto fixed flex size-9 cursor-pointer items-center justify-center rounded-full focus-ring',
+            crossOnLight ? 'text-black/70 hover:text-black' : 'text-white/85 hover:text-white',
             visible ? 'opacity-100 transition-opacity delay-200 duration-300' : 'opacity-0 duration-150',
           ]"
           :style="closeStyle"
