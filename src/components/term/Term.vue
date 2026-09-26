@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, useSlots, useTemplateRef, watch } from 'vue'
-import Popover from '../../components/popover/Popover.vue'
-import PopoverContent from '../../components/popover/PopoverContent.vue'
-import PopoverTrigger from '../../components/popover/PopoverTrigger.vue'
+import Popover from '../popover/Popover.vue'
+import PopoverContent from '../popover/PopoverContent.vue'
+import PopoverTrigger from '../popover/PopoverTrigger.vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
 import { XIcon } from '../../icons/internal'
+import { labelFor } from '../../utils/labels'
 
 /**
- * Lab: a word that explains itself where it is read, as Curio does, made of the library's parts.
+ * A word that explains itself where it is read, after Curio, made of the library's parts.
  * Two depths:
  *
  *   A glance: pressed, the word stays lit with SelectionMenu's band, and a small card appears
@@ -19,7 +20,15 @@ import { XIcon } from '../../icons/internal'
  *   a real size (useMorphBox), the page dimmed behind as under a dialog, never shadowed. Closing
  *   it (its cross, Escape, the dimmed page) folds it back into the glance, still open.
  */
-defineProps<{ title: string }>()
+withDefaults(
+  defineProps<{
+    /** The heading of its glance and its card: the term as it is named. */
+    title: string
+    moreLabel?: string
+    closeLabel?: string
+  }>(),
+  { moreLabel: labelFor('seeMore'), closeLabel: labelFor('close') },
+)
 const slots = useSlots()
 
 const open = ref(false)
@@ -94,7 +103,7 @@ useEventListener<KeyboardEvent>(
           class="mt-2 cursor-pointer text-sm font-medium text-[color:var(--color-accent)] hover:underline focus-ring"
           @click="expanded = true"
         >
-          See more
+          {{ moreLabel }}
         </button>
       </div>
     </PopoverContent>
@@ -135,7 +144,7 @@ useEventListener<KeyboardEvent>(
         <button
           ref="closeButton"
           type="button"
-          aria-label="Close"
+          :aria-label="closeLabel"
           :class="[
             'absolute top-4 right-4 flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-[color,opacity] hover:text-fg focus-ring',
             visible ? 'opacity-100 delay-200 duration-300' : 'opacity-0 duration-150',

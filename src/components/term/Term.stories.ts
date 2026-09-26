@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Term from './Term.vue'
 
-const meta = { title: 'Lab/Term', component: Term, args: { title: 'Harness' } } satisfies Meta<typeof Term>
+const meta = { title: 'Text/Term', component: Term, args: { title: 'Harness' } } satisfies Meta<typeof Term>
 export default meta
 type Story = StoryObj<typeof meta>
 
@@ -23,5 +23,18 @@ export const InNotes: Story = {
         </p>
         <p>That loop, read, act, check, report, is what turns a model into an agent.</p>
       </article>`,
+  }),
+}
+
+// Situations every change has to keep working. See "Situations" in DECISIONS.md.
+
+/** Near the bottom of the screen the glance opens above the word; without a "more" it has no See more. */
+export const NearTheBottom: Story = {
+  render: () => ({
+    components: { Term },
+    template: `
+      <div class="flex min-h-[90vh] items-end">
+        <p class="prose article">Everything the model can see at once is its <Term title="Context window">context<template #definition>The conversation, the files it has read and the tools' results, all it can see at once.</template></Term>.</p>
+      </div>`,
   }),
 }

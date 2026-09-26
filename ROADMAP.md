@@ -74,6 +74,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | SplitActions | Base | A button that splits into two to four actions as drops, each pulling out of it by a neck, their icons coming in once free; in a row beside it or fanned above a round one (`radial`); keys, focus and Escape handled. Actions that need words are PopoverMorph's menu |
 | Glow | Base | The colour of the content itself as a ground: the Aurora, its lights drifting under its grain, in the colours of an image (its palette, only the colours that count); `soft` or `vivid`; a new image's colours fade in over the old. The Aurora alone is AI's light; the Glow is the same light in the content's colour |
 | Glass | Base | The material for what sits over colour: `glass` (a white veil letting the colour through, blurred behind, a barely-there shadow) over an Aurora or a Glow, as ChatMorph's composer and messages; `glass-strong` over a photo, denser and dark in the dark theme so text reads on any part of it. Tokens `--glass-*` |
+| Term | Special | A word that explains itself where it is read, after Curio: pressed, it stays lit with SelectionMenu's band and a glance appears under it (Popover: it follows the word and flips above near the bottom), the meaning in a sentence; See more grows that glance into a large card in the middle, a real size, the page dimmed behind; its cross, Escape or the dimmed page fold it back into the glance |
 | ConfirmButton | Base | An action that asks in its own place, no dialog: the square widens into a pill, the bin's lid tips open, the pill splits in two (the answers' half a tone deeper, its tail pointing at the icon); confirmed, it tints with the danger colour while the action runs, then a check or what went wrong. Any icon (a sign-out, a reset). After Rare UI's delete, redone |
 | Filters | Special | As Linear and Notion: a button grows into a panel of categories (PopoverMorph), a category turns it to its options (checkboxes, a search field from eight) as the box eases to their height; what is chosen stands beside it as a pill whose values morph, pressing it reopens its category, its cross takes it away and the rest slide over (AnimatedList); `count` said beside them, morphing, with Clear. `v-model` per category; the results stay the app's |
 | Field | Base | A label, help and error round any control, linked for screen readers (`id`, `aria-describedby`, `aria-invalid`); help and error swap in place; `optional` |
@@ -124,7 +125,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Identity: confirm in place | Done: became `ConfirmButton`. |
 | Identity: activity | Done: became `ActivityGrid`. |
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
-| Term | Liked, as Curio has it: a glance under the lit word (Popover), See more growing it into a large card (useMorphBox). To become a part, with Markdown. |
+| Term | Done: became `Term`. |
 | Liquid | Done: became `Liquid` (the essential, ChatComposer on it) and `SplitActions`. The carousel's dots wait for the Carousel (0.3). |
 
 ## Versions

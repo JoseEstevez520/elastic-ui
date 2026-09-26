@@ -14,6 +14,8 @@ export const defaultLabels = {
   confirm: 'Confirm',
   /** ActivityGrid's tray. */
   mostActiveIn: 'Most active in',
+  /** Term's glance. */
+  seeMore: 'See more',
   close: 'Close',
   clear: 'Clear',
   dismiss: 'Dismiss',
