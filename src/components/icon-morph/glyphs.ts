@@ -139,6 +139,34 @@ export const glyphs = {
     },
     at([12, 5]),
   ],
+  // A paper plane, folded from the arrow: its outline from the left wing to the nose and down to
+  // its keel, and the fold from the keel to the nose.
+  plane: [
+    {
+      points: [
+        [3, 10],
+        [21, 3],
+        [14, 21],
+        [11, 13],
+      ],
+    },
+    {
+      points: [
+        [11, 13],
+        [21, 3],
+        [21, 3],
+        [21, 3],
+      ],
+    },
+    {
+      points: [
+        [3, 10],
+        [11, 13],
+        [11, 13],
+        [11, 13],
+      ],
+    },
+  ],
 } satisfies Record<string, Glyph>
 
 export type GlyphName = keyof typeof glyphs
