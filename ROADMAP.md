@@ -134,7 +134,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Type scale | Done: the scale in `tokens.css`, every part on it. |
 | Tones | Done: what floats stands on the raised surface with a hairline and a barely-there shadow. |
 | Fields | Done: every field is a tray. |
-| Download (completion told by the object) | Trying: the arrow's stem shortens as the file comes in, then the arrow drops into the tray and the tray fills a tone. |
+| Download (completion told by the object) | Dropped: a 16px icon telling progress and a drop into a tray could not be read at all. |
 
 ## Versions
 
