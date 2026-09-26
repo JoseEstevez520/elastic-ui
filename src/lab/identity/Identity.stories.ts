@@ -1,36 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Code2, Rocket, Server } from '@lucide/vue'
-import FileIcon from '../../components/file-icon/FileIcon.vue'
 import ActivityGrid, { type ActivitySource } from './ActivityGrid.vue'
-import ConfirmInPlace from './ConfirmInPlace.vue'
 
 /**
- * Lab: the library's identity, "objects that transform in place", tried on two pieces: small,
+ * Lab: the library's identity, "objects that transform in place" (the delete that asks in its
+ * place has become ConfirmButton). Tried here:
  * flat objects at rest whose parts move as parts, which lift into material when they open, grow
  * where they are rather than opening something over the page, and use colour only to mean.
  */
 const meta = { title: 'Lab/Identity' } satisfies Meta
 export default meta
 type Story = StoryObj<typeof meta>
-
-const files = ['unit-3-networks.pdf', 'docker-lab.docx', 'marks-term-1.xlsx']
-
-/** Delete asks in its own place: the bin opens its lid and the square widens into the question. */
-export const ConfirmInPlaceStory: Story = {
-  name: 'Confirm in place',
-  render: () => ({
-    components: { ConfirmInPlace, FileIcon },
-    setup: () => ({ files }),
-    template: `
-      <ul class="flex w-96 flex-col">
-        <li v-for="f in files" :key="f" class="flex h-14 items-center gap-3 border-b border-[color:var(--color-border)] last:border-0">
-          <FileIcon :name="f" />
-          <span class="min-w-0 flex-1 truncate text-sm text-fg">{{ f }}</span>
-          <ConfirmInPlace />
-        </li>
-      </ul>`,
-  }),
-}
 
 // A term, about twenty-six weeks, busier around the deadlines.
 const days = Array.from({ length: 26 * 7 }, (_, i) => {

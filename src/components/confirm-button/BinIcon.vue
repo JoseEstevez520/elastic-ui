@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Lab: a bin as an object with a lid, simpler than Lucide's (no stripes), so the lid reads: `open`,
+ * A bin as an object with a lid, simpler than Lucide's (no stripes), so the lid reads: `open`,
  * the lid and its handle lift and tip well back on their left hinge, as a bin about to take
  * something, and settle again when it closes.
  */
@@ -16,6 +16,7 @@ defineProps<{ open?: boolean }>()
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
+    class="overflow-visible"
   >
     <path d="M6 9v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9" />
     <g

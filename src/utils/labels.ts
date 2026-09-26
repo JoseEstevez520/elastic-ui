@@ -9,6 +9,9 @@ import { inject, provide, type App, type InjectionKey } from 'vue'
 export const defaultLabels = {
   // Actions
   cancel: 'Cancel',
+  /** ConfirmButton. */
+  delete: 'Delete',
+  confirm: 'Confirm',
   close: 'Close',
   clear: 'Clear',
   dismiss: 'Dismiss',
