@@ -1,4 +1,5 @@
 export * from './components/accordion'
+export * from './components/activity-grid'
 export * from './components/agent-replay'
 export * from './components/alert-dialog'
 export * from './components/animated-list'

@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, useTemplateRef, type Component } from 'vue'
 import { ChevronRightIcon } from '../../icons/internal'
+import { useLabels } from '../../utils/labels'
 import { contentOut, prefersReducedMotion } from '../../utils/motion'
 
 /**
- * Lab: a term's activity, day by day, as GitHub's grid, and what it was made of. The card is an
+ * Activity day by day, as GitHub's grid, and what it was made of: submissions over a term,
+ * attendance, commits. The card is an
  * object of its own: a frame in the page's strongest tone, the grid of days filling it, and a tray
  * set into its foot naming where the work went, their icons in a stack. Pressed, the tray grows up
  * over the grid into the list, as frosted glass through which the grid still shows; each icon
  * travels from the stack to its own row, and the names and counts come into focus beside them.
- * Closing, the words fade first, the icons travel back, and the tray sinks to its place.
+ * Closing, the words fade first, the icons travel back, and the tray sinks to its place. With no
+ * sources, it is the grid alone.
+ *
+ * Its colour is the success colour, activity reading as something done; set `--activity` to
+ * change it. After Rare UI's GitHub activity, redone in the library's own way.
  */
 export interface ActivitySource {
   name: string
@@ -24,10 +30,15 @@ const props = defineProps<{
   days: number[]
   /** The first day's date, for the months above the grid. */
   start: Date
-  sources: ActivitySource[]
+  sources?: ActivitySource[]
+  /** The tray's words. */
   summary?: string
+  /** For the months' names. */
+  locale?: string
 }>()
+const sources = computed(() => props.sources ?? [])
 
+const labels = useLabels()
 const open = ref(false)
 const words = ref(false)
 let timer: ReturnType<typeof setTimeout> | undefined
@@ -54,7 +65,7 @@ const months = computed(() =>
     day.setDate(day.getDate() + w * 7)
     const before = new Date(day)
     before.setDate(before.getDate() - 7)
-    return w === 0 || day.getMonth() !== before.getMonth() ? day.toLocaleString('en', { month: 'short' }) : ''
+    return w === 0 || day.getMonth() !== before.getMonth() ? day.toLocaleString(props.locale, { month: 'short' }) : ''
   }),
 )
 // The five levels: the activity's colour, from a trace to full.
@@ -65,7 +76,7 @@ const card = useTemplateRef<HTMLElement>('card')
 const TRAY = 52
 const ROW = 44
 const INSET = 12
-const listHeight = computed(() => TRAY + props.sources.length * ROW + 16)
+const listHeight = computed(() => TRAY + sources.value.length * ROW + 16)
 const grown = ref(TRAY)
 onMounted(() => (grown.value = Math.max((card.value?.clientHeight ?? 240) - INSET * 2, listHeight.value)))
 
@@ -76,7 +87,7 @@ const iconAt = (i: number) =>
     ? { top: `${TRAY + i * ROW + (ROW - ICON) / 2}px`, left: '16px', zIndex: 1 }
     : {
         top: `${(TRAY - ICON) / 2}px`,
-        left: `calc(100% - ${16 + 32 + 10 + ICON + (props.sources.length - 1 - i) * 20}px)`,
+        left: `calc(100% - ${16 + 32 + 10 + ICON + (sources.value.length - 1 - i) * 20}px)`,
         zIndex: i + 1,
       }
 </script>
@@ -84,16 +95,23 @@ const iconAt = (i: number) =>
 <template>
   <section
     ref="card"
-    class="relative w-[30rem] max-w-full rounded-[28px] bg-[color:light-dark(#fff,#000)] p-3 shadow-[0_1px_2px_rgb(0_0_0/0.04)]"
+    class="relative w-[30rem] max-w-full rounded-[28px] bg-[color:var(--activity-frame,light-dark(#fff,#000))] p-3"
   >
-    <div class="px-3 pt-3" :style="{ paddingBottom: `${TRAY + 16}px`, minHeight: `${listHeight}px` }">
+    <div
+      class="px-3 pt-3"
+      :style="
+        sources.length ? { paddingBottom: `${TRAY + 16}px`, minHeight: `${listHeight}px` } : { paddingBottom: '12px' }
+      "
+    >
       <h3 class="text-[17px] text-fg">{{ title }}</h3>
       <div class="mt-4" aria-hidden="true">
         <div class="flex gap-[3px] text-[11px] tracking-wide text-fg-faint">
-          <span v-for="(m, w) in months" :key="w" class="h-4 flex-1 overflow-visible whitespace-nowrap">{{ m }}</span>
+          <span v-for="(m, w) in months" :key="w" class="h-4 max-w-4 flex-1 overflow-visible whitespace-nowrap">{{
+            m
+          }}</span>
         </div>
         <div class="mt-1 flex gap-[3px]">
-          <div v-for="(week, w) in weeks" :key="w" class="flex flex-1 flex-col gap-[3px]">
+          <div v-for="(week, w) in weeks" :key="w" class="flex max-w-4 flex-1 flex-col gap-[3px]">
             <span
               v-for="(d, i) in week"
               :key="i"
@@ -108,6 +126,7 @@ const iconAt = (i: number) =>
     </div>
     <!-- The tray set into the card's foot, growing up over the grid as frosted glass. -->
     <div
+      v-if="sources.length"
       :class="[
         'absolute right-3 bottom-3 left-3 overflow-hidden rounded-[20px]',
         // Nearly opaque, so the grid only just shows through once the tray has grown over it.
@@ -126,7 +145,7 @@ const iconAt = (i: number) =>
         :style="{ height: `${TRAY}px` }"
         @click="toggle"
       >
-        {{ summary ?? 'Most active in' }}
+        {{ summary ?? labels.mostActiveIn }}
         <span
           class="flex size-8 items-center justify-center rounded-full shadow-[inset_0_0_0_1.5px_var(--color-border-strong)]"
         >

@@ -12,6 +12,8 @@ export const defaultLabels = {
   /** ConfirmButton. */
   delete: 'Delete',
   confirm: 'Confirm',
+  /** ActivityGrid's tray. */
+  mostActiveIn: 'Most active in',
   close: 'Close',
   clear: 'Clear',
   dismiss: 'Dismiss',

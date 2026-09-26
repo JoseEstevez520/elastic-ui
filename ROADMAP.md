@@ -67,6 +67,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Steps | Base | `Steps`, `StepsItem`, `StepsNext`. Numbered steps joined by a line: one open at a time, opening in place on Collapsible, the line filling down to it with the library's ease and the numbers reached taking the text's colour (Material's vertical stepper); `v-model` for the open step; `static` shows every step, as a guide in docs (Mintlify, Fumadocs); `aria-current="step"` |
 | StatusText | Base | The library's one way of telling that something is under way: shimmers while `working`, each new text morphing from the last, and turns into what came of it; `error` turns it into what went wrong, in the danger colour, with no icon or box. Used by ChatMessage and ChatTool |
 | Breadcrumbs | Base | Where the page sits, so the sidebar can keep to the main sections (Notion, Vercel, GitHub). Given as `items`, top down: a crumb whose page changes morphs into its new name (TextMorph), crumbs added or dropped come into focus or fade; a separator with `siblings` opens the other pages at the next level, as the Finder's path bar, turning down while open; a row too long for its room scrolls, held at the current page, the rest behind a fading edge |
+| ActivityGrid | Special | Activity day by day as GitHub's grid, in a frame of the page's strongest tone, the months above; a tray set into its foot names where the work went, icons in a stack; pressed, it grows up over the grid as nearly opaque frosted glass, each icon gliding to its row and its words coming in once it has passed; `--activity` for its colour, `locale` for the months. After Rare UI's GitHub activity, redone |
 | ConfirmButton | Base | An action that asks in its own place, no dialog: the square widens into a pill, the bin's lid tips open, the pill splits in two (the answers' half a tone deeper, its tail pointing at the icon); confirmed, it tints with the danger colour while the action runs, then a check or what went wrong. Any icon (a sign-out, a reset). After Rare UI's delete, redone |
 | Filters | Special | As Linear and Notion: a button grows into a panel of categories (PopoverMorph), a category turns it to its options (checkboxes, a search field from eight) as the box eases to their height; what is chosen stands beside it as a pill whose values morph, pressing it reopens its category, its cross takes it away and the rest slide over (AnimatedList); `count` said beside them, morphing, with Clear. `v-model` per category; the results stay the app's |
 | Field | Base | A label, help and error round any control, linked for screen readers (`id`, `aria-describedby`, `aria-invalid`); help and error swap in place; `optional` |
@@ -86,7 +87,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
 2. ~~**Sheet**~~ Done: its button's box grows into the panel at a side or the bottom, and folds back once the content has faded.
 3. **From the lab into the library**:
    - ~~**ConfirmButton**~~ Done: an action that asks in its own place.
-   - **ActivityGrid**: a term's activity as GitHub's grid, its tray growing up over it into a list, the icons travelling to their rows.
+   - ~~**ActivityGrid**~~ Done: activity as GitHub's grid, its tray growing up over it into a list.
    - **IconMorph**: icons drawn as the same strokes, so one travels into another as TextMorph's letters; more glyphs.
    - **Card to page**: a card that becomes its page, with the router (its own URL, the back button closing it the same way, a page opened directly just showing).
    - **Folder**: redone bigger, with real pages and a frosted front, against its reference; dropped if it does not get there.
@@ -112,7 +113,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Image aurora | Fine, not exciting. Kept as the ground of Card to page. |
 | Folder icon | The idea is liked, the execution is not yet at the level of the reference: redo it bigger, with real pages and a frosted front, or drop it. |
 | Identity: confirm in place | Done: became `ConfirmButton`. |
-| Identity: activity | Reworked closer to the reference: a frame in the page's strongest tone, the grid filling it with its months, a tray set in its foot that grows up as frosted glass, round icons that travel from their stack to their rows. To review. |
+| Identity: activity | Done: became `ActivityGrid`. |
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
 
 ## Versions
