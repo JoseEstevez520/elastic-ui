@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Lab: an archive box, BinIcon's sibling. A box has no hinge: `open`, its lid lifts straight up off
+ * An archive box, BinIcon's sibling, for ConfirmButton's archive (`tone="warning"`). A box has no hinge: `open`, its lid lifts straight up off
  * the box, and the box settles a touch lower, the two parting as a lid lifted off does; closing,
  * the lid comes down onto it again. After lucide-animated's archive, redrawn in the library's way:
  * no stripes, the handle's slot kept, so it reads as a box of records and not as a bin.

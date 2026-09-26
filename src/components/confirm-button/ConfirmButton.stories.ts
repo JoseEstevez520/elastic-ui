@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { LogOut } from '@lucide/vue'
 import FileIcon from '../file-icon/FileIcon.vue'
+import ArchiveIcon from './ArchiveIcon.vue'
 import ConfirmButton from './ConfirmButton.vue'
 
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
@@ -34,7 +35,13 @@ export const InAList: Story = {
 }
 
 /** Any action that should be confirmed, with its own icon. */
-export const SignOut: Story = { args: { icon: LogOut, label: 'Sign out' } }
+/**
+ * Archive, the bin's sibling: a box of records whose lid lifts straight off as it asks. In amber
+ * (`tone="warning"`), which says it puts something away, not the danger red: it can be undone.
+ */
+export const Archive: Story = { args: { icon: ArchiveIcon, tone: 'warning', label: 'Archive' } }
+
+export const SignOut: Story = { args: { icon: LogOut, label: 'Sign out', tone: 'neutral' } }
 
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
 

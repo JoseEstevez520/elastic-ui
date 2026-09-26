@@ -141,7 +141,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Fields | Done: every field is a tray. |
 | Download (completion told by the object) | Dropped: a 16px icon telling progress and a drop into a tray could not be read at all. |
 | Row to card | Dropped: a generic panel, not an object with parts of its own. |
-| Archive | Trying: ConfirmButton with a box of records, its lid lifting straight off as it asks; in amber, the warning colour, not the danger red (ConfirmButton gains `tone`). |
+| Archive | Done: `ConfirmButton` with `ArchiveIcon` and `tone="warning"`. |
 
 ## Versions
 
@@ -165,7 +165,7 @@ Not published on npm, on purpose: it is for my own projects. `"private": true` k
 ## Later / ideas
 
 - **Objects in the bin's family** (ConfirmButton, FileIcon): a recognisable thing whose parts move, at a size where the gesture reads without explaining it. Next, one at a time in the lab:
-  - **Archive** (trying): the box's lid lifting straight off; maybe the box itself telling the end, its lid coming down, instead of the check.
+  - ~~**Archive**~~ Done: ConfirmButton with the box of records, in amber. Maybe later the box itself telling the end, its lid coming down, instead of the check.
   - **A tear-off calendar** for DatePicker: the day in large figures, the top sheet turning back over its edge to show the new date.
   - **Copy as a sheet that doubles**, for CopyButton: a second sheet slides out from behind the first, a tone apart, instead of the check.
   - **A padlock** as a private/public switch: its shackle lifting and turning open.

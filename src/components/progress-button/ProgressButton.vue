@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { animate } from 'motion-v'
+import { useSpring } from 'motion-v'
 import { computed, onBeforeUnmount, ref, watch, type Component, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
@@ -9,11 +9,7 @@ import Button from '../button/Button.vue'
 import type { ButtonVariants } from '../button/button.variants'
 import IconSwap from '../icon-swap/IconSwap.vue'
 import TextMorph from '../text-morph/TextMorph.vue'
-import {
-  amountVariants,
-  progressFillVariants,
-  progressOutcomeText,
-} from './progress-button.variants'
+import { amountVariants, progressFillVariants, progressOutcomeText } from './progress-button.variants'
 
 export type ProgressButtonState = 'idle' | 'working' | 'done' | 'error'
 
@@ -63,33 +59,34 @@ onBeforeUnmount(() => clearTimeout(back))
 
 const working = computed(() => state.value === 'working')
 const outcome = computed(() => (state.value === 'done' || state.value === 'error' ? state.value : undefined))
-// Either outcome fills the button with its colour, so it reads as a result at a glance; an error
-// left part way would look like a bar that got stuck.
-const fillScale = computed(() => (outcome.value ? 1 : (amount.value ?? 0) / 100))
+const amount = computed(() =>
+  props.progress === undefined ? undefined : Math.round(Math.min(100, Math.max(0, props.progress))),
+)
+
+// The fill and the amount follow the work on a spring, which keeps its speed from one update to
+// the next, so steady steps run together into one movement (as Progress; a tween restarted on each
+// update moves in jerks). Either outcome fills the button with its colour, so it reads as a result
+// at a glance; an error left part way would look like a bar that got stuck. A new start begins
+// from empty rather than drawing back.
+const follow = useSpring(0, { stiffness: 22, damping: 12 })
+const shown = ref(0)
+const unfollow = follow.on('change', (v) => (shown.value = v))
+onBeforeUnmount(unfollow)
+watch(
+  [amount, outcome],
+  ([to, end]) => {
+    const target = end ? 1 : (to ?? 0) / 100
+    if (target < shown.value || prefersReducedMotion()) follow.jump(target)
+    else follow.set(target)
+  },
+  { immediate: true },
+)
+const fillScale = computed(() => shown.value)
+const shownAmount = computed(() => (state.value === 'done' ? 100 : Math.round(shown.value * 100)))
 // On a solid button the label keeps its own colour: the outcome's would not read on the fill.
-const outcomeText = computed(() => (outcome.value && props.variant !== 'solid' ? progressOutcomeText[outcome.value] : undefined))
-const amount = computed(() => (props.progress === undefined ? undefined : Math.round(Math.min(100, Math.max(0, props.progress)))))
-// The amount on show counts up to each new value alongside the fill, on the fill's own pace and
-// curve (see `progressFillClass`), so the two climb together instead of the number jumping.
-const GLIDE = { duration: 0.5, ease: 'easeOut' } as const
-const shownAmount = ref(0)
-let counting: { stop: () => void } | undefined
-// Work that ends done shows 100 as it folds away, not wherever the count had got to.
-watch(state, (now) => {
-  if (now !== 'done') return
-  counting?.stop()
-  shownAmount.value = 100
-})
-watch(amount, (to) => {
-  counting?.stop()
-  if (to === undefined) return
-  if (to < shownAmount.value || prefersReducedMotion()) {
-    shownAmount.value = to
-    return
-  }
-  counting = animate(shownAmount.value, to, { ...GLIDE, onUpdate: (v) => (shownAmount.value = Math.round(v)) })
-})
-onBeforeUnmount(() => counting?.stop())
+const outcomeText = computed(() =>
+  outcome.value && props.variant !== 'solid' ? progressOutcomeText[outcome.value] : undefined,
+)
 
 // Only the phase morphs (Export → Exporting → Exported). The amount changes all the time, and a
 // morph on every tick would be noise, so it counts up beside it, in digits of one width.
@@ -99,7 +96,9 @@ const phase = computed(() => {
   if (state.value === 'error') return props.errorLabel
   return props.label
 })
-const shownIcon = computed(() => (state.value === 'done' ? CheckIcon : state.value === 'error' ? AlertIcon : props.icon))
+const shownIcon = computed(() =>
+  state.value === 'done' ? CheckIcon : state.value === 'error' ? AlertIcon : props.icon,
+)
 </script>
 
 <template>
@@ -120,7 +119,11 @@ const shownIcon = computed(() => (state.value === 'done' ? CheckIcon : state.val
     >
       <!-- The outer layer only fades; the fill inside keeps its own tint, so the two never compete
            over the same opacity. -->
-      <span v-if="outcome || (working && amount !== undefined)" aria-hidden="true" class="pointer-events-none absolute inset-0">
+      <span
+        v-if="outcome || (working && amount !== undefined)"
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0"
+      >
         <span :class="progressFillVariants({ outcome: outcome ?? 'none' })" :style="{ scale: `${fillScale} 1` }" />
       </span>
     </Transition>
@@ -134,7 +137,11 @@ const shownIcon = computed(() => (state.value === 'done' ? CheckIcon : state.val
          unfolds as the work starts and folds away as it ends, its room and the gap before it
          closing as it fades, so the button changes width in one movement with the label. Always
          there when there is an amount to show, so it can fold while showing where it ended. -->
-    <span v-if="progress !== undefined" :aria-hidden="!working || undefined" :class="amountVariants({ shown: working })">
+    <span
+      v-if="progress !== undefined"
+      :aria-hidden="!working || undefined"
+      :class="amountVariants({ shown: working })"
+    >
       {{ shownAmount }}%
     </span>
   </Button>

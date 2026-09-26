@@ -3,14 +3,13 @@ import { cva } from 'class-variance-authority'
 /**
  * The progress fills the button from the start edge, behind its label, as a tint of the text
  * colour, so it reads on any variant. It grows by scaling a layer, never by resizing anything,
- * and glides towards each new amount for longer than updates usually take to arrive, so steady
- * steps run together into one continuous fill. When the work ends, the fill does not go: it
+ * following the amount on a spring (ProgressButton), so steady steps run together into one fill. When the work ends, the fill does not go: it
  * turns into the outcome, taking its colour where it stands.
  */
 export const progressFillVariants = /* @__PURE__ */ cva(
   [
     'pointer-events-none absolute inset-0 origin-left',
-    'transition-[scale,background-color,opacity] duration-500 ease-out motion-reduce:transition-none',
+    'transition-[background-color,opacity] duration-500 ease-out motion-reduce:transition-none',
   ],
   {
     variants: {
