@@ -5,18 +5,13 @@ import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
-import { dismissToast, useToasts, type Toast, type ToastOrigin } from './toast.store'
+import { dismissToast, useToasts, type Toast } from './toast.store'
 import { toastClass, toasterVariants, type ToasterPosition } from './toast.variants'
 
 /**
  * Where toasts show up: one per app. Each toast arrives from the screen's edge while the others
  * slide aside, and leaves by fading out and folding its place away. They stack up one at a time
  * and never overlap. Call `toast()` from anywhere to show one.
- *
- * A toast given `from` (the button that did what it tells) comes out of that button instead: a
- * box starts on the button's own box, its size and corners, and grows to the toast's place as it
- * travels there, a real size (as useMorphBox's boxes); once it has landed, the toast's words come
- * into focus in it. The others make room for it as for any toast.
  */
 const props = withDefaults(
   defineProps<{
@@ -94,10 +89,7 @@ function start(t: Toast) {
   remaining.set(t.id, left)
   if (paused.value || left === Infinity || timers.has(t.id)) return
   startedAt.set(t.id, Date.now())
-  timers.set(
-    t.id,
-    setTimeout(() => dismissToast(t.id), left),
-  )
+  timers.set(t.id, setTimeout(() => dismissToast(t.id), left))
 }
 
 watch(paused, (isPaused) => {
@@ -152,70 +144,6 @@ const leave = {
 // Arrives from past the edge: a little more than its own height away, clearing the gutter.
 const fromEdge = computed(() => ({ opacity: 0, y: atTop.value ? '-120%' : '120%' }))
 
-// Toasts coming out of their button: a box travels from the button to the toast's place, the
-// toast itself waiting unseen in its room until the box has landed on it.
-interface Traveller {
-  id: number
-  origin: ToastOrigin
-  to?: { top: number; left: number; width: number; height: number; radius: string }
-}
-const travellers = ref<Traveller[]>([])
-const landed = ref(new Set<number>())
-const reduced = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
-function arrive(t: Toast, el: Element | null) {
-  if (!t.origin || !el || landed.value.has(t.id) || travellers.value.some((x) => x.id === t.id)) return
-  if (reduced()) return void (landed.value = new Set(landed.value).add(t.id))
-  const traveller: Traveller = { id: t.id, origin: t.origin }
-  travellers.value = [...travellers.value, traveller]
-  // Its place, once the stack has made room for it; then out from the button to there.
-  setTimeout(() => {
-    const r = el.getBoundingClientRect()
-    travellers.value = travellers.value.map((x) =>
-      x.id === t.id
-        ? {
-            ...x,
-            to: {
-              top: r.top,
-              left: r.left,
-              width: r.width,
-              height: r.height,
-              radius: getComputedStyle(el).borderRadius,
-            },
-          }
-        : x,
-    )
-    setTimeout(() => {
-      landed.value = new Set(landed.value).add(t.id)
-      travellers.value = travellers.value.filter((x) => x.id !== t.id)
-    }, morphTransition.duration * 1000)
-  }, 60)
-}
-const travellerStyle = (x: Traveller) => {
-  const b = x.to ?? x.origin
-  const ease = `cubic-bezier(${morphTransition.ease.join(',')})`
-  return {
-    top: `${b.top}px`,
-    left: `${b.left}px`,
-    width: `${b.width}px`,
-    height: `${b.height}px`,
-    borderRadius: b.radius,
-    // It starts in the button's colour (a transparent one reads as the toast's) and turns into the toast's.
-    backgroundColor:
-      x.to || x.origin.background === 'rgba(0, 0, 0, 0)' ? 'var(--toast-bg, var(--color-bg))' : x.origin.background,
-    transition: x.to
-      ? ['top', 'left', 'width', 'height', 'border-radius', 'background-color']
-          .map((p) => `${p} ${morphTransition.duration}s ${ease}`)
-          .join(',')
-      : 'none',
-  }
-}
-
-// Its action, and then it goes.
-function act(t: Toast) {
-  t.action?.onClick()
-  dismissToast(t.id)
-}
-
 function onKeydown(event: KeyboardEvent, id: number) {
   if (event.key === 'Escape') dismissToast(id)
 }
@@ -241,20 +169,13 @@ const labels = useLabels()
             v-for="t in shown"
             :key="t.id"
             layout="position"
-            :initial="t.origin ? { opacity: 0 } : fromEdge"
-            :animate="{
-              opacity: !t.origin || landed.has(t.id) ? 1 : 0,
-              y: 0,
-              transition: t.origin ? { duration: 0 } : morphTransition,
-            }"
+            :initial="fromEdge"
+            :animate="{ opacity: 1, y: 0, transition: morphTransition }"
             :exit="leave"
             :class="atTop ? 'pb-2' : 'pt-2'"
             @keydown="onKeydown($event, t.id)"
           >
-            <div
-              :ref="(el) => t.origin && arrive(t, el as Element | null)"
-              :class="[toastClass, t.origin && landed.has(t.id) && 'stagger-children [--stagger-delay:0s]']"
-            >
+            <div :class="toastClass">
               <div class="min-w-0 flex-1">
                 <p class="font-medium">{{ t.title }}</p>
                 <p v-if="t.description" class="mt-1 text-fg-secondary">{{ t.description }}</p>
@@ -262,7 +183,7 @@ const labels = useLabels()
                   v-if="t.action"
                   type="button"
                   class="mt-2 cursor-pointer text-sm font-medium text-accent hover:underline focus-ring"
-                  @click="act(t)"
+                  @click="t.action.onClick(); dismissToast(t.id)"
                 >
                   {{ t.action.label }}
                 </button>
@@ -281,14 +202,4 @@ const labels = useLabels()
       </ol>
     </MotionConfig>
   </section>
-  <!-- The boxes on their way out of their buttons, over everything, as the toast's own surface. -->
-  <Teleport to="body">
-    <div
-      v-for="x in travellers"
-      :key="x.id"
-      aria-hidden="true"
-      :class="cn(toastClass, 'pointer-events-none fixed z-[101] p-0')"
-      :style="travellerStyle(x)"
-    />
-  </Teleport>
 </template>
