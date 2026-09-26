@@ -1,6 +1,6 @@
 /**
  * The pill: flat, in the muted tone at rest. While its action runs, and once it is done or has
- * failed, it takes a tint of the danger colour, as the thing it did.
+ * failed, it takes a tint of its tone's colour (danger, warning), as the thing it did.
  */
 export const confirmPillClass = [
   'relative inline-flex h-10 items-center overflow-hidden rounded-[14px] align-middle',
@@ -11,6 +11,13 @@ export const confirmPillClass = [
 export const confirmPillTone = {
   rest: 'bg-[color:var(--confirm-bg,var(--color-surface))]',
   danger: 'bg-[color:color-mix(in_oklab,var(--color-danger)_16%,var(--confirm-bg,var(--color-surface)))]',
+  warning: 'bg-[color:color-mix(in_oklab,var(--color-warning)_18%,var(--confirm-bg,var(--color-surface)))]',
+}
+/** The confirm, and the square while it acts, in the tone's colour; a neutral one in the text's. */
+export const confirmToneText = {
+  danger: 'text-[color:var(--color-danger)]',
+  warning: 'text-[color:var(--color-warning)]',
+  neutral: 'text-fg',
 }
 
 /**

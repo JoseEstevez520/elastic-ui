@@ -13,6 +13,7 @@ import {
   confirmHalfClass,
   confirmPillClass,
   confirmPillTone,
+  confirmToneText,
   confirmTailClass,
 } from './confirm-button.variants'
 
@@ -35,9 +36,10 @@ const props = withDefaults(
     icon?: Component
     /**
      * `danger` for what cannot be undone (a delete): the confirm, and the square while it acts, in
-     * the danger colour. `neutral` for what asks but is not dangerous (an archive, a sign-out).
+     * the danger colour. `warning` for what puts something away but can be undone (an archive), in
+     * the warning colour. `neutral` for what asks but means nothing coloured (a sign-out).
      */
-    tone?: 'danger' | 'neutral'
+    tone?: 'danger' | 'warning' | 'neutral'
     /** Its accessible name, and the question's. */
     label?: string
     confirmLabel?: string
@@ -60,7 +62,7 @@ const SIZE = 40
 const width = computed(() => (state.value === 'asking' ? SIZE + 8 + 16 + 24 * 2 + 6 : SIZE))
 const tinted = computed(() => state.value === 'working' || state.value === 'done' || state.value === 'failed')
 // Colour only where it means something: a neutral action keeps the text's colour throughout.
-const toneText = computed(() => (props.tone === 'danger' ? 'text-[color:var(--color-danger)]' : 'text-fg'))
+const toneText = computed(() => confirmToneText[props.tone])
 const showsIcon = computed(() => state.value === 'rest' || state.value === 'asking' || state.value === 'leaving')
 
 let timers: ReturnType<typeof setTimeout>[] = []
@@ -122,7 +124,7 @@ useEventListener<PointerEvent>(
     :class="
       cn(
         confirmPillClass,
-        tinted && tone === 'danger' ? confirmPillTone.danger : confirmPillTone.rest,
+        tinted && tone !== 'neutral' ? confirmPillTone[tone] : confirmPillTone.rest,
         disabled && 'opacity-50',
         props.class,
       )

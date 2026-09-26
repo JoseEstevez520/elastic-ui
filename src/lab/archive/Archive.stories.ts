@@ -4,8 +4,8 @@ import ArchiveIcon from './ArchiveIcon.vue'
 
 /**
  * Lab: archive, the bin's sibling. The same square that asks in its own place, with a box of
- * records: its lid lifts straight up as it asks and comes down as it is done. Neutral, since an
- * archive can be undone: no danger colour anywhere.
+ * records: its lid lifts straight up as it asks and comes down as it is done. In the warning colour,
+ * amber, which says it puts something away, not the danger red: an archive can be undone.
  */
 const meta = { title: 'Lab/Archive', parameters: { layout: 'centered' } } satisfies Meta
 export default meta
@@ -21,7 +21,7 @@ export const BesideTheBin: Story = {
     template: `
       <div class="flex items-center gap-6">
         <ConfirmButton :action="action" />
-        <ConfirmButton :action="action" :icon="ArchiveIcon" tone="neutral" label="Archive" />
+        <ConfirmButton :action="action" :icon="ArchiveIcon" tone="warning" label="Archive" />
       </div>`,
   }),
 }
@@ -35,7 +35,7 @@ export const InAList: Story = {
       <ul class="w-96 divide-y divide-border">
         <li v-for="name in ['Unit 2, networks', 'Practice 1', 'Old exam notes']" :key="name" class="flex items-center justify-between py-2">
           <span class="text-label text-fg">{{ name }}</span>
-          <ConfirmButton :action="action" :icon="ArchiveIcon" tone="neutral" :label="'Archive ' + name" />
+          <ConfirmButton :action="action" :icon="ArchiveIcon" tone="warning" :label="'Archive ' + name" />
         </li>
       </ul>`,
   }),
