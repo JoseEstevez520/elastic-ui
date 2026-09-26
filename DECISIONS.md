@@ -25,6 +25,18 @@ Learnt from redoing the lab's pieces against their references (Rare UI's delete 
 - **Over colour, glass.** What sits over an Aurora, a Glow or a photo is glass (`glass`, `glass-strong` over a photo), never a solid panel cut into the colour and never a dark fill over a light: the colour comes through, blurred, and the text reads on it.
 - **Compare with the reference before calling it done**: close-up screenshots of both, side by side, at the same states.
 
+### Type
+
+After Vercel's Geist, Refactoring UI and Linear's and Stripe's restraint; tried in Lab/Type.
+
+- **Five sizes, no others.** `text-display` (28, a page's one title), `text-title` (20, a panel's or section's), `text-copy` (16, text to read), `text-label` and `text-ui` (14, a line to act on or scan, and plain interface text), `text-meta` (12, dates, counts, hints). Each carries its line height, tracking and weight. No `text-[13px]`: a size between two of them is one of them.
+- **Three weights, each with a job.** 400 to read, 500 to act or scan, 600 to announce. Never bold, and weight never says how important something is.
+- **Importance, in this order: colour, space, size, weight.** `fg` for what matters, `fg-secondary` for what goes with it, `fg-muted` for what is beside the point. A secondary line is greyer, not smaller or thinner.
+- **One thing leads.** A screen has one line that catches the eye first; at most three sizes are in view at once.
+- **Tighter as it grows.** Tracking closes from `copy` up; at 14 and below it stays as the font draws it.
+- **No decorative capitals.** Section labels in sentence case (`text-label`, muted), not small spaced capitals.
+- **Figures line up.** `text-meta` and anything in columns uses tabular figures (`tabular-nums`).
+
 ### Taking an idea from elsewhere
 
 A part seen elsewhere (Rare UI, Family, Apple's apps, a post) becomes the library's own in five steps, never by copying its code:
@@ -155,6 +167,7 @@ Things that went wrong once, found by measuring frame by frame, and the fix ever
 - **Something measured from its content comes out too tall.** Measure a height only once the content has its final width (a sheet's height from its wrapped text).
 - **A drag stops following the pointer.** The pointer is captured by the element pressed; if that element is re-rendered (a TextMorph inside a slider's thumb), the capture is lost. Children of what captures the pointer take `pointer-events: none`.
 - **A class does not win.** Two Tailwind classes for the same property (`bg-*` and `bg-*`) are decided by their order in the stylesheet, not in the attribute: compute one or the other, or merge with `cn`, never list both.
+- **A size from the type scale vanishes.** `tailwind-merge` takes an unknown `text-*` for a colour, so `cn('text-title text-fg')` kept only `text-fg`. `cn` knows the scale's names; a new size goes into its list too.
 - **Clicks do nothing on a card over a popover.** A popover kept mounted but hidden (to fold back into) still has its layer above the page: what opens over it sits higher (Term's card).
 - **A new story renders unstyled in Storybook.** The dev server misses Tailwind classes in new files: `touch .storybook/preview.css`.
 

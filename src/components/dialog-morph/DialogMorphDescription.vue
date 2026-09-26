@@ -7,7 +7,7 @@ const props = defineProps<{ class?: HTMLAttributes['class'] }>()
 </script>
 
 <template>
-  <DialogDescription :class="cn('mt-2 text-sm text-fg-secondary', props.class)">
+  <DialogDescription :class="cn('mt-2 text-ui text-fg-secondary', props.class)">
     <slot />
   </DialogDescription>
 </template>

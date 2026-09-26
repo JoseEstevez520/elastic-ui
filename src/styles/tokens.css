@@ -71,6 +71,37 @@
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
+  /*
+   * The type scale (DECISIONS, "Type"): five sizes, each with its line height, its tracking (tighter
+   * as it grows) and the weight that says what it is for, so `text-label` alone sets a row's name.
+   *   display  a page's one title          title  a panel's or a section's title
+   *   copy     text to read, several lines  label  a line to act on or scan
+   *   ui       a line of plain interface    meta   dates, counts, hints; figures in columns
+   */
+  --text-display: 1.75rem;
+  --text-display--line-height: 1.2;
+  --text-display--letter-spacing: -0.022em;
+  --text-display--font-weight: 600;
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.3;
+  --text-title--letter-spacing: -0.014em;
+  --text-title--font-weight: 600;
+  --text-copy: 1rem;
+  --text-copy--line-height: 1.6;
+  --text-copy--letter-spacing: -0.006em;
+  --text-copy--font-weight: 400;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: -0.003em;
+  --text-label--font-weight: 500;
+  --text-ui: 0.875rem;
+  --text-ui--line-height: 1.4;
+  --text-ui--letter-spacing: -0.003em;
+  --text-ui--font-weight: 400;
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.4;
+  --text-meta--font-weight: 400;
+
   /* Radius */
   --radius-sm: 6px;
   --radius-md: 8px;

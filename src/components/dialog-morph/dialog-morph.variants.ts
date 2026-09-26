@@ -1,6 +1,6 @@
 /** Looks like an outline Button, since at rest it is one. */
 export const dialogMorphTriggerClass = [
-  'relative inline-flex h-10 cursor-pointer items-center justify-center px-4 text-sm font-medium whitespace-nowrap text-fg',
+  'relative inline-flex h-10 cursor-pointer items-center justify-center px-4 text-label whitespace-nowrap text-fg',
   'bg-[color:var(--dialog-bg,var(--color-bg))]',
   'focus-ring',
 ]

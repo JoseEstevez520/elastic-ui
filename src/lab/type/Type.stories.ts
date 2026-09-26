@@ -6,7 +6,7 @@ import './type.css'
 
 /**
  * Lab: the same screen set in type as the library sets it today ("Now") and on a scale with rules
- * ("Rules", see type.css). Compare where the eye lands first, and how many kinds of text it meets.
+ * ("Rules", the scale in tokens.css). Compare where the eye lands first, and how many kinds of text it meets.
  */
 const meta = { title: 'Lab/Type', parameters: { layout: 'padded' } } satisfies Meta
 export default meta
@@ -82,38 +82,38 @@ export const Rules: Story = {
     template: `
       <div class="mx-auto grid max-w-4xl gap-8 md:grid-cols-[1fr_16rem] md:items-start">
         <main>
-          <p class="t-meta text-fg-muted">Web server · Unit 3</p>
-          <h1 class="t-display mt-1">Networks</h1>
-          <p class="t-copy mt-2 text-fg-secondary">Everything we saw about how machines find and talk to each other.</p>
+          <p class="text-meta tabular-nums text-fg-muted">Web server · Unit 3</p>
+          <h1 class="text-display mt-1">Networks</h1>
+          <p class="text-copy mt-2 text-fg-secondary">Everything we saw about how machines find and talk to each other.</p>
           <div class="mt-5 flex gap-2">
             <Button><PlusIcon class="size-4" />New note</Button>
             <Button variant="outline">Share</Button>
           </div>
-          <h2 class="t-label mt-10 text-fg-muted">This week</h2>
+          <h2 class="text-label mt-10 text-fg-muted">This week</h2>
           <ul class="mt-2 divide-y divide-border">
             <li v-for="n in notes" :key="n.title" class="flex items-baseline gap-4 py-3">
               <div class="min-w-0 flex-1">
-                <p class="t-label text-fg">{{ n.title }}</p>
-                <p class="t-ui mt-0.5 text-fg-muted">{{ n.excerpt }}</p>
+                <p class="text-label text-fg">{{ n.title }}</p>
+                <p class="text-ui mt-0.5 text-fg-muted">{{ n.excerpt }}</p>
               </div>
-              <span class="t-meta text-fg-muted">{{ n.count }} parts · {{ n.date }}</span>
+              <span class="text-meta tabular-nums text-fg-muted">{{ n.count }} parts · {{ n.date }}</span>
             </li>
           </ul>
         </main>
         <aside class="rounded-[var(--radius-xl)] bg-surface p-5">
-          <h3 class="t-label flex items-center gap-2 text-fg"><BellIcon class="size-4 text-fg-muted" />Reminders</h3>
-          <p class="t-meta mt-1 text-fg-muted">When to hear about this unit.</p>
+          <h3 class="text-label flex items-center gap-2 text-fg"><BellIcon class="size-4 text-fg-muted" />Reminders</h3>
+          <p class="text-meta mt-1 text-fg-muted">When to hear about this unit.</p>
           <div class="mt-4 space-y-4">
             <div>
-              <Switch :model-value="true"><span class="t-ui">New notes</span></Switch>
-              <p class="t-meta mt-1 pl-11 text-fg-muted">As soon as one is published.</p>
+              <Switch :model-value="true"><span class="text-ui">New notes</span></Switch>
+              <p class="text-meta mt-1 pl-11 text-fg-muted">As soon as one is published.</p>
             </div>
             <div>
-              <Switch><span class="t-ui">Due dates</span></Switch>
-              <p class="t-meta mt-1 pl-11 text-fg-muted">A day before each one.</p>
+              <Switch><span class="text-ui">Due dates</span></Switch>
+              <p class="text-meta mt-1 pl-11 text-fg-muted">A day before each one.</p>
             </div>
           </div>
-          <p class="t-meta mt-6 text-fg-muted"><span class="t-title mr-1.5">22</span>notes this unit</p>
+          <p class="text-meta mt-6 text-fg-muted"><span class="text-title mr-1.5">22</span>notes this unit</p>
         </aside>
       </div>`,
   }),
