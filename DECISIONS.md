@@ -22,6 +22,7 @@ Learnt from redoing the lab's pieces against their references (Rare UI's delete 
 - **Nothing that moves crosses visible text.** Words come into focus only once the pieces travelling past them have gone by.
 - **No outlines round things that overlap.** Icons stacked on one another just overlap; a ring in the ground's colour round each reads as a cut-out sticker.
 - **Light has two sources.** The Aurora is the library's light for AI: its own colours, following the work. The Glow is the same light in the colour of the content itself: the Aurora, its colours taken from an image, behind what shows it (a project, a track). Neither is decoration laid on a page for its own sake.
+- **Over colour, glass.** What sits over an Aurora, a Glow or a photo is glass (`glass`, `glass-strong` over a photo), never a solid panel cut into the colour and never a dark fill over a light: the colour comes through, blurred, and the text reads on it.
 - **Compare with the reference before calling it done**: close-up screenshots of both, side by side, at the same states.
 
 ### Taking an idea from elsewhere

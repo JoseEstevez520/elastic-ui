@@ -30,6 +30,18 @@
   --color-surface-raised: light-dark(#ffffff, #26262a);
   --color-frame: light-dark(#ffffff, #000000);
 
+  /*
+   * Glass: the material for what sits over colour (an Aurora, a Glow, a photo). A white veil that
+   * lets the colour through, never a dark fill, which would read as a hole in it; the colour behind
+   * blurred, and a barely-there shadow. See the `glass` utility.
+   */
+  --glass-bg: light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08));
+  --glass-blur: 16px;
+  --glass-shadow: 0 2px 6px rgb(0 0 0 / 0.03);
+  /* Over a photo, whose light and dark parts vary: denser, and dark in the dark theme, where a
+     white veil would leave the text on a bright sky. */
+  --glass-strong-bg: light-dark(rgb(255 255 255 / 0.72), rgb(18 18 20 / 0.55));
+
   /* Text */
   --color-fg: light-dark(#18181b, #f4f4f5);
   --color-fg-secondary: light-dark(#52525b, #a1a1aa);
@@ -302,6 +314,20 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* The glass material (see its tokens): for surfaces over colour, as ChatMorph's composer and messages. */
+@utility glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+}
+
+/* Glass over a photo: denser, so text reads whatever part of the picture is behind it. */
+@utility glass-strong {
+  background-color: var(--glass-strong-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  box-shadow: var(--glass-shadow);
 }
 
 @utility mask-fade-r {

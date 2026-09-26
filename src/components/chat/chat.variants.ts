@@ -1,18 +1,21 @@
 import { cva } from 'class-variance-authority'
 
-export const chatMessageVariants = /* @__PURE__ */ cva('[overflow-wrap:anywhere] text-base leading-relaxed whitespace-pre-wrap text-fg', {
-  variants: {
-    role: {
-      // A soft, round bubble with no border, taking at most most of the row.
-      user: [
-        'ml-auto w-fit max-w-[80%] rounded-3xl bg-[color:var(--chat-bubble,var(--color-bg-muted))] px-4 py-2.5',
-        // Plain by default; over colour (an Aurora) the tokens make it frosted glass.
-        '[box-shadow:var(--chat-bubble-shadow,none)] [backdrop-filter:blur(var(--chat-bubble-blur,0px))]',
-      ],
-      assistant: 'max-w-full',
+export const chatMessageVariants = /* @__PURE__ */ cva(
+  '[overflow-wrap:anywhere] text-base leading-relaxed whitespace-pre-wrap text-fg',
+  {
+    variants: {
+      role: {
+        // A soft, round bubble with no border, taking at most most of the row.
+        user: [
+          'ml-auto w-fit max-w-[80%] rounded-3xl bg-[color:var(--chat-bubble,var(--color-bg-muted))] px-4 py-2.5',
+          // Plain by default; over colour (an Aurora) the tokens make it frosted glass.
+          '[box-shadow:var(--chat-bubble-shadow,none)] [backdrop-filter:blur(var(--chat-bubble-blur,0px))]',
+        ],
+        assistant: 'max-w-full',
+      },
     },
   },
-})
+)
 
 // The composer, as Curio's: a filled pill and a round button of the same fill beside it. At rest
 // the button sits under the pill's end and the two read as one; once there is something to send
@@ -48,15 +51,14 @@ export const chatSourceClass = [
   'focus-ring',
 ]
 
-// Over the aurora, the composer and your messages turn to glass: a white veil that lets the
-// colour through (never a dark fill, which reads as a hole in it), lifted by a barely-there
-// shadow. Set through the chat's tokens, so a project can still override them.
+// Over the aurora, the composer and your messages turn to glass (the library's glass material,
+// `--glass-*`). Set through the chat's tokens, so a project can still override them.
 export const chatGlassStyle = {
-  '--chat-composer-bg': 'light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08))',
-  '--chat-bubble': 'light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08))',
+  '--chat-composer-bg': 'var(--glass-bg)',
+  '--chat-bubble': 'var(--glass-bg)',
   '--chat-composer-shadow': 'drop-shadow(0 2px 6px rgb(0 0 0 / 0.04))',
-  '--chat-bubble-shadow': '0 2px 6px rgb(0 0 0 / 0.03)',
-  '--chat-bubble-blur': '16px',
+  '--chat-bubble-shadow': 'var(--glass-shadow)',
+  '--chat-bubble-blur': 'var(--glass-blur)',
 }
 
 /**
