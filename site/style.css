@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "elastic-ui/tokens.css";
+
+@source "../src";
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
+
+/* The page scrolls with the library's own scrollbar. */
+html {
+  @apply scrollbar-subtle;
+}
