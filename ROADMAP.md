@@ -148,6 +148,7 @@ Not published on npm, on purpose: it is for my own projects. `"private": true` k
 
 ## Later / ideas
 
+- **Completion told by the object itself**, for the actions the library already has: sending, the arrow becomes a paper plane that takes off and the button says "Sent" (TextMorph); an uploaded file goes into its folder; a download falls into its tray, filling it; saving drops a bookmark down the card's edge; handing in slides the page into its envelope. Built from IconMorph, TextMorph and ConfirmButton's bin. (A generic glint of light on success was tried and dropped: it meant nothing.)
 - Where the DynamicIsland lives in a page with chrome: inside MorphHeader's pill, in the Sidebar's footer, or on its own at the bottom centre. For now it is inline, and needs a hidden state that morphs in from a point.
 - NavTree indicator variants, such as SkillNet's "connected" pill that takes the page colour and fuses with the sidebar's edge.
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
