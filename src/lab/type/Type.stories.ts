@@ -13,8 +13,18 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const notes = [
-  { title: 'Subnetting by hand', excerpt: 'Split a /24 into four networks and name each range.', date: '12 Sep', count: 4 },
-  { title: 'DNS, from name to address', excerpt: 'What happens between typing a name and the page.', date: '18 Sep', count: 11 },
+  {
+    title: 'Subnetting by hand',
+    excerpt: 'Split a /24 into four networks and name each range.',
+    date: '12 Sep',
+    count: 4,
+  },
+  {
+    title: 'DNS, from name to address',
+    excerpt: 'What happens between typing a name and the page.',
+    date: '18 Sep',
+    count: 11,
+  },
   { title: 'Routing tables', excerpt: 'Read one line by line, then write your own.', date: '23 Sep', count: 7 },
 ]
 
