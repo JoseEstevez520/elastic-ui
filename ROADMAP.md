@@ -83,7 +83,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1). Each n
 
 1. ~~**Forms**: Field, RadioGroup, Combobox, Calendar and DatePicker, AlertDialog; Select, Combobox and DatePicker growing out of their field.~~ Done.
 2. **More fields**, each becoming rather than appearing:
-   - **Slider**: dragged, the thumb grows into the bubble with its value, whose digits roll (TextMorph).
+   - ~~**Slider**~~ Done: dragged, the thumb grows into the bubble with its value, whose digits roll (TextMorph).
    - **NumberField**: its digits roll by place value, as BadgeCount's.
    - **TagsInput**: the text typed turns into its tag where it stands; a tag taken away folds and the rest slide over (AnimatedList).
    - **FileUpload**: a file dropped becomes its row, the row its own progress (as ProgressButton), ending in a check.
