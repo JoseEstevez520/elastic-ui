@@ -11,3 +11,18 @@ html.lab-tones {
   --command-bg: var(--color-surface-raised);
   --toast-bg: var(--color-surface-raised);
 }
+
+/*
+ * Lab: the middle way. Tones and a hairline lead, as above, and under what floats over the page a
+ * shadow so faint it is barely there, only so a panel over a photo or dense text still reads as
+ * on top of it.
+ */
+html.lab-tones-soft {
+  --shadow-overlay: 0 0 0 1px var(--color-border-strong),
+    0 6px 20px -8px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.35));
+  --shadow-soft: 0 0 0 1px var(--color-border), 0 2px 8px -4px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
+  --popover-bg: var(--color-surface-raised);
+  --dialog-bg: var(--color-surface-raised);
+  --command-bg: var(--color-surface-raised);
+  --toast-bg: var(--color-surface-raised);
+}

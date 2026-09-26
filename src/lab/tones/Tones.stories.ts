@@ -84,3 +84,17 @@ export const Tones: Story = {
     template,
   }),
 }
+
+/** The middle way: tones and a hairline lead, with a barely-there shadow under what floats. */
+export const TonesAndAWhisper: Story = {
+  name: 'Tones and a whisper',
+  render: () => ({
+    components: parts,
+    setup() {
+      onMounted(() => document.documentElement.classList.add('lab-tones-soft'))
+      onBeforeUnmount(() => document.documentElement.classList.remove('lab-tones-soft'))
+      return { toast }
+    },
+    template,
+  }),
+}
