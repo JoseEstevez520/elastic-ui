@@ -11,7 +11,7 @@ npm run typecheck
 npm run build
 ```
 
-Storybook's dev server sometimes misses classes in newly created files; restart it if a new story renders unstyled.
+Storybook's dev server misses Tailwind classes in newly created files; `touch .storybook/preview.css` makes it scan again, without a restart.
 
 ## Done
 
@@ -120,6 +120,8 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Identity: confirm in place | Done: became `ConfirmButton`. |
 | Identity: activity | Done: became `ActivityGrid`. |
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
+| Term | Liked, as Curio has it: a glance under the lit word (Popover), See more growing it into a large card (useMorphBox). To become a part, with Markdown. |
+| Liquid | An essential: shapes that meet or part as drops (ChatComposer's goo, made reusable). Tried on a button splitting into its actions and a carousel's dots. |
 
 ## Versions
 
