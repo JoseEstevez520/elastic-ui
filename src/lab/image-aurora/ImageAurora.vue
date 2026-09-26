@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import Aurora from '../../components/aurora/Aurora.vue'
 import { cn } from '../../utils/cn'
 import { paletteOf } from './palette'
@@ -45,6 +45,20 @@ const lights = computed(() =>
   ),
 )
 
+// How much the small stage is scaled to cover the box, with room for the copies turning at its
+// corners.
+const root = useTemplateRef<HTMLElement>('root')
+const cover = ref(1)
+let observer: ResizeObserver | undefined
+onMounted(() => {
+  observer = new ResizeObserver(([entry]) => {
+    const { width, height } = entry!.contentRect
+    cover.value = (Math.max(width, height) / 96) * 1.3
+  })
+  if (root.value) observer.observe(root.value)
+})
+onBeforeUnmount(() => observer?.disconnect())
+
 const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`
 // Three copies, each larger than the box and turning at its own pace, so the colour keeps moving
 // without any loop showing.
@@ -59,7 +73,7 @@ const copies = [
   <Aurora v-if="look === 'lights'" :class="props.class" :style="lights">
     <slot />
   </Aurora>
-  <div v-else :class="cn('relative isolate overflow-hidden', props.class)">
+  <div v-else ref="root" :class="cn('relative isolate overflow-hidden', props.class)">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
       <!-- A new image fades in over the last one, as Apple Music's changes from track to track. -->
       <Transition
@@ -68,21 +82,23 @@ const copies = [
         leave-active-class="transition-opacity duration-[1.2s] ease-linear"
         leave-to-class="opacity-0"
       >
-        <div :key="src" class="absolute inset-0">
+        <!-- Drawn small and blurred, then scaled up to cover the box as one layer: as soft as a
+             large blur, for a fraction of the work, and cheap to resize while the box grows. -->
+        <div
+          :key="src"
+          class="absolute top-1/2 left-1/2 size-24 will-change-transform"
+          :style="{ transform: `translate(-50%, -50%) scale(${cover})` }"
+        >
           <img
             v-for="(copy, i) in copies"
             :key="i"
             :src="src"
             alt=""
             crossorigin="anonymous"
-            :class="[
-              'absolute aspect-square rounded-full object-cover blur-[64px] will-change-transform',
-              copy.place,
-              'motion-reduce:animate-none',
-            ]"
+            :class="['absolute aspect-square rounded-full object-cover', copy.place, 'motion-reduce:animate-none']"
             :style="{
               opacity: copy.opacity,
-              filter: `blur(64px) saturate(${vivid ? 1.8 : 1.3})`,
+              filter: `blur(10px) saturate(${vivid ? 1.8 : 1.3})`,
               animation: `lab-turn ${copy.period}s linear infinite ${copy.reverse ? 'reverse' : 'normal'}`,
             }"
           />
