@@ -92,7 +92,6 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**ActivityGrid**~~ Done: activity as GitHub's grid, its tray growing up over it into a list.
    - ~~**IconMorph**~~ Done: icons drawn as the same strokes, so one travels into another.
    - ~~**PageCard**~~ Done: a card that becomes its page, with its own address while open and the browser's back closing it.
-   - **Folder**: redone bigger, with real pages and a frosted front, against its reference; dropped if it does not get there.
 4. **Shared building blocks**, so every part made from here on shares one line of style and nothing is reinvented:
    - ~~**Tone tokens**~~ Done: the levels a surface sits at (sunk, base, raised) and the frame in the page's strongest tone, replacing the tones written by hand in ConfirmButton and ActivityGrid.
    - ~~**`useMorphBox`**~~ Done, Sheet on it: the recipe of a box that becomes a panel (measure, sit on the button, grow, content out first, fold back, keep the scrollbar's room), now repeated in Sheet, FieldMorph and the card to page.
@@ -117,7 +116,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Card to page | Done: became `PageCard`. |
 | Icon morph | Done: became `IconMorph`. |
 | Image aurora | Kept only as PageCard's ground (internal `ImageGlow`). |
-| Folder icon | The idea is liked, the execution is not yet at the level of the reference: redo it bigger, with real pages and a frosted front, or drop it. |
+| Folder icon | Dropped: not needed. |
 | Identity: confirm in place | Done: became `ConfirmButton`. |
 | Identity: activity | Done: became `ActivityGrid`. |
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
