@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
-    dts({ tsconfigPath: './tsconfig.app.json', entryRoot: 'src', exclude: ['src/**/*.stories.ts', 'src/**/*.fixtures.ts'] }),
+    dts({ tsconfigPath: './tsconfig.app.json', entryRoot: 'src', exclude: ['src/**/*.stories.ts', 'src/**/*.fixtures.ts', 'src/lab/**'] }),
   ],
   build: {
     lib: {
