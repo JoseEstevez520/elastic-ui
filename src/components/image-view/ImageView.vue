@@ -61,6 +61,8 @@ const { shown, grown, visible, settled, to, style } = useMorphBox({
   },
   to: fullBox,
   returnFocus: () => thumb.value,
+  // It travels from anywhere on the page to the middle: a gentle start shows it leaving its place.
+  openTransition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] },
 })
 const pictureStyle = computed(() => style({ borderRadius: [radius.value, 'var(--image-view-radius, 12px)'] }))
 const captionStyle = computed(() => to.value && { top: `${to.value.top + to.value.height + 16}px` })

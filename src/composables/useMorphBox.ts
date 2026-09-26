@@ -25,6 +25,11 @@ export interface MorphBoxOptions {
   to: () => Box | Promise<Box>
   /** What gets the focus once the box has folded back into it. */
   returnFocus?: () => HTMLElement | null | undefined
+  /**
+   * How it grows, if not the library's morph. A box that travels far to get there (a picture
+   * going to the middle of the screen) starts gently, or it seems to jump there.
+   */
+  openTransition?: { duration: number; ease: readonly number[] }
 }
 
 /**
@@ -82,7 +87,7 @@ export function useMorphBox(options: MorphBoxOptions) {
           void document.body.offsetHeight
           grown.value = true
           visible.value = true
-          later(morphTransition.duration * 1000, () => (settled.value = true))
+          later((options.openTransition ?? morphTransition).duration * 1000, () => (settled.value = true))
         }),
       )
     } else {
@@ -115,7 +120,7 @@ export function useMorphBox(options: MorphBoxOptions) {
    */
   function style(changes: Record<string, [string, string]> = {}): CSSProperties {
     const b = box.value
-    const t = grown.value ? morphTransition : morphCloseTransition
+    const t = grown.value ? (options.openTransition ?? morphTransition) : morphCloseTransition
     const ease = `cubic-bezier(${t.ease.join(',')})`
     const properties = ['top', 'left', 'width', 'height', ...Object.keys(changes).map(kebab)]
     return {
