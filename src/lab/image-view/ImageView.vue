@@ -8,7 +8,7 @@ import { XIcon } from '../../icons/internal'
  * Lab: an image that grows into full view where it is. Pressed, the picture itself grows from its
  * place to the whole of it in the middle of the screen, at its own proportions, a real size
  * (useMorphBox): its crop opens out as the box takes the image's shape, the page dimmed behind as
- * under a dialog. Its caption comes into focus under it. Closing (a click, Escape, its cross), the
+ * under a dialog. Its caption comes into focus under it, its cross in its top right corner. Closing (a click, Escape, the cross), the
  * caption goes first, then the picture folds back into its place.
  */
 const props = defineProps<{ src: string; alt: string; caption?: string; class?: HTMLAttributes['class'] }>()
@@ -37,7 +37,7 @@ function fullBox() {
 }
 
 const radius = ref('0px')
-const { shown, grown, visible, settled, style } = useMorphBox({
+const { shown, grown, visible, settled, to, style } = useMorphBox({
   open,
   from: () => {
     if (thumb.value) radius.value = getComputedStyle(thumb.value).borderRadius
@@ -47,6 +47,12 @@ const { shown, grown, visible, settled, style } = useMorphBox({
   returnFocus: () => thumb.value,
 })
 const boxStyle = computed(() => style({ borderRadius: [radius.value, '12px'] }))
+// The cross sits in the picture's top right corner, where it lands.
+const INSET = 12
+const closeStyle = computed(() => {
+  const b = to.value
+  return b && { top: `${b.top + INSET}px`, left: `${b.left + b.width - INSET - 36}px` }
+})
 watch(settled, (isSettled) => isSettled && closeButton.value?.focus({ preventScroll: true }))
 
 useEventListener<KeyboardEvent>(
@@ -103,9 +109,10 @@ useEventListener<KeyboardEvent>(
           type="button"
           aria-label="Close"
           :class="[
-            'pointer-events-auto fixed top-4 right-4 flex size-9 cursor-pointer items-center justify-center rounded-full text-white/80 hover:text-white focus-ring',
+            'pointer-events-auto fixed flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white/90 backdrop-blur-md hover:bg-black/50 hover:text-white focus-ring',
             visible ? 'opacity-100 transition-opacity delay-200 duration-300' : 'opacity-0 duration-150',
           ]"
+          :style="closeStyle"
           @click="open = false"
         >
           <XIcon aria-hidden="true" class="size-5" />

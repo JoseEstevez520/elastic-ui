@@ -66,6 +66,9 @@ export function useMorphBox(options: MorphBoxOptions) {
     if (isOpen) {
       returned.value = false
       placed.value = false
+      // Its button's box before the box is out, so its first frame is already there: measured after,
+      // a layout read could fix it at 0,0 and it would grow from the corner.
+      from.value = options.from() ?? from.value
       shown.value = true
       await nextTick()
       await measure()
