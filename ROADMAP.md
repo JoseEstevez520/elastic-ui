@@ -70,6 +70,8 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | ActivityGrid | Special | Activity day by day as GitHub's grid, in a frame of the page's strongest tone, the months above; a tray set into its foot names where the work went, icons in a stack; pressed, it grows up over the grid as nearly opaque frosted glass, each icon gliding to its row and its words coming in once it has passed; `--activity` for its colour, `locale` for the months. After Rare UI's GitHub activity, redone |
 | IconMorph | Base | An icon that becomes another as TextMorph's text does: each is drawn as the same three strokes, which travel point by point (the menu's lines crossing into a close, play's point straightening into pause's bar); strokes an icon does not need fold onto one it keeps. Menu, close, plus, minus, check, play, pause, chevrons and arrows |
 | PageCard | Special | A card that becomes its page: the card's box grows to the screen (useMorphBox), its image travels to be the header, its glow (the image blurred and turning) stretches into the page's ground, its words fade as the page's come in; back, Escape or the browser's back fold it into the card. `href` makes the address the page's while open |
+| Liquid | Base | The essential for shapes that meet or part (DECISIONS, "Morph or liquid"): shapes drawn on their own layer, blurred together and cut back, so they join by a neck and part as drops; filled with any colour, shadowed after. ChatComposer's send button pulls out of its pill with it |
+| SplitActions | Base | A button that splits into two to four actions as drops, each pulling out of it by a neck, their icons coming in once free; in a row beside it or fanned above a round one (`radial`); keys, focus and Escape handled. Actions that need words are PopoverMorph's menu |
 | ConfirmButton | Base | An action that asks in its own place, no dialog: the square widens into a pill, the bin's lid tips open, the pill splits in two (the answers' half a tone deeper, its tail pointing at the icon); confirmed, it tints with the danger colour while the action runs, then a check or what went wrong. Any icon (a sign-out, a reset). After Rare UI's delete, redone |
 | Filters | Special | As Linear and Notion: a button grows into a panel of categories (PopoverMorph), a category turns it to its options (checkboxes, a search field from eight) as the box eases to their height; what is chosen stands beside it as a pill whose values morph, pressing it reopens its category, its cross takes it away and the rest slide over (AnimatedList); `count` said beside them, morphing, with Clear. `v-model` per category; the results stay the app's |
 | Field | Base | A label, help and error round any control, linked for screen readers (`id`, `aria-describedby`, `aria-invalid`); help and error swap in place; `optional` |
@@ -121,7 +123,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Identity: activity | Done: became `ActivityGrid`. |
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
 | Term | Liked, as Curio has it: a glance under the lit word (Popover), See more growing it into a large card (useMorphBox). To become a part, with Markdown. |
-| Liquid | An essential: shapes that meet or part as drops (ChatComposer's goo, made reusable). Tried on a button splitting into its actions and a carousel's dots. |
+| Liquid | Done: became `Liquid` (the essential, ChatComposer on it) and `SplitActions`. The carousel's dots wait for the Carousel (0.3). |
 
 ## Versions
 
