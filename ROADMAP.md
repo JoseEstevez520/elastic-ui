@@ -78,35 +78,28 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
-## Now · 0.2, a complete base
+## Now · 0.2, a complete base with an identity
 
-Every part that opens from a field or a button grows out of it (USAGE 1). Each new part gets its stories, the Situations checklist and a look in light, dark and on a phone.
+Every part that opens from a field or a button grows out of it (USAGE 1), and the parts with character follow the library's identity: objects that transform in place (DECISIONS, Philosophy 5 and "How objects are drawn"). Each new part gets its stories, the Situations checklist and a look in light, dark and on a phone.
 
-1. ~~**Forms**: Field, RadioGroup, Combobox, Calendar and DatePicker, AlertDialog; Select, Combobox and DatePicker growing out of their field.~~ Done.
-2. **More fields**, each becoming rather than appearing:
-   - ~~**Slider**~~ Done: dragged, the thumb grows into the bubble with its value, whose digits roll (TextMorph).
-   - ~~**NumberField**~~ Done: its digits roll by place value, as BadgeCount's.
-   - ~~**TagsInput**~~ Done: the text typed turns into its tag where it stands; a tag taken away folds and the rest slide over (AnimatedList).
-   - ~~**FileIcon**~~ Done: a file as the Files app shows it, a page with its corner folded, tinted in its kind's colour with its extension on it; an image shows its own thumbnail.
-   - ~~**FileUpload**~~ Done: a file dropped becomes its row, the row its own progress (as ProgressButton), ending in a check.
-3. **Panels**: ~~**Sheet**~~ Done: its button's box grows into the sheet at a side or the bottom, as ChatMorph's orb (a real size, never scaled, the content uncovered in place), and folds back once the content has faded; **HoverCard** grows out of its link.
-4. **Loading and small parts**:
-   - **Skeleton**: each grey block eases to the size and shape of what arrives, which comes into focus inside it, so loading turns into the content.
-   - **Progress**: fills on the library's ease and turns into a check once done.
-   - **Toggle** and **ToggleGroup**: the icon morphs between its two states.
-   - **Pagination**: a mark slides to the current page, as Tabs'.
-   - **Avatar**: initials give way to the photo coming into focus; a group fans out on hover.
-   - Quiet, with no motion of their own, so something else can lead: **Kbd**, **Separator**, a plain **Table**, **Empty**.
-5. **A pass over everything**: every part in light, dark and on a phone; props and events named the same way across parts.
-6. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz`. From now on each `.tgz` handed over bumps the version (0.1.1, 0.1.2…), so an install never keeps the old one.
-
-## Next, in order
-
-1. **From the lab into the library**, each with its stories, the Situations checklist, and a look in light, dark and on a phone: the delete that asks in its place (for any destructive action), the activity card, icons that morph, the card that becomes its page (with the router, for its URL and the back button). The folder is redone with the same method, or dropped.
-2. **The identity over what exists** (0.2's visual pass): tones instead of shadows (PopoverMorph, Sheet, Select…), a confirmation in its place where a dialog only asks, icons that morph where a button changes state.
-3. **The rest of 0.2, with the identity from the start**: HoverCard, Avatar (icons, never initials), Progress, Kbd as a real key, Toggle, Pagination, a plain Table, Empty.
-4. **Release 0.2.0**: the TEIS web takes it up; the library's site (the `site` branch) shows it.
-5. **0.3 Portfolio**: the card that becomes its page, the folder and the image aurora at its heart.
+1. ~~**Forms**~~ Done: Field, RadioGroup, Combobox, Calendar and DatePicker, AlertDialog, Slider, NumberField, TagsInput, FileIcon, FileUpload; Select, Combobox and DatePicker growing out of their field.
+2. ~~**Sheet**~~ Done: its button's box grows into the panel at a side or the bottom, and folds back once the content has faded.
+3. **From the lab into the library**:
+   - ~~**ConfirmButton**~~ Done: an action that asks in its own place.
+   - **ActivityGrid**: a term's activity as GitHub's grid, its tray growing up over it into a list, the icons travelling to their rows.
+   - **IconMorph**: icons drawn as the same strokes, so one travels into another as TextMorph's letters; more glyphs.
+   - **Card to page**: a card that becomes its page, with the router (its own URL, the back button closing it the same way, a page opened directly just showing).
+   - **Folder**: redone bigger, with real pages and a frosted front, against its reference; dropped if it does not get there.
+4. **The identity over what exists** (the visual pass): tones instead of shadows (PopoverMorph, Sheet, Select, Menu…), a confirmation in its place where a dialog only asks, IconMorph where a button changes state (the menu, play, a disclosure).
+5. **The rest, with the identity from the start**:
+   - **HoverCard**: grows out of its link, which stays as its title; a term in Prose opening its definition.
+   - **Avatar**: an icon or a photo, never initials; a group fans out on hover.
+   - **Kbd** as a real key, pressed when its shortcut is.
+   - **Progress**: fills on the library's ease and turns into a check.
+   - **Toggle** and **ToggleGroup**, their icons morphing; **Pagination**, a mark sliding to the page.
+   - Quiet, so something else leads: **Separator**, a plain **Table**, **Empty**.
+6. **Names**: props and events named the same way across parts.
+7. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz` (each `.tgz` handed over bumps the version, so an install never keeps the old one); the library's site (the `site` branch) shows it.
 
 ## Lab
 
