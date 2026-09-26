@@ -12,7 +12,7 @@ export const tagsInputClass = [
 /**
  * A tag: Badge's soft pill. Added, it becomes one where its text was typed: the text stays, and
  * the pill's surface and room open round it (`tag-in`). Picked with Backspace, it darkens before
- * going.
+ * going; leaving, it fades where it stands (see TagsInput).
  */
 export const tagsInputItemClass = [
   'inline-flex h-6 max-w-full items-center gap-1 rounded-full bg-bg-muted pr-1 pl-2.5 text-xs font-medium text-fg-secondary',
