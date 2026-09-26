@@ -9,8 +9,8 @@ export const confirmPillClass = [
   'has-[>button:focus-visible]:outline-2 has-[>button:focus-visible]:outline-offset-2 has-[>button:focus-visible]:outline-[color:var(--color-accent)]',
 ]
 export const confirmPillTone = {
-  rest: 'bg-[color:var(--confirm-bg,var(--color-bg-muted))]',
-  danger: 'bg-[color:color-mix(in_oklab,var(--color-danger)_16%,var(--confirm-bg,var(--color-bg-muted)))]',
+  rest: 'bg-[color:var(--confirm-bg,var(--color-surface))]',
+  danger: 'bg-[color:color-mix(in_oklab,var(--color-danger)_16%,var(--confirm-bg,var(--color-surface)))]',
 }
 
 /**
@@ -20,7 +20,7 @@ export const confirmPillTone = {
  */
 export const confirmHalfClass = [
   'relative flex h-full flex-1 items-center justify-center gap-1.5 rounded-l-[14px] px-2',
-  'bg-[color:light-dark(color-mix(in_oklab,var(--color-bg-muted),black_5%),color-mix(in_oklab,var(--color-bg-muted),black_35%))]',
+  'bg-surface-sunk',
   'origin-left transition-[opacity,transform] ease-emphasized motion-reduce:transition-none',
 ]
 export const confirmTailClass =
@@ -30,7 +30,7 @@ export const confirmTailClass =
 export const confirmAnswerClass = [
   'relative flex size-6 cursor-pointer items-center justify-center rounded-full outline-none',
   'focus-visible:shadow-[0_0_0_2px_var(--color-accent)]',
-  'bg-[color:light-dark(#fff,color-mix(in_oklab,var(--color-bg-muted),white_8%))]',
+  'bg-surface-raised',
 ]
 
 /** The icon, the turning arc and the outcome share the square's place, one at a time. */

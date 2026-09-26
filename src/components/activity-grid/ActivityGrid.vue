@@ -95,7 +95,7 @@ const iconAt = (i: number) =>
 <template>
   <section
     ref="card"
-    class="relative w-[30rem] max-w-full rounded-[28px] bg-[color:var(--activity-frame,light-dark(#fff,#000))] p-3"
+    class="relative w-[30rem] max-w-full rounded-[28px] bg-[color:var(--activity-frame,var(--color-frame))] p-3"
   >
     <div
       class="px-3 pt-3"
@@ -117,7 +117,7 @@ const iconAt = (i: number) =>
               :key="i"
               class="aspect-square w-full rounded-[3px]"
               :style="{
-                background: `color-mix(in oklab, var(--activity, var(--color-success)) ${level[d]}, light-dark(#ebebed, #161618))`,
+                background: `color-mix(in oklab, var(--activity, var(--color-success)) ${level[d]}, var(--color-surface))`,
               }"
             />
           </div>
@@ -130,7 +130,7 @@ const iconAt = (i: number) =>
       :class="[
         'absolute right-3 bottom-3 left-3 overflow-hidden rounded-[20px]',
         // Nearly opaque, so the grid only just shows through once the tray has grown over it.
-        'bg-[color:light-dark(rgb(236_236_238/0.9),rgb(22_22_24/0.9))] backdrop-blur-xl',
+        'bg-[color:color-mix(in_oklab,var(--color-surface)_90%,transparent)] backdrop-blur-xl',
         open
           ? 'transition-[height] duration-[500ms] ease-in-out'
           : 'transition-[height] duration-[450ms] ease-emphasized',

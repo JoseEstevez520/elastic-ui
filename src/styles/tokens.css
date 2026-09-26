@@ -19,6 +19,17 @@
   --color-bg-muted: light-dark(#e9e9eb, #18181b);
   --color-bg-inset: light-dark(#e2e2e4, #202023);
 
+  /*
+   * Tones an object is built from (DECISIONS, "How objects are drawn": depth from tones, never
+   * shadows). An object sits on the muted tone; a part of it set in (a tray, the answers' half of
+   * ConfirmButton) is sunk; a part standing on it (a round answer, a key) is raised; the frame is
+   * the page's strongest tone, round an object that holds others (ActivityGrid).
+   */
+  --color-surface: var(--color-bg-muted);
+  --color-surface-sunk: light-dark(#dededf, #121214);
+  --color-surface-raised: light-dark(#ffffff, #26262a);
+  --color-frame: light-dark(#ffffff, #000000);
+
   /* Text */
   --color-fg: light-dark(#18181b, #f4f4f5);
   --color-fg-secondary: light-dark(#52525b, #a1a1aa);
