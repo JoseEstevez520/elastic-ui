@@ -31,8 +31,8 @@ const root = useTemplateRef<HTMLElement>('root')
 const confirmButton = useTemplateRef<HTMLButtonElement>('confirmButton')
 
 const SIZE = 40
-// The square, or the square with the tray beside it: two answers and their gaps.
-const width = computed(() => (state.value === 'asking' ? SIZE + 4 + 6 * 2 + 24 * 2 + 4 + 8 : SIZE))
+// The square, or the square with the answers' half beside it: a gap, two answers and their room.
+const width = computed(() => (state.value === 'asking' ? SIZE + 8 + 16 + 24 * 2 + 6 : SIZE))
 
 let timers: ReturnType<typeof setTimeout>[] = []
 const later = (ms: number, run: () => void) => timers.push(setTimeout(run, prefersReducedMotion() ? 0 : ms))
@@ -130,11 +130,12 @@ useEventListener<PointerEvent>(
         />
       </span>
     </button>
-    <!-- The question, said by the bin: a tray with its tail pointing back at it, growing out of the
-         bin's side and gone before the pill folds. -->
+    <!-- The question, said by the bin: the pill splits in two, the answers' half a tone deeper,
+         running to the pill's own edge, its rounded side with a tail pointing back at the bin. It
+         grows out of the bin's side and is gone before the pill folds. -->
     <div
       :class="[
-        'relative my-1 mr-1 flex h-8 items-center gap-1 rounded-[11px] bg-[color:light-dark(#dededf,#1b1b1d)] px-1',
+        'relative flex h-full flex-1 items-center justify-center gap-1.5 rounded-l-[14px] bg-[color:light-dark(#dededf,#1b1b1d)] px-2',
         'origin-left transition-[opacity,transform] ease-emphasized motion-reduce:transition-none',
         state === 'asking' ? 'scale-x-100 opacity-100 delay-75 duration-300' : 'scale-x-50 opacity-0 duration-150',
       ]"

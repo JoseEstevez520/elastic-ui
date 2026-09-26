@@ -160,15 +160,17 @@ const iconAt = (i: number) =>
         <component :is="s.icon" class="size-4" :stroke-width="2.25" />
       </span>
       <!-- The names and counts, in focus once the list is open, gone before it closes. -->
-      <ul
-        :class="words ? 'stagger-items [--stagger-delay:0.2s]' : 'opacity-0 transition-opacity duration-150'"
-        class="pr-4 pl-[60px]"
-      >
+      <!-- Each row's words come into focus once its icon has passed over them on its way to the row's
+           start, so nothing crosses the text; they all fade at once before it closes. -->
+      <ul :class="!words && 'opacity-0 transition-opacity duration-150'" class="pr-4 pl-[60px]">
         <li
-          v-for="s in sources"
+          v-for="(s, i) in sources"
           :key="s.name"
           class="flex items-center justify-between text-[15px]"
-          :style="{ height: `${ROW}px` }"
+          :style="{
+            height: `${ROW}px`,
+            animation: words ? `blur-in 0.45s var(--ease-soft) ${80 + i * 60 + 480}ms both` : 'none',
+          }"
         >
           <span class="text-fg">{{ s.name }}</span>
           <span class="text-fg-muted tabular-nums">{{ s.count }}</span>
