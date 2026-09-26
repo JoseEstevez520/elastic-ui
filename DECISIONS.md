@@ -144,6 +144,20 @@ A component is not done until it works in every situation below, and each critic
 - Comments only to explain the *why* of something non-obvious.
 - Everything in English: code, comments, docs and commits.
 
+## Known pitfalls and their standard fixes
+
+Things that went wrong once, found by measuring frame by frame, and the fix every part uses since. Check a new part against them.
+
+- **A letter trembles at the end of a TextMorph.** Torph sets each letter in a box of its own, which has no kerning, and TextMorph hands the words back to plain text once the morph is over; with kerning on, that hand-back shifted a letter by a fraction of a pixel. TextMorph keeps kerning (and ligatures) off at rest as while it morphs. Never turn them back on round a TextMorph.
+- **A box jumps a few pixels as it lands.** Scrolling is only turned on once a box that became a panel has landed; a scrollbar appearing then narrowed the content by its width. What scrolls inside keeps its scrollbar's room from the start (`scrollbar-gutter: stable`; useMorphBox's recipe, step 6). Headless Chromium hides scrollbars by default: check with them on (`ignoreDefaultArgs: ['--hide-scrollbars']`).
+- **A travelling image lands a pixel off, or reshapes as it lands.** Measure every box with `getBoundingClientRect` (never `offsetTop`/`offsetWidth`, which round to whole pixels), and give the traveller the radius of what it becomes from the start, read from the tokens rather than assumed.
+- **A box grown from a small one reads as a zoom.** Growing by scaling a shared box (`layoutId`) stretches it: a box that becomes a panel changes its real size (`useMorphBox`).
+- **Something measured from its content comes out too tall.** Measure a height only once the content has its final width (a sheet's height from its wrapped text).
+- **A drag stops following the pointer.** The pointer is captured by the element pressed; if that element is re-rendered (a TextMorph inside a slider's thumb), the capture is lost. Children of what captures the pointer take `pointer-events: none`.
+- **A class does not win.** Two Tailwind classes for the same property (`bg-*` and `bg-*`) are decided by their order in the stylesheet, not in the attribute: compute one or the other, or merge with `cn`, never list both.
+- **Clicks do nothing on a card over a popover.** A popover kept mounted but hidden (to fold back into) still has its layer above the page: what opens over it sits higher (Term's card).
+- **A new story renders unstyled in Storybook.** The dev server misses Tailwind classes in new files: `touch .storybook/preview.css`.
+
 ## Two component tiers
 
 - **Base**: Button, Input, Card and its parts… Simple and reusable.
