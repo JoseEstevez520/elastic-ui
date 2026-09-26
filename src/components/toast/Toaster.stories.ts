@@ -95,3 +95,37 @@ export const LongText: Story = {
       </div>`,
   }),
 }
+
+/**
+ * Given `from`, a toast comes out of the button that did what it tells: a box grows from the
+ * button to the toast's place, and the words come into focus once it has landed.
+ */
+export const FromItsButton: Story = {
+  render: (args) => ({
+    components: { Button, Toaster },
+    setup() {
+      useCleanQueue()
+      return {
+        args,
+        save: (e: MouseEvent) =>
+          toast({
+            title: 'Changes saved',
+            description: 'Everyone sees the new version.',
+            from: e.currentTarget as Element,
+          }),
+        archive: (e: MouseEvent) =>
+          toast({
+            title: 'Project archived',
+            action: { label: 'Undo', onClick: () => {} },
+            from: e.currentTarget as Element,
+          }),
+      }
+    },
+    template: `
+      <div class="flex min-h-screen items-start gap-3 p-10">
+        <Button @click="save">Save</Button>
+        <Button variant="outline" @click="archive">Archive</Button>
+        <Toaster v-bind="args" />
+      </div>`,
+  }),
+}
