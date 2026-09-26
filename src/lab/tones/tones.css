@@ -1,0 +1,13 @@
+/*
+ * Lab: floating panels drawn with tones instead of shadows. What floats over the page stands a
+ * tone above it (surface-raised) with a hairline round it, and no drop shadow. Only on pages that
+ * opt in with `lab-tones` on the root, so the rest of Storybook shows the library as it is.
+ */
+html.lab-tones {
+  --shadow-overlay: 0 0 0 1px var(--color-border-strong);
+  --shadow-soft: 0 0 0 1px var(--color-border);
+  --popover-bg: var(--color-surface-raised);
+  --dialog-bg: var(--color-surface-raised);
+  --command-bg: var(--color-surface-raised);
+  --toast-bg: var(--color-surface-raised);
+}
