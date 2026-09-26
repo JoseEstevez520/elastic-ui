@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed, type HTMLAttributes } from 'vue'
+import { cn } from '../../utils/cn'
 import { glyphs, pathOf, type Glyph, type GlyphName } from './glyphs'
 
 /**
- * Lab: an icon that becomes another, as TextMorph's text does: its strokes travel point by point
+ * An icon that becomes another, as TextMorph's text does: its strokes travel point by point
  * from one shape to the next (the menu's lines crossing into a close, play folding into pause), on
  * the library's ease, rather than one icon shrinking away as the next grows in (IconSwap). Strokes
  * an icon does not need fold onto one it keeps and fade, so nothing appears from nowhere.
  */
 const props = defineProps<{ icon: GlyphName; class?: HTMLAttributes['class'] }>()
+// A menu that closes, play that pauses, a send that is done: name the button, not the icon, which
+// is only drawn (`aria-hidden`).
 const strokes = computed<Glyph>(() => glyphs[props.icon])
 </script>
 
@@ -21,7 +24,7 @@ const strokes = computed<Glyph>(() => glyphs[props.icon])
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
-    :class="props.class"
+    :class="cn('size-4 shrink-0', props.class)"
   >
     <path
       v-for="(stroke, i) in strokes"

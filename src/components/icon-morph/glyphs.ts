@@ -91,6 +91,54 @@ export const glyphs = {
     },
     at([19, 12]),
   ],
+  chevronRight: [
+    {
+      points: [
+        [9, 6],
+        [15, 12],
+        [9, 18],
+        [9, 18],
+      ],
+    },
+    at([15, 12]),
+    at([15, 12]),
+  ],
+  chevronLeft: [
+    {
+      points: [
+        [15, 6],
+        [9, 12],
+        [15, 18],
+        [15, 18],
+      ],
+    },
+    at([9, 12]),
+    at([9, 12]),
+  ],
+  arrowLeft: [
+    { points: line([19, 12], [5, 12]) },
+    {
+      points: [
+        [11, 6],
+        [5, 12],
+        [11, 18],
+        [11, 18],
+      ],
+    },
+    at([5, 12]),
+  ],
+  arrowUp: [
+    { points: line([12, 19], [12, 5]) },
+    {
+      points: [
+        [6, 11],
+        [12, 5],
+        [18, 11],
+        [18, 11],
+      ],
+    },
+    at([12, 5]),
+  ],
 } satisfies Record<string, Glyph>
 
 export type GlyphName = keyof typeof glyphs
