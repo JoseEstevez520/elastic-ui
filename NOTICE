@@ -1,0 +1,9 @@
+elastic-ui
+Copyright (c) 2026 Jose Estevez. Licensed under the MIT License (see LICENSE).
+
+This project includes work adapted from third parties:
+
+- ThemeToggle's icon geometry (the sun, its beams and the moon's mask) is adapted from
+  "Building a theme switch component" by Adam Argyle, part of GUI Challenges
+  (https://github.com/argyleink/gui-challenges), licensed under the Apache License 2.0
+  (https://www.apache.org/licenses/LICENSE-2.0).
