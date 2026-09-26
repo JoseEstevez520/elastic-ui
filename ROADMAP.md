@@ -69,6 +69,7 @@ Storybook's dev server sometimes misses classes in newly created files; restart 
 | Breadcrumbs | Base | Where the page sits, so the sidebar can keep to the main sections (Notion, Vercel, GitHub). Given as `items`, top down: a crumb whose page changes morphs into its new name (TextMorph), crumbs added or dropped come into focus or fade; a separator with `siblings` opens the other pages at the next level, as the Finder's path bar, turning down while open; a row too long for its room scrolls, held at the current page, the rest behind a fading edge |
 | ActivityGrid | Special | Activity day by day as GitHub's grid, in a frame of the page's strongest tone, the months above; a tray set into its foot names where the work went, icons in a stack; pressed, it grows up over the grid as nearly opaque frosted glass, each icon gliding to its row and its words coming in once it has passed; `--activity` for its colour, `locale` for the months. After Rare UI's GitHub activity, redone |
 | IconMorph | Base | An icon that becomes another as TextMorph's text does: each is drawn as the same three strokes, which travel point by point (the menu's lines crossing into a close, play's point straightening into pause's bar); strokes an icon does not need fold onto one it keeps. Menu, close, plus, minus, check, play, pause, chevrons and arrows |
+| PageCard | Special | A card that becomes its page: the card's box grows to the screen (useMorphBox), its image travels to be the header, its glow (the image blurred and turning) stretches into the page's ground, its words fade as the page's come in; back, Escape or the browser's back fold it into the card. `href` makes the address the page's while open |
 | ConfirmButton | Base | An action that asks in its own place, no dialog: the square widens into a pill, the bin's lid tips open, the pill splits in two (the answers' half a tone deeper, its tail pointing at the icon); confirmed, it tints with the danger colour while the action runs, then a check or what went wrong. Any icon (a sign-out, a reset). After Rare UI's delete, redone |
 | Filters | Special | As Linear and Notion: a button grows into a panel of categories (PopoverMorph), a category turns it to its options (checkboxes, a search field from eight) as the box eases to their height; what is chosen stands beside it as a pill whose values morph, pressing it reopens its category, its cross takes it away and the rest slide over (AnimatedList); `count` said beside them, morphing, with Clear. `v-model` per category; the results stay the app's |
 | Field | Base | A label, help and error round any control, linked for screen readers (`id`, `aria-describedby`, `aria-invalid`); help and error swap in place; `optional` |
@@ -90,7 +91,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**ConfirmButton**~~ Done: an action that asks in its own place.
    - ~~**ActivityGrid**~~ Done: activity as GitHub's grid, its tray growing up over it into a list.
    - ~~**IconMorph**~~ Done: icons drawn as the same strokes, so one travels into another.
-   - **Card to page**: a card that becomes its page, with the router (its own URL, the back button closing it the same way, a page opened directly just showing).
+   - ~~**PageCard**~~ Done: a card that becomes its page, with its own address while open and the browser's back closing it.
    - **Folder**: redone bigger, with real pages and a frosted front, against its reference; dropped if it does not get there.
 4. **Shared building blocks**, so every part made from here on shares one line of style and nothing is reinvented:
    - ~~**Tone tokens**~~ Done: the levels a surface sits at (sunk, base, raised) and the frame in the page's strongest tone, replacing the tones written by hand in ConfirmButton and ActivityGrid.
@@ -113,9 +114,9 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 
 | Experiment | Where it stands |
 |---|---|
-| Card to page | Liked. A project card becomes its page: the box grows to the screen, its photo travels to the header, its glow becomes the page's ground. To become a part (with the router, for the URL and back). |
+| Card to page | Done: became `PageCard`. |
 | Icon morph | Done: became `IconMorph`. |
-| Image aurora | Fine, not exciting. Kept as the ground of Card to page. |
+| Image aurora | Kept only as PageCard's ground (internal `ImageGlow`). |
 | Folder icon | The idea is liked, the execution is not yet at the level of the reference: redo it bigger, with real pages and a frosted front, or drop it. |
 | Identity: confirm in place | Done: became `ConfirmButton`. |
 | Identity: activity | Done: became `ActivityGrid`. |
