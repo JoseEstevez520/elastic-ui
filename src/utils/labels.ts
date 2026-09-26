@@ -40,6 +40,13 @@ export const defaultLabels = {
   sidebar: 'Sidebar',
   toggleSidebar: 'Toggle sidebar',
   onThisPage: 'On this page',
+  /** Pagination's landmark, and each page's name before its number. */
+  pagination: 'Pagination',
+  page: 'Page',
+  /** Avatar with no photo, when it is given no name. */
+  person: 'Person',
+  /** Progress, for screen readers once it is complete. */
+  complete: 'Complete',
   notifications: 'Notifications',
   // Search
   search: 'Search',
