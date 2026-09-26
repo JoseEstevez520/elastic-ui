@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { animate, motion } from 'motion-v'
+import { motion, useSpring } from 'motion-v'
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
 import { computed, onBeforeUnmount, ref, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
@@ -43,22 +43,23 @@ const known = computed(() => props.value !== null && props.value !== undefined)
 const ratio = computed(() => (known.value ? Math.min(1, Math.max(0, props.value! / props.max)) : 0))
 const complete = computed(() => known.value && ratio.value >= 1)
 
-// The amount on show counts up to each new value on the fill's own pace (as ProgressButton's), so
-// the figure and the fill climb together instead of the number jumping.
-const GLIDE = { duration: 0.5, ease: 'easeOut' } as const
-const shownAmount = ref(Math.round(ratio.value * 100))
-let counting: { stop: () => void } | undefined
-watch(ratio, (to) => {
-  counting?.stop()
-  const target = Math.round(to * 100)
-  if (target < shownAmount.value || prefersReducedMotion()) return void (shownAmount.value = target)
-  counting = animate(shownAmount.value, target, { ...GLIDE, onUpdate: (v) => (shownAmount.value = Math.round(v)) })
-})
-onBeforeUnmount(() => counting?.stop())
+// The fill and the amount follow the value on a spring, which keeps its speed from one update to
+// the next: a tween restarted on every update slows to a stop before each new one and moves in
+// jerks. Damped past critical, so it never overshoots (no bounce). Reduced motion jumps.
+const follow = useSpring(ratio.value, { stiffness: 22, damping: 12 })
+const shown = ref(ratio.value)
+const unfollow = follow.on('change', (v) => (shown.value = v))
+watch(ratio, (to) => (prefersReducedMotion() ? follow.jump(to) : follow.set(to)))
+onBeforeUnmount(unfollow)
+const shownAmount = computed(() => Math.round(shown.value * 100))
+// Told complete once the fill has got there, not as the value does: the fill trails a little.
+const landed = computed(() => complete.value && shown.value > 0.995)
+// Cut back from its end rather than scaled, so its round end keeps its shape at any length.
+const fillStyle = computed(() => ({ clipPath: `inset(0 ${((1 - shown.value) * 100).toFixed(3)}% 0 0 round 999px)` }))
 
 // Only the move from the amount to "Complete" morphs; the amount itself just counts, in digits of
 // one width, since a morph on every tick would be noise.
-const amountText = computed(() => (complete.value ? props.completeLabel : `${shownAmount.value}%`))
+const amountText = computed(() => (landed.value ? props.completeLabel : `${shownAmount.value}%`))
 
 // The travelling length: a third of the track, from before its start to past its end, easing in
 // and out so it never snaps round. Still, and centred, for reduced motion.
@@ -74,7 +75,7 @@ const travel = computed(() =>
     <div v-if="label || showValue" class="flex items-baseline justify-between gap-4">
       <span v-if="label" class="text-label text-fg">{{ label }}</span>
       <span v-if="showValue && known" class="text-meta tabular-nums text-fg-muted" aria-hidden="true">
-        <TextMorph v-if="complete" :text="amountText" />
+        <TextMorph v-if="landed" :text="amountText" />
         <template v-else>{{ amountText }}</template>
       </span>
     </div>
@@ -87,7 +88,7 @@ const travel = computed(() =>
         :class="progressTrackClass"
       >
         <ProgressIndicator v-if="known" as-child>
-          <span :class="progressFillVariants({ tone })" :style="{ scale: `${ratio} 1` }" />
+          <span :class="progressFillVariants({ tone })" :style="fillStyle" />
         </ProgressIndicator>
         <ProgressIndicator v-else as-child>
           <motion.span
@@ -97,7 +98,7 @@ const travel = computed(() =>
           />
         </ProgressIndicator>
       </ProgressRoot>
-      <span :class="progressEndVariants({ shown: complete })" aria-hidden="true">
+      <span :class="progressEndVariants({ shown: landed })" aria-hidden="true">
         <svg
           viewBox="0 0 16 16"
           fill="none"
@@ -107,7 +108,7 @@ const travel = computed(() =>
           stroke-linejoin="round"
           class="size-4 shrink-0"
         >
-          <path d="m3.5 8.5 3 3 6-7" :class="progressCheckVariants({ shown: complete })" />
+          <path d="m3.5 8.5 3 3 6-7" :class="progressCheckVariants({ shown: landed })" />
         </svg>
       </span>
     </div>
