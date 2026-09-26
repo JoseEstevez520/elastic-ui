@@ -102,10 +102,11 @@ useEventListener<KeyboardEvent>(
 
   <Teleport to="body">
     <template v-if="shown">
-      <!-- The page dimmed behind, as under a dialog: never a shadow. -->
+      <!-- The page dimmed behind, as under a dialog: never a shadow. Above the glance's own layer,
+           which stays (hidden) to be folded back into and would otherwise take the clicks. -->
       <div
         :class="[
-          'fixed inset-0 z-50 bg-[color:var(--dialog-overlay,rgb(0_0_0/0.4))] transition-opacity duration-300',
+          'fixed inset-0 z-[60] bg-[color:var(--dialog-overlay,rgb(0_0_0/0.4))] transition-opacity duration-300',
           grown ? 'opacity-100' : 'opacity-0',
         ]"
         @click="expanded = false"
@@ -114,7 +115,7 @@ useEventListener<KeyboardEvent>(
         role="dialog"
         aria-modal="true"
         :aria-label="title"
-        class="fixed z-50 overflow-hidden border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]"
+        class="fixed z-[60] overflow-hidden border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]"
         :style="cardStyle"
       >
         <!-- The content at the card's width from the start, uncovered as the card grows. -->
