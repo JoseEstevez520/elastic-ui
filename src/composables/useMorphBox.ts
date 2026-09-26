@@ -77,6 +77,9 @@ export function useMorphBox(options: MorphBoxOptions) {
       // One frame on the button's box, then out to the panel's.
       requestAnimationFrame(() =>
         requestAnimationFrame(() => {
+          // Its starting place computed for certain before it moves (Firefox may not have yet),
+          // or it would start already out and jump instead of growing.
+          void document.body.offsetHeight
           grown.value = true
           visible.value = true
           later(morphTransition.duration * 1000, () => (settled.value = true))

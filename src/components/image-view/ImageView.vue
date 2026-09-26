@@ -104,13 +104,18 @@ function openView() {
 }
 
 // The page cannot scroll behind it, and keeps its scrollbar's room, so nothing under it moves.
+// Locked as soon as it is asked to open, before the picture is out: a change to the page's
+// overflow in the frame the picture appears can cost it its starting place, and it would jump to
+// full view instead of growing.
 const root = document.documentElement
-watch(shown, (isShown) => {
+function lockScroll(lock: boolean) {
   const scrolls = root.scrollHeight > root.clientHeight
-  root.style.overflow = isShown ? 'hidden' : ''
-  root.style.scrollbarGutter = isShown && scrolls ? 'stable' : ''
-})
-onBeforeUnmount(() => shown.value && ((root.style.overflow = ''), (root.style.scrollbarGutter = '')))
+  root.style.overflow = lock ? 'hidden' : ''
+  root.style.scrollbarGutter = lock && scrolls ? 'stable' : ''
+}
+watch(open, (isOpen) => isOpen && lockScroll(true), { flush: 'sync' })
+watch(shown, (isShown) => !isShown && lockScroll(false))
+onBeforeUnmount(() => shown.value && lockScroll(false))
 
 // Landed, the cross takes the focus and keeps it: it is all there is to reach. Escape closes.
 const cross = useTemplateRef<HTMLButtonElement>('cross')
