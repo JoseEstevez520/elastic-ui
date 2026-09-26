@@ -1,0 +1,56 @@
+/*
+ * Lab: the glint, a light crossing a surface once, when something has just gone well or just
+ * arrived. The same band of light as the shimmer that tells work is under way (StatusText), passing
+ * once over the surface instead of round and round through its text: a soft, slanted band lighting
+ * what it crosses, gone as it leaves. Played by setting `data-glint` (again) on an element that is
+ * `relative` and clips (`overflow-hidden`).
+ */
+.lab-glint::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.14)) 50%,
+    transparent 62%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  opacity: 0;
+}
+.lab-glint[data-glint='a']::after,
+.lab-glint[data-glint='b']::after {
+  animation: lab-glint 900ms var(--ease-in-out) both;
+}
+/* Two names, so setting it again plays it again. */
+.lab-glint[data-glint='b']::after {
+  animation-name: lab-glint-again;
+}
+@keyframes lab-glint {
+  0% {
+    background-position: 100% 0;
+    opacity: 1;
+  }
+  100% {
+    background-position: -50% 0;
+    opacity: 1;
+  }
+}
+@keyframes lab-glint-again {
+  0% {
+    background-position: 100% 0;
+    opacity: 1;
+  }
+  100% {
+    background-position: -50% 0;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-glint::after {
+    animation: none !important;
+  }
+}
