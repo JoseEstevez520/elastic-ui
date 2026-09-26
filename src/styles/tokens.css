@@ -126,6 +126,10 @@
   @keyframes fade-out {
     to { opacity: 0; }
   }
+  /* Text typed becoming its tag: it stays put while the pill's surface and room open round it. */
+  @keyframes tag-in {
+    from { background-color: transparent; padding-inline: 0; }
+  }
   /* The way back of `blur-in`, for something large folding away with its room. */
   @keyframes blur-out {
     to { opacity: 0; filter: blur(4px); }
