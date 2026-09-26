@@ -1,132 +1,127 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, useSlots, useTemplateRef, watch } from 'vue'
-import { useEventListener } from '../../composables/useEventListener'
-import { useMorphBox, type Box } from '../../composables/useMorphBox'
+import { CollapsibleTrigger as TriggerPrimitive } from 'reka-ui'
+import { nextTick, onBeforeUnmount, ref, useSlots, useTemplateRef } from 'vue'
+import Collapsible from '../../components/collapsible/Collapsible.vue'
+import CollapsibleContent from '../../components/collapsible/CollapsibleContent.vue'
+import { chatThreadLineClass } from '../../components/chat/chat.variants'
+import { morphCloseTransition } from '../../utils/motion'
 
 /**
- * Lab: a word in a text that opens to what it means, in its place, after Curio. At rest a faint
- * dotted line under it says there is more; pointed at, it lights up with SelectionMenu's band.
- * Pressed, that band grows into a card right under the word, a real size (useMorphBox), the word
- * staying lit above it and readable; "More" grows the same card again into the whole of it, rather
- * than opening a panel of its own. Escape or a click elsewhere fold it back into the word.
+ * Lab: a word in a text that opens to what it means, in its place, never over the text: made of
+ * the library's own parts. The word is marked with SelectionMenu's band (faint at rest, fuller
+ * when open). Pressed, the paragraph opens under the word's line with Collapsible's own opening
+ * (it grows from the top and the content comes in as a wave), the definition hanging from a fine
+ * thread as ChatSources' lines do; "More" is a Collapsible inside it. Closing, the words go
+ * first, then the paragraph closes up again. After Curio.
+ *
+ * The only new thing is where to open: at the end of the word's line, so the lines above and the
+ * rest of that line stay where they are and only what follows moves down.
  */
-const props = defineProps<{
-  /** The card's heading; the word itself by default. */
-  title?: string
-}>()
+defineProps<{ title?: string }>()
 const slots = useSlots()
 
 const open = ref(false)
-const more = ref(false)
 const word = useTemplateRef<HTMLElement>('word')
-const content = useTemplateRef<HTMLElement>('content')
-const card = useTemplateRef<HTMLElement>('card')
+// Where the paragraph opens: a block set into the text at the end of the word's line.
+const gap = ref<HTMLElement | null>(null)
 
-// Boxes in the page's own coordinates, so the card scrolls with the text it belongs to.
-const onPage = (r: DOMRect): Box => ({ top: r.top + scrollY, left: r.left + scrollX, width: r.width, height: r.height })
-const GAP = 6
-const MARGIN = 12
-const width = computed(() => (more.value ? 420 : 300))
-
-// The card: under the word, its left edge on the word's, kept inside the screen; above the word if
-// there is not room below. As tall as its content, read once the content has the card's width.
-async function place(): Promise<Box> {
-  const w = word.value!.getClientRects()[0] ?? word.value!.getBoundingClientRect()
-  const cardWidth = Math.min(width.value, innerWidth - MARGIN * 2)
-  const left = Math.min(Math.max(MARGIN, w.left), innerWidth - MARGIN - cardWidth)
-  contentWidth.value = cardWidth
-  await nextTick()
-  const height = Math.min(content.value?.scrollHeight ?? 120, innerHeight * 0.7)
-  const below = w.bottom + GAP + height <= innerHeight - MARGIN || w.top - GAP - height < MARGIN
-  const top = below ? w.bottom + GAP : w.top - GAP - height
-  return { top: top + scrollY, left: left + scrollX, width: cardWidth, height }
+// The first character on a later line than the word, in the text after it: the paragraph opens
+// just before it. If the word ends its paragraph, it opens at the paragraph's end.
+function openingPoint(): { node: Node; offset: number } | { after: Element } {
+  const el = word.value!
+  const rects = el.getClientRects()
+  // The word's line ends at its box's bottom; a character whose middle is below it is on a later line.
+  const lineBottom = rects[rects.length - 1]!.bottom
+  const block = el.closest('p, li, dd, blockquote') ?? el.parentElement!
+  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT)
+  const range = document.createRange()
+  let node: Node | null
+  while ((node = walker.nextNode())) {
+    if (el.contains(node) || !(el.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING)) continue
+    const text = node.textContent ?? ''
+    for (let i = 0; i < text.length; i++) {
+      range.setStart(node, i)
+      range.setEnd(node, i + 1)
+      const r = range.getClientRects()[0]
+      if (r && (r.top + r.bottom) / 2 > lineBottom) return { node, offset: i }
+    }
+  }
+  return { after: block }
 }
-const contentWidth = ref(300)
 
-const { shown, visible, settled, style, measure } = useMorphBox({
-  open,
-  from: () => {
-    const r = word.value?.getClientRects()[0]
-    return r && onPage(r)
-  },
-  to: place,
-  returnFocus: () => word.value,
+async function toggle() {
+  if (open.value) return void onOpenChange(false)
+  const point = openingPoint()
+  const el = document.createElement('span')
+  el.className = 'block'
+  if ('after' in point) point.after.appendChild(el)
+  else {
+    const range = document.createRange()
+    range.setStart(point.node, point.offset)
+    range.insertNode(el)
+  }
+  gap.value = el
+  await nextTick()
+  onOpenChange(true)
+}
+
+// Closed, once the paragraph has closed up, the gap goes and the text is whole again.
+let timer: ReturnType<typeof setTimeout> | undefined
+function onOpenChange(isOpen: boolean) {
+  open.value = isOpen
+  clearTimeout(timer)
+  if (!isOpen) timer = setTimeout(mend, morphCloseTransition.duration * 1000 + 50)
+}
+function mend() {
+  const el = gap.value
+  if (!el || open.value) return
+  gap.value = null
+  const parent = el.parentNode
+  nextTick(() => {
+    el.remove()
+    parent?.normalize()
+  })
+}
+onBeforeUnmount(() => {
+  clearTimeout(timer)
+  gap.value?.remove()
 })
-const cardStyle = computed(() =>
-  style({
-    borderRadius: ['4px', '14px'],
-    backgroundColor: ['color-mix(in srgb, var(--color-accent) 28%, transparent)', 'var(--color-surface-raised)'],
-  }),
-)
-
-// "More": the same card grows again, from where it is to its whole size.
-watch(more, async () => {
-  if (open.value) await measure()
-})
-watch(open, (isOpen) => !isOpen && (more.value = false))
-
-useEventListener<KeyboardEvent>(
-  () => document,
-  'keydown',
-  (e) => e.key === 'Escape' && open.value && (open.value = false),
-)
-useEventListener<PointerEvent>(
-  () => document,
-  'pointerdown',
-  (e) => {
-    if (!open.value || !(e.target instanceof Node)) return
-    if (!card.value?.contains(e.target) && !word.value?.contains(e.target)) open.value = false
-  },
-)
 </script>
 
 <template>
-  <button
-    ref="word"
-    type="button"
-    :aria-expanded="open ? 'true' : 'false'"
-    :class="[
-      'inline cursor-pointer rounded-[4px] px-0.5 -mx-0.5 text-inherit transition-colors duration-150 focus-ring',
-      // A faint dotted line says there is more; lit, the band takes its place.
-      open
-        ? 'bg-[color:color-mix(in_srgb,var(--color-accent)_28%,transparent)]'
-        : 'underline decoration-dotted decoration-[color:var(--color-fg-faint)] decoration-1 underline-offset-[0.25em] hover:bg-[color:color-mix(in_srgb,var(--color-accent)_16%,transparent)]',
-    ]"
-    @click="open = !open"
-  >
-    <slot />
-  </button>
-  <Teleport to="body">
-    <div
-      v-if="shown"
-      ref="card"
-      role="dialog"
-      :aria-label="title"
-      class="absolute z-50 overflow-hidden shadow-[0_0_0_1px_var(--color-border-strong),0_6px_20px_-8px_light-dark(rgb(0_0_0/0.08),rgb(0_0_0/0.35))]"
-      :style="cardStyle"
+  <Collapsible :open="open" class="contents" @update:open="onOpenChange">
+    <!-- The word opens its own way (it first sets the paragraph's gap), so it is a plain button
+         rather than Collapsible's trigger, which would toggle on its own. -->
+    <button
+      ref="word"
+      type="button"
+      :aria-expanded="open ? 'true' : 'false'"
+      :class="[
+        'inline cursor-pointer rounded-[var(--radius-sm)] px-[0.15em] -mx-[0.15em] text-inherit transition-colors duration-150 focus-ring',
+        open
+          ? 'bg-[color:var(--selection-bg,color-mix(in_srgb,var(--color-accent)_28%,transparent))] text-fg'
+          : 'bg-[color:color-mix(in_srgb,var(--color-accent)_10%,transparent)] hover:bg-[color:color-mix(in_srgb,var(--color-accent)_18%,transparent)]',
+      ]"
+      @click.prevent="toggle"
     >
-      <!-- The content at the card's width from the start, uncovered as the card grows. -->
-      <div
-        ref="content"
-        :class="[
-          'absolute top-0 left-0 p-4 text-sm leading-relaxed text-fg-secondary',
-          settled ? 'overflow-y-auto' : 'overflow-hidden',
-          visible ? 'stagger-children [--stagger-delay:0.18s]' : 'opacity-0 transition-opacity duration-150',
-        ]"
-        :style="{ width: `${contentWidth}px`, maxHeight: '70vh' }"
-      >
-        <p class="font-medium text-fg">{{ title }}</p>
-        <div class="mt-1.5"><slot name="definition" /></div>
-        <div v-if="more" class="mt-3"><slot name="more" /></div>
-        <button
-          v-if="slots.more && !more"
-          type="button"
-          class="mt-3 cursor-pointer text-sm font-medium text-[color:var(--color-accent)] hover:underline focus-ring"
-          @click="more = true"
-        >
-          More
-        </button>
-      </div>
-    </div>
-  </Teleport>
+      <slot />
+    </button>
+    <Teleport v-if="gap" :to="gap">
+      <CollapsibleContent class="pb-0">
+        <!-- The definition hanging from its word on a fine thread, as ChatSources' lines. -->
+        <span :class="[chatThreadLineClass, 'my-2 block text-[0.95em] leading-relaxed']">
+          <span v-if="title" class="block font-medium text-fg">{{ title }}</span>
+          <span class="block"><slot name="definition" /></span>
+          <Collapsible v-if="slots.more" class="mt-1 block">
+            <TriggerPrimitive
+              class="cursor-pointer text-sm font-medium text-[color:var(--color-accent)] hover:underline focus-ring data-[state=open]:hidden"
+            >
+              More
+            </TriggerPrimitive>
+            <CollapsibleContent class="pb-0"><slot name="more" /></CollapsibleContent>
+          </Collapsible>
+        </span>
+      </CollapsibleContent>
+    </Teleport>
+  </Collapsible>
 </template>
