@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
 import { XIcon } from '../../icons/internal'
@@ -53,7 +53,7 @@ function fullBox() {
 }
 
 const radius = ref('0px')
-const { shown, grown, visible, settled, to, style } = useMorphBox({
+const { shown, placed, grown, visible, settled, to, style } = useMorphBox({
   open,
   from: () => {
     if (thumb.value) radius.value = getComputedStyle(thumb.value).borderRadius
@@ -77,38 +77,56 @@ const crossStyle = computed(() => {
 // White over a dark corner, black over a light one, read from the corner's own pixels. A picture
 // from elsewhere that forbids reading them keeps it white.
 const crossOnLight = ref(false)
-function readCorner() {
-  const img = new Image()
-  img.crossOrigin = 'anonymous'
-  img.onload = () => {
-    const canvas = document.createElement('canvas')
-    canvas.width = canvas.height = 8
-    const ctx = canvas.getContext('2d', { willReadFrequently: true })
-    if (!ctx) return
-    // As much of the corner as the cross and its inset cover in full view.
-    const side = Math.min(img.naturalWidth, img.naturalHeight) * 0.12
-    ctx.drawImage(img, img.naturalWidth - side, 0, side, side, 0, 0, 8, 8)
-    try {
-      const px = ctx.getImageData(0, 0, 8, 8).data
-      let light = 0
-      for (let i = 0; i < px.length; i += 4) light += 0.2126 * px[i]! + 0.7152 * px[i + 1]! + 0.0722 * px[i + 2]!
-      crossOnLight.value = light / (px.length / 4) / 255 > 0.5
-    } catch {
-      crossOnLight.value = false
-    }
+function readCorner(img: HTMLImageElement) {
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = 8
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  if (!ctx) return
+  // As much of the corner as the cross and its inset cover in full view.
+  const side = Math.min(img.naturalWidth, img.naturalHeight) * 0.12
+  ctx.drawImage(img, img.naturalWidth - side, 0, side, side, 0, 0, 8, 8)
+  try {
+    const px = ctx.getImageData(0, 0, 8, 8).data
+    let light = 0
+    for (let i = 0; i < px.length; i += 4) light += 0.2126 * px[i]! + 0.7152 * px[i + 1]! + 0.0722 * px[i + 2]!
+    crossOnLight.value = light / (px.length / 4) / 255 > 0.5
+  } catch {
+    crossOnLight.value = false
   }
-  img.src = full.value
 }
 
-function openView() {
-  readCorner()
+// Everything the view needs is made ready before it is asked for, while the browser is idle: the
+// full picture decoded, so it is painted from the first frame, and its corner read. Done on the
+// click instead, that work lands on the morph's first frames, which are then dropped: the picture
+// seems to jump and go on from halfway.
+let ready: Promise<void> | undefined
+function prepare() {
+  ready ??= new Promise<void>((done) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.src = full.value
+    img
+      .decode()
+      .then(() => readCorner(img))
+      .catch(() => {})
+      .finally(done)
+  })
+  return ready
+}
+const idle = (run: () => void) =>
+  'requestIdleCallback' in window ? requestIdleCallback(run, { timeout: 2000 }) : setTimeout(run, 200)
+onMounted(() => idle(prepare))
+watch(full, () => ((ready = undefined), idle(prepare)))
+
+async function openView() {
+  if (open.value) return
+  // Almost always ready by now; pressed straight away, it waits for it, briefly.
+  await Promise.race([prepare(), new Promise((done) => setTimeout(done, 300))])
   open.value = true
 }
 
-// The page cannot scroll behind it, and keeps its scrollbar's room, so nothing under it moves.
-// Locked as soon as it is asked to open, before the picture is out: a change to the page's
-// overflow in the frame the picture appears can cost it its starting place, and it would jump to
-// full view instead of growing.
+// The page cannot scroll behind it, and keeps its scrollbar's room, so nothing under it moves and
+// the picture folds back onto the place it left (DECISIONS, "Known pitfalls").
 const root = document.documentElement
 function lockScroll(lock: boolean) {
   const scrolls = root.scrollHeight > root.clientHeight
@@ -142,7 +160,7 @@ useEventListener<KeyboardEvent>(
     role="button"
     aria-haspopup="dialog"
     :aria-label="`${alt}, ${fullViewLabel}`"
-    :class="cn('cursor-zoom-in focus-ring', shown && 'invisible', props.class)"
+    :class="cn('cursor-zoom-in focus-ring', placed && 'invisible', props.class)"
     @click="openView"
     @keydown.enter.prevent="openView"
     @keydown.space.prevent="openView"
