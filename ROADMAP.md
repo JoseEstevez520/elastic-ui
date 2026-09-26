@@ -99,6 +99,20 @@ Every part that opens from a field or a button grows out of it (USAGE 1). Each n
 5. **A pass over everything**: every part in light, dark and on a phone; props and events named the same way across parts.
 6. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz`. From now on each `.tgz` handed over bumps the version (0.1.1, 0.1.2…), so an install never keeps the old one.
 
+## Lab
+
+Experiments in `src/lab`, shown under Lab in Storybook and never built into the package. The direction they explore is the library's identity (DECISIONS, Philosophy 5): objects that transform in place, with a light touch of skeuomorphism, built from what the library already does. Ideas from outside (Rare UI, Family, Apple's apps) are redone from scratch in the library's own way, never copied: Rare UI's licence forbids redistributing its components, even ported.
+
+| Experiment | Where it stands |
+|---|---|
+| Card to page | Liked. A project card becomes its page: the box grows to the screen, its photo travels to the header, its glow becomes the page's ground. To become a part (with the router, for the URL and back). |
+| Icon morph | Liked. Icons drawn as the same strokes, so one travels into another, as TextMorph's letters. To become a part, with more glyphs. |
+| Image aurora | Fine, not exciting. Kept as the ground of Card to page. |
+| Folder icon | The idea is liked, the execution is not yet at the level of the reference: redo it bigger, with real pages and a frosted front, or drop it. |
+| Identity: confirm in place | A delete that asks in its own square, its bin opening its lid. To refine and make a part. |
+| Identity: activity | Does not yet catch the reference's style; being reworked. |
+| Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
+
 ## Versions
 
 Each version comes from a kind of project: the class web gave 0.1.
