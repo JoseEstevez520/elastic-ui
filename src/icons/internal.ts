@@ -12,6 +12,7 @@ export {
   Copy as CopyIcon,
   ListFilter as FilterIcon,
   Info as InfoIcon,
+  File as FileIcon,
   Lightbulb as LightbulbIcon,
   Minus as MinusIcon,
   OctagonAlert as OctagonAlertIcon,
@@ -21,6 +22,7 @@ export {
   RotateCcw as ReplayIcon,
   Search as SearchIcon,
   TriangleAlert as TriangleAlertIcon,
+  Upload as UploadIcon,
   X as XIcon,
 } from '@lucide/vue'
 

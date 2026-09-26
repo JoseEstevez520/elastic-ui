@@ -1,0 +1,194 @@
+<script setup lang="ts">
+import { computed, ref, useTemplateRef, type HTMLAttributes } from 'vue'
+import { AlertIcon, CheckIcon, FileIcon, UploadIcon, XIcon } from '../../icons/internal'
+import { cn } from '../../utils/cn'
+import { useFieldControl } from '../../utils/field'
+import { labelFor, useLabels } from '../../utils/labels'
+import IconSwap from '../icon-swap/IconSwap.vue'
+import { progressFillVariants } from '../progress-button/progress-button.variants'
+import TextMorph from '../text-morph/TextMorph.vue'
+import type { Uploader, UploadFile } from './file-upload.types'
+import { dropZoneClass, fileRowClass } from './file-upload.variants'
+
+/**
+ * Files dropped on it, or chosen from the button it is. Each file becomes its row, opening its room
+ * under the zone and coming into focus; with `upload`, the row is its own progress, filling from
+ * the left as the file goes up, and its icon turns into a check (or what went wrong). A row taken
+ * away fades where it is, then its room folds up. The list is `v-model`; without `upload`, files are just listed, for a form.
+ */
+const props = withDefaults(
+  defineProps<{
+    /** As the file input's: `image/*`, `.pdf`… */
+    accept?: string
+    multiple?: boolean
+    /** The largest a file may be, in bytes. */
+    maxSize?: number
+    upload?: Uploader
+    invalid?: boolean
+    disabled?: boolean
+    /** The zone's words, at rest. */
+    dropLabel?: string
+    removeLabel?: string
+    class?: HTMLAttributes['class']
+  }>(),
+  { multiple: true, dropLabel: labelFor('dropFiles'), removeLabel: labelFor('remove') },
+)
+
+const files = defineModel<UploadFile[]>({ default: () => [] })
+const labels = useLabels()
+const fieldAttrs = useFieldControl(() => props.invalid)
+
+const size = (bytes: number) => {
+  const units = ['byte', 'kilobyte', 'megabyte', 'gigabyte'] as const
+  const i = Math.min(units.length - 1, Math.floor(Math.log(Math.max(bytes, 1)) / Math.log(1024)))
+  const value = bytes / 1024 ** i
+  return new Intl.NumberFormat(undefined, {
+    style: 'unit',
+    unit: units[i],
+    unitDisplay: 'short',
+    maximumFractionDigits: value < 10 && i > 0 ? 1 : 0,
+  }).format(value)
+}
+
+const update = (id: string, patch: Partial<UploadFile>) =>
+  (files.value = files.value.map((f) => (f.id === id ? { ...f, ...patch } : f)))
+const remove = (id: string) => (files.value = files.value.filter((f) => f.id !== id))
+
+let count = 0
+function add(list: FileList | null) {
+  if (!list?.length) return
+  const added = [...list].slice(0, props.multiple ? undefined : 1).map<UploadFile>((file) => {
+    const tooLarge = props.maxSize !== undefined && file.size > props.maxSize
+    return {
+      id: `${Date.now()}-${count++}`,
+      name: file.name,
+      size: file.size,
+      file,
+      status: tooLarge ? 'error' : props.upload ? 'uploading' : 'done',
+      progress: 0,
+      error: tooLarge ? labels.tooLarge.replace('{size}', size(props.maxSize!)) : undefined,
+    }
+  })
+  files.value = props.multiple ? [...files.value, ...added] : added
+  for (const item of added) if (item.status === 'uploading') send(item)
+}
+async function send(item: UploadFile) {
+  try {
+    await props.upload!(item.file!, (fraction) => update(item.id, { progress: Math.min(1, Math.max(0, fraction)) }))
+    update(item.id, { status: 'done', progress: 1 })
+  } catch (error) {
+    update(item.id, {
+      status: 'error',
+      error: error instanceof Error && error.message ? error.message : labels.uploadFailed,
+    })
+  }
+}
+
+// Files held over the zone. Entering and leaving fire for every element inside it, so they are
+// counted rather than toggled.
+const depth = ref(0)
+const over = computed(() => depth.value > 0)
+function onDrop(event: DragEvent) {
+  depth.value = 0
+  if (!props.disabled) add(event.dataTransfer?.files ?? null)
+}
+
+const input = useTemplateRef<HTMLInputElement>('input')
+function onPick() {
+  add(input.value?.files ?? null)
+  if (input.value) input.value.value = ''
+}
+
+const iconOf = (f: UploadFile) =>
+  f.status === 'done' && props.upload ? CheckIcon : f.status === 'error' ? AlertIcon : FileIcon
+</script>
+
+<template>
+  <div :class="cn('flex w-full flex-col gap-2', props.class)">
+    <button
+      type="button"
+      v-bind="fieldAttrs"
+      :disabled="disabled"
+      :data-over="over"
+      :class="dropZoneClass"
+      @click="input?.click()"
+      @dragenter.prevent="depth++"
+      @dragleave="depth = Math.max(0, depth - 1)"
+      @dragover.prevent
+      @drop.prevent="onDrop"
+    >
+      <UploadIcon aria-hidden="true" class="size-5" />
+      <TextMorph :text="over ? labels.dropToAdd : dropLabel" />
+    </button>
+    <input
+      ref="input"
+      type="file"
+      class="hidden"
+      :accept="accept"
+      :multiple="multiple"
+      :disabled="disabled"
+      @change="onPick"
+    />
+
+    <TransitionGroup
+      tag="ul"
+      class="flex flex-col"
+      enter-from-class="grid-rows-[0fr] opacity-0 blur-[2px]"
+      enter-to-class="grid-rows-[1fr]"
+      leave-from-class="grid-rows-[1fr]"
+      leave-to-class="grid-rows-[0fr] opacity-0"
+      enter-active-class="transition-[grid-template-rows,opacity,filter] duration-[400ms] ease-emphasized motion-reduce:transition-none"
+      leave-active-class="[transition:opacity_160ms_linear,grid-template-rows_300ms_var(--ease-emphasized)_160ms] motion-reduce:transition-none"
+    >
+      <li v-for="f in files" :key="f.id" class="grid">
+        <div class="overflow-hidden">
+          <div :class="fileRowClass">
+            <!-- Done, it turns green where it stands, then fades a moment later, leaving the check. -->
+            <span
+              v-if="upload && f.status !== 'error'"
+              aria-hidden="true"
+              :class="
+                f.status === 'done'
+                  ? cn(
+                      progressFillVariants({ outcome: 'done' }),
+                      'opacity-0 [transition:scale_500ms_var(--ease-out),background-color_300ms_ease-out,opacity_800ms_var(--ease-soft)_900ms]',
+                    )
+                  : progressFillVariants({ outcome: 'none' })
+              "
+              :style="{ scale: `${f.status === 'done' ? 1 : (f.progress ?? 0)} 1` }"
+            />
+            <IconSwap
+              :icon="iconOf(f)"
+              :class="[
+                'relative transition-colors duration-300',
+                f.status === 'error'
+                  ? 'text-[color:var(--color-danger)]'
+                  : f.status === 'done' && upload
+                    ? 'text-[color:var(--color-success)]'
+                    : 'text-fg-faint',
+              ]"
+            />
+            <span class="relative min-w-0 flex-1 truncate">{{ f.name }}</span>
+            <span
+              :class="[
+                'relative shrink-0 text-xs tabular-nums',
+                f.status === 'error' ? 'text-[color:var(--color-danger)]' : 'text-fg-muted',
+              ]"
+            >
+              <template v-if="f.status === 'uploading'">{{ Math.round((f.progress ?? 0) * 100) }}%</template>
+              <template v-else>{{ f.status === 'error' ? f.error : size(f.size) }}</template>
+            </span>
+            <button
+              type="button"
+              :aria-label="`${removeLabel} ${f.name}`"
+              class="relative flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-fg-faint transition-colors hover:text-fg focus-ring"
+              @click="remove(f.id)"
+            >
+              <XIcon aria-hidden="true" class="size-3.5" />
+            </button>
+          </div>
+        </div>
+      </li>
+    </TransitionGroup>
+  </div>
+</template>

@@ -78,6 +78,11 @@ export const defaultLabels = {
   /** NumberField's − and +. */
   decrease: 'Decrease',
   increase: 'Increase',
+  /** FileUpload. `{size}` is the largest a file may be. */
+  dropFiles: 'Drop files here, or browse',
+  dropToAdd: 'Let go to add them',
+  tooLarge: 'Larger than {size}',
+  uploadFailed: 'Could not upload',
   comment: 'Comment',
   commentPlaceholder: 'Write a comment…',
   rating: 'Rating',
