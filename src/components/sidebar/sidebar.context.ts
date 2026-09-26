@@ -12,6 +12,10 @@ export interface SidebarContext {
   /** Whether the toggle has the sidebar open: unfolded, or slid in on a phone. */
   isOpen: Readonly<Ref<boolean>>
   panelId: string
+  /** The page's bar (SidebarLayoutHeader), which PageTitle goes under. */
+  header: Ref<HTMLElement | undefined>
+  /** The page's PageTitle, and whether it has gone under the bar, which then shows it. */
+  pageTitle: Ref<{ text: string; under: boolean } | undefined>
 }
 
 const SidebarContextKey: InjectionKey<SidebarContext> = Symbol('SidebarContext')

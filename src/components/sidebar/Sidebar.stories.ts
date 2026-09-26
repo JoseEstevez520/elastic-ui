@@ -6,13 +6,14 @@ import NavTreeGroup from '../nav-tree/NavTreeGroup.vue'
 import NavTreeItem from '../nav-tree/NavTreeItem.vue'
 import Sidebar from './Sidebar.vue'
 import SidebarLayout from './SidebarLayout.vue'
+import PageTitle from './PageTitle.vue'
 import SidebarLayoutHeader from './SidebarLayoutHeader.vue'
 import SidebarToggle from './SidebarToggle.vue'
 
 // The library ships no icons; Lucide stands in for a project's own.
 const icons = { home: House, book: BookOpen, wrench: Wrench, bot: Bot, calendar: Calendar, settings: Settings }
 
-const parts = { NavTree, NavTreeGroup, NavTreeItem, Sidebar, SidebarLayout, SidebarLayoutHeader, SidebarToggle }
+const parts = { NavTree, NavTreeGroup, NavTreeItem, PageTitle, Sidebar, SidebarLayout, SidebarLayoutHeader, SidebarToggle }
 
 const meta = {
   title: 'Navigation/Sidebar',
@@ -53,7 +54,7 @@ const meta = {
           </SidebarLayoutHeader>
           <div class="max-w-2xl p-6 text-sm text-fg-secondary">
             <p>The toggle in the sidebar's header folds it to a rail of icons, whose labels come back as tooltips. Opening a group from the rail unfolds the sidebar. Below 768px the sidebar becomes a panel that slides in from the left, opened from the page's header.</p>
-            <p v-for="n in 30" :key="n" class="mt-4">Scroll: the page's header stays at the top, a hairline appearing under it once the page moves.</p>
+            <p v-for="n in 30" :key="n" class="mt-4">Scroll: the page's header stays at the top, and what goes under it fades and blurs into it along a soft edge.</p>
           </div>
         </main>
       </SidebarLayout>`,
@@ -115,4 +116,31 @@ export const LongLabels: Story = {
 export const Mobile: Story = {
   globals: { viewport: { value: 'mobile1', isRotated: false } },
   render: meta.render,
+}
+
+/**
+ * A large title, as iOS's: scrolled, it fades and blurs as it goes under the bar, and the bar then
+ * shows it, small. Scroll back up and it comes out again.
+ */
+export const WithPageTitle: Story = {
+  render: () => ({
+    components: parts,
+    setup: () => ({ icons }),
+    template: `
+      <SidebarLayout>
+        <Sidebar>
+          <NavTree model-value="home">
+            <NavTreeItem value="home" :icon="icons.home">Home</NavTreeItem>
+            <NavTreeItem value="notes" :icon="icons.book">Notes</NavTreeItem>
+          </NavTree>
+        </Sidebar>
+        <main class="min-w-0 flex-1">
+          <SidebarLayoutHeader />
+          <div class="max-w-2xl px-6 pb-6 text-sm text-fg-secondary">
+            <PageTitle class="mt-4 mb-6">Agents in OpenCode</PageTitle>
+            <p v-for="n in 30" :key="n" class="mt-4">An agent is a model with tools and a loop: it reads, acts, checks what happened and goes on until the work is done.</p>
+          </div>
+        </main>
+      </SidebarLayout>`,
+  }),
 }
