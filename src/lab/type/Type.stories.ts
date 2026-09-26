@@ -113,7 +113,7 @@ export const Rules: Story = {
               <p class="text-meta mt-1 pl-11 text-fg-muted">A day before each one.</p>
             </div>
           </div>
-          <p class="text-meta mt-6 text-fg-muted"><span class="text-title mr-1.5">22</span>notes this unit</p>
+          <p class="text-meta mt-6 text-fg-muted"><span class="mr-1.5 text-title text-fg">22</span>notes this unit</p>
         </aside>
       </div>`,
   }),
