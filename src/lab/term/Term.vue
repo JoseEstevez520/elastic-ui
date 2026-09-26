@@ -1,127 +1,149 @@
 <script setup lang="ts">
-import { CollapsibleTrigger as TriggerPrimitive } from 'reka-ui'
-import { nextTick, onBeforeUnmount, ref, useSlots, useTemplateRef } from 'vue'
-import Collapsible from '../../components/collapsible/Collapsible.vue'
-import CollapsibleContent from '../../components/collapsible/CollapsibleContent.vue'
-import { chatThreadLineClass } from '../../components/chat/chat.variants'
-import { morphCloseTransition } from '../../utils/motion'
+import { computed, nextTick, ref, useSlots, useTemplateRef, watch } from 'vue'
+import Popover from '../../components/popover/Popover.vue'
+import PopoverContent from '../../components/popover/PopoverContent.vue'
+import PopoverTrigger from '../../components/popover/PopoverTrigger.vue'
+import { useEventListener } from '../../composables/useEventListener'
+import { boxOf, useMorphBox } from '../../composables/useMorphBox'
+import { XIcon } from '../../icons/internal'
 
 /**
- * Lab: a word in a text that opens to what it means, in its place, never over the text: made of
- * the library's own parts. The word is marked with SelectionMenu's band (faint at rest, fuller
- * when open). Pressed, the paragraph opens under the word's line with Collapsible's own opening
- * (it grows from the top and the content comes in as a wave), the definition hanging from a fine
- * thread as ChatSources' lines do; "More" is a Collapsible inside it. Closing, the words go
- * first, then the paragraph closes up again. After Curio.
+ * Lab: a word that explains itself where it is read, as Curio does, made of the library's parts.
+ * Two depths:
  *
- * The only new thing is where to open: at the end of the word's line, so the lines above and the
- * rest of that line stay where they are and only what follows moves down.
+ *   A glance: pressed, the word stays lit with SelectionMenu's band, and a small card appears
+ *   under it (the library's Popover: it follows the word as the page scrolls, flips above it near
+ *   the bottom) with the meaning in a sentence and "See more".
+ *
+ *   The whole of it: "See more" grows that same card into a large one in the middle of the page,
+ *   a real size (useMorphBox), the page dimmed behind as under a dialog, never shadowed. Closing
+ *   it (its cross, Escape, the dimmed page) folds it back into the glance, still open.
  */
-defineProps<{ title?: string }>()
+defineProps<{ title: string }>()
 const slots = useSlots()
 
 const open = ref(false)
-const word = useTemplateRef<HTMLElement>('word')
-// Where the paragraph opens: a block set into the text at the end of the word's line.
-const gap = ref<HTMLElement | null>(null)
+const expanded = ref(false)
+const glance = useTemplateRef<HTMLElement>('glance')
+const content = useTemplateRef<HTMLElement>('content')
+const seeMore = useTemplateRef<HTMLButtonElement>('seeMore')
+const closeButton = useTemplateRef<HTMLButtonElement>('closeButton')
 
-// The first character on a later line than the word, in the text after it: the paragraph opens
-// just before it. If the word ends its paragraph, it opens at the paragraph's end.
-function openingPoint(): { node: Node; offset: number } | { after: Element } {
-  const el = word.value!
-  const rects = el.getClientRects()
-  // The word's line ends at its box's bottom; a character whose middle is below it is on a later line.
-  const lineBottom = rects[rects.length - 1]!.bottom
-  const block = el.closest('p, li, dd, blockquote') ?? el.parentElement!
-  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT)
-  const range = document.createRange()
-  let node: Node | null
-  while ((node = walker.nextNode())) {
-    if (el.contains(node) || !(el.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING)) continue
-    const text = node.textContent ?? ''
-    for (let i = 0; i < text.length; i++) {
-      range.setStart(node, i)
-      range.setEnd(node, i + 1)
-      const r = range.getClientRects()[0]
-      if (r && (r.top + r.bottom) / 2 > lineBottom) return { node, offset: i }
-    }
-  }
-  return { after: block }
-}
-
-async function toggle() {
-  if (open.value) return void onOpenChange(false)
-  const point = openingPoint()
-  const el = document.createElement('span')
-  el.className = 'block'
-  if ('after' in point) point.after.appendChild(el)
-  else {
-    const range = document.createRange()
-    range.setStart(point.node, point.offset)
-    range.insertNode(el)
-  }
-  gap.value = el
-  await nextTick()
-  onOpenChange(true)
-}
-
-// Closed, once the paragraph has closed up, the gap goes and the text is whole again.
-let timer: ReturnType<typeof setTimeout> | undefined
-function onOpenChange(isOpen: boolean) {
-  open.value = isOpen
-  clearTimeout(timer)
-  if (!isOpen) timer = setTimeout(mend, morphCloseTransition.duration * 1000 + 50)
-}
-function mend() {
-  const el = gap.value
-  if (!el || open.value) return
-  gap.value = null
-  const parent = el.parentNode
-  nextTick(() => {
-    el.remove()
-    parent?.normalize()
-  })
-}
-onBeforeUnmount(() => {
-  clearTimeout(timer)
-  gap.value?.remove()
+// The large card: in the middle of the screen, as tall as its content once laid out at its width.
+const cardWidth = ref(560)
+const { shown, grown, visible, settled, style } = useMorphBox({
+  open: expanded,
+  from: () => boxOf(glance.value?.closest('[data-state]')),
+  to: async () => {
+    cardWidth.value = Math.min(560, innerWidth - 32)
+    await nextTick()
+    const height = Math.min(content.value?.scrollHeight ?? 320, innerHeight * 0.8)
+    return { top: (innerHeight - height) / 2, left: (innerWidth - cardWidth.value) / 2, width: cardWidth.value, height }
+  },
+  returnFocus: () => seeMore.value,
 })
+const cardStyle = computed(() => style({ borderRadius: ['var(--radius-lg)', '20px'] }))
+watch(settled, (isSettled) => isSettled && closeButton.value?.focus({ preventScroll: true }))
+// The glance closing takes the whole of it with it.
+watch(open, (isOpen) => !isOpen && (expanded.value = false))
+
+// Escape while it is the large card folds it back into the glance, rather than closing both.
+useEventListener<KeyboardEvent>(
+  () => document,
+  'keydown',
+  (e) => {
+    if (e.key === 'Escape' && expanded.value) {
+      e.stopPropagation()
+      expanded.value = false
+    }
+  },
+  { capture: true },
+)
 </script>
 
 <template>
-  <Collapsible :open="open" class="contents" @update:open="onOpenChange">
-    <!-- The word opens its own way (it first sets the paragraph's gap), so it is a plain button
-         rather than Collapsible's trigger, which would toggle on its own. -->
-    <button
-      ref="word"
-      type="button"
-      :aria-expanded="open ? 'true' : 'false'"
-      :class="[
-        'inline cursor-pointer rounded-[var(--radius-sm)] px-[0.15em] -mx-[0.15em] text-inherit transition-colors duration-150 focus-ring',
-        open
-          ? 'bg-[color:var(--selection-bg,color-mix(in_srgb,var(--color-accent)_28%,transparent))] text-fg'
-          : 'bg-[color:color-mix(in_srgb,var(--color-accent)_10%,transparent)] hover:bg-[color:color-mix(in_srgb,var(--color-accent)_18%,transparent)]',
-      ]"
-      @click.prevent="toggle"
+  <Popover v-model:open="open">
+    <PopoverTrigger as-child>
+      <button
+        type="button"
+        :class="[
+          'inline cursor-pointer rounded-[var(--radius-sm)] -mx-[0.15em] px-[0.15em] text-inherit transition-colors duration-150 focus-ring',
+          open
+            ? 'bg-[color:var(--selection-bg,color-mix(in_srgb,var(--color-accent)_28%,transparent))] text-fg'
+            : 'underline decoration-dotted decoration-[color:var(--color-fg-faint)] decoration-1 underline-offset-[0.25em] hover:bg-[color:color-mix(in_srgb,var(--color-accent)_14%,transparent)] hover:no-underline',
+        ]"
+      >
+        <slot />
+      </button>
+    </PopoverTrigger>
+    <!-- The glance: under the word, following it; hidden while it is the large card. -->
+    <PopoverContent
+      side="bottom"
+      align="start"
+      :side-offset="6"
+      :class="['w-72 p-4', shown && 'invisible']"
+      @interact-outside="shown && $event.preventDefault()"
     >
-      <slot />
-    </button>
-    <Teleport v-if="gap" :to="gap">
-      <CollapsibleContent class="pb-0">
-        <!-- The definition hanging from its word on a fine thread, as ChatSources' lines. -->
-        <span :class="[chatThreadLineClass, 'my-2 block text-[0.95em] leading-relaxed']">
-          <span v-if="title" class="block font-medium text-fg">{{ title }}</span>
-          <span class="block"><slot name="definition" /></span>
-          <Collapsible v-if="slots.more" class="mt-1 block">
-            <TriggerPrimitive
-              class="cursor-pointer text-sm font-medium text-[color:var(--color-accent)] hover:underline focus-ring data-[state=open]:hidden"
-            >
-              More
-            </TriggerPrimitive>
-            <CollapsibleContent class="pb-0"><slot name="more" /></CollapsibleContent>
-          </Collapsible>
-        </span>
-      </CollapsibleContent>
-    </Teleport>
-  </Collapsible>
+      <div ref="glance" class="text-sm leading-relaxed">
+        <p class="font-medium text-fg">{{ title }}</p>
+        <div class="mt-1 text-fg-secondary"><slot name="definition" /></div>
+        <button
+          v-if="slots.more"
+          ref="seeMore"
+          type="button"
+          class="mt-2 cursor-pointer text-sm font-medium text-[color:var(--color-accent)] hover:underline focus-ring"
+          @click="expanded = true"
+        >
+          See more
+        </button>
+      </div>
+    </PopoverContent>
+  </Popover>
+
+  <Teleport to="body">
+    <template v-if="shown">
+      <!-- The page dimmed behind, as under a dialog: never a shadow. -->
+      <div
+        :class="[
+          'fixed inset-0 z-50 bg-[color:var(--dialog-overlay,rgb(0_0_0/0.4))] transition-opacity duration-300',
+          grown ? 'opacity-100' : 'opacity-0',
+        ]"
+        @click="expanded = false"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        :aria-label="title"
+        class="fixed z-50 overflow-hidden border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]"
+        :style="cardStyle"
+      >
+        <!-- The content at the card's width from the start, uncovered as the card grows. -->
+        <div
+          ref="content"
+          :class="[
+            'absolute top-0 left-0 max-h-[80vh] p-6 [scrollbar-gutter:stable] scrollbar-subtle',
+            settled ? 'overflow-y-auto' : 'overflow-hidden',
+            visible ? 'stagger-children [--stagger-delay:0.24s]' : 'opacity-0 transition-opacity duration-150',
+          ]"
+          :style="{ width: `${cardWidth}px` }"
+        >
+          <h2 class="pr-8 text-xl font-semibold tracking-tight text-fg">{{ title }}</h2>
+          <div class="mt-2 leading-relaxed text-fg-secondary"><slot name="definition" /></div>
+          <div class="mt-4 flex flex-col gap-3 leading-relaxed text-fg-secondary"><slot name="more" /></div>
+        </div>
+        <button
+          ref="closeButton"
+          type="button"
+          aria-label="Close"
+          :class="[
+            'absolute top-4 right-4 flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-[color,opacity] hover:text-fg focus-ring',
+            visible ? 'opacity-100 delay-200 duration-300' : 'opacity-0 duration-150',
+          ]"
+          @click="expanded = false"
+        >
+          <XIcon aria-hidden="true" class="size-4" />
+        </button>
+      </div>
+    </template>
+  </Teleport>
 </template>

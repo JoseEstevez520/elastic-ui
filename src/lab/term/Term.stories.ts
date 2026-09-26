@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Term from './Term.vue'
 
-const meta = { title: 'Lab/Term', component: Term } satisfies Meta<typeof Term>
+const meta = { title: 'Lab/Term', component: Term, args: { title: 'Harness' } } satisfies Meta<typeof Term>
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** Notes with words that open to what they mean: press one, then "More". */
+/** Notes with words that explain themselves: press one for a glance, then "See more". */
 export const InNotes: Story = {
   render: () => ({
     components: { Term },
