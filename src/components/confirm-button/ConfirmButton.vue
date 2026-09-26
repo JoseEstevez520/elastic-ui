@@ -31,8 +31,13 @@ const props = withDefaults(
   defineProps<{
     /** What it does once confirmed; the square waits for it, and shows if it fails. */
     action?: () => Promise<void> | void
-    /** Its icon; the bin with its lid by default. */
+    /** Its icon; the bin with its lid by default. It is told `open` while it asks, to move its parts. */
     icon?: Component
+    /**
+     * `danger` for what cannot be undone (a delete): the confirm, and the square while it acts, in
+     * the danger colour. `neutral` for what asks but is not dangerous (an archive, a sign-out).
+     */
+    tone?: 'danger' | 'neutral'
     /** Its accessible name, and the question's. */
     label?: string
     confirmLabel?: string
@@ -40,7 +45,7 @@ const props = withDefaults(
     disabled?: boolean
     class?: HTMLAttributes['class']
   }>(),
-  { label: labelFor('delete'), confirmLabel: labelFor('confirm'), cancelLabel: labelFor('cancel') },
+  { label: labelFor('delete'), confirmLabel: labelFor('confirm'), cancelLabel: labelFor('cancel'), tone: 'danger' },
 )
 const emit = defineEmits<{ confirm: []; error: [error: unknown] }>()
 
@@ -54,6 +59,8 @@ const SIZE = 40
 // The square, or the square with the answers' half beside it: a gap, two answers and their room.
 const width = computed(() => (state.value === 'asking' ? SIZE + 8 + 16 + 24 * 2 + 6 : SIZE))
 const tinted = computed(() => state.value === 'working' || state.value === 'done' || state.value === 'failed')
+// Colour only where it means something: a neutral action keeps the text's colour throughout.
+const toneText = computed(() => (props.tone === 'danger' ? 'text-[color:var(--color-danger)]' : 'text-fg'))
 const showsIcon = computed(() => state.value === 'rest' || state.value === 'asking' || state.value === 'leaving')
 
 let timers: ReturnType<typeof setTimeout>[] = []
@@ -115,7 +122,7 @@ useEventListener<PointerEvent>(
     :class="
       cn(
         confirmPillClass,
-        tinted ? confirmPillTone.danger : confirmPillTone.rest,
+        tinted && tone === 'danger' ? confirmPillTone.danger : confirmPillTone.rest,
         disabled && 'opacity-50',
         props.class,
       )
@@ -131,7 +138,7 @@ useEventListener<PointerEvent>(
       :class="[
         'flex size-10 shrink-0 items-center justify-center transition-colors outline-none',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-        tinted ? 'text-[color:var(--color-danger)]' : 'text-fg-muted hover:text-fg',
+        tinted ? toneText : 'text-fg-muted hover:text-fg',
       ]"
       @click="state === 'asking' ? cancel() : ask()"
     >
@@ -139,6 +146,7 @@ useEventListener<PointerEvent>(
         <component
           :is="icon"
           v-if="icon"
+          :open="state === 'asking'"
           aria-hidden="true"
           :class="[confirmGlyphClass, 'size-[18px]', !showsIcon && confirmGlyphHidden]"
         />
@@ -191,7 +199,7 @@ useEventListener<PointerEvent>(
         :tabindex="state === 'asking' ? 0 : -1"
         :class="[
           confirmAnswerClass,
-          'text-[color:var(--color-danger)]',
+          toneText,
           state === 'asking' && 'animate-[blur-in_0.35s_var(--ease-soft)_0.15s_both] motion-reduce:animate-none',
         ]"
         @click="confirm"

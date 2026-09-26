@@ -136,6 +136,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Fields | Done: every field is a tray. |
 | Download (completion told by the object) | Dropped: a 16px icon telling progress and a drop into a tray could not be read at all. |
 | Row to card | Dropped: a generic panel, not an object with parts of its own. |
+| Archive | Trying: ConfirmButton with a box of records, its lid lifting straight off as it asks; neutral, with no danger colour (ConfirmButton gains `tone`). |
 
 ## Versions
 
