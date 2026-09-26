@@ -8,7 +8,8 @@ import TextMorph from '../../components/text-morph/TextMorph.vue'
  * Lab: an action that tells how it went, kept inside its own button, as Emil Kowalski's button
  * states: sending, saving, publishing, handing in. Pressed, the button gathers into a round one
  * around a turning arc, its word going out of focus; done, it widens again into what happened
- * ("Sent"), its icon turned into a check (IconMorph); a moment later it is itself again. If it
+ * ("Sent"), its icon turned into a check (IconMorph) and its word into the next (TextMorph); a
+ * moment later it is itself again. If it
  * fails, it widens into that, tinted with the danger colour. Its width changes for real, on the
  * library's curve; nothing leaves the button, and the page around it never moves.
  */
@@ -119,7 +120,7 @@ async function run() {
       aria-hidden="true"
       class="invisible absolute inline-flex items-center gap-2 pr-5 pl-4 whitespace-nowrap"
     >
-      <span class="size-4" />{{ word }}
+      <span class="size-4" /><span class="[font-kerning:none] [font-variant-ligatures:none]">{{ word }}</span>
     </span>
   </button>
 </template>
