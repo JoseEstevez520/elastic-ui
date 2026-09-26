@@ -1,6 +1,6 @@
 /** A soft fill, no border: the code is set apart by its tone and its type. */
 export const codeBlockClass = [
-  'group/code relative rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-bg-subtle))] text-ui',
+  'group/code relative rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-surface))] text-ui',
 ]
 
 export const codeBlockPreClass = [

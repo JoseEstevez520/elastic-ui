@@ -8,7 +8,7 @@ export const tabsListVariants = /* @__PURE__ */ cva(
     variants: {
       variant: {
         pill: 'w-fit gap-1',
-        underline: 'gap-5 border-b border-border',
+        underline: 'gap-5',
       },
     },
     defaultVariants: { variant: 'underline' },

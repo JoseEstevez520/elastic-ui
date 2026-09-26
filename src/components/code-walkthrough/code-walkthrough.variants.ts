@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority'
 /** The code beside the steps, held in view while they scroll past. */
 export const codeWalkthroughPanelClass = [
   'sticky top-[var(--code-walkthrough-top,6rem)] hidden max-h-[calc(100dvh-var(--code-walkthrough-top,6rem)-2rem)] flex-col overflow-hidden lg:flex',
-  'rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-bg-subtle))] text-ui',
+  'rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-surface))] text-ui',
 ]
 
 /**
