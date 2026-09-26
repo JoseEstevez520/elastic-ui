@@ -54,12 +54,15 @@ defineExpose({ panel, nextTick })
     <div
       :class="[
         'absolute inset-x-0 top-0 overflow-hidden',
-        'rounded-[var(--input-radius,var(--radius-md))] border bg-[color:var(--input-bg,var(--color-bg))]',
-        'border-[color:var(--input-border,var(--color-border-strong))] transition-[height,border-color,box-shadow] ease-emphasized motion-reduce:transition-none',
-        'group-hover/fm:border-[color:var(--input-border-hover,var(--color-fg-faint))]',
+        'rounded-[var(--input-radius,var(--radius-md))] border',
+        'border-[color:var(--input-border,transparent)] transition-[height,border-color,box-shadow,background-color] ease-emphasized motion-reduce:transition-none',
+        'group-hover/fm:border-[color:var(--input-border-hover,var(--color-border-strong))]',
         'group-focus-within/fm:border-[color:var(--input-border-focus,var(--color-fg-muted))]',
         'group-has-[[aria-invalid=true]]/fm:border-[color:var(--color-danger)]',
-        open ? 'shadow-overlay duration-[350ms]' : 'duration-300',
+        // A tray at rest, like every field; open, it rises to the raised tone of what floats.
+        open
+          ? 'bg-[color:var(--popover-bg,var(--color-surface-raised))] shadow-overlay duration-[350ms]'
+          : 'bg-[color:var(--input-bg,var(--color-surface))] duration-300',
       ]"
       :style="{ height }"
     >

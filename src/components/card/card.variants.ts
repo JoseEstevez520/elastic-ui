@@ -10,7 +10,8 @@ export const cardVariants = /* @__PURE__ */ cva(
     variants: {
       variant: {
         // Depth from a tone, not an outline: the card stands a tone off the page.
-        default: 'bg-[color:var(--card-bg,var(--color-surface))]',
+        // Its fields, trays, sit a tone deeper than it.
+        default: 'bg-[color:var(--card-bg,var(--color-surface))] [--input-bg:var(--color-surface-sunk)]',
         outline: 'border border-[color:var(--card-border,var(--color-border))] bg-transparent',
         ghost: 'bg-transparent',
       },

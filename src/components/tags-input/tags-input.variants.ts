@@ -1,9 +1,9 @@
-/** The field, as an Input's hairline, holding the tags and the text that becomes the next one. */
+/** The field, as an Input's tray, holding the tags and the text that becomes the next one. */
 export const tagsInputClass = [
   'flex min-h-10 w-full flex-wrap items-center gap-1.5 px-3 py-1 text-ui text-fg',
-  'rounded-[var(--input-radius,var(--radius-md))] bg-[color:var(--input-bg,transparent)]',
-  'border border-[color:var(--input-border,var(--color-border-strong))] transition-colors duration-150 ease-out',
-  'hover:border-[color:var(--input-border-hover,var(--color-fg-faint))]',
+  'rounded-[var(--input-radius,var(--radius-md))] bg-[color:var(--input-bg,var(--color-surface))]',
+  'border border-[color:var(--input-border,transparent)] transition-colors duration-150 ease-out',
+  'hover:border-[color:var(--input-border-hover,var(--color-border-strong))]',
   'focus-within:border-[color:var(--input-border-focus,var(--color-fg-muted))]',
   'has-[[aria-invalid=true]]:border-[color:var(--color-danger)]',
   'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
