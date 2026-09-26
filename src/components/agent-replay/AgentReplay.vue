@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { usePlayInTurn } from '../../composables/usePlayInTurn'
-import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon, ReplayIcon } from '../../icons/internal'
+import { ChevronLeftIcon, ChevronRightIcon, ReplayIcon } from '../../icons/internal'
+import IconMorph from '../icon-morph/IconMorph.vue'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
 import { prefersReducedMotion } from '../../utils/motion'
@@ -321,7 +322,8 @@ const controlClass =
       </div>
       <div class="flex items-center gap-1">
         <button type="button" :class="controlClass" :aria-label="playing ? labels.pause : labels.play" @click="playing ? pause() : play()">
-          <component :is="playing ? PauseIcon : PlayIcon" class="size-4" aria-hidden="true" />
+          <!-- Play's point straightens into pause's bars (IconMorph). -->
+          <IconMorph :icon="playing ? 'pause' : 'play'" class="size-4" />
         </button>
         <button type="button" :class="controlClass" :aria-label="labels.previous" :disabled="shown <= (events[0]?.kind === 'prompt' ? 1 : 0)" @click="previous">
           <ChevronLeftIcon class="size-4" aria-hidden="true" />

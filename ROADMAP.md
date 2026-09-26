@@ -115,7 +115,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**Type**~~ Done: five sizes, three weights, every part on the scale (DECISIONS, "Type").
    - ~~**Tones**~~ Done: what floats stands on the raised surface with a hairline and a barely-there shadow; Card and ExpandableCard a tone off the page; code on the surface tone; Callout's colour only where it means danger; Tabs without their rule.
    - ~~**Fields as trays**~~ Done: every field, and a field that grows into its list stays one.
-   - Still to do: IconMorph where a button changes state (the menu, play, a disclosure); a confirmation in its place where a dialog only asks.
+   - ~~**IconMorph where a button changes state**~~ Done: MorphHeader's menu crosses into its close, AgentReplay's play straightens into pause. No part asks through a dialog where it could ask in place.
 6. ~~**The rest, with the identity from the start**~~ Done: Avatar and AvatarGroup, Progress, Toggle and ToggleGroup, Pagination, Separator, Table, Empty. Kbd left out.
 7. **Names**: props and events named the same way across parts.
 8. **Release 0.2.0**: tag it; the library's site (the `site` branch) shows it.

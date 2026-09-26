@@ -6,6 +6,7 @@ import { useScrolled } from '../../composables/useScrolled'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
 import { contentOut, EASE_GLIDE, morphCloseTransition, morphTransition } from '../../utils/motion'
+import IconMorph from '../icon-morph/IconMorph.vue'
 import MorphHeaderRegion from './MorphHeaderRegion.vue'
 import { provideMorphHeaderContext } from './morph-header.context'
 import { morphHeaderGlassClass, morphHeaderSurfaceVariants, morphHeaderWidth } from './morph-header.variants'
@@ -177,10 +178,8 @@ watch(open, (isOpen) => {
               class="flex size-9 cursor-pointer items-center justify-center rounded-full focus-ring"
               @click="open = !open"
             >
-              <svg class="size-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path v-if="open" d="M18 6 6 18M6 6l12 12" />
-                <path v-else d="M4 5h16M4 12h16M4 19h16" />
-              </svg>
+              <!-- The menu's lines cross into a close as it opens (IconMorph). -->
+              <IconMorph :icon="open ? 'close' : 'menu'" class="size-[22px]" />
             </button>
           </motion.div>
         </motion.div>
