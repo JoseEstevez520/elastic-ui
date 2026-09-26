@@ -135,6 +135,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Tones | Done: what floats stands on the raised surface with a hairline and a barely-there shadow. |
 | Fields | Done: every field is a tray. |
 | Download (completion told by the object) | Dropped: a 16px icon telling progress and a drop into a tray could not be read at all. |
+| Row to card | Trying: a row grows where it is into a card, the other rows stepping back a tone (after Things 3). |
 
 ## Versions
 
