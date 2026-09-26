@@ -293,24 +293,6 @@
   }
 }
 
-/*
- * Under SidebarLayoutHeader, as iOS's bars since Liquid Glass: no line, but the page fading into the
- * bar's colour and blurring a little as it goes under, both strongest at the bar and gone 2rem down,
- * on eased stops so the edge has no visible start.
- */
-@utility page-header-edge {
-  background: linear-gradient(
-    to bottom,
-    var(--page-header-bg, var(--color-bg)) 0%,
-    color-mix(in oklab, var(--page-header-bg, var(--color-bg)) 80%, transparent) 20%,
-    color-mix(in oklab, var(--page-header-bg, var(--color-bg)) 50%, transparent) 45%,
-    color-mix(in oklab, var(--page-header-bg, var(--color-bg)) 20%, transparent) 70%,
-    transparent 100%
-  );
-  backdrop-filter: blur(3px);
-  mask-image: linear-gradient(to bottom, #000 30%, transparent);
-}
-
 @utility mask-fade-r {
   mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
 }

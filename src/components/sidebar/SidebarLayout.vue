@@ -39,8 +39,6 @@ provideSidebarContext({
   mobileOpen,
   isOpen: computed(() => (mobile.value ? mobileOpen.value : !collapsed.value)),
   panelId: useId(),
-  header: ref(),
-  pageTitle: ref(),
   expand: () => (collapsed.value = false),
   toggle: () => (mobile.value ? (mobileOpen.value = !mobileOpen.value) : (collapsed.value = !collapsed.value)),
 })
