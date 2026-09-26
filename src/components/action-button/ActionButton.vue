@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
-import IconMorph from '../../components/icon-morph/IconMorph.vue'
-import type { IconMorphName } from '../../components/icon-morph'
-import TextMorph from '../../components/text-morph/TextMorph.vue'
+import IconMorph from '../icon-morph/IconMorph.vue'
+import type { IconMorphName } from '../icon-morph'
+import TextMorph from '../text-morph/TextMorph.vue'
+import { labelFor } from '../../utils/labels'
 
 /**
- * Lab: an action that tells how it went, kept inside its own button, as Emil Kowalski's button
+ * An action that tells how it went, kept inside its own button, after Emil Kowalski's button
  * states: sending, saving, publishing, handing in. Pressed, the button gathers into a round one
  * around a turning arc, its word going out of focus; done, it widens again into what happened
  * ("Sent"), its icon turned into a check (IconMorph) and its word into the next (TextMorph); a
  * moment later it is itself again. If it
  * fails, it widens into that, tinted with the danger colour. Its width changes for real, on the
  * library's curve; nothing leaves the button, and the page around it never moves.
+ *
+ * For an action whose length is not known. With a known amount done, ProgressButton, which fills;
+ * for something that cannot be undone, ConfirmButton, which asks first.
  */
 const props = withDefaults(
   defineProps<{
@@ -21,9 +25,10 @@ const props = withDefaults(
     label?: string
     doneLabel?: string
     failedLabel?: string
+    disabled?: boolean
     class?: HTMLAttributes['class']
   }>(),
-  { icon: 'arrowRight', label: 'Send', doneLabel: 'Sent', failedLabel: 'Not sent' },
+  { icon: 'arrowRight', label: labelFor('send'), doneLabel: labelFor('sent'), failedLabel: labelFor('sendError') },
 )
 
 type State = 'rest' | 'working' | 'done' | 'failed'
@@ -47,7 +52,7 @@ watch(state, fit)
 let timer: ReturnType<typeof setTimeout> | undefined
 onBeforeUnmount(() => clearTimeout(timer))
 async function run() {
-  if (state.value !== 'rest') return
+  if (state.value !== 'rest' || props.disabled) return
   state.value = 'working'
   try {
     await (props.action?.() ?? new Promise<void>((resolve) => setTimeout(resolve, 1200)))
@@ -64,9 +69,10 @@ async function run() {
   <button
     type="button"
     :aria-busy="state === 'working'"
+    :disabled="disabled"
     :aria-label="state === 'working' ? label : undefined"
     :class="[
-      'relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-full text-sm font-medium focus-ring',
+      'relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-full text-sm font-medium focus-ring disabled:cursor-not-allowed disabled:opacity-50',
       'transition-[width,background-color,color] duration-[400ms] ease-emphasized motion-reduce:transition-none',
       state === 'failed'
         ? 'bg-[color:color-mix(in_oklab,var(--color-danger)_16%,var(--color-surface))] text-[color:var(--color-danger)]'
@@ -109,7 +115,7 @@ async function run() {
       aria-live="polite"
       :class="[
         'overflow-hidden whitespace-nowrap transition-[max-width,margin,opacity,filter] duration-[400ms] ease-emphasized motion-reduce:transition-none',
-        state === 'working' ? 'ml-0 max-w-0 opacity-0 blur-[2px]' : 'ml-2 max-w-40 opacity-100',
+        state === 'working' ? 'ml-0 max-w-0 opacity-0 blur-[2px]' : 'ml-2 max-w-96 opacity-100',
       ]"
     >
       <TextMorph :text="word" />
