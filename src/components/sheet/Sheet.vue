@@ -191,6 +191,8 @@ const contentStyle = computed(() => ({
               scrolled
                 ? '[mask-image:linear-gradient(to_bottom,transparent,rgb(0_0_0/0.15)_1rem,rgb(0_0_0/0.6)_2rem,#000_3rem,#000_calc(100%-1.5rem),transparent)]'
                 : '[mask-image:linear-gradient(to_bottom,#000_calc(100%-1.5rem),transparent)]',
+              // The scrollbar's room is kept from the start, so the content does not narrow as it lands.
+              '[scrollbar-gutter:stable]',
               settled ? 'overflow-y-auto' : 'overflow-hidden',
               visible
                 ? 'stagger-children [--stagger-delay:0.25s]'

@@ -95,6 +95,8 @@ const id = useId()
                   :class="
                     cn(
                       'min-h-0 overscroll-contain scrollbar-subtle stagger-children p-6 [--stagger-delay:0.25s]',
+                      // The scrollbar's room is kept from the start, so nothing narrows as it lands.
+                      '[scrollbar-gutter:stable]',
                       settled ? 'overflow-y-auto' : 'overflow-hidden',
                     )
                   "

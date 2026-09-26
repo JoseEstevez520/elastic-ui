@@ -189,7 +189,7 @@ const photoStyle = computed(() =>
         <!-- The page, laid out at the screen's size from the start, pinned to the box's corner. -->
         <div
           class="absolute top-0 left-0 overscroll-contain scrollbar-subtle"
-          :class="phase === 'settled' ? 'overflow-y-auto' : 'overflow-hidden'"
+          :class="['[scrollbar-gutter:stable]', phase === 'settled' ? 'overflow-y-auto' : 'overflow-hidden']"
           :style="{ width: '100vw', height: '100dvh' }"
         >
           <div class="mx-auto max-w-3xl px-6 pt-6 pb-16">
