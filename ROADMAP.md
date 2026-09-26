@@ -88,7 +88,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1). Each n
    - ~~**TagsInput**~~ Done: the text typed turns into its tag where it stands; a tag taken away folds and the rest slide over (AnimatedList).
    - ~~**FileIcon**~~ Done: a file as the Files app shows it, a page with its corner folded, tinted in its kind's colour with its extension on it; an image shows its own thumbnail.
    - ~~**FileUpload**~~ Done: a file dropped becomes its row, the row its own progress (as ProgressButton), ending in a check.
-3. **Panels**: **Sheet** grows from its button into the side of the screen; **HoverCard** grows out of its link.
+3. **Panels**: ~~**Sheet**~~ Done: its button's box grows into the sheet at a side or the bottom, as ChatMorph's orb (a real size, never scaled, the content uncovered in place), and folds back once the content has faded; **HoverCard** grows out of its link.
 4. **Loading and small parts**:
    - **Skeleton**: each grey block eases to the size and shape of what arrives, which comes into focus inside it, so loading turns into the content.
    - **Progress**: fills on the library's ease and turns into a check once done.
