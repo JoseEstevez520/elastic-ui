@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority'
 export const calendarDayVariants = /* @__PURE__ */ cva(
   [
     'relative flex h-9 w-full max-w-11 cursor-pointer items-center justify-center rounded-[var(--radius-md)] text-ui tabular-nums text-fg outline-none',
-    'transition-colors duration-150 hover:bg-bg-muted focus-ring',
+    'transition-colors duration-150 hover:bg-[color:var(--calendar-hover,var(--color-bg-muted))] focus-ring',
     'data-[outside-view]:text-fg-faint',
     'data-[disabled]:pointer-events-none data-[disabled]:text-fg-faint data-[disabled]:line-through',
     'data-[unavailable]:pointer-events-none data-[unavailable]:text-fg-faint data-[unavailable]:line-through',
@@ -15,6 +15,6 @@ export const calendarDayVariants = /* @__PURE__ */ cva(
 )
 
 export const calendarNavClass = [
-  'flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-bg-muted hover:text-fg focus-ring',
+  'flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-[color:var(--calendar-hover,var(--color-bg-muted))] hover:text-fg focus-ring',
   'disabled:pointer-events-none disabled:opacity-40',
 ]

@@ -2,9 +2,9 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * The surface every field shares (Input, Textarea): a tray a tone off the page with no line at
- * rest, so a form reads as places to write rather than boxes (tried in Lab/Fields). A line comes
- * on hover and darkens on focus, with no colour and no halo; invalid, it takes the danger colour.
- * Colors read `--input-*` first; a Card, already on the surface tone, sets its fields a tone deeper.
+ * rest, so a form reads as places to write rather than boxes (tried in Lab/Fields). A soft line
+ * comes on hover; on focus the tray lifts to the raised tone, with no dark line, colour or halo;
+ * invalid, the line takes the danger colour. Colors read `--input-*` first; a Card, already on the surface tone, sets its fields a tone deeper.
  */
 export const fieldClass = [
   'peer w-full min-w-0 text-ui text-fg placeholder:text-fg-faint outline-none',
@@ -12,7 +12,7 @@ export const fieldClass = [
   'border border-[color:var(--input-border,transparent)]',
   'transition-colors duration-150 ease-out',
   'hover:border-[color:var(--input-border-hover,var(--color-border-strong))]',
-  'focus:border-[color:var(--input-border-focus,var(--color-fg-muted))]',
+  'focus:border-[color:var(--input-border-focus,var(--color-border-strong))] focus:bg-[color:var(--input-bg-focus,var(--color-surface-raised))]',
   'aria-invalid:border-[color:var(--color-danger)]',
   'disabled:cursor-not-allowed disabled:opacity-50',
 ]

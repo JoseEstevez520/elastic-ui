@@ -7,6 +7,7 @@ export const selectTriggerClass = [
 /** Room on the left for the check, so options line up whether chosen or not. */
 export const selectItemClass = [
   'relative flex cursor-pointer items-center rounded-[var(--radius-sm)] py-2 pr-3 pl-8 outline-none select-none',
-  'data-[highlighted]:bg-bg-muted',
+  // On the field's tray, the highlighted option stands a tone above it.
+  'data-[highlighted]:bg-surface-raised',
   'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
 ]
