@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef, type HTMLAttributes } from 'vue'
-import { AlertIcon, CheckIcon, FileIcon, UploadIcon, XIcon } from '../../icons/internal'
+import { CheckIcon, ExclamationIcon as AlertMarkIcon, UploadIcon, XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { useFieldControl } from '../../utils/field'
 import { labelFor, useLabels } from '../../utils/labels'
-import IconSwap from '../icon-swap/IconSwap.vue'
+import FileIcon from '../file-icon/FileIcon.vue'
 import { progressFillVariants } from '../progress-button/progress-button.variants'
 import TextMorph from '../text-morph/TextMorph.vue'
 import type { Uploader, UploadFile } from './file-upload.types'
@@ -39,16 +39,27 @@ const labels = useLabels()
 const fieldAttrs = useFieldControl(() => props.invalid)
 
 const size = (bytes: number) => {
-  const units = ['byte', 'kilobyte', 'megabyte', 'gigabyte'] as const
-  const i = Math.min(units.length - 1, Math.floor(Math.log(Math.max(bytes, 1)) / Math.log(1024)))
-  const value = bytes / 1024 ** i
+  if (bytes < 1024) return `${bytes} B`
+  const units = ['kilobyte', 'megabyte', 'gigabyte'] as const
+  const i = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)) - 1)
+  const value = bytes / 1024 ** (i + 1)
   return new Intl.NumberFormat(undefined, {
     style: 'unit',
     unit: units[i],
     unitDisplay: 'short',
-    maximumFractionDigits: value < 10 && i > 0 ? 1 : 0,
+    maximumFractionDigits: value < 10 ? 1 : 0,
   }).format(value)
 }
+
+// As the file input's `accept`, which a drop does not go through: extensions and types, `image/*`.
+const accepted = (file: File) =>
+  !props.accept ||
+  props.accept.split(',').some((rule) => {
+    const r = rule.trim().toLowerCase()
+    if (r.startsWith('.')) return file.name.toLowerCase().endsWith(r)
+    if (r.endsWith('/*')) return file.type.startsWith(r.slice(0, -1))
+    return file.type === r
+  })
 
 const update = (id: string, patch: Partial<UploadFile>) =>
   (files.value = files.value.map((f) => (f.id === id ? { ...f, ...patch } : f)))
@@ -59,14 +70,19 @@ function add(list: FileList | null) {
   if (!list?.length) return
   const added = [...list].slice(0, props.multiple ? undefined : 1).map<UploadFile>((file) => {
     const tooLarge = props.maxSize !== undefined && file.size > props.maxSize
+    const refused = !accepted(file)
     return {
       id: `${Date.now()}-${count++}`,
       name: file.name,
       size: file.size,
       file,
-      status: tooLarge ? 'error' : props.upload ? 'uploading' : 'done',
+      status: tooLarge || refused ? 'error' : props.upload ? 'uploading' : 'done',
       progress: 0,
-      error: tooLarge ? labels.tooLarge.replace('{size}', size(props.maxSize!)) : undefined,
+      error: refused
+        ? labels.notAccepted
+        : tooLarge
+          ? labels.tooLarge.replace('{size}', size(props.maxSize!))
+          : undefined,
     }
   })
   files.value = props.multiple ? [...files.value, ...added] : added
@@ -98,9 +114,6 @@ function onPick() {
   add(input.value?.files ?? null)
   if (input.value) input.value.value = ''
 }
-
-const iconOf = (f: UploadFile) =>
-  f.status === 'done' && props.upload ? CheckIcon : f.status === 'error' ? AlertIcon : FileIcon
 </script>
 
 <template>
@@ -157,17 +170,31 @@ const iconOf = (f: UploadFile) =>
               "
               :style="{ scale: `${f.status === 'done' ? 1 : (f.progress ?? 0)} 1` }"
             />
-            <IconSwap
-              :icon="iconOf(f)"
-              :class="[
-                'relative transition-colors duration-300',
-                f.status === 'error'
-                  ? 'text-[color:var(--color-danger)]'
-                  : f.status === 'done' && upload
-                    ? 'text-[color:var(--color-success)]'
-                    : 'text-fg-faint',
-              ]"
-            />
+            <!-- The file as its kind, or its own thumbnail; done or failed, a small mark on its corner. -->
+            <span class="relative">
+              <FileIcon :name="f.name" :file="f.file" />
+              <Transition
+                enter-active-class="transition-[scale,opacity,filter] duration-[250ms] ease-in-out motion-reduce:transition-none"
+                enter-from-class="scale-25 opacity-0 blur-[2px]"
+              >
+                <span
+                  v-if="f.status === 'error' || (f.status === 'done' && upload)"
+                  :key="f.status"
+                  :class="[
+                    'absolute -right-1.5 -bottom-1 flex size-4 items-center justify-center rounded-full ring-2 ring-[color:var(--color-bg)]',
+                    f.status === 'error' ? 'bg-[color:var(--color-danger)]' : 'bg-[color:var(--color-success)]',
+                    'text-[color:var(--color-bg)]',
+                  ]"
+                >
+                  <component
+                    :is="f.status === 'error' ? AlertMarkIcon : CheckIcon"
+                    aria-hidden="true"
+                    class="size-2.5"
+                    stroke-width="3.5"
+                  />
+                </span>
+              </Transition>
+            </span>
             <span class="relative min-w-0 flex-1 truncate">{{ f.name }}</span>
             <span
               :class="[

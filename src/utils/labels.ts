@@ -82,6 +82,7 @@ export const defaultLabels = {
   dropFiles: 'Drop files here, or browse',
   dropToAdd: 'Let go to add them',
   tooLarge: 'Larger than {size}',
+  notAccepted: 'Not a kind it takes',
   uploadFailed: 'Could not upload',
   comment: 'Comment',
   commentPlaceholder: 'Write a comment…',

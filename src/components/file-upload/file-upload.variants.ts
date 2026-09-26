@@ -13,4 +13,4 @@ export const dropZoneClass = [
 
 /** A file's row, which is its own progress: the fill runs behind it as it goes up (as ProgressButton's). */
 export const fileRowClass =
-  'relative flex h-11 items-center gap-3 overflow-hidden rounded-[var(--radius-md)] pr-1.5 pl-3 text-sm text-fg'
+  'relative flex h-14 items-center gap-3 overflow-hidden rounded-[var(--radius-md)] pr-1.5 pl-3 text-sm text-fg'

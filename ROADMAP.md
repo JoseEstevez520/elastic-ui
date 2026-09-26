@@ -86,6 +86,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1). Each n
    - ~~**Slider**~~ Done: dragged, the thumb grows into the bubble with its value, whose digits roll (TextMorph).
    - ~~**NumberField**~~ Done: its digits roll by place value, as BadgeCount's.
    - ~~**TagsInput**~~ Done: the text typed turns into its tag where it stands; a tag taken away folds and the rest slide over (AnimatedList).
+   - ~~**FileIcon**~~ Done: a file as the Files app shows it, a page with its corner folded, tinted in its kind's colour with its extension on it; an image shows its own thumbnail.
    - ~~**FileUpload**~~ Done: a file dropped becomes its row, the row its own progress (as ProgressButton), ending in a check.
 3. **Panels**: **Sheet** grows from its button into the side of the screen; **HoverCard** grows out of its link.
 4. **Loading and small parts**:

@@ -12,7 +12,6 @@ export {
   Copy as CopyIcon,
   ListFilter as FilterIcon,
   Info as InfoIcon,
-  File as FileIcon,
   Lightbulb as LightbulbIcon,
   Minus as MinusIcon,
   OctagonAlert as OctagonAlertIcon,
@@ -29,3 +28,11 @@ export {
 /** A rounded square, filled: stop. Lucide's square is only an outline. */
 export const StopIcon: FunctionalComponent = () =>
   h('svg', { viewBox: '0 0 24 24', fill: 'currentColor' }, [h('rect', { x: 6, y: 6, width: 12, height: 12, rx: 2.5 })])
+
+/** An exclamation mark alone, for a small badge where a circle round it would not fit. */
+export const ExclamationIcon: FunctionalComponent = () =>
+  h(
+    'svg',
+    { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 3.5, 'stroke-linecap': 'round' },
+    [h('path', { d: 'M12 5v9' }), h('path', { d: 'M12 19.5h.01' })],
+  )
