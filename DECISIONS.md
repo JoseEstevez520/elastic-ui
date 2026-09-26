@@ -23,6 +23,16 @@ Learnt from redoing the lab's pieces against their references (Rare UI's delete 
 - **No outlines round things that overlap.** Icons stacked on one another just overlap; a ring in the ground's colour round each reads as a cut-out sticker.
 - **Compare with the reference before calling it done**: close-up screenshots of both, side by side, at the same states.
 
+### Taking an idea from elsewhere
+
+A part seen elsewhere (Rare UI, Family, Apple's apps, a post) becomes the library's own in five steps, never by copying its code:
+
+1. **Look closely**: screenshots of the reference at twice or three times the size, and frame by frame through what it does.
+2. **Name what makes it work** in terms of the library's identity (Philosophy 5, "How objects are drawn"): which of its traits fit, and which break a rule (a bounce, a heavy shadow, a gooey join) and are left out.
+3. **Redo it in the lab** (`src/lab`) with the library's own building blocks: its tones, its morph, its way of moving things to their place.
+4. **Compare side by side** with the reference, at the same states, before showing it.
+5. **Make it a part**: its stories and Situations, a look in light, dark and on a phone, a line in ROADMAP's table, and a credit to the idea in its doc comment.
+
 ### Motion rules
 
 - **Close faster than open.** Opening takes ~0.5s so the eye can follow where things come from; closing takes 0.3s, since on the way out you only want it gone (Material: exits shorter than entrances). Content leaves at once, before the shape folds.

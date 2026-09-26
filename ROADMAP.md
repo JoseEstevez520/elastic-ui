@@ -92,16 +92,20 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**IconMorph**~~ Done: icons drawn as the same strokes, so one travels into another.
    - **Card to page**: a card that becomes its page, with the router (its own URL, the back button closing it the same way, a page opened directly just showing).
    - **Folder**: redone bigger, with real pages and a frosted front, against its reference; dropped if it does not get there.
-4. **The identity over what exists** (the visual pass): tones instead of shadows (PopoverMorph, Sheet, Select, Menu…), a confirmation in its place where a dialog only asks, IconMorph where a button changes state (the menu, play, a disclosure).
-5. **The rest, with the identity from the start**:
+4. **Shared building blocks**, so every part made from here on shares one line of style and nothing is reinvented:
+   - **Tone tokens**: the levels a surface sits at (sunk, base, raised) and the frame in the page's strongest tone, replacing the tones written by hand in ConfirmButton and ActivityGrid.
+   - **`useMorphBox`**: the recipe of a box that becomes a panel (measure, sit on the button, grow, content out first, fold back, keep the scrollbar's room), now repeated in Sheet, FieldMorph and the card to page.
+   - **`useTravel`**: things moving to their new place (ActivityGrid's icons, TagsInput's tags, AnimatedList's items), sliding or refocusing, never crossing visible text.
+5. **The identity over what exists** (the visual pass): tones instead of shadows (PopoverMorph, Sheet, Select, Menu…), a confirmation in its place where a dialog only asks, IconMorph where a button changes state (the menu, play, a disclosure).
+6. **The rest, with the identity from the start**:
    - **HoverCard**: grows out of its link, which stays as its title; a term in Prose opening its definition.
    - **Avatar**: an icon or a photo, never initials; a group fans out on hover.
    - **Kbd** as a real key, pressed when its shortcut is.
    - **Progress**: fills on the library's ease and turns into a check.
    - **Toggle** and **ToggleGroup**, their icons morphing; **Pagination**, a mark sliding to the page.
    - Quiet, so something else leads: **Separator**, a plain **Table**, **Empty**.
-6. **Names**: props and events named the same way across parts.
-7. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz` (each `.tgz` handed over bumps the version, so an install never keeps the old one); the library's site (the `site` branch) shows it.
+7. **Names**: props and events named the same way across parts.
+8. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz` (each `.tgz` handed over bumps the version, so an install never keeps the old one); the library's site (the `site` branch) shows it.
 
 ## Lab
 
