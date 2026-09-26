@@ -32,25 +32,25 @@ export const ConfirmInPlaceStory: Story = {
   }),
 }
 
-// A term, about eighteen weeks, busier around the deadlines.
-const days = Array.from({ length: 18 * 7 }, (_, i) => {
+// A term, about twenty-six weeks, busier around the deadlines.
+const days = Array.from({ length: 26 * 7 }, (_, i) => {
   const week = Math.floor(i / 7)
   const weekday = i % 7
   if (weekday > 4) return (i * 7) % 5 === 0 ? 1 : 0
-  const busy = [3, 7, 11, 16].some((d) => Math.abs(week - d) <= 1) ? 2 : 0
+  const busy = [3, 8, 13, 19, 24].some((d) => Math.abs(week - d) <= 1) ? 2 : 0
   return Math.min(4, ((i * 37) % 5 > 1 ? 1 : 0) + busy + ((i * 13) % 7 > 4 ? 1 : 0))
 })
 const sources: ActivitySource[] = [
-  { name: 'Web client', count: 64, icon: Code2, color: 'var(--color-accent)' },
-  { name: 'Web server', count: 41, icon: Server, color: 'light-dark(#7c3aed, #a78bfa)' },
-  { name: 'Deployment', count: 23, icon: Rocket, color: 'var(--color-success)' },
+  { name: 'Web client', count: 64, icon: Code2, color: '#2563eb' },
+  { name: 'Web server', count: 41, icon: Server, color: '#7c3aed' },
+  { name: 'Deployment', count: 23, icon: Rocket, color: '#ea580c' },
 ]
 
 /** The bar grows up over the grid into the list; each icon travels from the stack to its row. */
 export const Activity: Story = {
   render: () => ({
     components: { ActivityGrid },
-    setup: () => ({ days, sources }),
-    template: `<ActivityGrid title="128 submissions this term" :days="days" :sources="sources" summary="Most submitted in" />`,
+    setup: () => ({ days, sources, start: new Date(2025, 8, 15) }),
+    template: `<ActivityGrid title="128 submissions this term" :days="days" :start="start" :sources="sources" summary="Most submitted in" />`,
   }),
 }

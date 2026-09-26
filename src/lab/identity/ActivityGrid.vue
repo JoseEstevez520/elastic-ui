@@ -4,24 +4,26 @@ import { ChevronRightIcon } from '../../icons/internal'
 import { contentOut, prefersReducedMotion } from '../../utils/motion'
 
 /**
- * Lab: a term's activity, day by day, as GitHub's grid, with what it was made of underneath. At
- * rest, the grid, and below it a quiet bar naming where the work went, their icons in a stack.
- * Pressed, the bar grows up over the grid into the list, lifting into the library's material;
- * each icon travels from the stack to its own row, and the names and counts come into focus
- * beside them. Closing, the words fade first, the icons travel back to the stack, and the bar
- * folds down to its place. Nothing leaves the card.
+ * Lab: a term's activity, day by day, as GitHub's grid, and what it was made of. The card is an
+ * object of its own: a frame in the page's strongest tone, the grid of days filling it, and a tray
+ * set into its foot naming where the work went, their icons in a stack. Pressed, the tray grows up
+ * over the grid into the list, as frosted glass through which the grid still shows; each icon
+ * travels from the stack to its own row, and the names and counts come into focus beside them.
+ * Closing, the words fade first, the icons travel back, and the tray sinks to its place.
  */
 export interface ActivitySource {
   name: string
   count: number
   icon: Component
-  /** Its colour, tinting its icon's tile. */
+  /** The tile behind its icon. */
   color: string
 }
 const props = defineProps<{
   title: string
   /** One level per day (0 to 4), oldest first, a column per week. */
   days: number[]
+  /** The first day's date, for the months above the grid. */
+  start: Date
   sources: ActivitySource[]
   summary?: string
 }>()
@@ -35,7 +37,6 @@ function toggle() {
     open.value = true
     words.value = true
   } else {
-    // The names go first; then the icons travel back and the bar folds.
     words.value = false
     timer = setTimeout(() => (open.value = false), prefersReducedMotion() ? 0 : contentOut.duration * 1000)
   }
@@ -46,92 +47,122 @@ const weeks = computed(() => {
   for (let i = 0; i < props.days.length; i += 7) out.push(props.days.slice(i, i + 7))
   return out
 })
-// The five levels, as the accent mixed into the ground.
-const level = ['6%', '28%', '48%', '70%', '92%']
+// A month's name over the week it starts in.
+const months = computed(() =>
+  weeks.value.map((_, w) => {
+    const day = new Date(props.start)
+    day.setDate(day.getDate() + w * 7)
+    const before = new Date(day)
+    before.setDate(before.getDate() - 7)
+    return w === 0 || day.getMonth() !== before.getMonth() ? day.toLocaleString('en', { month: 'short' }) : ''
+  }),
+)
+// The five levels: the activity's colour, from a trace to full.
+const level = ['9%', '30%', '52%', '75%', '100%']
 
-// The bar's height at rest, and the list's once open: the card's inner height.
+// The tray at rest, and grown: as tall as every row needs, and at least the card's inner height.
 const card = useTemplateRef<HTMLElement>('card')
-const BAR = 48
-const ROW = 40
-const full = ref(BAR)
-// Tall enough for every row, and at least the card's inner height, so it covers the grid.
-const listHeight = computed(() => BAR + 4 + props.sources.length * ROW + 8)
-onMounted(() => (full.value = Math.max((card.value?.clientHeight ?? 200) - 16, listHeight.value)))
+const TRAY = 52
+const ROW = 44
+const INSET = 12
+const listHeight = computed(() => TRAY + props.sources.length * ROW + 16)
+const grown = ref(TRAY)
+onMounted(() => (grown.value = Math.max((card.value?.clientHeight ?? 240) - INSET * 2, listHeight.value)))
 
-// Where each icon is: stacked at the bar's right at rest, at the start of its row once open.
+// Each icon: stacked, overlapping, at the tray's right beside the chevron; or at the start of its row.
+const ICON = 32
 const iconAt = (i: number) =>
   open.value
-    ? { top: `${BAR + 4 + i * ROW + (ROW - 28) / 2}px`, left: '12px', zIndex: 1 }
+    ? { top: `${TRAY + i * ROW + (ROW - ICON) / 2}px`, left: '16px', zIndex: 1 }
     : {
-        top: `${(BAR - 28) / 2}px`,
-        left: `calc(100% - 44px - ${(props.sources.length - 1 - i) * 18}px)`,
-        zIndex: props.sources.length - i,
+        top: `${(TRAY - ICON) / 2}px`,
+        left: `calc(100% - ${16 + 32 + 10 + ICON + (props.sources.length - 1 - i) * 20}px)`,
+        zIndex: i + 1,
       }
 </script>
 
 <template>
-  <section ref="card" class="relative w-[26rem] max-w-full rounded-[20px] bg-bg-muted p-2">
-    <!-- Room kept under the grid for the bar, so it covers nothing at rest. -->
-    <div class="px-3 pt-2.5" :style="{ paddingBottom: `${BAR + 12}px`, minHeight: `${listHeight}px` }">
-      <h3 class="text-sm font-medium text-fg">{{ title }}</h3>
-      <div class="mt-3 flex gap-[3px]" aria-hidden="true">
-        <div v-for="(week, w) in weeks" :key="w" class="flex flex-col gap-[3px]">
-          <span
-            v-for="(d, i) in week"
-            :key="i"
-            class="size-[10px] rounded-[3px]"
-            :style="{ background: `color-mix(in oklab, var(--color-accent) ${level[d]}, var(--color-bg))` }"
-          />
+  <section
+    ref="card"
+    class="relative w-[30rem] max-w-full rounded-[28px] bg-[color:light-dark(#fff,#000)] p-3 shadow-[0_1px_2px_rgb(0_0_0/0.04)]"
+  >
+    <div class="px-3 pt-3" :style="{ paddingBottom: `${TRAY + 16}px`, minHeight: `${listHeight}px` }">
+      <h3 class="text-[17px] text-fg">{{ title }}</h3>
+      <div class="mt-4" aria-hidden="true">
+        <div class="flex gap-[3px] text-[11px] tracking-wide text-fg-faint">
+          <span v-for="(m, w) in months" :key="w" class="h-4 flex-1 overflow-visible whitespace-nowrap">{{ m }}</span>
+        </div>
+        <div class="mt-1 flex gap-[3px]">
+          <div v-for="(week, w) in weeks" :key="w" class="flex flex-1 flex-col gap-[3px]">
+            <span
+              v-for="(d, i) in week"
+              :key="i"
+              class="aspect-square w-full rounded-[3px]"
+              :style="{
+                background: `color-mix(in oklab, var(--activity, var(--color-success)) ${level[d]}, light-dark(#ebebed, #161618))`,
+              }"
+            />
+          </div>
         </div>
       </div>
     </div>
-    <!-- The bar, which grows up over the grid into the list. -->
+    <!-- The tray set into the card's foot, growing up over the grid as frosted glass. -->
     <div
       :class="[
-        'absolute inset-x-2 bottom-2 overflow-hidden rounded-[14px] bg-[color:var(--color-bg)]',
-        'transition-[height,box-shadow] duration-[450ms] ease-emphasized motion-reduce:transition-none',
-        open
-          ? 'shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_0_0_1px_var(--color-border),0_8px_24px_-10px_rgb(0_0_0/0.3)]'
-          : 'shadow-[inset_0_1px_0_transparent,0_0_0_1px_var(--color-border),0_0_0_0_transparent]',
+        'absolute right-3 bottom-3 left-3 overflow-hidden rounded-[20px]',
+        // Nearly opaque, so the grid only just shows through once the tray has grown over it.
+        'bg-[color:light-dark(rgb(236_236_238/0.9),rgb(22_22_24/0.9))] backdrop-blur-xl',
+        'transition-[height] duration-[450ms] ease-emphasized motion-reduce:transition-none',
       ]"
-      :style="{ height: `${open ? full : BAR}px` }"
+      :style="{ height: `${open ? grown : TRAY}px` }"
     >
       <button
         type="button"
         :aria-expanded="open"
-        class="flex h-12 w-full cursor-pointer items-center justify-between pr-3 pl-4 text-left text-sm text-fg-secondary focus-ring-inset"
+        class="flex w-full cursor-pointer items-center justify-between pr-2.5 pl-4 text-left text-[15px] text-fg-secondary focus-ring-inset"
+        :style="{ height: `${TRAY}px` }"
         @click="toggle"
       >
         {{ summary ?? 'Most active in' }}
-        <ChevronRightIcon
-          aria-hidden="true"
-          :class="[
-            'size-4 text-fg-muted transition-transform duration-[450ms] ease-emphasized',
-            open ? '-rotate-90' : 'rotate-90',
-          ]"
-        />
+        <span
+          class="flex size-8 items-center justify-center rounded-full shadow-[inset_0_0_0_1.5px_var(--color-border-strong)]"
+        >
+          <ChevronRightIcon
+            aria-hidden="true"
+            :class="[
+              'size-4 text-fg-muted transition-transform duration-[450ms] ease-emphasized',
+              open ? '-rotate-90' : 'rotate-90',
+            ]"
+          />
+        </span>
       </button>
       <!-- Each source's icon, travelling between the stack and its row. -->
       <span
         v-for="(s, i) in sources"
         :key="s.name"
         aria-hidden="true"
-        class="absolute flex size-7 items-center justify-center rounded-[9px] ring-2 ring-[color:var(--color-bg)] transition-[top,left] duration-[450ms] ease-emphasized motion-reduce:transition-none"
+        class="absolute flex items-center justify-center rounded-full text-white ring-2 ring-[color:light-dark(#fff,#000)] transition-[top,left] duration-[450ms] ease-emphasized motion-reduce:transition-none"
         :style="{
           ...iconAt(i),
-          background: `color-mix(in oklab, ${s.color} 18%, var(--color-bg))`,
-          color: s.color,
-          transitionDelay: open ? `${i * 30}ms` : '0ms',
+          width: `${ICON}px`,
+          height: `${ICON}px`,
+          background: s.color,
+          transitionDelay: open ? `${i * 35}ms` : `${(sources.length - 1 - i) * 25}ms`,
         }"
       >
-        <component :is="s.icon" class="size-4" />
+        <component :is="s.icon" class="size-4" :stroke-width="2.25" />
       </span>
-      <!-- The names and counts, in focus once the list is open, gone before it folds. -->
+      <!-- The names and counts, in focus once the list is open, gone before it closes. -->
       <ul
-        :class="words ? 'stagger-items [--stagger-delay:0.18s]' : 'opacity-0 transition-opacity duration-150'"
-        class="pr-4 pl-12"
+        :class="words ? 'stagger-items [--stagger-delay:0.2s]' : 'opacity-0 transition-opacity duration-150'"
+        class="pr-4 pl-[60px]"
       >
-        <li v-for="s in sources" :key="s.name" class="flex h-10 items-center justify-between text-sm">
+        <li
+          v-for="s in sources"
+          :key="s.name"
+          class="flex items-center justify-between text-[15px]"
+          :style="{ height: `${ROW}px` }"
+        >
           <span class="text-fg">{{ s.name }}</span>
           <span class="text-fg-muted tabular-nums">{{ s.count }}</span>
         </li>

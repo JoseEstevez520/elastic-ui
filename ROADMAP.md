@@ -110,7 +110,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Image aurora | Fine, not exciting. Kept as the ground of Card to page. |
 | Folder icon | The idea is liked, the execution is not yet at the level of the reference: redo it bigger, with real pages and a frosted front, or drop it. |
 | Identity: confirm in place | A delete that asks in its own square, its bin opening its lid. To refine and make a part. |
-| Identity: activity | Does not yet catch the reference's style; being reworked. |
+| Identity: activity | Reworked closer to the reference: a frame in the page's strongest tone, the grid filling it with its months, a tray set in its foot that grows up as frosted glass, round icons that travel from their stack to their rows. To review. |
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
 
 ## Versions
