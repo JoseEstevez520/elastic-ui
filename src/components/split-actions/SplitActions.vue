@@ -146,7 +146,7 @@ useEventListener<PointerEvent>(
       :aria-label="layout === 'radial' ? label : undefined"
       :aria-expanded="open ? 'true' : 'false'"
       :class="[
-        'relative flex h-11 cursor-pointer items-center justify-center gap-2 rounded-full text-sm font-medium text-fg focus-ring',
+        'relative flex h-11 cursor-pointer items-center justify-center gap-2 rounded-full text-label text-fg focus-ring',
         layout === 'row' ? 'px-5' : 'w-11',
       ]"
       @click="toggle"

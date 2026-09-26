@@ -36,7 +36,7 @@ const domain = computed(() => {
       </span>
       <span class="mask-fade-r min-w-0 flex-1 overflow-hidden whitespace-nowrap">
         <span class="text-fg-secondary transition-colors duration-150 group-hover/source:text-fg">{{ title }}</span>
-        <span class="ml-2 text-xs text-fg-faint">{{ domain }}</span>
+        <span class="ml-2 text-meta text-fg-faint">{{ domain }}</span>
       </span>
     </a>
   </li>

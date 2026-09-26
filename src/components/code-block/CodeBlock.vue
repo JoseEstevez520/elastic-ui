@@ -54,7 +54,7 @@ const mask = computed(() => {
 
 <template>
   <figure :class="cn(codeBlockClass, props.class)">
-    <figcaption v-if="caption" class="flex h-10 items-center justify-between gap-2 pr-1 pl-4 text-xs text-fg-muted">
+    <figcaption v-if="caption" class="flex h-10 items-center justify-between gap-2 pr-1 pl-4 text-meta text-fg-muted">
       <span class="truncate font-mono">{{ caption }}</span>
       <CopyButton :value="text" class="size-8" />
     </figcaption>

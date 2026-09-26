@@ -35,6 +35,7 @@ After Vercel's Geist, Refactoring UI and Linear's and Stripe's restraint; tried 
 - **One thing leads.** A screen has one line that catches the eye first; at most three sizes are in view at once.
 - **Tighter as it grows.** Tracking closes from `copy` up; at 14 and below it stays as the font draws it.
 - **No decorative capitals.** Section labels in sentence case (`text-label`, muted), not small spaced capitals.
+- **Glyphs are not text.** A letter in a round mark, an emoji face, a file icon's label are drawn at the size their shape needs, outside the scale.
 - **Figures line up.** `text-meta` and anything in columns uses tabular figures (`tabular-nums`).
 
 ### Taking an idea from elsewhere

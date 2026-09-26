@@ -16,7 +16,7 @@ const delegated = useDelegatedProps(props)
 </script>
 
 <template>
-  <label :class="cn('inline-flex cursor-pointer items-start gap-2.5 text-sm text-fg has-disabled:cursor-not-allowed has-disabled:opacity-50', props.class)">
+  <label :class="cn('inline-flex cursor-pointer items-start gap-2.5 text-ui text-fg has-disabled:cursor-not-allowed has-disabled:opacity-50', props.class)">
     <CheckboxRoot v-bind="delegated" v-model="checked" :class="checkboxBoxClass">
       <!-- Always there, so the check can be drawn and undrawn rather than switch on and off. -->
       <CheckboxIndicator force-mount class="flex">

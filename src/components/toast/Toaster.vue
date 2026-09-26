@@ -177,12 +177,12 @@ const labels = useLabels()
           >
             <div :class="toastClass">
               <div class="min-w-0 flex-1">
-                <p class="font-medium">{{ t.title }}</p>
+                <p class="text-label">{{ t.title }}</p>
                 <p v-if="t.description" class="mt-1 text-fg-secondary">{{ t.description }}</p>
                 <button
                   v-if="t.action"
                   type="button"
-                  class="mt-2 cursor-pointer text-sm font-medium text-accent hover:underline focus-ring"
+                  class="mt-2 cursor-pointer text-label text-accent hover:underline focus-ring"
                   @click="t.action.onClick(); dismissToast(t.id)"
                 >
                   {{ t.action.label }}

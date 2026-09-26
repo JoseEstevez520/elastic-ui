@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority'
 
 export const chatMessageVariants = /* @__PURE__ */ cva(
-  '[overflow-wrap:anywhere] text-base leading-relaxed whitespace-pre-wrap text-fg',
+  '[overflow-wrap:anywhere] text-copy whitespace-pre-wrap text-fg',
   {
     variants: {
       role: {
@@ -22,7 +22,7 @@ export const chatMessageVariants = /* @__PURE__ */ cva(
 // the pill makes room and the button separates from it, like a drop. The fill is drawn on a layer
 // of its own (see ChatComposer), so the field and the button themselves are transparent.
 export const composerFieldClass = [
-  'relative min-h-11 max-h-48 w-full resize-none rounded-3xl bg-transparent px-4 py-[11px] text-base leading-normal text-fg outline-none',
+  'relative min-h-11 max-h-48 w-full resize-none rounded-3xl bg-transparent px-4 py-[11px] text-copy leading-normal text-fg outline-none',
   'placeholder:text-fg-faint field-sizing-content overflow-y-auto scrollbar-subtle',
   '[transition:margin-right_0.5s_var(--ease-glide)] motion-reduce:transition-none',
 ]
@@ -47,7 +47,7 @@ export const chatThreadLineClass =
 
 // No box: a line of text, brightening under the pointer.
 export const chatSourceClass = [
-  'group/source flex min-w-0 items-center gap-2.5 rounded-sm py-0.5 text-sm',
+  'group/source flex min-w-0 items-center gap-2.5 rounded-sm py-0.5 text-ui',
   'focus-ring',
 ]
 

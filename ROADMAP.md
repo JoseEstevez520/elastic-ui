@@ -18,6 +18,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Component | Tier | Notes |
 |---|---|---|
 | Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases (`--ease-glide` among them), `shadow-overlay` / `shadow-soft`, `mask-fade-b`, `blur-in`, `stagger-children` / `stagger-items`, `scrollbar-subtle`, disclosure and popover keyframes |
+| Type scale | Base | `text-display`, `text-title`, `text-copy`, `text-label`, `text-ui`, `text-meta` with their line height, tracking and weight; every component on it (DECISIONS, "Type"); tried in Lab/Type |
 | Button | Base | `solid`, `outline`, `ghost`, `link`; sizes; `icon`, `loading`, `href` |
 | Card | Base | Composable parts; `CardImage` with `fade` |
 | ThemeToggle | Base | Sun/moon from Adam Argyle's theme switch (Apache-2.0); `useTheme()` |

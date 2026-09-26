@@ -11,7 +11,7 @@ export const selectionBandClass = [
 
 /** The bar of actions: the Popover's surface, as a row, appearing from the selection. */
 export const selectionBarClass = [
-  'fixed z-50 flex items-center gap-0.5 p-1 text-sm text-fg',
+  'fixed z-50 flex items-center gap-0.5 p-1 text-ui text-fg',
   'rounded-[var(--popover-radius,var(--radius-lg))] shadow-soft',
   'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]',
   'animate-popover-in motion-reduce:animate-none',

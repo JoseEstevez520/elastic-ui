@@ -93,14 +93,14 @@ useEventListener<KeyboardEvent>(
       :class="['w-72 p-4', shown && 'invisible']"
       @interact-outside="shown && $event.preventDefault()"
     >
-      <div ref="glance" class="text-sm leading-relaxed">
-        <p class="font-medium text-fg">{{ title }}</p>
+      <div ref="glance" class="text-ui leading-relaxed">
+        <p class="text-label text-fg">{{ title }}</p>
         <div class="mt-1 text-fg-secondary"><slot name="definition" /></div>
         <button
           v-if="slots.more"
           ref="seeMore"
           type="button"
-          class="mt-2 cursor-pointer text-sm font-medium text-[color:var(--color-accent)] hover:underline focus-ring"
+          class="mt-2 cursor-pointer text-label text-[color:var(--color-accent)] hover:underline focus-ring"
           @click="expanded = true"
         >
           {{ moreLabel }}
@@ -137,7 +137,7 @@ useEventListener<KeyboardEvent>(
           ]"
           :style="{ width: `${cardWidth}px` }"
         >
-          <h2 class="pr-8 text-xl font-semibold tracking-tight text-fg">{{ title }}</h2>
+          <h2 class="pr-8 text-title text-fg">{{ title }}</h2>
           <div class="mt-2 leading-relaxed text-fg-secondary"><slot name="definition" /></div>
           <div class="mt-4 flex flex-col gap-3 leading-relaxed text-fg-secondary"><slot name="more" /></div>
         </div>

@@ -18,7 +18,7 @@ export interface BreadcrumbsItem extends BreadcrumbsPage {
  * back by the same, so the focus ring around a crumb is not clipped by the scrolling.
  */
 export const breadcrumbsListClass =
-  '-m-1 flex min-w-0 items-center gap-1 overflow-x-auto p-1 text-sm [scrollbar-width:none]'
+  '-m-1 flex min-w-0 items-center gap-1 overflow-x-auto p-1 text-ui [scrollbar-width:none]'
 
 export const breadcrumbsItemClass = 'flex shrink-0 items-center gap-1'
 

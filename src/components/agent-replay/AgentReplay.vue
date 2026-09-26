@@ -276,7 +276,7 @@ const controlClass =
                       :icon="inner.icon"
                       class="mb-2"
                     />
-                    <p v-else class="animate-blur-in text-sm text-fg-secondary motion-reduce:animate-none">{{ inner.text }}</p>
+                    <p v-else class="animate-blur-in text-ui text-fg-secondary motion-reduce:animate-none">{{ inner.text }}</p>
                   </template>
                 </div>
                 <CodeDiff v-else-if="step.event.diff" v-bind="step.event.diff" class="mt-1" />
@@ -313,7 +313,7 @@ const controlClass =
           <p
             v-if="note"
             :key="`${shown}-${events.length}-${note}-${finished}`"
-            :class="['text-base leading-relaxed', finished ? 'font-medium text-fg' : 'text-fg-secondary']"
+            :class="['text-copy', finished ? 'font-medium text-fg' : 'text-fg-secondary']"
           >
             {{ note }}
           </p>
@@ -338,7 +338,7 @@ const controlClass =
         <button type="button" :class="controlClass" :aria-label="labels.restart" @click="restart">
           <ReplayIcon class="size-4" aria-hidden="true" />
         </button>
-        <TextMorph class="ml-2 text-xs text-fg-muted tabular-nums" :text="counter" />
+        <TextMorph class="ml-2 text-meta text-fg-muted tabular-nums" :text="counter" />
       </div>
     </div>
   </div>

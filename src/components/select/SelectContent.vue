@@ -42,7 +42,7 @@ function onPick(next: unknown) {
       :model-value="select.value.value"
       :multiple="select.multiple.value"
       highlight-on-hover
-      class="border-t border-[color:var(--color-border)] text-sm text-fg"
+      class="border-t border-[color:var(--color-border)] text-ui text-fg"
       @update:model-value="onPick"
     >
       <!-- A list long enough to scroll opens on the chosen option, maybe mid-list, where a wave

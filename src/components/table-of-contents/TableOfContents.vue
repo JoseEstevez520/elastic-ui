@@ -147,8 +147,8 @@ const markStyle = computed(() =>
 </script>
 
 <template>
-  <nav :aria-label="title" :class="cn('text-sm', props.class)">
-    <p class="mb-3 text-xs font-medium text-fg-secondary">{{ title }}</p>
+  <nav :aria-label="title" :class="cn('text-ui', props.class)">
+    <p class="mb-3 text-meta text-fg-secondary">{{ title }}</p>
     <ul ref="list" role="list" :class="tocTrackClass">
       <li
         aria-hidden="true"

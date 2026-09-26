@@ -98,7 +98,7 @@ export default defineComponent({
           return h(CodeWalkthrough, null, () =>
             data.steps.map((step) =>
               h(CodeWalkthroughStep, { title: step.title, file: step.file, code: step.code, highlight: step.highlight }, () =>
-                h('div', { class: 'prose text-sm' }, build(markdown.parse(step.text ?? '', {}))),
+                h('div', { class: 'prose text-ui' }, build(markdown.parse(step.text ?? '', {}))),
               ),
             ),
           )

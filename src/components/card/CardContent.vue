@@ -9,7 +9,7 @@ const { size } = useCardContext()
 </script>
 
 <template>
-  <div :class="cn('text-sm text-fg-secondary', cardSectionVariants({ size }), props.class)">
+  <div :class="cn('text-ui text-fg-secondary', cardSectionVariants({ size }), props.class)">
     <slot />
   </div>
 </template>

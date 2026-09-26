@@ -83,12 +83,12 @@ export const HARNESS_TEMPLATE = `
     </span>
     <span class="diagram-in self-center text-fg-faint max-sm:rotate-90" aria-hidden="true">⇄</span>
     <div class="diagram-area diagram-in flex-1" style="--diagram-color: #0d9488">
-      <span class="text-sm font-semibold">Harness <span class="font-normal text-fg-muted">· what you give the model</span></span>
+      <span class="text-label text-fg">Harness <span class="font-normal text-fg-muted">· what you give the model</span></span>
       <span class="diagram-chip px-4 py-3" style="--diagram-color: #7c3aed">
         <component :is="harness.model" class="size-5" :stroke-width="1.5" aria-hidden="true" />
         Model <span class="font-normal text-fg-secondary">· thinks</span>
       </span>
-      <ul class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm font-medium sm:grid-cols-3">
+      <ul class="grid grid-cols-2 gap-x-4 gap-y-2 text-label sm:grid-cols-3">
         <li v-for="tool in harness.tools" :key="tool.label" class="flex items-center gap-2">
           <component :is="tool.icon" class="size-4 shrink-0" :stroke-width="1.5" aria-hidden="true" />{{ tool.label }}
         </li>

@@ -103,9 +103,9 @@ const iconAt = (i: number) =>
         sources.length ? { paddingBottom: `${TRAY + 16}px`, minHeight: `${listHeight}px` } : { paddingBottom: '12px' }
       "
     >
-      <h3 class="text-[17px] text-fg">{{ title }}</h3>
+      <h3 class="text-copy text-fg">{{ title }}</h3>
       <div class="mt-4" aria-hidden="true">
-        <div class="flex gap-[3px] text-[11px] tracking-wide text-fg-faint">
+        <div class="flex gap-[3px] text-meta text-fg-faint">
           <span v-for="(m, w) in months" :key="w" class="h-4 max-w-4 flex-1 overflow-visible whitespace-nowrap">{{
             m
           }}</span>
@@ -141,7 +141,7 @@ const iconAt = (i: number) =>
       <button
         type="button"
         :aria-expanded="open"
-        class="flex w-full cursor-pointer items-center justify-between pr-2.5 pl-4 text-left text-[15px] text-fg-secondary focus-ring-inset"
+        class="flex w-full cursor-pointer items-center justify-between pr-2.5 pl-4 text-left text-ui text-fg-secondary focus-ring-inset"
         :style="{ height: `${TRAY}px` }"
         @click="toggle"
       >
@@ -185,7 +185,7 @@ const iconAt = (i: number) =>
         <li
           v-for="(s, i) in sources"
           :key="s.name"
-          class="flex items-center justify-between text-[15px]"
+          class="flex items-center justify-between text-ui"
           :style="{
             height: `${ROW}px`,
             animation: words ? `blur-in 0.45s var(--ease-soft) ${80 + i * 60 + 480}ms both` : 'none',

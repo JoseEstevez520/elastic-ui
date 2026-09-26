@@ -15,7 +15,7 @@ export const sliderRangeClass = 'absolute h-full rounded-full bg-[color:var(--sl
 export const sliderThumbClass = [
   'flex h-4 cursor-grab items-center justify-center overflow-hidden rounded-full',
   'border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg)] shadow-soft',
-  'text-xs font-medium text-fg tabular-nums',
+  'text-meta font-medium text-fg tabular-nums',
   'transition-[width,height,border-color] duration-300 ease-emphasized motion-reduce:transition-none',
   'hover:border-[color:var(--color-fg-faint)] focus-ring',
   // Held, the pill itself shows where the focus is; the ring comes back once it folds.

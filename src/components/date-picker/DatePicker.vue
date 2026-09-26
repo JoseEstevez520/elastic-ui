@@ -71,7 +71,7 @@ function pick(next: string | undefined) {
       :is-date-unavailable="isDateDisabled ? (d) => isDateDisabled!(d.toString()) : undefined"
       :disabled="disabled"
       :name="name"
-      class="flex h-10 w-full items-center px-3 text-sm"
+      class="flex h-10 w-full items-center px-3 text-ui"
     >
       <!-- The date's parts, each typed or moved with the arrow keys; the separators between them. -->
       <template v-for="segment in segments" :key="segment.part">

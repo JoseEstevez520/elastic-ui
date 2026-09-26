@@ -50,11 +50,11 @@ export const cardImageVariants = /* @__PURE__ */ cva('block w-full object-cover'
 /** A bottom edge that melts into whatever is below, in the same spirit as fading text edges. */
 export const imageFade = 'mask-fade-b'
 
-export const cardTitleVariants = /* @__PURE__ */ cva('font-semibold leading-tight tracking-tight text-fg', {
+export const cardTitleVariants = /* @__PURE__ */ cva('text-fg', {
   variants: {
     size: {
-      sm: 'text-base',
-      md: 'text-lg',
+      sm: 'text-label',
+      md: 'text-title',
     },
   },
 })

@@ -1,10 +1,10 @@
 /** A soft fill, no border: the code is set apart by its tone and its type. */
 export const codeBlockClass = [
-  'group/code relative rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-bg-subtle))] text-sm',
+  'group/code relative rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-bg-subtle))] text-ui',
 ]
 
 export const codeBlockPreClass = [
-  'overflow-x-auto scrollbar-subtle px-4 py-3.5 font-mono text-[13px] leading-relaxed text-fg',
+  'overflow-x-auto scrollbar-subtle px-4 py-3.5 font-mono text-ui leading-relaxed text-fg',
   'focus-ring-inset',
 ]
 

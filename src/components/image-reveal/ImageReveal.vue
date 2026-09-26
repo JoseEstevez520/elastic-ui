@@ -230,7 +230,7 @@ const done = computed(() => phase.value === 'done')
     />
     <img v-if="src && done" :src="src" alt="" class="absolute inset-0 size-full animate-blur-in object-cover motion-reduce:animate-none" />
     <Transition leave-active-class="transition-opacity duration-300" leave-to-class="opacity-0">
-      <StatusText v-if="phase === 'waiting'" :text="`${status}…`" working as="p" class="absolute bottom-3 left-4 text-sm text-fg" />
+      <StatusText v-if="phase === 'waiting'" :text="`${status}…`" working as="p" class="absolute bottom-3 left-4 text-ui text-fg" />
     </Transition>
     <!-- The aurora's colours, for the canvas to read once the browser has resolved them. -->
     <span ref="swatches" aria-hidden="true" class="hidden">

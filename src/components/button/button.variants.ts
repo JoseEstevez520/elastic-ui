@@ -34,9 +34,9 @@ export const buttonVariants = /* @__PURE__ */ cva(
         link: 'h-auto px-0 text-accent underline-offset-4 hover:underline active:scale-100',
       },
       size: {
-        sm: 'h-8 px-3 text-sm',
-        md: 'h-10 px-4 text-sm',
-        lg: 'h-12 px-6 text-base',
+        sm: 'h-8 px-3 text-label',
+        md: 'h-10 px-4 text-label',
+        lg: 'h-12 px-6 text-copy',
         icon: 'size-10',
       },
     },

@@ -184,7 +184,7 @@ useEventListener<KeyboardEvent>(
               ref="back"
               type="button"
               :class="[
-                'mb-6 inline-flex h-9 cursor-pointer items-center gap-1 rounded-full pr-3 pl-2 text-sm text-fg-secondary transition-[opacity,color] hover:text-fg focus-ring',
+                'mb-6 inline-flex h-9 cursor-pointer items-center gap-1 rounded-full pr-3 pl-2 text-ui text-fg-secondary transition-[opacity,color] hover:text-fg focus-ring',
                 visible ? 'opacity-100 delay-300 duration-300' : 'opacity-0 duration-150',
               ]"
               @click="close"

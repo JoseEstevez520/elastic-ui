@@ -20,8 +20,8 @@ export const badgeVariants = /* @__PURE__ */ cva(
         ],
       },
       size: {
-        sm: 'h-5 gap-1 px-2 text-[11px]',
-        md: 'h-6 gap-1.5 px-2.5 text-xs',
+        sm: 'h-5 gap-1 px-2 text-meta',
+        md: 'h-6 gap-1.5 px-2.5 text-meta',
       },
       // Folded to its icon or dot, the badge closes up round it; the gap folds with the label.
       compact: { true: 'gap-0 cursor-default', false: '' },

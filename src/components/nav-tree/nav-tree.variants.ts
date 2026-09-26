@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority'
 
 /** Shared by items and group headers, so both line up and read as one list. */
 export const navTreeRowClass = [
-  'relative flex w-full cursor-pointer items-center rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-sm',
+  'relative flex w-full cursor-pointer items-center rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-ui',
   'text-fg-secondary transition-colors duration-150 hover:text-fg',
   'focus-ring-inset',
 ]

@@ -1,6 +1,6 @@
 /** At rest a quiet search button. */
 export const commandTriggerClass = [
-  'relative inline-flex h-10 cursor-pointer items-center gap-2 pr-4 pl-3 text-sm whitespace-nowrap text-fg-muted',
+  'relative inline-flex h-10 cursor-pointer items-center gap-2 pr-4 pl-3 text-ui whitespace-nowrap text-fg-muted',
   'bg-[color:var(--command-bg,var(--color-bg))]',
   'focus-ring',
 ]
@@ -21,7 +21,7 @@ export const commandSurfaceClass = [
 export const commandInputRowClass = 'flex items-center gap-2.5 border-b border-border px-4'
 
 export const commandInputClass =
-  'h-12 min-w-0 flex-1 bg-transparent text-sm text-fg outline-none placeholder:text-fg-faint'
+  'h-12 min-w-0 flex-1 bg-transparent text-ui text-fg outline-none placeholder:text-fg-faint'
 
 /**
  * Takes the height of its results with the ease of every change of size in the library, instead
@@ -39,10 +39,10 @@ export const commandListClass = [
  */
 export const commandListMeasuredClass = 'h-[min(var(--command-list-height),var(--command-list-max,min(24rem,60dvh)))]'
 
-export const commandGroupHeadingClass = 'px-2.5 pt-2 pb-1 text-xs font-medium text-fg-muted'
+export const commandGroupHeadingClass = 'px-2.5 pt-2 pb-1 text-meta font-medium text-fg-muted'
 
 export const commandItemClass = [
-  'relative flex cursor-pointer items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-2 text-sm outline-none select-none',
+  'relative flex cursor-pointer items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-2 text-ui outline-none select-none',
   'data-[highlighted]:bg-bg-muted',
   'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
 ]
@@ -52,7 +52,7 @@ export const commandItemInClass = 'animate-[blur-in_0.2s_var(--ease-soft)_both] 
 
 export const commandIconClass = 'size-4 shrink-0 text-fg-muted'
 
-export const commandShortcutClass = 'ml-auto pl-4 text-xs tracking-widest text-fg-faint'
+export const commandShortcutClass = 'ml-auto pl-4 text-meta tracking-widest text-fg-faint'
 
 export const commandEmptyClass =
-  'px-2.5 py-8 text-center text-sm text-fg-muted animate-[blur-in_0.2s_var(--ease-soft)_both] motion-reduce:animate-none'
+  'px-2.5 py-8 text-center text-ui text-fg-muted animate-[blur-in_0.2s_var(--ease-soft)_both] motion-reduce:animate-none'

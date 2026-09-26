@@ -6,7 +6,7 @@ import { cva } from 'class-variance-authority'
  */
 export const calloutVariants = /* @__PURE__ */ cva(
   [
-    'grid grid-cols-[auto_1fr] gap-x-3 rounded-[var(--callout-radius,var(--radius-lg))] px-4 py-3 text-sm',
+    'grid grid-cols-[auto_1fr] gap-x-3 rounded-[var(--callout-radius,var(--radius-lg))] px-4 py-3 text-ui',
     'bg-[color-mix(in_oklab,var(--callout-color)_var(--callout-tint,7%),transparent)]',
   ],
   {

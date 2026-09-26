@@ -4,7 +4,7 @@
  * Colors read `--popover-*` first, so one setting restyles every floating panel.
  */
 export const floatingPanelClass = [
-  'z-50 text-sm text-fg outline-none',
+  'z-50 text-ui text-fg outline-none',
   'rounded-[var(--popover-radius,var(--radius-lg))]',
   'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]',
   'origin-(--reka-popper-transform-origin)',

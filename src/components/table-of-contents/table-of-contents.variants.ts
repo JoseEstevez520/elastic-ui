@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority'
 /** A section's link: quiet until it is the one being read, indented a step for a subsection. */
 export const tocLinkVariants = /* @__PURE__ */ cva(
   [
-    'block py-1 text-sm leading-snug transition-colors duration-200',
+    'block py-1 text-ui transition-colors duration-200',
     'focus-ring',
   ],
   {

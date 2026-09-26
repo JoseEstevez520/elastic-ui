@@ -6,7 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * it takes the danger colour. Colors read `--input-*` first.
  */
 export const fieldClass = [
-  'peer w-full min-w-0 text-sm text-fg placeholder:text-fg-faint outline-none',
+  'peer w-full min-w-0 text-ui text-fg placeholder:text-fg-faint outline-none',
   'rounded-[var(--input-radius,var(--radius-md))] bg-[color:var(--input-bg,transparent)]',
   'border border-[color:var(--input-border,var(--color-border-strong))]',
   'transition-colors duration-150 ease-out',
@@ -18,7 +18,7 @@ export const fieldClass = [
 
 /** A field with no line: the text alone, inside a surface that frames it. */
 export const fieldBareClass = [
-  'w-full min-w-0 bg-transparent text-sm text-fg placeholder:text-fg-faint outline-none',
+  'w-full min-w-0 bg-transparent text-ui text-fg placeholder:text-fg-faint outline-none',
   'disabled:cursor-not-allowed disabled:opacity-50',
 ]
 

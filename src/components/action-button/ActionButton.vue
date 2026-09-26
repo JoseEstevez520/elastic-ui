@@ -72,7 +72,7 @@ async function run() {
     :disabled="disabled"
     :aria-label="state === 'working' ? label : undefined"
     :class="[
-      'relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-full text-sm font-medium focus-ring disabled:cursor-not-allowed disabled:opacity-50',
+      'relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-full text-label focus-ring disabled:cursor-not-allowed disabled:opacity-50',
       'transition-[width,background-color,color] duration-[400ms] ease-emphasized motion-reduce:transition-none',
       state === 'failed'
         ? 'bg-[color:color-mix(in_oklab,var(--color-danger)_16%,var(--color-surface))] text-[color:var(--color-danger)]'
