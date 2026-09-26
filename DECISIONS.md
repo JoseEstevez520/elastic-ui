@@ -21,7 +21,7 @@ Learnt from redoing the lab's pieces against their references (Rare UI's delete 
 - **Simplify an object down to its gesture.** A bin without stripes, so its lid reads as it tips open. Fewer details, larger movements of its parts.
 - **Nothing that moves crosses visible text.** Words come into focus only once the pieces travelling past them have gone by.
 - **No outlines round things that overlap.** Icons stacked on one another just overlap; a ring in the ground's colour round each reads as a cut-out sticker.
-- **Light has two sources.** The Aurora is the library's light for AI: its own colours, following the work. The Glow is the colour of the content itself: an image, blurred and turning, behind what shows it (a project, a track). Neither is decoration laid on a page for its own sake.
+- **Light has two sources.** The Aurora is the library's light for AI: its own colours, following the work. The Glow is the same light in the colour of the content itself: the Aurora, its colours taken from an image, behind what shows it (a project, a track). Neither is decoration laid on a page for its own sake.
 - **Compare with the reference before calling it done**: close-up screenshots of both, side by side, at the same states.
 
 ### Taking an idea from elsewhere
