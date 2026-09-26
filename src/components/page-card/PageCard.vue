@@ -6,7 +6,7 @@ import { ChevronLeftIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
 import { morphCloseTransition, morphTransition, prefersReducedMotion } from '../../utils/motion'
-import ImageGlow from './ImageGlow.vue'
+import Glow from '../glow/Glow.vue'
 
 /**
  * A card that becomes its page: a project, a case study, a note. At rest, a card glowing in its
@@ -138,7 +138,7 @@ useEventListener<KeyboardEvent>(
     "
     @click="open = true"
   >
-    <ImageGlow :src="image" class="absolute inset-0 -z-10" />
+    <Glow :src="image" class="-z-10" />
     <div class="p-3">
       <img
         ref="photo"
@@ -160,7 +160,7 @@ useEventListener<KeyboardEvent>(
         class="fixed z-50 overflow-hidden bg-[color:var(--color-bg)]"
         :style="surfaceStyle"
       >
-        <ImageGlow :src="image" class="absolute inset-0" />
+        <Glow :src="image" />
         <!-- The card's words, where they were, fading as the box leaves and back as it lands. -->
         <div
           aria-hidden="true"

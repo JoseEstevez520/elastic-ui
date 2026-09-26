@@ -72,6 +72,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | PageCard | Special | A card that becomes its page: the card's box grows to the screen (useMorphBox), its image travels to be the header, its glow (the image blurred and turning) stretches into the page's ground, its words fade as the page's come in; back, Escape or the browser's back fold it into the card. `href` makes the address the page's while open |
 | Liquid | Base | The essential for shapes that meet or part (DECISIONS, "Morph or liquid"): shapes drawn on their own layer, blurred together and cut back, so they join by a neck and part as drops; filled with any colour, shadowed after. ChatComposer's send button pulls out of its pill with it |
 | SplitActions | Base | A button that splits into two to four actions as drops, each pulling out of it by a neck, their icons coming in once free; in a row beside it or fanned above a round one (`radial`); keys, focus and Escape handled. Actions that need words are PopoverMorph's menu |
+| Glow | Base | The colour of the content itself as a ground: an image blurred past recognition, turning slowly, under a veil and the Aurora's grain; `soft` or `vivid`; a new image's colours fade in over the old. Drawn small and scaled, cheap to resize (PageCard's page grows with it). The Aurora is AI's light; the Glow is the content's |
 | ConfirmButton | Base | An action that asks in its own place, no dialog: the square widens into a pill, the bin's lid tips open, the pill splits in two (the answers' half a tone deeper, its tail pointing at the icon); confirmed, it tints with the danger colour while the action runs, then a check or what went wrong. Any icon (a sign-out, a reset). After Rare UI's delete, redone |
 | Filters | Special | As Linear and Notion: a button grows into a panel of categories (PopoverMorph), a category turns it to its options (checkboxes, a search field from eight) as the box eases to their height; what is chosen stands beside it as a pill whose values morph, pressing it reopens its category, its cross takes it away and the rest slide over (AnimatedList); `count` said beside them, morphing, with Clear. `v-model` per category; the results stay the app's |
 | Field | Base | A label, help and error round any control, linked for screen readers (`id`, `aria-describedby`, `aria-invalid`); help and error swap in place; `optional` |
@@ -117,7 +118,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 |---|---|
 | Card to page | Done: became `PageCard`. |
 | Icon morph | Done: became `IconMorph`. |
-| Image aurora | Kept only as PageCard's ground (internal `ImageGlow`). |
+| Image aurora | Done: became the `Glow` essential. |
 | Folder icon | Dropped: not needed. |
 | Identity: confirm in place | Done: became `ConfirmButton`. |
 | Identity: activity | Done: became `ActivityGrid`. |
