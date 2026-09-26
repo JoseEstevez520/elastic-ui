@@ -83,9 +83,19 @@ Every part that opens from a field or a button grows out of it (USAGE 1). Each n
 
 1. ~~**Forms**: Field, RadioGroup, Combobox, Calendar and DatePicker, AlertDialog; Select, Combobox and DatePicker growing out of their field.~~ Done.
 2. **Select**: with `multiple`, a click outside should close it (it only closes with Escape).
-3. **More fields**: Slider, NumberField, TagsInput (a new tag coming out of the text typed).
-4. **Panels**: Sheet (growing from its button), HoverCard.
-5. **Small parts**: Avatar, Progress, Separator, Kbd, Empty, Toggle and ToggleGroup, Pagination, a plain Table.
+3. **More fields**, each becoming rather than appearing:
+   - **Slider**: dragged, the thumb grows into the bubble with its value, whose digits roll (TextMorph).
+   - **NumberField**: its digits roll by place value, as BadgeCount's.
+   - **TagsInput**: the text typed turns into its tag where it stands; a tag taken away folds and the rest slide over (AnimatedList).
+   - **FileUpload**: a file dropped becomes its row, the row its own progress (as ProgressButton), ending in a check.
+4. **Panels**: **Sheet** grows from its button into the side of the screen; **HoverCard** grows out of its link.
+5. **Loading and small parts**:
+   - **Skeleton**: each grey block eases to the size and shape of what arrives, which comes into focus inside it, so loading turns into the content.
+   - **Progress**: fills on the library's ease and turns into a check once done.
+   - **Toggle** and **ToggleGroup**: the icon morphs between its two states.
+   - **Pagination**: a mark slides to the current page, as Tabs'.
+   - **Avatar**: initials give way to the photo coming into focus; a group fans out on hover.
+   - Quiet, with no motion of their own, so something else can lead: **Kbd**, **Separator**, a plain **Table**, **Empty**.
 6. **A pass over everything**: every part in light, dark and on a phone; props and events named the same way across parts.
 7. **Release 0.2.0**: tag it and hand the TEIS web its `.tgz`. From now on each `.tgz` handed over bumps the version (0.1.1, 0.1.2…), so an install never keeps the old one.
 
