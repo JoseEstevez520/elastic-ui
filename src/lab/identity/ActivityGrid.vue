@@ -112,7 +112,10 @@ const iconAt = (i: number) =>
         'absolute right-3 bottom-3 left-3 overflow-hidden rounded-[20px]',
         // Nearly opaque, so the grid only just shows through once the tray has grown over it.
         'bg-[color:light-dark(rgb(236_236_238/0.9),rgb(22_22_24/0.9))] backdrop-blur-xl',
-        'transition-[height] duration-[450ms] ease-emphasized motion-reduce:transition-none',
+        open
+          ? 'transition-[height] duration-[500ms] ease-in-out'
+          : 'transition-[height] duration-[450ms] ease-emphasized',
+        'motion-reduce:transition-none',
       ]"
       :style="{ height: `${open ? grown : TRAY}px` }"
     >
@@ -147,7 +150,11 @@ const iconAt = (i: number) =>
           width: `${ICON}px`,
           height: `${ICON}px`,
           background: s.color,
-          transitionDelay: open ? `${i * 35}ms` : `${(sources.length - 1 - i) * 25}ms`,
+          // Going out, a slower, even glide one after another, so the icons drift to their rows rather
+          // than shoot; coming back keeps the quicker fold.
+          transition: open
+            ? `top 600ms var(--ease-in-out) ${80 + i * 60}ms, left 600ms var(--ease-in-out) ${80 + i * 60}ms`
+            : `top 450ms var(--ease-emphasized) ${(sources.length - 1 - i) * 25}ms, left 450ms var(--ease-emphasized) ${(sources.length - 1 - i) * 25}ms`,
         }"
       >
         <component :is="s.icon" class="size-4" :stroke-width="2.25" />
