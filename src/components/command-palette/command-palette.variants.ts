@@ -1,7 +1,7 @@
 /** At rest a quiet search button. */
 export const commandTriggerClass = [
   'relative inline-flex h-10 cursor-pointer items-center gap-2 pr-4 pl-3 text-ui whitespace-nowrap text-fg-muted',
-  'bg-[color:var(--command-bg,var(--color-bg))]',
+  'bg-[color:var(--command-bg,var(--color-surface-raised))]',
   'focus-ring',
 ]
 
@@ -15,7 +15,7 @@ export const commandPositionerClass =
 /** Clips instead of scrolling while it grows, as DialogMorph's box does; only the list scrolls. */
 export const commandSurfaceClass = [
   'pointer-events-auto relative flex max-h-[min(32rem,80dvh)] w-[min(var(--command-width,36rem),100%)] flex-col overflow-hidden',
-  'bg-[color:var(--command-bg,var(--color-bg))] text-fg outline-none',
+  'bg-[color:var(--command-bg,var(--color-surface-raised))] text-fg outline-none',
 ]
 
 export const commandInputRowClass = 'flex items-center gap-2.5 border-b border-border px-4'

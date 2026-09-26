@@ -55,7 +55,7 @@ export const filtersOptionCountClass = 'ml-auto pl-3 text-meta text-fg-faint tab
 export const filtersPillClass = [
   'flex h-10 max-w-full min-w-0 items-center text-ui',
   'rounded-[var(--button-radius,var(--radius-md))] border border-[color:var(--popover-border,var(--color-border))]',
-  'bg-[color:var(--popover-bg,var(--color-bg))] transition-colors duration-150 hover:border-border-strong',
+  'bg-[color:var(--popover-bg,var(--color-surface-raised))] transition-colors duration-150 hover:border-border-strong',
 ]
 
 export const filtersPillLabelClass =

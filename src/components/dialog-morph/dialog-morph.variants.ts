@@ -1,7 +1,7 @@
 /** Looks like an outline Button, since at rest it is one. */
 export const dialogMorphTriggerClass = [
   'relative inline-flex h-10 cursor-pointer items-center justify-center px-4 text-label whitespace-nowrap text-fg',
-  'bg-[color:var(--dialog-bg,var(--color-bg))]',
+  'bg-[color:var(--dialog-bg,var(--color-surface-raised))]',
   'focus-ring',
 ]
 
@@ -12,7 +12,7 @@ export const dialogMorphTriggerClass = [
  */
 export const dialogMorphSurfaceClass = [
   'pointer-events-auto relative flex max-h-[85dvh] w-[min(var(--dialog-width,28rem),100%)] flex-col overflow-hidden',
-  'bg-[color:var(--dialog-bg,var(--color-bg))] text-fg outline-none',
+  'bg-[color:var(--dialog-bg,var(--color-surface-raised))] text-fg outline-none',
 ]
 
 /** Dims the page while the dialog is out; fades with the box's morph both ways. */

@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const popoverMorphSurfaceVariants = /* @__PURE__ */ cva(
   [
     'absolute overflow-hidden',
-    'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]',
+    'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-surface-raised))]',
     'transition-[width,height,border-radius,box-shadow] ease-emphasized motion-reduce:transition-none',
   ],
   {

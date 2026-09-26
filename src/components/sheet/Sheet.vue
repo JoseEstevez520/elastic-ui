@@ -109,7 +109,7 @@ const contentStyle = computed(() => ({
         ]"
       />
       <DialogContent
-        class="fixed z-50 overflow-hidden bg-[color:var(--dialog-bg,var(--color-bg))] text-fg outline-none"
+        class="fixed z-50 overflow-hidden bg-[color:var(--dialog-bg,var(--color-surface-raised))] text-fg outline-none"
         :style="surfaceStyle"
         @close-auto-focus.prevent
       >

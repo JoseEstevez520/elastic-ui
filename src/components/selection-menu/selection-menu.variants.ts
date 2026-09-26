@@ -13,7 +13,7 @@ export const selectionBandClass = [
 export const selectionBarClass = [
   'fixed z-50 flex items-center gap-0.5 p-1 text-ui text-fg',
   'rounded-[var(--popover-radius,var(--radius-lg))] shadow-soft',
-  'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]',
+  'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-surface-raised))]',
   'animate-popover-in motion-reduce:animate-none',
 ]
 

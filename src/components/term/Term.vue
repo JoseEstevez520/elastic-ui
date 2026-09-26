@@ -124,7 +124,7 @@ useEventListener<KeyboardEvent>(
         role="dialog"
         aria-modal="true"
         :aria-label="title"
-        class="fixed z-[60] overflow-hidden border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]"
+        class="fixed z-[60] overflow-hidden border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-surface-raised))]"
         :style="cardStyle"
       >
         <!-- The content at the card's width from the start, uncovered as the card grows. -->

@@ -139,11 +139,14 @@
   --animate-popover-in: popover-in 0.25s var(--ease-emphasized);
   --animate-popover-out: popover-out 0.15s var(--ease-emphasized) forwards;
 
-  /* Lifts a floating panel off the page; deeper in dark, where a soft shadow disappears. */
-  --shadow-overlay: 0 8px 24px -6px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.5)),
-    0 2px 6px -2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
-  /* A lighter lift, for surfaces that sit over the page without weighing on it (Popover, Toast). */
-  --shadow-soft: 0 2px 8px -3px rgb(0 0 0 / 0.1);
+  /*
+   * What floats over the page stands on tones (DECISIONS, "How objects are drawn"): it takes the
+   * raised surface and a hairline, and under it a shadow so faint it is barely there, only so a
+   * panel over a photo or dense text still reads as on top. Deeper in dark, where it disappears.
+   */
+  --shadow-overlay: 0 6px 20px -8px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.35));
+  /* Lighter still, for what sits over the page without weighing on it (Popover, Toast, a knob). */
+  --shadow-soft: 0 2px 8px -4px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
 
   @keyframes disclosure-open {
     from { height: 0; }

@@ -16,7 +16,7 @@ A Vue component library for my own projects, built to adapt to very different us
 
 Learnt from redoing the lab's pieces against their references (Rare UI's delete and activity card):
 
-- **Depth from tones, not shadows.** A surface a tone lighter or deeper than the one it sits on gives it volume; shadows are kept for what floats over the page, and even there kept soft.
+- **Depth from tones, not shadows.** A surface a tone lighter or deeper than the one it sits on gives it volume; what floats over the page (a popover, a menu, a dialog, a toast) stands on the raised surface with a hairline round it, and under it only a shadow so faint it is barely there (`shadow-overlay`, `shadow-soft`), so it still reads as on top over a photo or dense text.
 - **Split a shape rather than nest one in another.** When a part opens into more, it divides into halves of different tone joined along a curve (the delete's answers running to the pill's own edge, with a tail pointing at the bin); a box inside a box reads as two things.
 - **Simplify an object down to its gesture.** A bin without stripes, so its lid reads as it tips open. Fewer details, larger movements of its parts.
 - **Nothing that moves crosses visible text.** Words come into focus only once the pieces travelling past them have gone by.
