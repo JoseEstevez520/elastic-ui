@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import ImageView from './ImageView.vue'
 
-const meta = { title: 'Lab/Image view', component: ImageView, args: { src: '', alt: '' } } satisfies Meta<
+const meta = { title: 'Content/ImageView', component: ImageView, args: { src: '', alt: '' } } satisfies Meta<
   typeof ImageView
 >
 export default meta

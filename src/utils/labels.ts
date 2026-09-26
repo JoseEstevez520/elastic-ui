@@ -17,6 +17,8 @@ export const defaultLabels = {
   /** Term's glance. */
   seeMore: 'See more',
   close: 'Close',
+  /** ImageView's thumbnail, after the image's own description. */
+  fullView: 'full view',
   clear: 'Clear',
   dismiss: 'Dismiss',
   remove: 'Remove',

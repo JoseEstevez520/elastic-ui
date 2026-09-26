@@ -18,7 +18,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Component | Tier | Notes |
 |---|---|---|
 | Tokens (`tokens.css`) | Base | Colors with `light-dark()`, radius, eases (`--ease-glide` among them), `shadow-overlay` / `shadow-soft`, `mask-fade-b`, `blur-in`, `stagger-children` / `stagger-items`, `scrollbar-subtle`, disclosure and popover keyframes |
-| Type scale | Base | `text-display`, `text-title`, `text-copy`, `text-label`, `text-ui`, `text-meta` with their line height, tracking and weight; every component on it (DECISIONS, "Type"); tried in Lab/Type |
+| Type scale | Base | `text-display`, `text-title`, `text-copy`, `text-label`, `text-ui`, `text-meta` with their line height, tracking and weight; every component on it (DECISIONS, "Type") |
 | Button | Base | `solid`, `outline`, `ghost`, `link`; sizes; `icon`, `loading`, `href` |
 | Card | Base | Composable parts; `CardImage` with `fade` |
 | ThemeToggle | Base | Sun/moon from Adam Argyle's theme switch (Apache-2.0); `useTheme()` |
@@ -71,6 +71,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | ActivityGrid | Special | Activity day by day as GitHub's grid, in a frame of the page's strongest tone, the months above; a tray set into its foot names where the work went, icons in a stack; pressed, it grows up over the grid as nearly opaque frosted glass, each icon gliding to its row and its words coming in once it has passed; `--activity` for its colour, `locale` for the months. After Rare UI's GitHub activity, redone |
 | IconMorph | Base | An icon that becomes another as TextMorph's text does: each is drawn as the same three strokes, which travel point by point (the menu's lines crossing into a close, play's point straightening into pause's bar); strokes an icon does not need fold onto one it keeps. Menu, close, plus, minus, check, play, pause, chevrons and arrows |
 | PageCard | Special | A card that becomes its page: the card's box grows to the screen (useMorphBox), its image travels to be the header, its glow (the image blurred and turning) stretches into the page's ground, its words fade as the page's come in; back, Escape or the browser's back fold it into the card. `href` makes the address the page's while open |
+| ImageView | Special | An image that grows into full view where it is: its box grows from its place to the whole picture at its own proportions (useMorphBox), its crop opening out; its caption comes into focus under it and its cross, white or black by the corner's light, sits in its corner with nothing behind. `fullSrc` for a larger file |
 | Liquid | Base | The essential for shapes that meet or part (DECISIONS, "Morph or liquid"): shapes drawn on their own layer, blurred together and cut back, so they join by a neck and part as drops; filled with any colour, shadowed after. ChatComposer's send button pulls out of its pill with it |
 | SplitActions | Base | A button that splits into two to four actions as drops, each pulling out of it by a neck, their icons coming in once free; in a row beside it or fanned above a round one (`radial`); keys, focus and Escape handled. Actions that need words are PopoverMorph's menu |
 | Glow | Base | The colour of the content itself as a ground: the Aurora, its lights drifting under its grain, in the colours of an image (its palette, only the colours that count); `soft` or `vivid`; a new image's colours fade in over the old. The Aurora alone is AI's light; the Glow is the same light in the content's colour |
@@ -129,6 +130,10 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
 | Term | Done: became `Term`. |
 | Liquid | Done: became `Liquid` (the essential, ChatComposer on it) and `SplitActions`. The carousel's dots wait for the Carousel (0.3). |
+| Image view | Done: became `ImageView`. |
+| Type scale | Done: the scale in `tokens.css`, every part on it. |
+| Tones | Done: what floats stands on the raised surface with a hairline and a barely-there shadow. |
+| Fields | Done: every field is a tray. |
 
 ## Versions
 

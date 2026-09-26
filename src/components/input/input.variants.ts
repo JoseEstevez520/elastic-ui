@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * The surface every field shares (Input, Textarea): a tray a tone off the page with no line at
- * rest, so a form reads as places to write rather than boxes (tried in Lab/Fields). A soft line
+ * rest, so a form reads as places to write rather than boxes (tried in the lab). A soft line
  * comes on hover; on focus the tray lifts to the raised tone, with no dark line, colour or halo;
  * invalid, the line takes the danger colour. Colors read `--input-*` first; a Card, already on the surface tone, sets its fields a tone deeper.
  */

@@ -28,7 +28,7 @@ Learnt from redoing the lab's pieces against their references (Rare UI's delete 
 
 ### Type
 
-After Vercel's Geist, Refactoring UI and Linear's and Stripe's restraint; tried in Lab/Type.
+After Vercel's Geist, Refactoring UI and Linear's and Stripe's restraint.
 
 - **Five sizes, no others.** `text-display` (28, a page's one title), `text-title` (20, a panel's or section's), `text-copy` (16, text to read), `text-label` and `text-ui` (14, a line to act on or scan, and plain interface text), `text-meta` (12, dates, counts, hints). Each carries its line height, tracking and weight. No `text-[13px]`: a size between two of them is one of them.
 - **Three weights, each with a job.** 400 to read, 500 to act or scan, 600 to announce. Never bold, and weight never says how important something is.
