@@ -35,7 +35,7 @@ export const AStudentRecord: Story = {
               </span>
             </DescriptionItem>
             <DescriptionItem term="Group">Web development, group B</DescriptionItem>
-            <DescriptionItem term="Status"><Badge color="#16a34a">Active</Badge></DescriptionItem>
+            <DescriptionItem term="Status">Enrolled</DescriptionItem>
             <DescriptionItem term="Guardian contact">
               <Button variant="link" href="mailto:guardian@example.com">guardian@example.com</Button>
             </DescriptionItem>
@@ -100,7 +100,7 @@ export const PhoneWidth: Story = {
       <DescriptionList divided>
         <DescriptionItem term="Student ID">AL-2047</DescriptionItem>
         <DescriptionItem term="Group">Web development, group B</DescriptionItem>
-        <DescriptionItem term="Status"><Badge color="#16a34a">Active</Badge></DescriptionItem>
+        <DescriptionItem term="Status">Enrolled</DescriptionItem>
       </DescriptionList>`,
   }),
 }
