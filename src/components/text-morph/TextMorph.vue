@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TextMorph } from 'torph/vue'
-import { onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { afterPaint, bezier, EASE_EMPHASIZED } from '../../utils/motion'
 
 /**
@@ -20,7 +20,12 @@ const EASE = bezier(EASE_EMPHASIZED)
 // ("Mo dules") that shift as it re-measures. So it only takes over while the text changes: it
 // starts from the old words, is handed the new ones once it has painted them, and gives the text
 // back once the morph is over. Timed rather than waiting for Torph's event, which never comes
-// when there is nothing to animate.
+// when there is nothing to animate. Kerning stays off in both, at rest as while it morphs: the
+// letters' boxes have none, so with kerning on the hand-back itself would shift a letter by a
+// fraction of a pixel at the end, a last little tremble.
+const classes = computed(() =>
+  ['[font-kerning:none] [font-variant-ligatures:none]', props.class].filter(Boolean).join(' '),
+)
 const morphing = ref(false)
 const shown = ref(props.text)
 let settle: ReturnType<typeof setTimeout> | undefined
@@ -43,14 +48,6 @@ onBeforeUnmount(() => clearTimeout(settle))
 
 <template>
   <!-- `scale` off: letters leaving and arriving only move and fade; text never scales. -->
-  <TextMorph
-    v-if="morphing"
-    :text="shown"
-    :as="as"
-    :class="props.class"
-    :duration="DURATION"
-    :ease="EASE"
-    :scale="false"
-  />
-  <component :is="as" v-else :class="props.class">{{ text }}</component>
+  <TextMorph v-if="morphing" :text="shown" :as="as" :class="classes" :duration="DURATION" :ease="EASE" :scale="false" />
+  <component :is="as" v-else :class="classes">{{ text }}</component>
 </template>

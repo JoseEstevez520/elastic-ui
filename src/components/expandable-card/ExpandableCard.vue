@@ -75,25 +75,29 @@ const paint = computed(() => ({
 // The box is the card's fill and edge. Changes to it fade rather than switch; the edge can
 // transition because `--expandable-card-edge` is registered in tokens.css. Tailwind only sees
 // complete class names, so every state is spelled out.
+//
+// Depth from tones (DECISIONS, "How objects are drawn"): at rest the card stands a tone off the
+// page with no edge; hovered or open it rises to the raised tone, and only its brand colour, when
+// it has one, draws an edge round it.
 const boxTransition = 'text-fg transition-[background-color,--expandable-card-edge] duration-300 ease-out'
 const box = [
-  'bg-[color:var(--card-bg,var(--color-bg-subtle))]',
-  '[--expandable-card-edge:color-mix(in_srgb,var(--expandable-card-brand,var(--color-border-strong))_60%,var(--color-border))]',
+  'bg-[color:var(--card-bg-raised,var(--color-surface-raised))]',
+  '[--expandable-card-edge:color-mix(in_srgb,var(--expandable-card-brand,var(--color-border))_60%,transparent)]',
 ]
-// At rest: a neutral box, or none at all for `ghost`.
+// At rest: a tone off the page, or no box at all for `ghost`.
 const restBox = computed(() =>
   props.variant === 'ghost'
     ? 'bg-transparent [--expandable-card-edge:transparent]'
-    : 'bg-[color:var(--card-bg,var(--color-bg-subtle))] [--expandable-card-edge:var(--card-border,var(--color-border))]',
+    : 'bg-[color:var(--card-bg,var(--color-surface))] [--expandable-card-edge:transparent]',
 )
 const boxOnInteraction = [
-  '[&:is(:hover,:focus-within)]:bg-[color:var(--card-bg,var(--color-bg-subtle))]',
-  '[&:is(:hover,:focus-within)]:[--expandable-card-edge:color-mix(in_srgb,var(--expandable-card-brand,var(--color-border-strong))_60%,var(--color-border))]',
+  '[&:is(:hover,:focus-within)]:bg-[color:var(--card-bg-raised,var(--color-surface-raised))]',
+  '[&:is(:hover,:focus-within)]:[--expandable-card-edge:color-mix(in_srgb,var(--expandable-card-brand,transparent)_60%,transparent)]',
 ]
-// A card landing back in its cell starts boxed and lets the box fade away.
+// A card landing back in its cell starts raised and settles to its tone.
 const boxOnArrival = [
-  'starting:bg-[color:var(--card-bg,var(--color-bg-subtle))]',
-  'starting:[--expandable-card-edge:color-mix(in_srgb,var(--expandable-card-brand,var(--color-border-strong))_60%,var(--color-border))]',
+  'starting:bg-[color:var(--card-bg-raised,var(--color-surface-raised))]',
+  'starting:[--expandable-card-edge:color-mix(in_srgb,var(--expandable-card-brand,var(--color-border))_60%,transparent)]',
 ]
 // A `ghost` card opened without its box showing (by touch) materializes the box as it grows.
 const noBoxOnArrival = 'starting:bg-transparent starting:[--expandable-card-edge:transparent]'

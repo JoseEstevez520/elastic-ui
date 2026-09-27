@@ -29,7 +29,7 @@ defineProps<{
   <CalendarHeader class="mb-2 flex items-center justify-between">
     <CalendarPrev :class="calendarNavClass"><ChevronLeftIcon class="size-4" aria-hidden="true" /></CalendarPrev>
     <!-- The month turns into the next, as any value that changes in place. -->
-    <CalendarHeading v-slot="{ headingValue }" class="text-sm font-medium text-fg">
+    <CalendarHeading v-slot="{ headingValue }" class="text-label text-fg">
       <TextMorph :text="headingValue" />
     </CalendarHeading>
     <CalendarNext :class="calendarNavClass"><ChevronRightIcon class="size-4" aria-hidden="true" /></CalendarNext>
@@ -37,7 +37,7 @@ defineProps<{
   <CalendarGrid v-for="month in grid" :key="month.value.toString()" class="w-full border-collapse select-none">
     <CalendarGridHead>
       <CalendarGridRow class="grid grid-cols-7">
-        <CalendarHeadCell v-for="day in weekDays" :key="day" class="pb-1 text-xs font-normal text-fg-muted">{{ day }}</CalendarHeadCell>
+        <CalendarHeadCell v-for="day in weekDays" :key="day" class="pb-1 text-meta text-fg-muted">{{ day }}</CalendarHeadCell>
       </CalendarGridRow>
     </CalendarGridHead>
     <CalendarGridBody>

@@ -136,7 +136,7 @@ provideNavTreeGroupContext({
         <div
           v-if="link"
           :data-nav-tree-active="(active && !parent?.railedAway.value) || (railed && holdsActive && !parent) || undefined"
-          :class="cn(navTreeRowClass, 'cursor-default p-0 font-medium text-fg hover:text-fg', props.class)"
+          :class="cn(navTreeRowClass, 'cursor-default p-0 text-label text-fg hover:text-fg', props.class)"
         >
           <component
             :is="link.is"
@@ -164,7 +164,7 @@ provideNavTreeGroupContext({
           v-else
           :chevron="false"
           :data-nav-tree-active="(railed && holdsActive && !parent) || undefined"
-          :class="cn(navTreeRowClass, 'justify-start gap-0 font-medium text-fg', props.class)"
+          :class="cn(navTreeRowClass, 'justify-start gap-0 text-label text-fg', props.class)"
         >
           <component :is="icon" v-if="icon" aria-hidden="true" :class="navTreeIconClass" />
           <!-- The fade goes on the text, not the whole label, so the chevron stays whole. The text

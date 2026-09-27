@@ -39,14 +39,14 @@ provideField({
 
 <template>
   <div :class="cn('flex flex-col gap-1.5', props.class)">
-    <label :id="labelId" :for="id" class="text-sm font-medium text-fg">
+    <label :id="labelId" :for="id" class="text-label text-fg">
       {{ label }}<span v-if="optional" class="font-normal text-fg-muted"> · {{ optionalLabel }}</span>
     </label>
     <slot />
     <!-- The help, or in its place the error, coming into focus where the help was. -->
     <Transition mode="out-in" enter-active-class="animate-blur-in motion-reduce:animate-none">
-      <p v-if="error" :id="errorId" key="error" class="text-xs leading-snug text-[color:var(--color-danger)]">{{ error }}</p>
-      <p v-else-if="description" :id="helpId" key="help" class="text-xs leading-snug text-fg-muted">{{ description }}</p>
+      <p v-if="error" :id="errorId" key="error" class="text-meta text-[color:var(--color-danger)]">{{ error }}</p>
+      <p v-else-if="description" :id="helpId" key="help" class="text-meta text-fg-muted">{{ description }}</p>
     </Transition>
   </div>
 </template>

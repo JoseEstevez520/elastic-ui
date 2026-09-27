@@ -17,7 +17,7 @@ const id = useId()
 </script>
 
 <template>
-  <div :class="cn('flex items-start gap-2.5 text-sm has-disabled:opacity-50', props.class)">
+  <div :class="cn('flex items-start gap-2.5 text-ui has-disabled:opacity-50', props.class)">
     <RadioGroupItem :id="id" :value="value" :disabled="disabled" :aria-describedby="description ? `${id}-detail` : undefined" :class="radioCircleClass">
       <!-- Always there, so the dot can grow and shrink rather than switch on and off. -->
       <RadioGroupIndicator force-mount class="flex">
@@ -26,7 +26,7 @@ const id = useId()
     </RadioGroupItem>
     <label :for="id" class="flex cursor-pointer flex-col gap-0.5 text-fg has-disabled:cursor-not-allowed">
       <slot />
-      <span v-if="description" :id="`${id}-detail`" class="text-xs text-fg-muted">{{ description }}</span>
+      <span v-if="description" :id="`${id}-detail`" class="text-meta text-fg-muted">{{ description }}</span>
     </label>
   </div>
 </template>

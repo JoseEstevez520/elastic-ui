@@ -19,6 +19,29 @@
   --color-bg-muted: light-dark(#e9e9eb, #18181b);
   --color-bg-inset: light-dark(#e2e2e4, #202023);
 
+  /*
+   * Tones an object is built from (DECISIONS, "How objects are drawn": depth from tones, never
+   * shadows). An object sits on the muted tone; a part of it set in (a tray, the answers' half of
+   * ConfirmButton) is sunk; a part standing on it (a round answer, a key) is raised; the frame is
+   * the page's strongest tone, round an object that holds others (ActivityGrid).
+   */
+  --color-surface: var(--color-bg-muted);
+  --color-surface-sunk: light-dark(#dededf, #121214);
+  --color-surface-raised: light-dark(#ffffff, #26262a);
+  --color-frame: light-dark(#ffffff, #000000);
+
+  /*
+   * Glass: the material for what sits over colour (an Aurora, a Glow, a photo). A white veil that
+   * lets the colour through, never a dark fill, which would read as a hole in it; the colour behind
+   * blurred, and a barely-there shadow. See the `glass` utility.
+   */
+  --glass-bg: light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08));
+  --glass-blur: 16px;
+  --glass-shadow: 0 2px 6px rgb(0 0 0 / 0.03);
+  /* Over a photo, whose light and dark parts vary: denser, and dark in the dark theme, where a
+     white veil would leave the text on a bright sky. */
+  --glass-strong-bg: light-dark(rgb(255 255 255 / 0.72), rgb(18 18 20 / 0.55));
+
   /* Text */
   --color-fg: light-dark(#18181b, #f4f4f5);
   --color-fg-secondary: light-dark(#52525b, #a1a1aa);
@@ -47,6 +70,37 @@
   /* Typography */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /*
+   * The type scale (DECISIONS, "Type"): five sizes, each with its line height, its tracking (tighter
+   * as it grows) and the weight that says what it is for, so `text-label` alone sets a row's name.
+   *   display  a page's one title          title  a panel's or a section's title
+   *   copy     text to read, several lines  label  a line to act on or scan
+   *   ui       a line of plain interface    meta   dates, counts, hints; figures in columns
+   */
+  --text-display: 1.75rem;
+  --text-display--line-height: 1.2;
+  --text-display--letter-spacing: -0.022em;
+  --text-display--font-weight: 600;
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.3;
+  --text-title--letter-spacing: -0.014em;
+  --text-title--font-weight: 600;
+  --text-copy: 1rem;
+  --text-copy--line-height: 1.6;
+  --text-copy--letter-spacing: -0.006em;
+  --text-copy--font-weight: 400;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: -0.003em;
+  --text-label--font-weight: 500;
+  --text-ui: 0.875rem;
+  --text-ui--line-height: 1.4;
+  --text-ui--letter-spacing: -0.003em;
+  --text-ui--font-weight: 400;
+  --text-meta: 0.75rem;
+  --text-meta--line-height: 1.4;
+  --text-meta--font-weight: 400;
 
   /* Radius */
   --radius-sm: 6px;
@@ -85,11 +139,14 @@
   --animate-popover-in: popover-in 0.25s var(--ease-emphasized);
   --animate-popover-out: popover-out 0.15s var(--ease-emphasized) forwards;
 
-  /* Lifts a floating panel off the page; deeper in dark, where a soft shadow disappears. */
-  --shadow-overlay: 0 8px 24px -6px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.5)),
-    0 2px 6px -2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
-  /* A lighter lift, for surfaces that sit over the page without weighing on it (Popover, Toast). */
-  --shadow-soft: 0 2px 8px -3px rgb(0 0 0 / 0.1);
+  /*
+   * What floats over the page stands on tones (DECISIONS, "How objects are drawn"): it takes the
+   * raised surface and a hairline, and under it a shadow so faint it is barely there, only so a
+   * panel over a photo or dense text still reads as on top. Deeper in dark, where it disappears.
+   */
+  --shadow-overlay: 0 6px 20px -8px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.35));
+  /* Lighter still, for what sits over the page without weighing on it (Popover, Toast, a knob). */
+  --shadow-soft: 0 2px 8px -4px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
 
   @keyframes disclosure-open {
     from { height: 0; }
@@ -291,6 +348,20 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* The glass material (see its tokens): for surfaces over colour, as ChatMorph's composer and messages. */
+@utility glass {
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+}
+
+/* Glass over a photo: denser, so text reads whatever part of the picture is behind it. */
+@utility glass-strong {
+  background-color: var(--glass-strong-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+  box-shadow: var(--glass-shadow);
 }
 
 @utility mask-fade-r {

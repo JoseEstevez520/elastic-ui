@@ -116,7 +116,7 @@ const shown = (index: number) => lines.value[index]!.type !== 'added' || phase.v
 
 <template>
   <figure ref="root" :class="cn(codeBlockClass, 'overflow-hidden', props.class)">
-    <figcaption class="flex h-10 items-center gap-3 pr-1 pl-4 text-xs text-fg-muted">
+    <figcaption class="flex h-10 items-center gap-3 pr-1 pl-4 text-meta text-fg-muted">
       <span class="min-w-0 flex-1 truncate font-mono">{{ file }}</span>
       <span class="font-mono tabular-nums">
         <span class="text-[color:var(--color-success)]">+{{ count.added }}</span>
@@ -133,10 +133,10 @@ const shown = (index: number) => lines.value[index]!.type !== 'added' || phase.v
       </button>
       <CopyButton :value="after" class="size-8" />
     </figcaption>
-    <pre tabindex="0" class="overflow-x-auto pb-3 font-mono text-[13px] leading-relaxed scrollbar-subtle focus-ring-inset"><code class="block min-w-fit"><template v-for="row in rows" :key="row.kind === 'line' ? row.index : `fold-${row.start}`"><button
+    <pre tabindex="0" class="overflow-x-auto pb-3 font-mono text-ui leading-relaxed scrollbar-subtle focus-ring-inset"><code class="block min-w-fit"><template v-for="row in rows" :key="row.kind === 'line' ? row.index : `fold-${row.start}`"><button
       v-if="row.kind === 'fold'"
       type="button"
-      class="block w-full cursor-pointer px-4 py-1 text-left font-sans text-xs text-fg-muted transition-colors hover:text-fg"
+      class="block w-full cursor-pointer px-4 py-1 text-left font-sans text-meta text-fg-muted transition-colors hover:text-fg"
       @click="unfold(row.start)"
     >⋯ {{ labels.unchangedLines.replace('{count}', String(row.size)) }}</button><div
       v-else

@@ -2,7 +2,8 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion-v'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { contentOut, EASE_EMPHASIZED, EASE_SOFT, morphCloseTransition, prefersReducedMotion } from '../../utils/motion'
+import { travel } from '../../utils/travel'
+import { contentOut, morphCloseTransition } from '../../utils/motion'
 
 /**
  * A list whose items find their new place when it is filtered, sorted or changed, instead of
@@ -90,52 +91,22 @@ function setEl(key: string | number, el: unknown) {
 let before = new Map<string | number, DOMRect>()
 const moving = new Set<Animation>()
 
-// After a change, the items that stayed but moved find their new place. When they all go the same
-// way along one line, as a list closing a gap, they slide there. When any would cut across another
-// (in opposite directions, as in a reorder, or diagonally, as cards reflowing in a grid), sliding
-// would cross them over one another: those fade out where they were and come into focus at their
-// new place instead, as a wave.
-const SLIDE = { duration: 450, easing: `cubic-bezier(${EASE_EMPHASIZED.join(',')})` }
+// After a change, the items that stayed but moved travel to their new place (`travel`): sliding
+// along one line, or fading and coming into focus where any would cross another.
 function settle() {
-  if (prefersReducedMotion()) return
   for (const animation of moving) animation.cancel()
   moving.clear()
-  const movers: { el: HTMLElement; dx: number; dy: number; top: number; left: number }[] = []
-  for (const [key, was] of before) {
+  const places = [...before].flatMap(([key, was]) => {
     const el = els.get(key)
-    if (!el || !el.isConnected) continue
-    const now = el.getBoundingClientRect()
-    const dx = was.left - now.left
-    const dy = was.top - now.top
-    if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) movers.push({ el, dx, dy, top: now.top, left: now.left })
-  }
-  const diagonal = movers.some((m) => Math.abs(m.dx) > 0.5 && Math.abs(m.dy) > 0.5)
-  const opposite = (axis: 'dx' | 'dy') => movers.some((m) => m[axis] > 0.5) && movers.some((m) => m[axis] < -0.5)
-  const crossing = diagonal || opposite('dx') || opposite('dy')
-  if (!crossing) {
-    for (const { el, dx, dy } of movers)
-      moving.add(el.animate([{ translate: `${dx}px ${dy}px` }, { translate: '0px 0px' }], { ...SLIDE, fill: 'backwards' }))
-    return
-  }
-  // All fade out together where they were, so none is still there when another arrives in its
-  // place; then they come into focus where they land, in reading order, 40ms apart and none past
-  // the eighth.
-  const OUT = 150
-  movers.sort((a, b) => a.top - b.top || a.left - b.left)
-  movers.forEach(({ el, dx, dy }, i) => {
-    const from = `${dx}px ${dy}px`
-    moving.add(el.animate([{ translate: from, opacity: 1 }, { translate: from, opacity: 0 }], { duration: OUT, easing: 'linear' }))
-    moving.add(
-      el.animate([{ opacity: 0, filter: 'blur(2px)' }, { opacity: 1, filter: 'blur(0px)' }], {
-        duration: 450,
-        delay: OUT + Math.min(i, 7) * 40,
-        easing: `cubic-bezier(${EASE_SOFT.join(',')})`,
-        fill: 'backwards',
-      }),
-    )
+    return el ? [{ el, was }] : []
   })
+  for (const animation of travel(places)) moving.add(animation)
 }
-watch(() => props.items.map(keyOf), () => nextTick(settle), { flush: 'post' })
+watch(
+  () => props.items.map(keyOf),
+  () => nextTick(settle),
+  { flush: 'post' },
+)
 
 // Leaving items stay where they are, in the flow, while they fade (or fold, with `collapse`); only
 // once they are gone do the rest take the room. Taking each out of the flow as it starts to leave
@@ -206,7 +177,8 @@ function enterDelay(item: T, index: number) {
           :class="
             cn(
               props.collapse && 'overflow-hidden',
-              !quiet.has(keyOf(item)) && 'animate-[blur-in_0.45s_var(--ease-soft)_backwards] motion-reduce:animate-none',
+              !quiet.has(keyOf(item)) &&
+                'animate-[blur-in_0.45s_var(--ease-soft)_backwards] motion-reduce:animate-none',
               itemClass,
             )
           "

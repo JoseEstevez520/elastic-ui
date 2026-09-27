@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const popoverMorphSurfaceVariants = /* @__PURE__ */ cva(
   [
     'absolute overflow-hidden',
-    'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-bg))]',
+    'border border-[color:var(--popover-border,var(--color-border))] bg-[color:var(--popover-bg,var(--color-surface-raised))]',
     'transition-[width,height,border-radius,box-shadow] ease-emphasized motion-reduce:transition-none',
   ],
   {
@@ -25,7 +25,7 @@ export const popoverMorphSurfaceVariants = /* @__PURE__ */ cva(
 
 /** Pinned to the same corner as the surface, at its own full size, so growing never reflows it. */
 export const popoverMorphPanelVariants = /* @__PURE__ */ cva(
-  'absolute w-[var(--popover-width,18rem)] max-h-[70dvh] overflow-y-auto overscroll-contain scrollbar-subtle text-sm text-fg outline-none',
+  'absolute w-[var(--popover-width,18rem)] max-h-[70dvh] overflow-y-auto overscroll-contain scrollbar-subtle text-ui text-fg outline-none',
   {
     variants: {
       align: { start: 'left-0', end: 'right-0' },
@@ -50,7 +50,7 @@ export const popoverMorphPanelVariants = /* @__PURE__ */ cva(
 export const popoverMorphListClass = 'stagger-items [--stagger-delay:0.1s]'
 
 export const popoverMorphTriggerClass = [
-  'relative z-10 inline-flex h-10 cursor-pointer items-center justify-center gap-2 px-4 text-sm font-medium whitespace-nowrap text-fg',
+  'relative z-10 inline-flex h-10 cursor-pointer items-center justify-center gap-2 px-4 text-label whitespace-nowrap text-fg',
   'rounded-[var(--button-radius,var(--radius-md))]',
   'transition-[opacity,filter] ease-soft motion-reduce:transition-none',
   'focus-ring',
@@ -70,7 +70,7 @@ export const popoverMorphLabelState = {
  * the focus from item to item.
  */
 export const popoverMorphItemClass = [
-  'flex w-full cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-sm outline-none select-none',
+  'flex w-full cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-ui outline-none select-none',
   'hover:bg-bg-muted focus-visible:bg-bg-muted',
   'aria-disabled:pointer-events-none aria-disabled:opacity-50',
 ]

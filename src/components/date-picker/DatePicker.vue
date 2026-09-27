@@ -71,7 +71,7 @@ function pick(next: string | undefined) {
       :is-date-unavailable="isDateDisabled ? (d) => isDateDisabled!(d.toString()) : undefined"
       :disabled="disabled"
       :name="name"
-      class="flex h-10 w-full items-center px-3 text-sm"
+      class="flex h-10 w-full items-center px-3 text-ui"
     >
       <!-- The date's parts, each typed or moved with the arrow keys; the separators between them. -->
       <template v-for="segment in segments" :key="segment.part">
@@ -79,7 +79,7 @@ function pick(next: string | undefined) {
         <DateFieldInput
           v-else
           :part="segment.part"
-          class="rounded-[4px] px-0.5 tabular-nums text-fg outline-none focus:bg-bg-muted data-[placeholder]:text-fg-faint"
+          class="rounded-[4px] px-0.5 tabular-nums text-fg outline-none focus:bg-surface-raised data-[placeholder]:text-fg-faint"
         >{{ segment.value }}</DateFieldInput>
       </template>
       <button
@@ -102,7 +102,7 @@ function pick(next: string | undefined) {
         :locale="locale"
         :week-starts-on="weekStartsOn"
         :is-date-disabled="isDateDisabled"
-        class="w-full px-3 pt-1 pb-3"
+        class="w-full px-3 pt-1 pb-3 [--calendar-hover:var(--color-surface-raised)]"
         @update:model-value="pick"
       />
     </template>

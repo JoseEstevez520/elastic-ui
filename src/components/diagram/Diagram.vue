@@ -42,6 +42,6 @@ onBeforeUnmount(() => observer?.disconnect())
 <template>
   <figure ref="root" role="img" :aria-label="label" :data-waiting="waiting || undefined" :data-shown="shown || undefined" :class="cn('diagram-frame', props.class)">
     <slot />
-    <figcaption v-if="caption" class="mt-3 text-sm text-fg-muted">{{ caption }}</figcaption>
+    <figcaption v-if="caption" class="mt-3 text-ui text-fg-muted">{{ caption }}</figcaption>
   </figure>
 </template>

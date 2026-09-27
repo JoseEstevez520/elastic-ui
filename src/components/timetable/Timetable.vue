@@ -100,7 +100,7 @@ const choose = (value: string) => {
         <div
           v-for="i in shownDays"
           :key="days[i]"
-          class="text-center text-sm text-fg-muted"
+          class="text-center text-ui text-fg-muted"
           :style="{ gridColumn: column(i), gridRow: 1 }"
         >
           {{ days[i] }}
@@ -109,14 +109,14 @@ const choose = (value: string) => {
         <span
           v-for="m in marks"
           :key="m"
-          class="-translate-y-1.5 text-[11px] text-fg-faint tabular-nums"
+          class="-translate-y-1.5 text-meta text-fg-faint tabular-nums"
           :style="{ gridColumn: 1, gridRow: row(m) }"
         >{{ m }}</span>
 
         <div
           v-for="b in breaks"
           :key="b.start"
-          class="flex items-center justify-center gap-1.5 text-xs text-fg-faint"
+          class="flex items-center justify-center gap-1.5 text-meta text-fg-faint"
           :style="{ gridColumn: `2 / ${shownDays.length + 2}`, gridRow: `${row(b.start)} / ${row(b.end)}` }"
         >
           <component :is="b.icon" v-if="b.icon" aria-hidden="true" class="size-3.5" />

@@ -9,7 +9,16 @@ import { inject, provide, type App, type InjectionKey } from 'vue'
 export const defaultLabels = {
   // Actions
   cancel: 'Cancel',
+  /** ConfirmButton. */
+  delete: 'Delete',
+  confirm: 'Confirm',
+  /** ActivityGrid's tray. */
+  mostActiveIn: 'Most active in',
+  /** Term's glance. */
+  seeMore: 'See more',
   close: 'Close',
+  /** ImageView's thumbnail, after the image's own description. */
+  fullView: 'full view',
   clear: 'Clear',
   dismiss: 'Dismiss',
   remove: 'Remove',
@@ -31,6 +40,23 @@ export const defaultLabels = {
   sidebar: 'Sidebar',
   toggleSidebar: 'Toggle sidebar',
   onThisPage: 'On this page',
+  /** Pagination's landmark, and each page's name before its number. */
+  pagination: 'Pagination',
+  page: 'Page',
+  /** Carousel: its landmark, and each slide's name before its number. */
+  carousel: 'Carousel',
+  slide: 'Slide',
+  /** Stat's trend, for screen readers. */
+  trendUp: 'Up',
+  trendDown: 'Down',
+  /** Gallery's filter for everything. */
+  all: 'All',
+  /** Pagination's compact "Page 3 of 20". */
+  of: 'of',
+  /** Avatar with no photo, when it is given no name. */
+  person: 'Person',
+  /** Progress, for screen readers once it is complete. */
+  complete: 'Complete',
   notifications: 'Notifications',
   // Search
   search: 'Search',

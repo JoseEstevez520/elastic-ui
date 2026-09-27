@@ -39,7 +39,7 @@ export const searchMorphIconClass = [
 /** Comes into focus once the box has grown enough to hold it; leaves at once. */
 export const searchMorphInputVariants = /* @__PURE__ */ cva(
   // The browser's own clear button is hidden: the field has its own.
-  'h-full w-full bg-transparent pr-9 pl-9 text-sm text-fg outline-none placeholder:text-fg-faint [&::-webkit-search-cancel-button]:appearance-none',
+  'h-full w-full bg-transparent pr-9 pl-9 text-ui text-fg outline-none placeholder:text-fg-faint [&::-webkit-search-cancel-button]:appearance-none',
   {
     variants: {
       open: {

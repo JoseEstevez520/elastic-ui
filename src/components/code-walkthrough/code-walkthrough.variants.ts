@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority'
 /** The code beside the steps, held in view while they scroll past. */
 export const codeWalkthroughPanelClass = [
   'sticky top-[var(--code-walkthrough-top,6rem)] hidden max-h-[calc(100dvh-var(--code-walkthrough-top,6rem)-2rem)] flex-col overflow-hidden lg:flex',
-  'rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-bg-subtle))] text-sm',
+  'rounded-[var(--code-radius,var(--radius-lg))] bg-[color:var(--code-bg,var(--color-surface))] text-ui',
 ]
 
 /**
@@ -31,7 +31,7 @@ export const codeWalkthroughLineVariants = /* @__PURE__ */ cva(
  */
 export const codeWalkthroughStepVariants = /* @__PURE__ */ cva('transition-colors duration-300', {
   variants: {
-    part: { title: 'mb-2 text-base font-semibold', body: 'text-sm leading-relaxed [&>*+*]:mt-3' },
+    part: { title: 'mb-2 text-label text-fg', body: 'text-ui leading-relaxed [&>*+*]:mt-3' },
     active: { true: '', false: '' },
   },
   compoundVariants: [

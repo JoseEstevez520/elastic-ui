@@ -198,7 +198,7 @@ function onPick() {
             <span class="relative min-w-0 flex-1 truncate">{{ f.name }}</span>
             <span
               :class="[
-                'relative shrink-0 text-xs tabular-nums',
+                'relative shrink-0 text-meta tabular-nums',
                 f.status === 'error' ? 'text-[color:var(--color-danger)]' : 'text-fg-muted',
               ]"
             >

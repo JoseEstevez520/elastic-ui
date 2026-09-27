@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { usePlayInTurn } from '../../composables/usePlayInTurn'
-import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon, ReplayIcon } from '../../icons/internal'
+import { ChevronLeftIcon, ChevronRightIcon, ReplayIcon } from '../../icons/internal'
+import IconMorph from '../icon-morph/IconMorph.vue'
 import { cn } from '../../utils/cn'
 import { useLabels } from '../../utils/labels'
 import { prefersReducedMotion } from '../../utils/motion'
@@ -71,9 +72,9 @@ const steps = computed(() =>
   visible.value.flatMap((event, i) => {
     if (event.kind !== 'step') return []
     const live = isLast(i) && phase.value !== 'settled'
-    const state = live ? 'running' : refused(event, i) ? 'error' : 'done'
+    const state = live ? 'working' : refused(event, i) ? 'error' : 'done'
     const label = live ? (phase.value === 'asking' ? (event.asking ?? labels.askingPermission) : event.running) : event.done
-    return [{ event, i, state: state as 'running' | 'done' | 'error', label }]
+    return [{ event, i, state: state as 'working' | 'done' | 'error', label }]
   }),
 )
 const answering = computed(() => current.value?.kind === 'answer' && phase.value === 'running')
@@ -236,7 +237,7 @@ const sessionOf = (step: { i: number; event: AgentReplayStep }) => {
 }
 
 // Inside a subagent's step still running, its latest step is the one at work.
-const innerRunning = (step: { i: number; state: string }, n: number) => isLast(step.i) && step.state === 'running' && n === nested.value - 1
+const innerRunning = (step: { i: number; state: string }, n: number) => isLast(step.i) && step.state === 'working' && n === nested.value - 1
 
 const controlClass =
   'flex size-9 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-bg-muted hover:text-fg focus-ring disabled:pointer-events-none disabled:opacity-40'
@@ -272,11 +273,11 @@ const controlClass =
                     <ChatTool
                       v-if="inner.kind === 'step'"
                       :label="innerRunning(step, n) ? inner.running : inner.done"
-                      :state="innerRunning(step, n) ? 'running' : 'done'"
+                      :state="innerRunning(step, n) ? 'working' : 'done'"
                       :icon="inner.icon"
                       class="mb-2"
                     />
-                    <p v-else class="animate-blur-in text-sm text-fg-secondary motion-reduce:animate-none">{{ inner.text }}</p>
+                    <p v-else class="animate-blur-in text-ui text-fg-secondary motion-reduce:animate-none">{{ inner.text }}</p>
                   </template>
                 </div>
                 <CodeDiff v-else-if="step.event.diff" v-bind="step.event.diff" class="mt-1" />
@@ -313,7 +314,7 @@ const controlClass =
           <p
             v-if="note"
             :key="`${shown}-${events.length}-${note}-${finished}`"
-            :class="['text-base leading-relaxed', finished ? 'font-medium text-fg' : 'text-fg-secondary']"
+            :class="['text-copy', finished ? 'font-medium text-fg' : 'text-fg-secondary']"
           >
             {{ note }}
           </p>
@@ -321,7 +322,8 @@ const controlClass =
       </div>
       <div class="flex items-center gap-1">
         <button type="button" :class="controlClass" :aria-label="playing ? labels.pause : labels.play" @click="playing ? pause() : play()">
-          <component :is="playing ? PauseIcon : PlayIcon" class="size-4" aria-hidden="true" />
+          <!-- Play's point straightens into pause's bars (IconMorph). -->
+          <IconMorph :icon="playing ? 'pause' : 'play'" class="size-4" />
         </button>
         <button type="button" :class="controlClass" :aria-label="labels.previous" :disabled="shown <= (events[0]?.kind === 'prompt' ? 1 : 0)" @click="previous">
           <ChevronLeftIcon class="size-4" aria-hidden="true" />
@@ -338,7 +340,7 @@ const controlClass =
         <button type="button" :class="controlClass" :aria-label="labels.restart" @click="restart">
           <ReplayIcon class="size-4" aria-hidden="true" />
         </button>
-        <TextMorph class="ml-2 text-xs text-fg-muted tabular-nums" :text="counter" />
+        <TextMorph class="ml-2 text-meta text-fg-muted tabular-nums" :text="counter" />
       </div>
     </div>
   </div>

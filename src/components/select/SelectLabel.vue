@@ -7,7 +7,7 @@ const props = defineProps<{ class?: HTMLAttributes['class'] }>()
 </script>
 
 <template>
-  <ListboxGroupLabel :class="cn('px-2.5 pt-2 pb-1 text-xs font-medium text-fg-muted', props.class)">
+  <ListboxGroupLabel :class="cn('px-2.5 pt-2 pb-1 text-meta text-fg-muted', props.class)">
     <slot />
   </ListboxGroupLabel>
 </template>

@@ -97,7 +97,7 @@ const typing = (i: number) => i === row.value && playing.value
 
 <template>
   <figure ref="root" :class="cn(codeBlockClass, props.class)">
-    <figcaption class="flex h-10 items-center gap-2 pr-1 pl-4 text-xs text-fg-muted">
+    <figcaption class="flex h-10 items-center gap-2 pr-1 pl-4 text-meta text-fg-muted">
       <span class="min-w-0 flex-1 truncate font-mono">{{ title }}</span>
       <button
         type="button"
@@ -114,7 +114,7 @@ const typing = (i: number) => i === row.value && playing.value
     <pre
       tabindex="0"
       :aria-busy="playing || undefined"
-      class="overflow-x-auto px-4 pt-0 pb-3.5 font-mono text-[13px] leading-relaxed text-fg scrollbar-subtle focus-ring"
+      class="overflow-x-auto px-4 pt-0 pb-3.5 font-mono text-ui leading-relaxed text-fg scrollbar-subtle focus-ring"
     ><code class="block min-w-fit"><div
       v-for="(r, i) in rows"
       :key="i"

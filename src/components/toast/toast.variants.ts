@@ -24,8 +24,8 @@ export type ToasterPosition = NonNullable<Parameters<typeof toasterVariants>[0]>
  * the page for a while, and a deep one would weigh on it.
  */
 export const toastClass = [
-  'pointer-events-auto relative flex w-full items-start gap-3 p-4 text-sm text-fg',
+  'pointer-events-auto relative flex w-full items-start gap-3 p-4 text-ui text-fg',
   'rounded-[var(--toast-radius,var(--radius-lg))]',
   'shadow-[var(--toast-shadow,var(--shadow-soft))]',
-  'border border-[color:var(--toast-border,var(--color-border))] bg-[color:var(--toast-bg,var(--color-bg))]',
+  'border border-[color:var(--toast-border,var(--color-border))] bg-[color:var(--toast-bg,var(--color-surface-raised))]',
 ]

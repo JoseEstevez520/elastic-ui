@@ -9,10 +9,10 @@ export const cardVariants = /* @__PURE__ */ cva(
   {
     variants: {
       variant: {
-        default: [
-          'border border-[color:var(--card-border,var(--color-border))]',
-          'bg-[color:var(--card-bg,var(--color-bg))]',
-        ],
+        // Depth from a tone, not an outline: the card stands a tone off the page.
+        // Its fields, trays, sit a tone deeper than it; a table row under the pointer, a tone above.
+        default:
+          'bg-[color:var(--card-bg,var(--color-surface))] [--input-bg:var(--color-surface-sunk)] [--table-row-hover:var(--color-surface-raised)]',
         outline: 'border border-[color:var(--card-border,var(--color-border))] bg-transparent',
         ghost: 'bg-transparent',
       },
@@ -50,11 +50,11 @@ export const cardImageVariants = /* @__PURE__ */ cva('block w-full object-cover'
 /** A bottom edge that melts into whatever is below, in the same spirit as fading text edges. */
 export const imageFade = 'mask-fade-b'
 
-export const cardTitleVariants = /* @__PURE__ */ cva('font-semibold leading-tight tracking-tight text-fg', {
+export const cardTitleVariants = /* @__PURE__ */ cva('text-fg', {
   variants: {
     size: {
-      sm: 'text-base',
-      md: 'text-lg',
+      sm: 'text-label',
+      md: 'text-title',
     },
   },
 })

@@ -8,7 +8,7 @@ export const tabsListVariants = /* @__PURE__ */ cva(
     variants: {
       variant: {
         pill: 'w-fit gap-1',
-        underline: 'gap-5 border-b border-border',
+        underline: 'gap-5',
       },
     },
     defaultVariants: { variant: 'underline' },
@@ -17,7 +17,7 @@ export const tabsListVariants = /* @__PURE__ */ cva(
 
 export const tabsTriggerVariants = /* @__PURE__ */ cva(
   [
-    'inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap text-sm font-medium',
+    'inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap text-label',
     'text-fg-muted transition-colors duration-150 hover:text-fg data-[state=active]:text-fg',
     'focus-ring-inset',
     'disabled:pointer-events-none disabled:opacity-50',

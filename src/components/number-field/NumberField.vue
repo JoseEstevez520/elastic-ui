@@ -90,7 +90,7 @@ const buttonClass =
       <span
         v-if="!typing && shown"
         aria-hidden="true"
-        class="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-fg tabular-nums"
+        class="pointer-events-none absolute inset-0 flex items-center justify-center text-ui text-fg tabular-nums"
       >
         <TextMorph :text="shown" />
       </span>

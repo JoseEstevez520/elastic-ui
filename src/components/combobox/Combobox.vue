@@ -69,17 +69,17 @@ const open = ref(false)
           v-bind="fieldAttrs"
           :display-value="labelOf"
           :placeholder="placeholder"
-          class="h-10 min-w-0 flex-1 bg-transparent pl-3 text-sm text-fg outline-none placeholder:text-fg-faint"
+          class="h-10 min-w-0 flex-1 bg-transparent pl-3 text-ui text-fg outline-none placeholder:text-fg-faint"
         />
         <ComboboxTrigger class="group/trigger flex h-10 cursor-pointer items-center px-3 text-fg-faint">
           <DisclosureChevron />
         </ComboboxTrigger>
       </ComboboxAnchor>
       <template #panel>
-        <ComboboxContent position="inline" class="border-t border-[color:var(--color-border)] text-sm text-fg">
+        <ComboboxContent position="inline" class="border-t border-[color:var(--color-border)] text-ui text-fg">
           <!-- A wave from the field downwards, none past the eighth. -->
           <ComboboxViewport class="stagger-items max-h-72 overflow-y-auto overscroll-contain p-1 scrollbar-subtle [--stagger-delay:0.05s]">
-            <ComboboxEmpty class="px-3 py-6 text-center text-sm text-fg-muted">{{ emptyLabel }}</ComboboxEmpty>
+            <ComboboxEmpty class="px-3 py-6 text-center text-ui text-fg-muted">{{ emptyLabel }}</ComboboxEmpty>
             <ComboboxItem
               v-for="option in list"
               :key="option.value"
@@ -94,7 +94,7 @@ const open = ref(false)
               <slot name="option" :option="option">
                 <span class="flex flex-col">
                   {{ option.label }}
-                  <span v-if="option.description" class="text-xs text-fg-muted">{{ option.description }}</span>
+                  <span v-if="option.description" class="text-meta text-fg-muted">{{ option.description }}</span>
                 </span>
               </slot>
             </ComboboxItem>

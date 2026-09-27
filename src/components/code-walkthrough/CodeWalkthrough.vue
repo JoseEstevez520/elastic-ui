@@ -135,11 +135,11 @@ watch(focused, async () => {
       <slot />
     </div>
     <div :class="codeWalkthroughPanelClass">
-      <div class="flex h-10 shrink-0 items-center justify-between gap-2 pr-1 pl-4 text-xs text-fg-muted">
+      <div class="flex h-10 shrink-0 items-center justify-between gap-2 pr-1 pl-4 text-meta text-fg-muted">
         <TextMorph class="truncate font-mono" :text="step?.file() ?? ''" />
         <CopyButton :value="code" class="size-8" />
       </div>
-      <pre ref="pre" class="relative min-h-0 flex-1 overflow-auto pb-3.5 font-mono text-[13px] leading-relaxed text-fg scrollbar-subtle"><TransitionGroup
+      <pre ref="pre" class="relative min-h-0 flex-1 overflow-auto pb-3.5 font-mono text-ui leading-relaxed text-fg scrollbar-subtle"><TransitionGroup
         tag="code"
         class="relative block min-w-fit"
         move-class="transition-transform duration-[400ms] ease-emphasized motion-reduce:transition-none"

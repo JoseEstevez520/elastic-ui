@@ -23,7 +23,7 @@ export const filtersClass = 'flex flex-wrap items-center gap-2'
 export const filtersListClass = 'p-1.5'
 
 /** "Filter by" over the categories, as a menu's group label. */
-export const filtersHeadingClass = 'px-2.5 pt-1.5 pb-1 text-xs font-medium text-fg-muted'
+export const filtersHeadingClass = 'px-2.5 pt-1.5 pb-1 text-meta font-medium text-fg-muted'
 
 /**
  * The way back and the search field, above the options with no line between: the space and the
@@ -33,7 +33,7 @@ export const filtersHeaderClass = 'px-1.5 pt-1.5'
 
 /** A category, or the way back from one: a row that leads somewhere. */
 export const filtersRowClass = [
-  'flex w-full cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-2 text-left text-sm text-fg',
+  'flex w-full cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] px-2.5 py-2 text-left text-ui text-fg',
   'transition-colors duration-150 hover:bg-bg-muted',
   'focus-ring',
 ]
@@ -41,11 +41,11 @@ export const filtersRowClass = [
 export const filtersRowIconClass = 'size-4 shrink-0 text-fg-muted'
 
 /** How many of a category's options are chosen, on its row. */
-export const filtersRowCountClass = 'ml-auto text-xs text-fg-muted tabular-nums'
+export const filtersRowCountClass = 'ml-auto text-meta text-fg-muted tabular-nums'
 
 export const filtersOptionClass = 'flex w-full items-center rounded-[var(--radius-sm)] px-2.5 py-2 hover:bg-bg-muted'
 
-export const filtersOptionCountClass = 'ml-auto pl-3 text-xs text-fg-faint tabular-nums'
+export const filtersOptionCountClass = 'ml-auto pl-3 text-meta text-fg-faint tabular-nums'
 
 /**
  * A filter in use, standing beside the button and shaped as it is at rest (PopoverMorph's height,
@@ -53,9 +53,9 @@ export const filtersOptionCountClass = 'ml-auto pl-3 text-xs text-fg-faint tabul
  * colour. Pressing it opens the panel at its category; its cross takes it away.
  */
 export const filtersPillClass = [
-  'flex h-10 max-w-full min-w-0 items-center text-sm',
+  'flex h-10 max-w-full min-w-0 items-center text-ui',
   'rounded-[var(--button-radius,var(--radius-md))] border border-[color:var(--popover-border,var(--color-border))]',
-  'bg-[color:var(--popover-bg,var(--color-bg))] transition-colors duration-150 hover:border-border-strong',
+  'bg-[color:var(--popover-bg,var(--color-surface-raised))] transition-colors duration-150 hover:border-border-strong',
 ]
 
 export const filtersPillLabelClass =
@@ -73,4 +73,4 @@ export const filtersPillRemoveClass = [
   'focus-ring',
 ]
 
-export const filtersSummaryClass = 'ml-auto flex items-center gap-3 text-sm text-fg-muted'
+export const filtersSummaryClass = 'ml-auto flex items-center gap-3 text-ui text-fg-muted'

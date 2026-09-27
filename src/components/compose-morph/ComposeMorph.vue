@@ -103,7 +103,7 @@ const labels = useLabels()
     <template #trigger>{{ label }}</template>
 
     <!-- The panel is sized to what it holds, so turning into the thank-you morphs it smaller. -->
-    <p v-if="thanked" class="py-2 text-center text-sm text-fg">{{ thanks }}</p>
+    <p v-if="thanked" class="py-2 text-center text-ui text-fg">{{ thanks }}</p>
     <form v-else class="flex flex-col gap-3" @submit.prevent="submitForm">
       <!-- Bare: the panel already frames it, and a box inside a box is one too many. -->
       <Textarea

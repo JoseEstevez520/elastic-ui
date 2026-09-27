@@ -15,7 +15,7 @@ const meta = {
         <AlertDialog
           v-bind="args"
           description="Its files and its grade go with it. This cannot be undone."
-          danger
+          tone="danger"
           @confirm="deleted = true"
         >
           <template #trigger><span class="flex items-center gap-2"><Trash2 class="size-4" aria-hidden="true" />Delete</span></template>

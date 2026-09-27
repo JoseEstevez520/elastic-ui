@@ -9,7 +9,7 @@ import DialogMorphTitle from '../dialog-morph/DialogMorphTitle.vue'
 /**
  * A question that needs an answer before going on, such as "Delete this practice?": its button
  * grows into it, as DialogMorph's does, and a click outside does not close it. It says what will
- * happen, and offers to go back or to go ahead; with `danger`, going ahead is in the danger colour,
+ * happen, and offers to go back or to go ahead; with `tone="danger"`, going ahead is in the danger colour,
  * for what cannot be undone. Focus starts on going back.
  */
 const props = withDefaults(
@@ -20,11 +20,11 @@ const props = withDefaults(
     /** The button that goes ahead: "Delete". */
     confirmLabel: string
     cancelLabel?: string
-    /** Going ahead cannot be undone. */
-    danger?: boolean
+    /** `danger`: going ahead cannot be undone, and says so in the danger colour. */
+    tone?: 'danger' | 'neutral'
     class?: HTMLAttributes['class']
   }>(),
-  { cancelLabel: labelFor('cancel') },
+  { cancelLabel: labelFor('cancel'), tone: 'neutral' },
 )
 const emit = defineEmits<{ confirm: [] }>()
 const open = defineModel<boolean>('open', { default: false })
@@ -44,7 +44,7 @@ function confirm(close: () => void) {
       <slot />
       <div class="mt-6 flex justify-end gap-2">
         <Button variant="ghost" autofocus @click="close">{{ cancelLabel }}</Button>
-        <Button :variant="danger ? 'danger' : 'solid'" @click="confirm(close)">{{ confirmLabel }}</Button>
+        <Button :variant="tone === 'danger' ? 'danger' : 'solid'" @click="confirm(close)">{{ confirmLabel }}</Button>
       </div>
     </template>
   </DialogMorph>
