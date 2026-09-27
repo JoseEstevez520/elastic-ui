@@ -81,3 +81,26 @@ export function neighborsOf(slug: string): { previous?: RegistryEntry; next?: Re
   const index = registry.findIndex((entry) => entry.slug === slug)
   return { previous: registry[index - 1], next: registry[index + 1] }
 }
+
+export interface RegistryGroup {
+  category: string
+  parts: RegistryEntry[]
+}
+
+/**
+ * The registry as groups in Storybook's order (SITE.md §4), the entries in each narrowed to those
+ * matching a query — by name or by group, so typing a group's name keeps it whole. Shared by the
+ * sidebar's NavTree and the Components page's sections, so both agree on what a search matches.
+ */
+export function groupedRegistry(query = ''): RegistryGroup[] {
+  const q = query.trim().toLowerCase()
+  const matches = (entry: RegistryEntry) => !q || entry.name.toLowerCase().includes(q) || entry.category.toLowerCase().includes(q)
+  const byCategory = new Map<string, RegistryEntry[]>()
+  for (const entry of registry) {
+    if (!matches(entry)) continue
+    const list = byCategory.get(entry.category)
+    if (list) list.push(entry)
+    else byCategory.set(entry.category, [entry])
+  }
+  return [...byCategory].map(([category, parts]) => ({ category, parts }))
+}

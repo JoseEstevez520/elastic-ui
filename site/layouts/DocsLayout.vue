@@ -5,6 +5,7 @@ import { RouterLink, RouterView, useRoute } from 'vue-router'
 import {
   Breadcrumbs,
   NavTree,
+  NavTreeGroup,
   NavTreeItem,
   PageTransition,
   ScrollIndicator,
@@ -14,11 +15,14 @@ import {
   ThemeToggle,
   type BreadcrumbsItem,
 } from 'elastic-ui'
-import { registry } from '../parts'
+import { groupedRegistry, registry } from '../parts'
 
 const route = useRoute()
 const collapsed = ref(false)
 const scrollIndicator = useTemplateRef('scrollIndicator')
+// Every part, as groups the sidebar can jump straight to a section of the (single, long)
+// Components page (SITE.md §4); read once, since it never changes at runtime.
+const groups = groupedRegistry()
 
 // Breadcrumbs hold the path to the page; the sidebar keeps to the sections (USAGE 15).
 const crumbs = computed<BreadcrumbsItem[]>(() => {
@@ -39,7 +43,13 @@ const crumbs = computed<BreadcrumbsItem[]>(() => {
       <NavTree :model-value="route.path">
         <NavTreeItem value="/docs" to="/docs" :icon="BookOpen">Get started</NavTreeItem>
         <NavTreeItem value="/docs/principles" to="/docs/principles" :icon="Compass">Principles</NavTreeItem>
-        <NavTreeItem value="/components" to="/components" :icon="Boxes">Components</NavTreeItem>
+        <NavTreeGroup value="/components" to="/components" :icon="Boxes" label="Components">
+          <NavTreeGroup v-for="group in groups" :key="group.category" :label="group.category">
+            <NavTreeItem v-for="entry in group.parts" :key="entry.slug" :value="entry.slug" :to="`/components#${entry.slug}`">
+              {{ entry.name }}
+            </NavTreeItem>
+          </NavTreeGroup>
+        </NavTreeGroup>
       </NavTree>
     </Sidebar>
     <main class="min-w-0 flex-1">
