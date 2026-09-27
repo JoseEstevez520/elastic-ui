@@ -46,6 +46,8 @@ export const defaultLabels = {
   /** Carousel: its landmark, and each slide's name before its number. */
   carousel: 'Carousel',
   slide: 'Slide',
+  /** Stat's chart, to scrub with the arrow keys. */
+  trendChart: 'Trend, use the arrow keys to read each point',
   /** Stat's trend, for screen readers. */
   trendUp: 'Up',
   trendDown: 'Down',
