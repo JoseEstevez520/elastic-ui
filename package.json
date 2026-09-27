@@ -43,7 +43,9 @@
     "**/*.css"
   ],
   "scripts": {
+    "presite": "node site/scripts/generate-meta.mjs",
     "site": "vite --config site/vite.config.ts",
+    "presite:build": "node site/scripts/generate-meta.mjs",
     "site:build": "vite build --config site/vite.config.ts",
     "storybook": "storybook dev -p 6006",
     "build": "vite build && cp src/styles/tokens.css dist/tokens.css",

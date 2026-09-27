@@ -14,6 +14,7 @@ import {
   ThemeToggle,
   type BreadcrumbsItem,
 } from 'elastic-ui'
+import { registry } from '../parts'
 
 const route = useRoute()
 const collapsed = ref(false)
@@ -21,8 +22,10 @@ const scrollIndicator = useTemplateRef('scrollIndicator')
 
 // Breadcrumbs hold the path to the page; the sidebar keeps to the sections (USAGE 15).
 const crumbs = computed<BreadcrumbsItem[]>(() => {
-  if (route.path.startsWith('/components/') && route.meta.title)
-    return [{ label: 'Components', to: '/components' }, { label: route.meta.title }]
+  if (route.path.startsWith('/components/')) {
+    const name = registry.find((entry) => entry.slug === route.params.name)?.name
+    if (name) return [{ label: 'Components', to: '/components' }, { label: name }]
+  }
   return [{ label: route.meta.title ?? 'elastic-ui' }]
 })
 </script>

@@ -15,6 +15,10 @@ export default defineConfig({
         replacement: fileURLToPath(new URL('../src/styles/tokens.css', import.meta.url)),
       },
       { find: /^elastic-ui$/, replacement: fileURLToPath(new URL('../src/index.ts', import.meta.url)) },
+      // Stories rendered live (SITE.md §5) come straight from Storybook, and several build their
+      // preview from an inline `template` string, which needs the runtime compiler: the default,
+      // smaller build only understands compiled render functions.
+      { find: 'vue', replacement: 'vue/dist/vue.esm-bundler.js' },
     ],
   },
 })
