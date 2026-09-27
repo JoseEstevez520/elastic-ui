@@ -13,3 +13,10 @@ body {
 html {
   @apply scrollbar-subtle;
 }
+
+/* An anchor reached by a hash or a TableOfContents click lands below the sticky header, never
+   under it — the same offset Prose's own headings use (tokens.css). For a target that isn't a
+   Prose heading, such as the Components page's part sections. */
+.scroll-anchor {
+  scroll-margin-top: calc(var(--page-header-height, 0px) + 1.5rem);
+}
