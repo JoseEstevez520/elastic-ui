@@ -148,6 +148,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Row to card | Dropped: a generic panel, not an object with parts of its own. |
 | Archive | Done: `ConfirmButton` with `ArchiveIcon` and `tone="warning"`. |
 | Date tile | Kept in the lab: a date as a tear-off calendar, its page lifting over the binding; it works, but does not excite. |
+| Radial | Trying: SplitActions' radial redone as a Ring (the button grows into a ring split in tones, after Rauno's radial menu) or a Column (the button grows up into a split pill with a tail, as ConfirmButton), beside the current one. |
 
 ## Versions
 
