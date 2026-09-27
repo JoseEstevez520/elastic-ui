@@ -93,6 +93,11 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Toggle, ToggleGroup | Base | Buttons that stay pressed, for toolbars, shown by tone: at rest no surface, pressed on the raised tone; `icon` / `pressedIcon` morph one IconMorph glyph into the other (play into pause). The group is a tray, a pressed item a raised part on it; in `single` that part slides to the next item (as Tabs' indicator); sm/md; Reka UI's roving focus |
 | Pagination | Base | Reka UI; quiet numbers between two chevrons; the current page marked by one raised surface that slides to the page chosen; the window keeps its places (1 … 4 5 6 … 20), so moving on inside it the mark stays and the numbers roll (TextMorph); `compact` "Page 3 of 20" with its number rolling |
 | Table | Base | Table and its parts: a plain table for data, no box, no stripes, rows parted by hairlines, the header a step quieter in sentence case; `numeric` lines figures up on the right; `interactive` rows take a tone under the pointer (a tone above inside a Card); too wide, it scrolls sideways and fades at the side that has more |
+| Carousel, CarouselItem | Special | Slides in a row, the track moving as one to the slide chosen on the morph ease; dragged or swiped it follows and settles on the nearest, holding back past either end, and a drag never counts as a click; arrow keys, quiet chevrons fainter at the ends; dots where the one shown is a slim pill that stretches towards the next dot and catches up (a liquid pill was tried: it read as a blob); `v-model`, `loop`; slides can be ImageView; ARIA carousel, "Slide 2 of 5" |
+| Gallery, GalleryItem | Special | A grid of work narrowed by one or more facets (a module, a kind), each a ToggleGroup with "All" first; narrowing it, what no longer belongs fades out where it is, then what stays slides to its new cell as a whole object on the morph's curve, then what comes in comes into focus as one wave; nothing left, Empty says so; `facets` or the `categoryOf` shorthand, `v-model` per facet; GalleryItem is the picture with its name and a line under it, no box, `zoom` making it an ImageView; any card works as an item |
+| SheetFlow | Special | A short task in steps, in a sheet grown out of its button (useMorphBox, as Sheet), after Family's trays: each step its own height; moving on, the step fades, the sheet eases to the next one's height and it comes in as a wave, its title morphing (TextMorph); the back chevron keeps its place so the title never moves; a step taller than the screen scrolls; the last step's `finish` folds it back and emits `complete`; `v-model:open`, `v-model:step` |
+| Stat, StatGroup | Base | A figure with its label, digits rolling by place value (TextMorph); an optional `trend` with its arrow turning up or down, coloured only by the caller's `trendTone`, since up is not always good; given a `series`, the trend draws as a small sparkline instead (a soft line and area, drawn along its stroke on arrival, its points moving on a spring) and the arrow steps aside; `Intl` formatting; StatGroup rows them, parted by space |
+| DescriptionList, DescriptionItem | Base | A record's details as a `dl`: the term beside its value on wide screens, stacked on a phone; rows parted by space, `divided` for a hairline; a value holds anything (a Badge, a link, a CopyButton) |
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
@@ -134,7 +139,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Identity: activity | Done: became `ActivityGrid`. |
 | Camera (blurred backgrounds, focus pulls, developing loads) | Dropped: less clean. |
 | Term | Done: became `Term`. |
-| Liquid | Done: became `Liquid` (the essential, ChatComposer on it) and `SplitActions`. The carousel's dots wait for the Carousel (0.3). |
+| Liquid | Done: became `Liquid` (the essential, ChatComposer on it) and `SplitActions`. |
 | Image view | Done: became `ImageView`. |
 | Type scale | Done: the scale in `tokens.css`, every part on it. |
 | Tones | Done: what floats stands on the raised surface with a hairline and a barely-there shadow. |
@@ -149,8 +154,8 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 Each version comes from a kind of project: the class web gave 0.1.
 
 - **0.2 · A complete base.** Released as `v0.2.0`.
-- **0.3 · Portfolio.** ~~An image that grows into full view~~ (`ImageView`), ~~a project card that opens into its case study~~ (`PageCard`), a filtered gallery, a Carousel.
-- **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: empty states, lists of data (a key and its value, a figure and its trend).
+- **0.3 · Portfolio.** ~~An image that grows into full view~~ (`ImageView`), ~~a project card that opens into its case study~~ (`PageCard`), ~~a filtered gallery~~ (`Gallery`), ~~a Carousel~~ (`Carousel`).
+- **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: ~~empty states~~ (`Empty`), ~~lists of data~~ (`DescriptionList`, `Stat`).
 - **AI, when a project asks for it:**
   1. **Try again after a failure.** A quiet "Try again" beside an answer's error, which for now only says what went wrong.
   2. **Selecting in answers.** SelectionMenu over the thread: explain, quote into the composer, copy.
@@ -172,7 +177,7 @@ Not published on npm, on purpose: it is for my own projects. `"private": true` k
   - **A padlock** as a private/public switch: its shackle lifting and turning open.
   - Tried and dropped: the paper plane for sending, a download falling into its tray (at 16px nobody could read it), a generic glint on success, a row that opens into a card.
 - **From other products** (Family, Things, Apple, Emil Kowalski, Rauno), to redo our own way:
-  - A **flow in steps inside a Sheet**, each step its own height, so moving on shows; a long one becomes a page (Family).
+  - ~~A **flow in steps inside a Sheet**~~ Done: `SheetFlow`.
   - **Drag to close a Sheet**, as Vaul.
   - **Hold to confirm**, beside the bin (Rauno's Hold Enter).
   - **Toasts stacked by tone**, fanning out on hover (Sonner).

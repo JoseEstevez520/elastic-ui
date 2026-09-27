@@ -40,6 +40,8 @@ export const buttonVariants = /* @__PURE__ */ cva(
         icon: 'size-10',
       },
     },
+    // A link is text in the flow: no height or side room from its size, which would indent it.
+    compoundVariants: [{ variant: 'link', class: 'h-auto px-0' }],
     defaultVariants: {
       variant: 'solid',
       size: 'md',
