@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { BookOpen, FolderOpen, Scissors, Users } from '@lucide/vue'
 import { CardTitle } from '../card'
 import ExpandableCard from './ExpandableCard.vue'
 import ExpandableCardGroup from './ExpandableCardGroup.vue'
@@ -8,6 +9,8 @@ import ExpandableCardMorph from './ExpandableCardMorph.vue'
 import ExpandableCardText from './ExpandableCardText.vue'
 import ExpandableCardImage from './ExpandableCardImage.vue'
 
+const ICONS = [BookOpen, Users, Scissors, FolderOpen]
+
 const PROJECTS = [
   {
     name: 'Curio',
@@ -15,7 +18,8 @@ const PROJECTS = [
     brand: '#2e9bf7',
     period: '2025',
     tagline: 'A learning app that turns your notes into spaced-repetition quizzes.',
-    description: 'Upload your notes and Curio generates quizzes from them, scheduling each question for when you are about to forget it.',
+    description:
+      'Upload your notes and Curio generates quizzes from them, scheduling each question for when you are about to forget it.',
     tags: ['Vue', 'Tailwind', 'Node', 'PostgreSQL'],
   },
   {
@@ -47,8 +51,7 @@ const PROJECTS = [
   },
 ]
 
-const LONG_TAGLINE =
-  'A tagline far too long for a single line, to check that it fades at the edge instead of wrapping'
+const LONG_TAGLINE = 'A tagline far too long for a single line, to check that it fades at the edge instead of wrapping'
 const LONG_DESCRIPTION = Array(6)
   .fill('A body much taller than one row of cards, to check that the open card grows past the grid.')
   .join(' ')
@@ -82,6 +85,7 @@ const projectGrid = (args: GridArgs) => ({
   setup: () => ({
     args,
     PROJECTS,
+    ICONS,
     hasImage: (index: number) => args.images === 'all' || (args.images === 'mixed' && index % 2 === 0),
     tagline: (project: (typeof PROJECTS)[number]) => (args.longText ? LONG_TAGLINE : project.tagline),
     description: (project: (typeof PROJECTS)[number]) => (args.longText ? LONG_DESCRIPTION : project.description),
@@ -101,8 +105,9 @@ const projectGrid = (args: GridArgs) => ({
           </template>
 
           <ExpandableCardMark>
-            <span class="grid size-9 place-items-center rounded-full border border-border-strong text-sm font-semibold text-fg-muted">
-              {{ project.name[0] }}
+            <!-- An icon on a tile a tone off the open card, as tall as the title's line so the two sit level. -->
+            <span class="-my-px grid size-7 place-items-center rounded-[var(--radius-md)] bg-surface text-fg-muted">
+              <component :is="ICONS[index % ICONS.length]" class="size-4" aria-hidden="true" />
             </span>
           </ExpandableCardMark>
 
@@ -110,7 +115,7 @@ const projectGrid = (args: GridArgs) => ({
             <CardTitle class="truncate">{{ project.name }}</CardTitle>
           </ExpandableCardMorph>
 
-          <ExpandableCardMorph name="period" class="ml-auto shrink-0 pt-0.5 text-xs text-fg-faint">
+          <ExpandableCardMorph name="period" class="ml-auto shrink-0 pt-0.5 text-meta tabular-nums text-fg-faint">
             {{ project.period }}
           </ExpandableCardMorph>
 
@@ -118,7 +123,7 @@ const projectGrid = (args: GridArgs) => ({
 
           <!-- On a line of its own, so it uses the card's full width. -->
           <ExpandableCardMorph name="tagline" class="min-w-0 basis-full">
-            <ExpandableCardText name="tagline" class="text-sm text-fg-muted">
+            <ExpandableCardText name="tagline" class="text-ui text-fg-muted">
               {{ tagline(project) }}
             </ExpandableCardText>
           </ExpandableCardMorph>
