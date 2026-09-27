@@ -49,8 +49,11 @@ export const defaultLabels = {
   /** Stat's trend, for screen readers. */
   trendUp: 'Up',
   trendDown: 'Down',
-  /** Gallery's filter for everything. */
+  /** Gallery's filter for everything, and its group of categories. */
   all: 'All',
+  categories: 'Categories',
+  /** Gallery with nothing left once narrowed. */
+  nothingMatches: 'Nothing matches',
   /** Pagination's compact "Page 3 of 20". */
   of: 'of',
   /** Avatar with no photo, when it is given no name. */
