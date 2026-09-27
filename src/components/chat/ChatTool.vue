@@ -20,18 +20,18 @@ const props = withDefaults(
   defineProps<{
     /** What the step is doing, then what it did: change it as the step goes on, and it morphs. */
     label: string
-    state?: 'running' | 'done' | 'error'
+    state?: 'working' | 'done' | 'error'
     icon?: Component
     class?: HTMLAttributes['class']
   }>(),
-  { state: 'running' },
+  { state: 'working' },
 )
 
 const open = defineModel<boolean>('open', { default: false })
 const slots = useSlots()
 // Only a finished step with something to show opens: what it found, or what went wrong. A step
 // failing is no failure of the answer, which goes on without it, so it stays as quiet as the rest.
-const expandable = computed(() => props.state !== 'running' && !!slots.default)
+const expandable = computed(() => props.state !== 'working' && !!slots.default)
 
 // A step arriving in a conversation already on screen comes into focus; one there when the
 // conversation opened just shows.
@@ -75,8 +75,8 @@ const text = computed(() => (becoming.value ? from! : props.label))
       >
         <StatusText
           :text="text"
-          :working="state === 'running'"
-          :class="[state !== 'running' && 'text-fg-muted', expandable && 'group-hover/tool:text-fg']"
+          :working="state === 'working'"
+          :class="[state !== 'working' && 'text-fg-muted', expandable && 'group-hover/tool:text-fg']"
         />
       </span>
       <ChevronRightIcon

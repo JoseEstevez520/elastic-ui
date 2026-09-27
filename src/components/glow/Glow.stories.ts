@@ -40,9 +40,9 @@ export const Tones: Story = {
     setup: () => ({ src: covers[1]!.src }),
     template: `
       <div class="flex gap-6">
-        <div v-for="tone in ['soft', 'vivid']" :key="tone" class="relative isolate grid h-48 w-64 place-items-center overflow-hidden rounded-3xl">
-          <Glow :src="src" :tone="tone" class="-z-10" />
-          <span class="text-sm font-medium text-fg">{{ tone }}</span>
+        <div v-for="variant in ['soft', 'vivid']" :key="variant" class="relative isolate grid h-48 w-64 place-items-center overflow-hidden rounded-3xl">
+          <Glow :src="src" :variant="variant" class="-z-10" />
+          <span class="text-sm font-medium text-fg">{{ variant }}</span>
         </div>
       </div>`,
   }),

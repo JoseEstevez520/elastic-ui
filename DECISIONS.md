@@ -139,6 +139,18 @@ A component is not done until it works in every situation below, and each critic
 - Parts coordinate through **provide/inject**, never by manually passing props from parent to child.
 - The component provides the behavior (animation, state, keyboard); the project provides the content.
 
+### Names
+
+The same thing has the same name in every part:
+
+- **`v-model`** holds the part's value; anything else it lets you bind has its own name: `v-model:open` for whether it is out (never `isOpen` or `expanded`), `v-model:page`, `v-model:step`, `v-model:state`.
+- **Phases** of work, where a part lets you bind or set them, are `idle`, `working`, `done`, `error` (ProgressButton, ChatTool, StatusText's `working`); never `running`, `loading` or `failed`. Button's `loading` stays: it is Button's own word for a press that waits.
+- **`variant`** is a part's look (`solid`, `ghost`, `soft`, `vivid`); **`tone`** is a colour with a meaning (`danger`, `warning`, `neutral`, `accent`). A part with both keeps them apart.
+- **`size`** is `sm`, `md`, `lg`, with `md` the default; Button adds `icon`.
+- **Texts the part writes** end in `Label` and default to `labelFor(...)`: `closeLabel`, `doneLabel`, `errorLabel` (never `failedLabel`).
+- **Booleans** are adjectives that are off by default: `compact`, `bare`, `floating`, `interactive`, `numeric`.
+- **Events** are what happened, in the present: `confirm`, `select`, `remove`, `send`; a part that only reports an outcome says it in the past (`copied`, `changed`).
+
 ## Clean code
 
 - One folder per component, each part in its own `.vue` file:

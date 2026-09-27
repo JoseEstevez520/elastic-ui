@@ -85,7 +85,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 | Combobox | Base | Type to filter; grows out of its field as Select; options as objects or strings, `#option` slot, `emptyLabel` |
 | Calendar | Base | Reka UI on `@internationalized/date`, values as ISO strings; the month's name morphs (TextMorph); today marked with a dot; `min`, `max`, `isDateDisabled`, `locale`, `weekStartsOn` |
 | DatePicker | Base | A date typed by parts, or picked from the month that grows out of the field as wide as it (with a minimum) |
-| AlertDialog | Base | DialogMorph with `role="alertdialog"`: only its buttons close it; Cancel focused first; `danger` for what can't be undone |
+| AlertDialog | Base | DialogMorph with `role="alertdialog"`: only its buttons close it; Cancel focused first; `tone="danger"` for what can't be undone |
 | Avatar, AvatarGroup | Base | A round photo, or a person drawn on the surface tone, never initials; a photo that fails gives way to it, fading in; sm/md/lg. AvatarGroup overlaps them with no ring round each, opens out on hover or focus with each name as a tooltip, and counts past `max` |
 | Separator | Base | A quiet hairline, across or upright, reached for last; across it can carry a word in its middle ("or"); `decorative` hides it from screen readers |
 | Empty | Base | What a list or page says while empty: a large faint icon (any component, or a FileIcon in its slot), a title, a line of help and the actions, centred, coming in as one blur-in wave |
@@ -117,7 +117,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**Fields as trays**~~ Done: every field, and a field that grows into its list stays one.
    - ~~**IconMorph where a button changes state**~~ Done: AgentReplay's play straightens into pause. MorphHeader's menu keeps switching quietly: its panel's morph leads (DECISIONS, "One thing leads"). No part asks through a dialog where it could ask in place.
 6. ~~**The rest, with the identity from the start**~~ Done: Avatar and AvatarGroup, Progress, Toggle and ToggleGroup, Pagination, Separator, Table, Empty. Kbd left out.
-7. **Names**: props and events named the same way across parts.
+7. ~~**Names**~~ Done: the rules in DECISIONS ("API style", "Names"); ActionButton's `errorLabel`, AlertDialog's `tone`, Glow's `variant`, ChatTool's `working`.
 8. **Release 0.2.0**: tag it; the library's site (the `site` branch) shows it.
 
 ## Lab

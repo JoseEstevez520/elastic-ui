@@ -11,7 +11,7 @@ export interface Message {
   role: 'user' | 'assistant'
   text: string
   /** A search it ran before answering; failing, what went wrong. */
-  tool?: { label: string; state: 'running' | 'done' | 'error'; sources: Source[]; detail?: string }
+  tool?: { label: string; state: 'working' | 'done' | 'error'; sources: Source[]; detail?: string }
   /** The answer failed: what went wrong. */
   error?: string
 }
@@ -79,7 +79,7 @@ export function fakeModel(
       return
     }
     stream = setTimeout(() => {
-      live.tool = { label: 'Searching the web', state: 'running', sources: SOURCES }
+      live.tool = { label: 'Searching the web', state: 'working', sources: SOURCES }
       stream = setTimeout(() => {
         live.tool = searchFails
           ? {

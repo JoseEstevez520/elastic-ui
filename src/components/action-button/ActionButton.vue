@@ -24,17 +24,17 @@ const props = withDefaults(
     icon?: IconMorphName
     label?: string
     doneLabel?: string
-    failedLabel?: string
+    errorLabel?: string
     disabled?: boolean
     class?: HTMLAttributes['class']
   }>(),
-  { icon: 'arrowRight', label: labelFor('send'), doneLabel: labelFor('sent'), failedLabel: labelFor('sendError') },
+  { icon: 'arrowRight', label: labelFor('send'), doneLabel: labelFor('sent'), errorLabel: labelFor('sendError') },
 )
 
 type State = 'rest' | 'working' | 'done' | 'failed'
 const state = ref<State>('rest')
 const word = computed(() =>
-  state.value === 'done' ? props.doneLabel : state.value === 'failed' ? props.failedLabel : props.label,
+  state.value === 'done' ? props.doneLabel : state.value === 'failed' ? props.errorLabel : props.label,
 )
 const shownIcon = computed<IconMorphName>(() => (state.value === 'done' ? 'check' : props.icon))
 

@@ -22,9 +22,9 @@ export const OtherActions: Story = {
     setup: () => ({ args }),
     template: `
       <div class="flex flex-wrap gap-3">
-        <ActionButton v-bind="args" label="Save" done-label="Saved" failed-label="Not saved" icon="plus" />
-        <ActionButton v-bind="args" label="Publish" done-label="Published" failed-label="Not published" icon="arrowUp" />
-        <ActionButton v-bind="args" label="Hand in" done-label="Handed in" failed-label="Not handed in" />
+        <ActionButton v-bind="args" label="Save" done-label="Saved" error-label="Not saved" icon="plus" />
+        <ActionButton v-bind="args" label="Publish" done-label="Published" error-label="Not published" icon="arrowUp" />
+        <ActionButton v-bind="args" label="Hand in" done-label="Handed in" error-label="Not handed in" />
       </div>`,
   }),
 }
@@ -43,7 +43,7 @@ export const Failing: Story = {
 
 /** Words of very different lengths: its width follows each, never jumping. */
 export const LongWords: Story = {
-  args: { label: 'Send to the whole class', doneLabel: 'Sent', failedLabel: 'Could not reach the class' },
+  args: { label: 'Send to the whole class', doneLabel: 'Sent', errorLabel: 'Could not reach the class' },
 }
 
 export const Disabled: Story = { args: { disabled: true } }

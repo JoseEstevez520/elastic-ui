@@ -15,10 +15,10 @@ const props = withDefaults(
   defineProps<{
     src: string
     /** `soft` for text on it; `vivid` for colour alone. */
-    tone?: 'soft' | 'vivid'
+    variant?: 'soft' | 'vivid'
     class?: HTMLAttributes['class']
   }>(),
-  { tone: 'soft' },
+  { variant: 'soft' },
 )
 
 const palette = ref<string[]>([])
@@ -39,7 +39,7 @@ const lights = computed(() =>
   Object.fromEntries(
     palette.value.map((c, i) => [
       `--aurora-${i + 1}`,
-      `oklch(from ${c} clamp(0.5, l, 0.78) calc(c * ${props.tone === 'vivid' ? 1.5 : 1.25}) h / ${props.tone === 'vivid' ? 0.85 : 0.7})`,
+      `oklch(from ${c} clamp(0.5, l, 0.78) calc(c * ${props.variant === 'vivid' ? 1.5 : 1.25}) h / ${props.variant === 'vivid' ? 0.85 : 0.7})`,
     ]),
   ),
 )
