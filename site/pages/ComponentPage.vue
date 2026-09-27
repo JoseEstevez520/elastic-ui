@@ -2,7 +2,7 @@
 import { ChevronLeft, ChevronRight } from '@lucide/vue'
 import { computed, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { Button } from 'elastic-ui'
+import { Button, Collapsible, CollapsibleContent, CollapsibleTrigger } from 'elastic-ui'
 import ApiTable from '../components/ApiTable.vue'
 import StoryExample from '../components/StoryExample.vue'
 import { loadPart, neighborsOf, type LoadedPart } from '../parts'
@@ -28,6 +28,16 @@ const part = computed(() => loaded.value?.data)
 const examples = computed(() => part.value?.stories.filter((story) => !story.situation) ?? [])
 const situations = computed(() => part.value?.stories.filter((story) => story.situation) ?? [])
 const neighbors = computed(() => neighborsOf(slug.value))
+
+// One story lives on the page at once (SITE.md §5's own rule, taken further): with every other
+// example, every situation and every sub-component's API always mounted too, a part with many of
+// each (Sidebar's five, Select's ten-odd stories) got heavy to scroll — and a part whose story
+// mounts something that answers to one shared state for the whole page rather than its own
+// instance (Toast's queue) showed as many of it as there were stories open at once. Collapsed,
+// only the main example actually renders.
+const mainExample = computed(() => examples.value[0])
+const restExamples = computed(() => examples.value.slice(1))
+const moreCount = computed(() => restExamples.value.length + situations.value.length)
 </script>
 
 <template>
@@ -36,30 +46,39 @@ const neighbors = computed(() => neighborsOf(slug.value))
     <p v-if="part.description">{{ part.description }}</p>
     <p v-for="credit in part.credits ?? []" :key="credit"><em>{{ credit }}</em></p>
 
-    <StoryExample
-      v-for="story in examples"
-      :key="story.key"
-      :story="story"
-      :component="loaded?.components[story.key]"
-    />
+    <StoryExample v-if="mainExample" :story="mainExample" :component="loaded?.components[mainExample.key]" />
 
-    <template v-if="situations.length">
-      <h2>Situations</h2>
-      <p>
-        A part is not done until it works in each of these situations, and each keeps its own story so it keeps
-        being checked. They are the part's behavior, not examples to copy.
-      </p>
-      <StoryExample
-        v-for="story in situations"
-        :key="story.key"
-        :story="story"
-        :component="loaded?.components[story.key]"
-        :level="3"
-      />
-    </template>
+    <Collapsible class="not-prose">
+      <CollapsibleTrigger class="text-label text-fg-secondary hover:text-fg">
+        {{ moreCount ? `Every example and the API (${moreCount} more)` : 'The API' }}
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <StoryExample
+          v-for="story in restExamples"
+          :key="story.key"
+          :story="story"
+          :component="loaded?.components[story.key]"
+        />
 
-    <h2>API</h2>
-    <ApiTable v-for="apiPart in part.api" :key="apiPart.name" :part="apiPart" :named="part.api.length > 1" />
+        <template v-if="situations.length">
+          <h2>Situations</h2>
+          <p>
+            A part is not done until it works in each of these situations, and each keeps its own story so it keeps
+            being checked. They are the part's behavior, not examples to copy.
+          </p>
+          <StoryExample
+            v-for="story in situations"
+            :key="story.key"
+            :story="story"
+            :component="loaded?.components[story.key]"
+            :level="3"
+          />
+        </template>
+
+        <h2>API</h2>
+        <ApiTable v-for="apiPart in part.api" :key="apiPart.name" :part="apiPart" :named="part.api.length > 1" />
+      </CollapsibleContent>
+    </Collapsible>
 
     <nav v-if="neighbors.previous || neighbors.next" class="not-prose mt-16 flex items-center gap-4 border-t border-border pt-6">
       <Button v-if="neighbors.previous" variant="ghost" :icon="ChevronLeft" :to="`/components/${neighbors.previous.slug}`">

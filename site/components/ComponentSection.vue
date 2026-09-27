@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import { StatusText } from 'elastic-ui'
+import { cn, StatusText } from 'elastic-ui'
 import { loadPart, type LoadedPart, type RegistryEntry } from '../parts'
 
 /**
@@ -39,6 +39,23 @@ watch(near, async (isNear) => {
 
 const mainStory = computed(() => loaded.value?.data.stories.find((story) => !story.situation))
 const mainComponent = computed(() => (mainStory.value ? loaded.value?.components[mainStory.value.key] : undefined))
+
+// The loading line is short; the story that replaces it rarely is. Easing the box's floor from
+// one to the other (never its content, never clipped: a `min-height`, not a `height`) means the
+// swap settles instead of jumping the moment it lands.
+const stage = useTemplateRef<HTMLElement>('stage')
+const minHeight = ref<number>()
+const eased = ref(false)
+watch(mainComponent, async (component) => {
+  if (!component || !stage.value) return
+  eased.value = false
+  minHeight.value = stage.value.scrollHeight
+  await nextTick()
+  requestAnimationFrame(() => {
+    eased.value = true
+    minHeight.value = stage.value?.scrollHeight
+  })
+})
 </script>
 
 <template>
@@ -58,7 +75,11 @@ const mainComponent = computed(() => (mainStory.value ? loaded.value?.components
     </div>
     <p v-if="entry.description" class="line-clamp-1 text-copy text-fg-secondary">{{ entry.description }}</p>
 
-    <div class="isolate min-h-32 overflow-visible rounded-[var(--radius-xl)] border border-border p-6">
+    <div
+      ref="stage"
+      :style="{ minHeight: minHeight ? `${minHeight}px` : undefined }"
+      :class="cn('story-stage rounded-[var(--radius-xl)] border border-border p-6', eased && 'transition-[min-height] duration-300 ease-emphasized')"
+    >
       <StatusText v-if="near && !mainComponent" text="Loading" working class="text-copy text-fg-muted" />
       <component :is="mainComponent" v-else-if="mainComponent" />
     </div>
