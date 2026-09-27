@@ -14,6 +14,8 @@ export const statValueVariants = /* @__PURE__ */ cva('text-fg tabular-nums', {
 export type StatVariants = VariantProps<typeof statValueVariants>
 export type StatSize = NonNullable<StatVariants['size']>
 export type StatTrendTone = 'positive' | 'negative' | 'neutral'
+/** The sparkline's own look: a smooth curve, or bars for a value that comes one period at a time. */
+export type StatChartVariant = 'line' | 'bars'
 
 /** The trend's colour, as a CSS value; `neutral` gets none, so it falls back to `text-fg-muted`. */
 export function trendColorVar(tone: StatTrendTone): string | undefined {

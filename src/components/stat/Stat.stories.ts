@@ -16,21 +16,75 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
-/** A tool page's summary: parted by space, never boxes. Attendance and the average mark carry
- * their last weeks as a small line, so the shape of the change reads at a glance, not just its sign. */
+const weeks = Array.from({ length: 8 }, (_, i) => `Week ${i + 1}`)
+
+/** A class tools page's summary, each figure a Card of its own: attendance comes one week at a
+ * time, so it reads as bars; the average mark is read as one running number, so its weeks draw as
+ * a smooth curve. Both sit at the Card's own foot, edge to edge (`foot`), so the chart is the
+ * card's ground rather than a line squeezed under the number. Hover a card, or tab to it and use
+ * the arrow keys, to read a single week: the figure and the caption roll into that week's own. */
 export const AClassToolsPage: Story = {
   render: () => ({
-    components: { Stat, StatGroup },
+    components: { Card, Stat, StatGroup },
     setup: () => ({
+      weeks,
       attendance: [0.97, 0.96, 0.95, 0.93, 0.92, 0.94, 0.93, 0.91],
       averageGrade: [6.9, 7.0, 7.1, 7.3, 7.2, 7.4, 7.5, 7.6],
     }),
     template: `
       <StatGroup>
-        <Stat label="Attendance" :value="0.91" :options="{ style: 'percent' }" :trend="-4" trend-tone="negative" :series="attendance" description="Last eight weeks" />
-        <Stat label="Average grade" :value="7.6" :trend="6" trend-tone="positive" :series="averageGrade" description="Out of ten" />
-        <Stat label="Enrolled" :value="128" description="Across three groups" />
+        <Card class="w-72">
+          <Stat
+            label="Attendance"
+            :value="0.91"
+            :options="{ style: 'percent' }"
+            :trend="-4"
+            trend-tone="negative"
+            :series="attendance"
+            :labels="weeks"
+            variant="bars"
+            foot
+          />
+        </Card>
+        <Card class="w-72">
+          <Stat
+            label="Average grade"
+            :value="7.6"
+            :trend="6"
+            trend-tone="positive"
+            :series="averageGrade"
+            :labels="weeks"
+            description="Out of ten"
+            foot
+          />
+        </Card>
+        <Card class="w-72">
+          <Stat label="Enrolled" :value="128" description="Across three groups" />
+        </Card>
       </StatGroup>`,
+  }),
+}
+
+/** Hovering or dragging the pointer across the chart, or focusing it and pressing the arrow keys,
+ * moves a fine mark to the nearest week; the figure and the caption morph into that week's own
+ * value and name, and morph back once the pointer leaves or the chart loses focus. */
+export const ScrubADot: Story = {
+  render: () => ({
+    components: { Card, Stat },
+    setup: () => ({ weeks, averageGrade: [6.9, 7.0, 7.1, 7.3, 7.2, 7.4, 7.5, 7.6] }),
+    template: `
+      <Card class="w-80">
+        <Stat
+          label="Average grade"
+          :value="7.6"
+          :trend="6"
+          trend-tone="positive"
+          :series="averageGrade"
+          :labels="weeks"
+          description="Out of ten"
+          foot
+        />
+      </Card>`,
   }),
 }
 
@@ -90,6 +144,22 @@ export const LiveUpdatingSeries: Story = {
   }),
 }
 
+/** Weekly attendance read one bar at a time, inline rather than at a Card's foot: the last bar
+ * carries the tone, the rest sit quieter, and it still keeps the library's own spring and scrub. */
+export const BarsVariant: Story = {
+  args: {
+    label: 'Attendance',
+    value: 0.91,
+    options: { style: 'percent' },
+    trend: -4,
+    trendTone: 'negative',
+    series: [0.97, 0.96, 0.95, 0.93, 0.92, 0.94, 0.93, 0.91],
+    labels: weeks,
+    variant: 'bars',
+    description: 'Last eight weeks',
+  },
+}
+
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
 
 /** A large number keeps its digits lined up, formatted for the locale. */
@@ -118,16 +188,18 @@ export const FlatSeries: Story = {
   },
 }
 
-/** On a phone, StatGroup wraps to the next line instead of squeezing; the sparkline keeps the
- * stat's own width rather than the row's. */
+/** On a phone, StatGroup wraps to the next line instead of squeezing; a Card with a `foot` chart
+ * keeps bleeding to its own edges rather than the row's. */
 export const PhoneWidth: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
   render: () => ({
-    components: { Stat, StatGroup },
+    components: { Card, Stat, StatGroup },
     setup: () => ({ attendance: [0.97, 0.95, 0.93, 0.92, 0.91] }),
     template: `
       <StatGroup class="max-w-xs">
-        <Stat label="Attendance" :value="0.91" :options="{ style: 'percent' }" :trend="-4" trend-tone="negative" :series="attendance" />
+        <Card class="w-full">
+          <Stat label="Attendance" :value="0.91" :options="{ style: 'percent' }" :trend="-4" trend-tone="negative" :series="attendance" variant="bars" foot />
+        </Card>
         <Stat label="Average grade" :value="7.6" :trend="6" trend-tone="positive" />
         <Stat label="Enrolled" :value="128" />
       </StatGroup>`,
