@@ -109,7 +109,7 @@ Every component above has been through the Situations checklist in `DECISIONS.md
 2. ~~**Tools**~~ Done: Stat (a sparkline or bars that can be scrubbed), DescriptionList, Empty; SheetFlow for a short task in steps.
 3. ~~**Polish from the site's review**~~ Done: RadioGroup's chosen circle filled with a hole at its centre (as Radix, shadcn, Base UI); SplitActions' four layouts (row, fan, ring, column); Tabs keeping the active tab in view without moving the page; a queue per Toaster; SidebarLayoutHeader `seamless`; ExpandableCard's example with an icon, not an initial.
 4. **The library's site** (branch `site`, `npm run site`): done so far, the docs shell with the connected sidebar following the part being read, one long Components page, a page per part with its stories and API, Get started, a plain index. Still to do: the Principles page (DECISIONS' rules, a live example each), dropping the one-story workaround for Toast now that each Toaster can have its own queue. No ⌘K search: the long Components page and its search field are enough.
-5. **Principles to write down** in DECISIONS: open from the true origin and let a morph be reversed halfway (Dynamic Island); what is used all the time, as a menu, appears at once rather than morphing, the choice blinking once.
+5. ~~**Principles to write down**~~ Done (DECISIONS, Motion rules): open from the true origin and let a morph be taken back halfway; what is used all the time does not morph.
 6. **Release 0.3.0**: tag it; the site shows it.
 7. **The TEIS web** takes it on: Gallery with cards for the end-of-course project ideas, Stat on its tool pages, DescriptionList for records, SheetFlow for handing in.
 
