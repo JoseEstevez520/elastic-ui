@@ -118,7 +118,7 @@ Every part that opens from a field or a button grows out of it (USAGE 1), and th
    - ~~**IconMorph where a button changes state**~~ Done: AgentReplay's play straightens into pause. MorphHeader's menu keeps switching quietly: its panel's morph leads (DECISIONS, "One thing leads"). No part asks through a dialog where it could ask in place.
 6. ~~**The rest, with the identity from the start**~~ Done: Avatar and AvatarGroup, Progress, Toggle and ToggleGroup, Pagination, Separator, Table, Empty. Kbd left out.
 7. ~~**Names**~~ Done: the rules in DECISIONS ("API style", "Names"); ActionButton's `errorLabel`, AlertDialog's `tone`, Glow's `variant`, ChatTool's `working`.
-8. **Release 0.2.0**: tag it; the library's site (the `site` branch) shows it.
+8. ~~**Release 0.2.0**~~ Done: tagged `v0.2.0`; the library's site (the `site` branch) shows it.
 
 ## Lab
 
@@ -147,7 +147,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 
 Each version comes from a kind of project: the class web gave 0.1.
 
-- **0.2 · A complete base.** Above.
+- **0.2 · A complete base.** Released as `v0.2.0`.
 - **0.3 · Portfolio.** ~~An image that grows into full view~~ (`ImageView`), ~~a project card that opens into its case study~~ (`PageCard`), a filtered gallery, a Carousel.
 - **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: empty states, lists of data (a key and its value, a figure and its trend).
 - **AI, when a project asks for it:**
