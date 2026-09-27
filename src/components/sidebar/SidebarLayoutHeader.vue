@@ -19,6 +19,8 @@ const props = defineProps<{
   scroller?: HTMLElement | string
   /** Names the toggle it carries on a phone. */
   toggleLabel?: string
+  /** No hairline under it even once the page has moved: the bar and the page one surface. */
+  seamless?: boolean
   class?: HTMLAttributes['class']
 }>()
 
@@ -61,7 +63,7 @@ onBeforeUnmount(() => {
         'sticky top-0 z-30 flex h-14 items-center gap-3 px-4',
         'bg-[color:var(--page-header-bg,var(--color-bg))] transition-[box-shadow] duration-300',
         // A hairline, not a shadow, and only once the page has moved under it.
-        scrolled ? 'shadow-[0_1px_0_var(--color-border)]' : 'shadow-[0_1px_0_transparent]',
+        scrolled && !seamless ? 'shadow-[0_1px_0_var(--color-border)]' : 'shadow-[0_1px_0_transparent]',
         props.class,
       )
     "
