@@ -43,14 +43,12 @@ export const defaultLabels = {
   /** Pagination's landmark, and each page's name before its number. */
   pagination: 'Pagination',
   page: 'Page',
-  /** A flow's step back (SheetFlow). */
-  back: 'Back',
   /** Carousel: its landmark, and each slide's name before its number. */
   carousel: 'Carousel',
   slide: 'Slide',
   /** Stat's trend, for screen readers. */
-  increase: 'Up',
-  decrease: 'Down',
+  trendUp: 'Up',
+  trendDown: 'Down',
   /** Gallery's filter for everything. */
   all: 'All',
   /** Pagination's compact "Page 3 of 20". */
