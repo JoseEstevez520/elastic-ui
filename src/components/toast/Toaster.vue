@@ -5,13 +5,14 @@ import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
-import { dismissToast, useToasts, type Toast } from './toast.store'
+import { useToasts, type Toast, type ToastStore } from './toast.store'
 import { toastClass, toasterVariants, type ToasterPosition } from './toast.variants'
 
 /**
  * Where toasts show up: one per app. Each toast arrives from the screen's edge while the others
  * slide aside, and leaves by fading out and folding its place away. They stack up one at a time
- * and never overlap. Call `toast()` from anywhere to show one.
+ * and never overlap. Call `toast()` from anywhere to show one. A Toaster reads the app's queue, or
+ * the one given as `store` (`createToastStore()`), for a page holding several.
  */
 const props = withDefaults(
   defineProps<{
@@ -22,12 +23,19 @@ const props = withDefaults(
         rest move up to make room, as in Sonner. */
     max?: number
     label?: string
+    /** Its own queue, for a page holding several Toasters; the app's (or the provided one) if not. */
+    store?: ToastStore
     class?: HTMLAttributes['class']
   }>(),
   { position: 'bottom-right', duration: 5000, max: 3, label: labelFor('notifications') },
 )
 
-const { toasts } = useToasts()
+const { toasts, dismiss: dismissToast } = props.store ?? useToasts()
+// A toast's action runs, and the toast goes with it.
+function act(t: Toast) {
+  t.action?.onClick()
+  dismissToast(t.id)
+}
 const atTop = computed(() => props.position?.startsWith('top'))
 
 // Nothing ever overlaps. Toasts come in one at a time, each once the one before has nearly
@@ -89,7 +97,10 @@ function start(t: Toast) {
   remaining.set(t.id, left)
   if (paused.value || left === Infinity || timers.has(t.id)) return
   startedAt.set(t.id, Date.now())
-  timers.set(t.id, setTimeout(() => dismissToast(t.id), left))
+  timers.set(
+    t.id,
+    setTimeout(() => dismissToast(t.id), left),
+  )
 }
 
 watch(paused, (isPaused) => {
@@ -183,7 +194,7 @@ const labels = useLabels()
                   v-if="t.action"
                   type="button"
                   class="mt-2 cursor-pointer text-label text-accent hover:underline focus-ring"
-                  @click="t.action.onClick(); dismissToast(t.id)"
+                  @click="act(t)"
                 >
                   {{ t.action.label }}
                 </button>
