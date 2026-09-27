@@ -101,7 +101,19 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch .s
 
 Every component above has been through the Situations checklist in `DECISIONS.md` and has a story per critical situation.
 
-## Now · 0.2, a complete base with an identity
+## Now · 0.3, the portfolio and the tools
+
+0.2 is released (`v0.2.0`). Since then the parts for a portfolio and for tool pages are in, and the pass over the old parts goes on. What is left before tagging 0.3.0:
+
+1. ~~**Portfolio**~~ Done: ImageView, PageCard, Gallery (narrowed by facets, cards or pictures), Carousel.
+2. ~~**Tools**~~ Done: Stat (a sparkline or bars that can be scrubbed), DescriptionList, Empty; SheetFlow for a short task in steps.
+3. ~~**Polish from the site's review**~~ Done: RadioGroup's chosen circle filled with a hole at its centre (as Radix, shadcn, Base UI); SplitActions' four layouts (row, fan, ring, column); Tabs keeping the active tab in view without moving the page; a queue per Toaster; SidebarLayoutHeader `seamless`; ExpandableCard's example with an icon, not an initial.
+4. **The library's site** (branch `site`, `npm run site`): done so far, the docs shell with the connected sidebar following the part being read, one long Components page, a page per part with its stories and API, Get started, a plain index. Still to do: the Principles page (DECISIONS' rules, a live example each), search with CommandPalette (⌘K), dropping the one-story workaround for Toast now that each Toaster can have its own queue.
+5. **Principles to write down** in DECISIONS: open from the true origin and let a morph be reversed halfway (Dynamic Island); what is used all the time, as a menu, appears at once rather than morphing, the choice blinking once.
+6. **Release 0.3.0**: tag it; the site shows it.
+7. **The TEIS web** takes it on: Gallery with cards for the end-of-course project ideas, Stat on its tool pages, DescriptionList for records, SheetFlow for handing in.
+
+## Before · 0.2, a complete base with an identity
 
 Every part that opens from a field or a button grows out of it (USAGE 1), and the parts with character follow the library's identity: objects that transform in place (DECISIONS, Philosophy 5 and "How objects are drawn"). Each new part gets its stories, the Situations checklist and a look in light, dark and on a phone.
 
@@ -155,8 +167,8 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 Each version comes from a kind of project: the class web gave 0.1.
 
 - **0.2 · A complete base.** Released as `v0.2.0`.
-- **0.3 · Portfolio.** ~~An image that grows into full view~~ (`ImageView`), ~~a project card that opens into its case study~~ (`PageCard`), ~~a filtered gallery~~ (`Gallery`), ~~a Carousel~~ (`Carousel`).
-- **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: ~~empty states~~ (`Empty`), ~~lists of data~~ (`DescriptionList`, `Stat`).
+- **0.3 · Portfolio and tools** (Now, above). ~~An image that grows into full view~~ (`ImageView`), ~~a project card that opens into its case study~~ (`PageCard`), ~~a filtered gallery~~ (`Gallery`), ~~a Carousel~~ (`Carousel`).
+- **0.4 · Tools**, as the class web's attendance calculator or virtual classroom panel: ~~empty states~~ (`Empty`), ~~lists of data~~ (`DescriptionList`, `Stat`), brought forward into 0.3; what else a tool page asks for comes here.
 - **AI, when a project asks for it:**
   1. **Try again after a failure.** A quiet "Try again" beside an answer's error, which for now only says what went wrong.
   2. **Selecting in answers.** SelectionMenu over the thread: explain, quote into the composer, copy.
@@ -173,7 +185,7 @@ Not published on npm, on purpose: it is for my own projects. `"private": true` k
 
 - **Objects in the bin's family** (ConfirmButton, FileIcon): a recognisable thing whose parts move, at a size where the gesture reads without explaining it. Next, one at a time in the lab:
   - ~~**Archive**~~ Done: ConfirmButton with the box of records, in amber. Maybe later the box itself telling the end, its lid coming down, instead of the check.
-  - **A tear-off calendar** for DatePicker: the day in large figures, the top sheet turning back over its edge to show the new date.
+  - **A tear-off calendar** (in the lab as Date tile): the day's page lifting over the binding. Works, does not excite; kept aside.
   - **Copy as a sheet that doubles**, for CopyButton: a second sheet slides out from behind the first, a tone apart, instead of the check.
   - **A padlock** as a private/public switch: its shackle lifting and turning open.
   - Tried and dropped: the paper plane for sending, a download falling into its tray (at 16px nobody could read it), a generic glint on success, a row that opens into a card.
@@ -183,9 +195,7 @@ Not published on npm, on purpose: it is for my own projects. `"private": true` k
   - **Hold to confirm**, beside the bin (Rauno's Hold Enter).
   - **Toasts stacked by tone**, fanning out on hover (Sonner).
   - **What is pending travels to where it will live**: after confirming, the working mark leaves the button for the tab or list where the result will show, instead of a toast (Family).
-- **Principles to write down**: open from the true origin and let a morph be reversed halfway (Dynamic Island); what is used all the time, as a menu, appears at once rather than morphing, the choice blinking once.
 - Where the DynamicIsland lives in a page with chrome: inside MorphHeader's pill, in the Sidebar's footer, or on its own at the bottom centre. For now it is inline, and needs a hidden state that morphs in from a point.
-- NavTree indicator variants, such as SkillNet's "connected" pill that takes the page colour and fuses with the sidebar's edge.
 - PopoverMorph flips or shifts near the screen's edges (for now `align` and `side` are chosen by hand).
 - Priority+ variant for MorphHeader (show what fits, the rest in a "More" menu).
 - Documentation beyond Storybook once the API settles.
