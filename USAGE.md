@@ -24,7 +24,7 @@ Where there is a morphing version, use it. The library's personality is things t
 | Picking a date | `DatePicker`, or `Calendar` when the month is the page's content | — |
 | An action that takes a moment (send, save, publish) | `ActionButton`: it gathers round while it works and widens into what happened | the amount done is known: `ProgressButton`, which fills |
 | An action that cannot be undone (delete, reset) | `ConfirmButton`: it asks in its own place, in the danger colour | it can be undone: `tone="warning"` with `ArchiveIcon` for an archive, `tone="neutral"` for a sign-out |
-| Two to four quick actions, each clear from its icon (share to…, react) | `SplitActions`: they pull out of the button as drops | they need words: `PopoverMorph role="menu"` |
+| Two to four quick actions, each clear from its icon (share to…, react) | `SplitActions`: they pull out of the button as drops (`row`, `fan`), or it grows into a ring or a split column round them (`ring`, `column`) | they need words: `PopoverMorph role="menu"` |
 | Cards that open | `ExpandableCard` in an `ExpandableCardGroup` | the content is a page of its own: link to it |
 
 Fields that open (Select, Combobox, DatePicker) grow out of themselves: their outline stretches down to hold the list or the month, and folds back once something is picked. Give them their width on the part itself (`<Select class="w-56">`), since it draws the outline; in a `Field` they fill it.
