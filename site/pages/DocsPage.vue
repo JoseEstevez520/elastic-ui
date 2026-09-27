@@ -1,6 +1,66 @@
+<script setup lang="ts">
+import { Markdown } from 'elastic-ui'
+
+// Taken from USAGE.md §16 ("Setting up a project"), not rewritten from memory: the CSS import,
+// the theme script and the labels snippet are quoted as they are written there.
+const F = '```'
+const GUIDE = [
+  '# Get started',
+  '',
+  'How to install elastic-ui in a project and set it up, following the rules in `USAGE.md` — the same rules this site itself is built by.',
+  '',
+  '## Install',
+  '',
+  'Pack the library (`npm pack` in its folder) and install the `.tgz` from the project, or install it straight from the repository at a released tag:',
+  '',
+  `${F}bash`,
+  'npm install github:JoseEstevez520/elastic-ui#v0.2.0',
+  F,
+  '',
+  '> [!NOTE]',
+  "> Installing the library's folder itself writes a path from your disk into `package.json` and links its own `node_modules`, with its own Vue — install a tag or a packed file instead.",
+  '',
+  '## CSS',
+  '',
+  'The library ships no compiled CSS: your own Tailwind build scans its components and builds their classes.',
+  '',
+  `${F}css title="style.css"`,
+  '@import "tailwindcss";',
+  '@import "elastic-ui/tokens.css";',
+  '@source "../node_modules/elastic-ui/dist";',
+  F,
+  '',
+  '## Your language',
+  '',
+  "Set the library's own texts once, a prop on a part still wins over it:",
+  '',
+  `${F}ts`,
+  "app.use(ElasticUi, { labels: { copy: 'Copiar', onThisPage: 'En esta página' } })",
+  F,
+  '',
+  '## A router',
+  '',
+  'Links take `to` and render your app’s `RouterLink` (`as` for another, such as NuxtLink), so navigating never reloads the page: `NavTreeItem`, `NavTreeGroup` and `Button` all work this way.',
+  '',
+  '## A forced theme, with no flash',
+  '',
+  '`ThemeToggle` keeps the choice in `localStorage` under `elastic-ui.theme`. Read it before the page paints, in the `<head>`:',
+  '',
+  `${F}html`,
+  '<script>',
+  '  try {',
+  "    const theme = localStorage.getItem('elastic-ui.theme')",
+  "    if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme",
+  '  } catch {}',
+  '</' + 'script>',
+  F,
+  '',
+  '## Next',
+  '',
+  'Read the [principles](/docs/principles) the library and its parts are built by, or explore the [parts](/components) themselves.',
+].join('\n')
+</script>
+
 <template>
-  <div class="mx-auto max-w-3xl px-6 py-10">
-    <h1 class="text-2xl font-semibold tracking-tight">Get started</h1>
-    <p class="mt-2 text-fg-secondary">Installing and setting up elastic-ui in a project. This page is written in a later step.</p>
-  </div>
+  <Markdown :source="GUIDE" class="article py-10" />
 </template>
