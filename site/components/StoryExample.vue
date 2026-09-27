@@ -29,7 +29,12 @@ const props = withDefaults(
         <TabsTrigger value="code">Code</TabsTrigger>
       </TabsList>
       <TabsContent value="preview">
-        <div class="overflow-x-auto rounded-[var(--radius-xl)] border border-border p-6">
+        <!-- A part that grows (Select, PopoverMorph, DatePicker…) grows its own box in place,
+             absolutely positioned over this one (FieldMorph, useMorphBox): `overflow-x-auto` here
+             would force `overflow-y: auto` too (the CSS default when only one axis is set) and
+             clip it. `visible` on both axes, and `isolate` so its raised stacking context (it
+             lifts to z-50 while open) sits correctly over what follows in the flow, not under it. -->
+        <div class="isolate min-h-32 overflow-visible rounded-[var(--radius-xl)] border border-border p-6">
           <component :is="props.component" v-if="props.component" />
         </div>
       </TabsContent>
