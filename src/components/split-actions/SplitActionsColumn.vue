@@ -1,25 +1,21 @@
 <script setup lang="ts">
-import { computed, useTemplateRef, type Component } from 'vue'
-import IconMorph from '../../components/icon-morph/IconMorph.vue'
-import Tooltip from '../../components/tooltip/Tooltip.vue'
-import TooltipGroup from '../../components/tooltip/TooltipGroup.vue'
+import { computed, useTemplateRef } from 'vue'
+import IconMorph from '../icon-morph/IconMorph.vue'
+import Tooltip from '../tooltip/Tooltip.vue'
+import TooltipGroup from '../tooltip/TooltipGroup.vue'
+import type { SplitAction } from './split-actions.types'
 import { useSplitOpen } from './useSplitOpen'
 
 /**
- * Lab: the round button grows up into a column that holds its actions, as ConfirmButton's square
+ * Internal: SplitActions' `column`. The round button grows up into a column that holds its actions, as ConfirmButton's square
  * widens into its question: one shape, split in two by tone, the actions' part a tone deeper with
  * a tail pointing down at the button. Its real height grows on the morph's curve, the actions
  * come into focus as one wave from the button up, the plus turns into its close (IconMorph), and
  * each action's name is a tooltip at its side. Closing, the icons go first, then the column folds
  * back into the button.
  */
-export interface ColumnAction {
-  label: string
-  icon: Component
-  onSelect?: () => void
-}
-const props = defineProps<{ label: string; actions: ColumnAction[] }>()
-const emit = defineEmits<{ select: [action: ColumnAction] }>()
+const props = defineProps<{ label: string; actions: SplitAction[] }>()
+const emit = defineEmits<{ select: [action: SplitAction] }>()
 
 const root = useTemplateRef<HTMLElement>('root')
 const trigger = useTemplateRef<HTMLButtonElement>('trigger')
@@ -32,7 +28,7 @@ const GAP = 8
 const half = computed(() => props.actions.length * ROW + 8)
 const height = computed(() => (open.value && showing.value ? SIZE + GAP + half.value : SIZE))
 
-function choose(action: ColumnAction) {
+function choose(action: SplitAction) {
   action.onSelect?.()
   emit('select', action)
   close()

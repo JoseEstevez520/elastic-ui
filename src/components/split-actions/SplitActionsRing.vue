@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import { computed, ref, useTemplateRef, type Component } from 'vue'
-import IconMorph from '../../components/icon-morph/IconMorph.vue'
-import TextMorph from '../../components/text-morph/TextMorph.vue'
+import { computed, ref, useTemplateRef } from 'vue'
+import IconMorph from '../icon-morph/IconMorph.vue'
+import TextMorph from '../text-morph/TextMorph.vue'
+import type { SplitAction } from './split-actions.types'
 import { useSplitOpen } from './useSplitOpen'
 
 /**
- * Lab: the round button grows, where it is, into a ring round itself, the ring split into one
+ * Internal: SplitActions' `ring`. The round button grows, where it is, into a ring round itself, the ring split into one
  * segment per action by fine gaps of the page, after Rauno Freiberg's radial menu. The ring is one
  * object in the surface tone, uncovered from the button's own edge out (a real size: its clip
  * widens, nothing scales); the segment under the pointer or the focus rises to the raised tone
  * and its name comes into words above the ring (TextMorph); the button's plus turns into its
  * close (IconMorph). Closing, the icons go first, then the ring draws back into the button.
  */
-export interface RingAction {
-  label: string
-  icon: Component
-  onSelect?: () => void
-}
-const props = defineProps<{ label: string; actions: RingAction[] }>()
-const emit = defineEmits<{ select: [action: RingAction] }>()
+const props = defineProps<{ label: string; actions: SplitAction[] }>()
+const emit = defineEmits<{ select: [action: SplitAction] }>()
 
 const root = useTemplateRef<HTMLElement>('root')
 const trigger = useTemplateRef<HTMLButtonElement>('trigger')
@@ -60,7 +56,7 @@ const iconAt = (i: number) => {
 const hovered = ref<number>()
 const caption = computed(() => (hovered.value === undefined ? '' : props.actions[hovered.value]!.label))
 
-function choose(action: RingAction) {
+function choose(action: SplitAction) {
   action.onSelect?.()
   emit('select', action)
   close()

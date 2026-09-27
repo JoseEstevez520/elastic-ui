@@ -3,7 +3,7 @@ import { useEventListener } from '../../composables/useEventListener'
 import { contentOut, prefersReducedMotion } from '../../utils/motion'
 
 /**
- * Lab: the open state both radial alternatives share, as SplitActions has it: the trigger toggles,
+ * The open state SplitActions' `ring` and `column` share: the trigger toggles,
  * the first action takes the focus, Escape or a click elsewhere closes; closing, the icons go
  * first (`showing`) and the shape folds after (`open`).
  */

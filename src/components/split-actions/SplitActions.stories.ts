@@ -25,22 +25,57 @@ type Story = StoryObj<typeof meta>
 /** Press Share: it lets go of its actions as drops, beside it. */
 export const Row: Story = {}
 
-/** A round button whose actions fan out above it, as a floating button's. */
-export const Radial: Story = {
-  args: {
-    layout: 'radial',
-    label: 'New',
-    icon: Plus,
-    actions: [
-      { label: 'Note', icon: MessageCircle },
-      { label: 'Bookmark', icon: Bookmark },
-      { label: 'Favourite', icon: Heart },
-    ],
-  },
+const quick = [
+  { label: 'Note', icon: MessageCircle },
+  { label: 'Bookmark', icon: Bookmark },
+  { label: 'Favourite', icon: Heart },
+]
+
+/** A round button that lets go of drops fanned out above it. */
+export const Fan: Story = {
+  args: { layout: 'fan', label: 'New', icon: Plus, actions: quick },
   render: (args) => ({
     components: { SplitActions },
     setup: () => ({ args }),
     template: `<div class="px-24 pt-32 pb-12"><SplitActions v-bind="args" /></div>`,
+  }),
+}
+
+/** A round button that grows into a ring round itself, a segment per action; point at one to name it. */
+export const Ring: Story = {
+  args: { layout: 'ring', label: 'New', actions: [...quick, { label: 'New page', icon: Plus }] },
+  render: (args) => ({
+    components: { SplitActions },
+    setup: () => ({ args }),
+    template: `<div class="p-40"><SplitActions v-bind="args" /></div>`,
+  }),
+}
+
+/** A round button that grows up into a split pill, where a floating button lives: a corner. */
+export const Column: Story = {
+  args: { layout: 'column', label: 'New', actions: [...quick, { label: 'New page', icon: Plus }] },
+  render: (args) => ({
+    components: { SplitActions },
+    setup: () => ({ args }),
+    template: `
+      <div class="flex h-[26rem] w-80 items-end justify-end rounded-[var(--radius-xl)] bg-surface-raised p-6">
+        <SplitActions v-bind="args" />
+      </div>`,
+  }),
+}
+
+/** The three round ones side by side, to choose: drops fanned, a ring, a column. */
+export const RoundOnes: Story = {
+  render: () => ({
+    components: { SplitActions },
+    setup: () => ({ quick, Plus }),
+    template: `
+      <div class="grid grid-cols-3 items-end gap-24 px-16 pt-56 pb-24">
+        <div v-for="layout in ['fan', 'ring', 'column']" :key="layout" class="flex flex-col items-center gap-28">
+          <SplitActions :layout="layout" label="New" :icon="Plus" :actions="quick" />
+          <span class="text-meta text-fg-muted">{{ layout }}</span>
+        </div>
+      </div>`,
   }),
 }
 

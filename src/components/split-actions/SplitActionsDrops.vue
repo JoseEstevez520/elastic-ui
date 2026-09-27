@@ -3,30 +3,22 @@ import { computed, nextTick, onMounted, ref, useTemplateRef, type Component, typ
 import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
 import Liquid from '../liquid/Liquid.vue'
-
-export interface SplitAction {
-  label: string
-  icon: Component
-  onSelect?: () => void
-}
+import type { SplitAction } from './split-actions.types'
 
 /**
- * A button that splits into its actions, as liquid (DECISIONS, "Morph or liquid"): pressed, it lets
- * go of a few round drops, one after another, each pulling out of it by a neck before it is free,
- * and each action's icon comes in once its drop has. Pressing it again, choosing an action,
- * Escape or a click elsewhere melts them back into it, the icons going first. For two to four
- * actions each clear from its icon alone (share to…, react, a row's tools); actions that need a
- * word are PopoverMorph's menu.
- *
- * `row`, the drops line up beside the button, its label showing; `radial`, the button is a round
- * icon and the drops fan out above it, as a floating button's actions.
+ * Internal: SplitActions' `row` and `fan`, as liquid (DECISIONS, "Morph or liquid"): pressed, the
+ * button lets go of a few round drops, one after another, each pulling out of it by a neck before
+ * it is free, and each action's icon comes in once its drop has. Pressing it again, choosing an
+ * action, Escape or a click elsewhere melts them back into it, the icons going first. `row`, the
+ * drops line up beside the button, its label showing; `fan`, the button is a round icon and the
+ * drops fan out above it.
  */
 const props = withDefaults(
   defineProps<{
     label: string
     icon: Component
     actions: SplitAction[]
-    layout?: 'row' | 'radial'
+    layout?: 'row' | 'fan'
     class?: HTMLAttributes['class']
   }>(),
   { layout: 'row' },
@@ -126,7 +118,7 @@ useEventListener<PointerEvent>(
     role="group"
     :aria-label="label"
     :overflow="reach"
-    :class="cn('inline-flex h-11 align-middle', layout === 'radial' && 'w-11', props.class)"
+    :class="cn('inline-flex h-11 align-middle', layout === 'fan' && 'w-11', props.class)"
   >
     <template #shapes>
       <div
@@ -143,7 +135,7 @@ useEventListener<PointerEvent>(
     <button
       ref="trigger"
       type="button"
-      :aria-label="layout === 'radial' ? label : undefined"
+      :aria-label="layout === 'fan' ? label : undefined"
       :aria-expanded="open ? 'true' : 'false'"
       :class="[
         'relative flex h-11 cursor-pointer items-center justify-center gap-2 rounded-full text-label text-fg focus-ring',
