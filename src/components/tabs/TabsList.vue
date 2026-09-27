@@ -38,8 +38,13 @@ function moveToActive(instant: boolean) {
     animate(rightEdge, right, SLIDE)
   }
   placed.value = true
-  // In a list that scrolls sideways, keep the active tab in view.
-  active.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: instant ? 'auto' : 'smooth' })
+  // In a list that scrolls sideways, keep the active tab in view, scrolling only the list itself:
+  // `scrollIntoView` would also move the page, as far as it takes, on every mount.
+  const el = listEl()
+  if (el && el.scrollWidth > el.clientWidth) {
+    const to = left < el.scrollLeft ? left : right > el.scrollLeft + el.clientWidth ? right - el.clientWidth : el.scrollLeft
+    if (to !== el.scrollLeft) el.scrollTo({ left: to, behavior: instant || prefersReducedMotion() ? 'auto' : 'smooth' })
+  }
 }
 
 watch(tabs.value, () => nextTick(() => moveToActive(false)))
