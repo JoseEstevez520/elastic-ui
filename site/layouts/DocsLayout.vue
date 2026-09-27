@@ -43,7 +43,7 @@ const crumbs = computed<BreadcrumbsItem[]>(() => {
       </NavTree>
     </Sidebar>
     <main class="min-w-0 flex-1">
-      <SidebarLayoutHeader>
+      <SidebarLayoutHeader seamless>
         <Breadcrumbs :items="crumbs" />
         <template #end>
           <ThemeToggle />
