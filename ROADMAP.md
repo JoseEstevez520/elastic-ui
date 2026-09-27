@@ -142,7 +142,7 @@ Experiments in `src/lab`, shown under Lab in Storybook and never built into the 
 | Download (completion told by the object) | Dropped: a 16px icon telling progress and a drop into a tray could not be read at all. |
 | Row to card | Dropped: a generic panel, not an object with parts of its own. |
 | Archive | Done: `ConfirmButton` with `ArchiveIcon` and `tone="warning"`. |
-| Date tile | Trying: a date as a tear-off calendar, the day's page lifting over the binding as it moves on and coming back down going back; the month morphing on its band. |
+| Date tile | Kept in the lab: a date as a tear-off calendar, its page lifting over the binding; it works, but does not excite. |
 
 ## Versions
 
