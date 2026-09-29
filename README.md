@@ -20,10 +20,10 @@ Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](h
 
 ## Install
 
-Published on npm as [`vue-elastic-ui`](https://www.npmjs.com/package/vue-elastic-ui):
+Published on npm as [`@joseestevez/vue-elastic-ui`](https://www.npmjs.com/package/@joseestevez/vue-elastic-ui):
 
 ```bash
-npm install vue-elastic-ui motion-v
+npm install @joseestevez/vue-elastic-ui motion-v
 ```
 
 `motion-v` comes with it because it is a peer dependency; Vue and Tailwind CSS v4 are expected
@@ -33,15 +33,15 @@ The library ships no compiled CSS: the project's Tailwind builds its classes. In
 
 ```css
 @import "tailwindcss";
-@import "vue-elastic-ui/tokens.css";
-@source "../node_modules/vue-elastic-ui/dist";
+@import "@joseestevez/vue-elastic-ui/tokens.css";
+@source "../node_modules/@joseestevez/vue-elastic-ui/dist";
 ```
 
 Then use the parts:
 
 ```vue
 <script setup>
-import { Button, PopoverMorph, PopoverMorphItem } from 'vue-elastic-ui'
+import { Button, PopoverMorph, PopoverMorphItem } from '@joseestevez/vue-elastic-ui'
 import { Pencil, Trash2 } from '@lucide/vue'
 </script>
 
@@ -59,7 +59,7 @@ import { Pencil, Trash2 } from '@lucide/vue'
 Every text the library writes on its own (names for screen readers, placeholders, default titles) can be set once:
 
 ```js
-import { ElasticUi } from 'vue-elastic-ui'
+import { ElasticUi } from '@joseestevez/vue-elastic-ui'
 
 app.use(ElasticUi, { labels: { copy: 'Copiar', onThisPage: 'En esta página' } })
 ```
