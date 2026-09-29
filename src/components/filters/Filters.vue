@@ -174,7 +174,15 @@ const summary = computed(() =>
     </PopoverMorph>
 
     <!-- Pills there when the page loads (filters from a link) just show. -->
-    <AnimatedList :items="pills" :item-key="(p) => p.key" as="div" :appear="false" :class="cn(filtersClass, 'min-w-0 max-w-full')" item-class="min-w-0 max-w-full">
+    <AnimatedList
+      :items="pills"
+      :item-key="(p) => p.key"
+      as="div"
+      :appear="false"
+      collapse="horizontal"
+      :class="cn(filtersClass, 'min-w-0 max-w-full')"
+      item-class="min-w-0 max-w-full"
+    >
       <template #default="{ item }">
         <FiltersPill :category="item.category" :values="item.values" @open="openAt(item.key)" @remove="remove(item.key)" />
       </template>
