@@ -20,31 +20,28 @@ Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](h
 
 ## Install
 
-It is not published: it lives in its private repository and is used in my own projects.
+Published on npm as [`vue-elastic-ui`](https://www.npmjs.com/package/vue-elastic-ui):
 
-- **From the repository**, in a project of mine, at a version:
+```bash
+npm install vue-elastic-ui motion-v
+```
 
-  ```bash
-  npm install github:JoseEstevez520/elastic-ui#v0.1.0 motion-v
-  ```
-
-  It builds itself as it installs. `npm update` brings a newer commit; changing the tag moves to another version.
-
-- **As a package file**, where the project is shared with people who cannot reach the repository (as the class web): `npm pack` here, the `.tgz` in the project's `vendor/`, and `npm install ./vendor/elastic-ui-0.1.0.tgz`.
+`motion-v` comes with it because it is a peer dependency; Vue and Tailwind CSS v4 are expected
+in the project.
 
 The library ships no compiled CSS: the project's Tailwind builds its classes. In its main stylesheet:
 
 ```css
 @import "tailwindcss";
-@import "elastic-ui/tokens.css";
-@source "../node_modules/elastic-ui/dist";
+@import "vue-elastic-ui/tokens.css";
+@source "../node_modules/vue-elastic-ui/dist";
 ```
 
 Then use the parts:
 
 ```vue
 <script setup>
-import { Button, PopoverMorph, PopoverMorphItem } from 'elastic-ui'
+import { Button, PopoverMorph, PopoverMorphItem } from 'vue-elastic-ui'
 import { Pencil, Trash2 } from '@lucide/vue'
 </script>
 
@@ -62,7 +59,7 @@ import { Pencil, Trash2 } from '@lucide/vue'
 Every text the library writes on its own (names for screen readers, placeholders, default titles) can be set once:
 
 ```js
-import { ElasticUi } from 'elastic-ui'
+import { ElasticUi } from 'vue-elastic-ui'
 
 app.use(ElasticUi, { labels: { copy: 'Copiar', onThisPage: 'En esta página' } })
 ```
@@ -79,4 +76,4 @@ Every colour holds both themes through `light-dark()`, so the theme follows the 
 
 ## License
 
-MIT. Not published: it is shared only with the projects that use it.
+MIT.
