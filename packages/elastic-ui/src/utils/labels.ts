@@ -1,4 +1,5 @@
 import { inject, provide, type App, type InjectionKey } from 'vue'
+import { setMotionPreference, type MotionPreference } from './motion'
 
 /**
  * Every text the library writes on its own: names for screen readers, placeholders, default
@@ -146,9 +147,10 @@ export function useLabels(): Labels {
 /** One of the library's texts, for a prop's default: `{ label: () => labelFor('search') }`. */
 export const labelFor = (key: keyof Labels) => () => useLabels()[key]
 
-/** `app.use(ElasticUi, { labels: { copy: 'Copiar', … } })` sets the library's texts app-wide. */
+/** `app.use(ElasticUi, { labels: { copy: 'Copiar', … }, motion: 'full' })` sets the library app-wide. */
 export const ElasticUi = {
-  install(app: App, options: { labels?: Partial<Labels> } = {}) {
+  install(app: App, options: { labels?: Partial<Labels>; motion?: MotionPreference } = {}) {
     app.provide(LabelsKey, options.labels ?? {})
+    setMotionPreference(options.motion ?? 'auto')
   },
 }

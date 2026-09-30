@@ -252,7 +252,8 @@
   & > :nth-child(n + 8) { --stagger-index: 7; }
 
   @media (prefers-reduced-motion: reduce) {
-    &, & > * { animation: none; }
+    html:not([data-motion='full']) &,
+    html:not([data-motion='full']) & > * { animation: none; }
   }
 }
 
@@ -281,7 +282,7 @@
   [data-side="top"] & > :nth-last-child(n + 8) { --stagger-index: 7; }
 
   @media (prefers-reduced-motion: reduce) {
-    & > * { animation: none; }
+    html:not([data-motion='full']) & > * { animation: none; }
   }
 }
 
@@ -416,9 +417,11 @@
   animation: sheen 2s linear infinite;
 
   @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    mask-image: none;
-    color: var(--color-fg-muted);
+    html:not([data-motion='full']) & {
+      animation: none;
+      mask-image: none;
+      color: var(--color-fg-muted);
+    }
   }
 }
 
@@ -433,9 +436,11 @@
   animation: sheen 2s linear infinite;
 
   @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    mask-image: none;
-    opacity: 0.7;
+    html:not([data-motion='full']) & {
+      animation: none;
+      mask-image: none;
+      opacity: 0.7;
+    }
   }
 }
 
@@ -756,7 +761,7 @@ html.theme-switching *::after {
     animation: blur-in 0.45s var(--ease-soft) calc(min(var(--diagram-index, 0), 7) * 60ms) both;
   }
   @media (prefers-reduced-motion: reduce) {
-    & .diagram-in {
+    html:not([data-motion='full']) & .diagram-in {
       opacity: 1;
       animation: none !important;
     }

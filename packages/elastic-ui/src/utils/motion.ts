@@ -22,7 +22,34 @@ export const morphCloseTransition = { type: 'tween', duration: 0.3, ease: EASE_E
 export const contentIn = { duration: 0.22, delay: 0.3, ease: 'linear' } as const
 export const contentOut = { duration: 0.16, ease: 'linear' } as const
 
+/**
+ * How the library treats the system's reduced-motion setting. `auto` follows it; `full` ignores it
+ * and always animates, for an app that wants motion everywhere.
+ */
+export type MotionPreference = 'auto' | 'full'
+
+let motionPreference: MotionPreference = 'auto'
+
+/**
+ * Sets the motion preference app-wide. `app.use(ElasticUi, { motion: 'full' })` does it at install,
+ * and it can be changed later (a settings toggle). It also mirrors the choice on `<html
+ * data-motion="full">`, so the CSS `prefers-reduced-motion` rules (in tokens.css and in the
+ * components' `motion-reduce:` classes) know to step aside.
+ */
+export function setMotionPreference(preference: MotionPreference) {
+  motionPreference = preference
+  if (typeof document !== 'undefined') {
+    if (preference === 'full') document.documentElement.dataset.motion = 'full'
+    else delete document.documentElement.dataset.motion
+  }
+}
+
+export function getMotionPreference() {
+  return motionPreference
+}
+
 export function prefersReducedMotion() {
+  if (motionPreference === 'full') return false
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
