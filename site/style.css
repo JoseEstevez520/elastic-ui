@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@import "elastic-ui/tokens.css";
+
+@source "../src";
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}
+
+/* The page scrolls with the library's own scrollbar. */
+html {
+  @apply scrollbar-subtle;
+}
+
+/* An anchor reached by a hash or a TableOfContents click lands below the sticky header, never
+   under it — the same offset Prose's own headings use (tokens.css). For a target that isn't a
+   Prose heading, such as the Components page's part sections. */
+.scroll-anchor {
+  scroll-margin-top: calc(var(--page-header-height, 0px) + 1.5rem);
+}
+
+/* The box a story's live preview sits in. Many parts share one page here, unlike Storybook's one
+   canvas at a time, so a part that positions itself against the screen in real use (a chat
+   launcher, a dynamic island, a toast corner) needs its own screen to do that against: `transform`
+   makes this box the containing block for its `position: fixed` descendants (the same trick a
+   dialog's own root uses), without clipping anything (overflow stays visible) — an overlay that
+   means to cover the real page (DialogMorph, Sheet, ImageView, CommandPalette) is teleported to
+   `body` regardless, so it is never caught by this.
+   A part that grows past its box (a field's list, a menu, a date's calendar) still can: while it
+   holds something open (`aria-expanded`/`data-state="open"` inside it), the box itself rises
+   above the ones that follow it on the page, so its panel is never cut short by or shown under
+   the next part's box. */
+.story-stage {
+  position: relative;
+  overflow: visible;
+  transform: translateZ(0);
+}
+.story-stage:has([aria-expanded="true"], [data-state="open"]) {
+  z-index: 50;
+}
+
+/* A few stories (Toast, SheetFlow…) size their own demo to the screen (Storybook's `fullscreen`
+   layout: `min-h-screen`, `h-screen`), reasonably, since Storybook gives a story the whole canvas.
+   Here it shares a small box with every other part, so that assumption no longer holds: sized to
+   its own content instead, same as any other story — never claiming the real viewport. What such a
+   story grows into (a sheet, a toast stack) is still `position: fixed`, contained to the stage
+   itself (above), so it still has the room it needs to grow, just not reserved ahead of time. */
+.story-stage :where(.h-screen, .h-dvh, .min-h-screen, .min-h-dvh) {
+  height: auto;
+  min-height: 0;
+}
