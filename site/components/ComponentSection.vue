@@ -5,7 +5,7 @@ import { cn, StatusText } from 'elastic-ui'
 import { loadPart, type LoadedPart, type RegistryEntry } from '../parts'
 
 /**
- * One part, read on the scrolling Components page (SITE.md §4): its name, a one-line description,
+ * One part, read on the scrolling Components page (ROADMAP.md, the site plan): its name, a one-line description,
  * and its main story live — the same live preview a part's own page opens with, so scrolling here
  * and opening `/components/:name` never show two different things. Its other stories stay a click
  * away, on that page, rather than repeating them all inline.

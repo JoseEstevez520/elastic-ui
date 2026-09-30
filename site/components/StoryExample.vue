@@ -4,7 +4,7 @@ import { CodeBlock, Tabs, TabsContent, TabsList, TabsTrigger } from 'elastic-ui'
 import type { StoryInfo } from '../parts'
 
 /**
- * One story of a part: its live preview, with its source a tab away (SITE.md §5). The preview is
+ * One story of a part: its live preview, with its source a tab away (ROADMAP.md, the site plan). The preview is
  * framed because it is real grouping, and anchored at the top left, as on a page: a centred story
  * moves as a part grows, so its motion could not be judged.
  */

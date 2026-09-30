@@ -88,7 +88,7 @@ export interface RegistryGroup {
 }
 
 /**
- * The registry as groups in Storybook's order (SITE.md §4), the entries in each narrowed to those
+ * The registry as groups in Storybook's order (ROADMAP.md, the site plan), the entries in each narrowed to those
  * matching a query — by name or by group, so typing a group's name keeps it whole. Shared by the
  * sidebar's NavTree and the Components page's sections, so both agree on what a search matches.
  */

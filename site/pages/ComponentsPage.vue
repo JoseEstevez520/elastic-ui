@@ -6,7 +6,7 @@ import ComponentSection from '../components/ComponentSection.vue'
 import { readingPart as active } from '../reading'
 import { groupedRegistry } from '../parts'
 
-// One long page instead of a card grid to a page each (SITE.md §4, "scroll through the docs"):
+// One long page instead of a card grid to a page each (ROADMAP.md, the site plan: "scroll through the docs"):
 // every part, its group's order, its main story live where it stands. A search narrows the
 // sections themselves rather than filtering a list of links to them.
 const query = ref('')

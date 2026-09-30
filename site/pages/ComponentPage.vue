@@ -29,12 +29,10 @@ const examples = computed(() => part.value?.stories.filter((story) => !story.sit
 const situations = computed(() => part.value?.stories.filter((story) => story.situation) ?? [])
 const neighbors = computed(() => neighborsOf(slug.value))
 
-// One story lives on the page at once (SITE.md §5's own rule, taken further): with every other
+// One story lives on the page at once (the site plan's own rule, taken further): with every other
 // example, every situation and every sub-component's API always mounted too, a part with many of
-// each (Sidebar's five, Select's ten-odd stories) got heavy to scroll — and a part whose story
-// mounts something that answers to one shared state for the whole page rather than its own
-// instance (Toast's queue) showed as many of it as there were stories open at once. Collapsed,
-// only the main example actually renders.
+// each (Sidebar's five, Select's ten-odd stories) gets heavy to scroll. Collapsed, only the main
+// example actually renders.
 const mainExample = computed(() => examples.value[0])
 const restExamples = computed(() => examples.value.slice(1))
 const moreCount = computed(() => restExamples.value.length + situations.value.length)

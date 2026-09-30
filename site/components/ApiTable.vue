@@ -3,7 +3,7 @@ import type { ApiPart } from '../parts'
 
 /**
  * One component's API as plain Prose tables: props, events and slots, with the types as written
- * in the source (SITE.md §5). A table wider than the text scrolls inside its `prose-table`.
+ * in the source (ROADMAP.md, the site plan). A table wider than the text scrolls inside its `prose-table`.
  */
 defineProps<{
   part: ApiPart

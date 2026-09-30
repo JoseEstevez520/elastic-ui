@@ -5,7 +5,7 @@ import { CodeBlock } from 'elastic-ui'
 import { registry } from '../parts'
 
 // A few parts worth a first look, linking straight into their section of the long Components
-// page (SITE.md §4) rather than repeating a live demo here — this page reads like any other in
+// page (ROADMAP.md, the site plan) rather than repeating a live demo here — this page reads like any other in
 // the docs, not a second showcase competing with it.
 const FEATURED = ['button', 'select', 'popover-morph', 'expandable-card', 'text-morph', 'animated-list']
 const featured = computed(() => FEATURED.map((slug) => registry.find((entry) => entry.slug === slug)).filter((entry) => !!entry))

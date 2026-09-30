@@ -4,7 +4,7 @@
  * site without editing the site. For each folder in src/components:
  *
  * - The stories file(s): every story with its docs and its source, split at the "Situations"
- *   comment into examples and situations (SITE.md §5).
+ *   comment into examples and situations (ROADMAP.md, the site plan).
  * - The component file(s): the API as written in the source — props, events and slots — read with
  *   vue-component-meta, and the doc comment as the part's description.
  *
@@ -125,7 +125,7 @@ function storiesOf(sourcePath) {
 /**
  * The component's doc comment: the JSDoc right before `defineProps`/`defineModel` (vue-component-meta
  * does not surface it for script setup). None at all when the file documents only its props — a prop's
- * doc is never the part's description. Just its first paragraph (SITE.md §5).
+ * doc is never the part's description. Just its first paragraph (ROADMAP.md, the site plan).
  */
 function descriptionOf(sourcePath) {
   const text = readFileSync(sourcePath, 'utf8')
@@ -143,7 +143,7 @@ function descriptionOf(sourcePath) {
   return body.split(/\n\s*\n/)[0]?.replace(/\n/g, ' ') || undefined
 }
 
-/** Comment blocks that credit where a part was inspired from carry a link (SITE.md §5). */
+/** Comment blocks that credit where a part was inspired from carry a link (ROADMAP.md, the site plan). */
 function creditsOf(sourcePath) {
   const text = readFileSync(sourcePath, 'utf8')
   // Consecutive `//` lines are one comment; JSDoc blocks stand on their own.
