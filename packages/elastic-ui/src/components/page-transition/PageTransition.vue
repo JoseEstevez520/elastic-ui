@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { prefersReducedMotion } from '../../utils/motion'
+import { afterPaint, prefersReducedMotion } from '../../utils/motion'
 
 /**
  * Going from one page to another, only the content changes (USAGE 12), and lightly, since it
@@ -11,6 +11,10 @@ import { prefersReducedMotion } from '../../utils/motion'
  *
  * Wrap what changes, keyed by the page: with Vue Router,
  * `<RouterView v-slot="{ Component, route }"><PageTransition :page="route.path"><component :is="Component" /></PageTransition></RouterView>`.
+ *
+ * When there is nothing to animate (reduced motion, or not an element) the change still waits for
+ * `afterPaint`: finishing the transition from inside the hook would re-render in the middle of
+ * Vue's own patch, and the incoming page would never mount.
  */
 const props = defineProps<{
   /** Which page it is; a new one plays the change. */
@@ -24,7 +28,7 @@ const OUT = 100
 const IN = 200
 
 function leave(el: Element, done: () => void) {
-  if (prefersReducedMotion() || !(el instanceof HTMLElement)) return done()
+  if (prefersReducedMotion() || !(el instanceof HTMLElement)) return afterPaint(done)
   el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: OUT, easing: 'linear', fill: 'forwards' }).finished.then(done, done)
 }
 
@@ -38,7 +42,7 @@ function toTop() {
 function enter(el: Element, done: () => void) {
   toTop()
   emit('changed')
-  if (prefersReducedMotion() || !(el instanceof HTMLElement)) return done()
+  if (prefersReducedMotion() || !(el instanceof HTMLElement)) return afterPaint(done)
   el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: IN, easing: 'ease-out' }).finished.then(done, done)
 }
 </script>
