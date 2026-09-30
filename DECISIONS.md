@@ -101,7 +101,7 @@ A component is not done until it works in every situation below, and each critic
 
 - **A minimal base** (Button, Input, Badge…): enough for the special components to be built from. Not competing with shadcn on count.
 - **The core is components that transform**: MorphHeader, ExpandableCard, and in the same spirit a Dialog born from its trigger, Popover/Dropdown growing from its trigger, Tabs with a sliding indicator, a Toast that expands on hover, a Search that grows from an icon.
-- **Out of scope**: data tables, charts, complex calendars.
+- **The dashboard is in scope.** Data tables, charts and the dense, data-heavy pages a real project asks for are welcome: the library grows towards them (`ROADMAP.md`, "Next").
 
 ## Stack
 
