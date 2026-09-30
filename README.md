@@ -1,78 +1,33 @@
 # elastic-ui
 
-A Vue 3 component library where things transform instead of appearing: a button grows into its dialog, a tab's indicator travels to the next tab, an answer flows in as a wave. Clean, soft and quiet, with one movement leading on each screen.
+A Vue 3 component library where things transform instead of appearing, and the site that shows it. The repository is a workspace with two packages:
 
-Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](https://motion.dev/docs/vue).
+- `packages/elastic-ui` — the library, published on npm as [`@joseestevez/vue-elastic-ui`](https://www.npmjs.com/package/@joseestevez/vue-elastic-ui).
+- `site` — the library's site: a landing and the docs, built with the library itself.
 
-## What is in it
-
-| Family | Parts |
-|---|---|
-| Actions | Button, CopyButton, ProgressButton, ThemeToggle, ComposeMorph |
-| Forms | Input, Textarea, Select, Checkbox, Switch, Filters |
-| Overlays | Popover, PopoverMorph, Menu, Tooltip, DialogMorph, CommandPalette, Toast, SelectionMenu |
-| Disclosure | Collapsible, Accordion, Tabs, Steps, ExpandableCard |
-| Navigation | Sidebar, NavTree, MorphHeader, Breadcrumbs, TableOfContents, SearchMorph, ScrollIndicator |
-| Content | Card, Badge, Callout, AnimatedList, DynamicIsland |
-| Text | TextMorph, StatusText, Prose, Markdown |
-| Code | CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay |
-| AI | Chat, ChatMorph, Aurora, AgentReplay, ImageReveal |
-
-## Install
-
-Published on npm as [`@joseestevez/vue-elastic-ui`](https://www.npmjs.com/package/@joseestevez/vue-elastic-ui):
+## Getting started
 
 ```bash
-npm install @joseestevez/vue-elastic-ui motion-v
+npm install
+npm run storybook   # http://localhost:6006
 ```
 
-`motion-v` comes with it because it is a peer dependency; Vue and Tailwind CSS v4 are expected
-in the project.
+The root commands delegate to the packages:
 
-The library ships no compiled CSS: the project's Tailwind builds its classes. In its main stylesheet:
-
-```css
-@import "tailwindcss";
-@import "@joseestevez/vue-elastic-ui/tokens.css";
-@source "../node_modules/@joseestevez/vue-elastic-ui/dist";
+```bash
+npm run build           # build the library
+npm run build-storybook # static Storybook
+npm run typecheck       # library and site
+npm run site            # the site at http://localhost:5173
+npm run site:build      # static site
 ```
 
-Then use the parts:
+## Docs
 
-```vue
-<script setup>
-import { Button, PopoverMorph, PopoverMorphItem } from '@joseestevez/vue-elastic-ui'
-import { Pencil, Trash2 } from '@lucide/vue'
-</script>
-
-<template>
-  <PopoverMorph role="menu" label="Actions">
-    <template #trigger>Actions</template>
-    <PopoverMorphItem :icon="Pencil">Rename</PopoverMorphItem>
-    <PopoverMorphItem :icon="Trash2">Delete</PopoverMorphItem>
-  </PopoverMorph>
-</template>
-```
-
-## In your language
-
-Every text the library writes on its own (names for screen readers, placeholders, default titles) can be set once:
-
-```js
-import { ElasticUi } from '@joseestevez/vue-elastic-ui'
-
-app.use(ElasticUi, { labels: { copy: 'Copiar', onThisPage: 'En esta página' } })
-```
-
-## Themes
-
-Every colour holds both themes through `light-dark()`, so the theme follows the system. `data-theme="light"` or `"dark"` on `<html>` forces one, and ThemeToggle switches it. Customize from the outside in: global tokens on `:root` (`--color-accent`, `--radius-md`…), then a part's own tokens (`--card-radius`, `--popover-bg`…), then variants, then `class`.
-
-## Using it well
-
-- [`USAGE.md`](./USAGE.md): the rules for building with it, for people and coding agents alike.
-- [`DECISIONS.md`](./DECISIONS.md): how it is made and why.
-- `npm run storybook`: every part, by family, in every situation that matters.
+- [Using elastic-ui](packages/elastic-ui/USAGE.md) — the rules for building with it, for people and coding agents alike.
+- [Design decisions](packages/elastic-ui/DECISIONS.md) — how it is made and why.
+- [Roadmap](ROADMAP.md) — where it is and what comes next.
+- [AGENTS.md](AGENTS.md) — working conventions for this repo.
 
 ## License
 

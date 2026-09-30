@@ -20,7 +20,7 @@ import ts from 'typescript'
 import { createChecker } from 'vue-component-meta'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
-const componentsDir = join(root, 'src/components')
+const componentsDir = join(root, 'packages/elastic-ui/src/components')
 const outDir = join(root, 'site/generated')
 mkdirSync(outDir, { recursive: true })
 
@@ -32,7 +32,7 @@ const folders = readdirSync(componentsDir, { withFileTypes: true })
 // The checker is created lazily and shared: the first API read builds the type program once.
 let checker
 function apiOf(componentPath) {
-  checker ??= createChecker(join(root, 'tsconfig.app.json'), { printer: { newLine: 1 } })
+  checker ??= createChecker(join(root, 'packages/elastic-ui/tsconfig.app.json'), { printer: { newLine: 1 } })
   const meta = checker.getComponentMeta(componentPath)
   return {
     props: meta.props
@@ -240,7 +240,7 @@ const loaders = folders
       .filter((file) => file.endsWith('.stories.ts'))
       .sort()
     if (!files.length) return undefined
-    const imports = files.map((file) => `() => import('../../src/components/${folder}/${file}')`).join(', ')
+    const imports = files.map((file) => `() => import('../../packages/elastic-ui/src/components/${folder}/${file}')`).join(', ')
     return `  ${JSON.stringify(folder)}: [${imports}],`
   })
   .filter(Boolean)

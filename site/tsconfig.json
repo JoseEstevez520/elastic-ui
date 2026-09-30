@@ -14,11 +14,10 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.site.tsbuildinfo",
     "types": ["vite/client"],
     "paths": {
-      "elastic-ui": ["./src/index.ts"]
+      "elastic-ui": ["../packages/elastic-ui/src/index.ts"]
     }
   },
-  "include": ["site/**/*.ts", "site/**/*.vue"]
+  "include": ["**/*.ts", "**/*.vue"]
 }

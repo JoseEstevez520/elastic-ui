@@ -1,6 +1,6 @@
 # Roadmap — elastic-ui
 
-Where the library is and what comes next. How it is made lives in `DECISIONS.md`, how to use it in `USAGE.md`, and working conventions in `AGENTS.md`.
+Where the library is and what comes next. This repository is an npm workspace: the library lives in `packages/elastic-ui` and the site in `site`; root scripts delegate to them. How the library is made lives in `packages/elastic-ui/DECISIONS.md`, how to use it in `packages/elastic-ui/USAGE.md`, and working conventions in `AGENTS.md`.
 
 ## Getting started
 
@@ -11,7 +11,7 @@ npm run typecheck
 npm run build
 ```
 
-Storybook's dev server misses Tailwind classes in newly created files; `touch .storybook/preview.css` makes it scan again, without a restart.
+Storybook's dev server misses Tailwind classes in newly created files; `touch packages/elastic-ui/.storybook/preview.css` makes it scan again, without a restart.
 
 ## Where it stands
 
@@ -38,11 +38,11 @@ Released as `v0.3.1`, on npm as `@joseestevez/vue-elastic-ui`. Around sixty publ
 
 The site is the library's own showcase: a landing and a place to explore every part and learn to use it, built with the library itself, so nothing on it appears from nowhere that could grow out of something.
 
-- **Where.** A `site/` folder in this repository: a Vite + Vue 3 + vue-router app importing the library straight from `src/` through an alias, so it always shows the current code. It never ships with the package (`site/` stays out of `files`). `npm run site` and `npm run site:build` in the root. Work on the `site` branch; it is not merged into `main`.
+- **Where.** The `site/` package of the workspace: a Vite + Vue 3 + vue-router app importing the library straight from `packages/elastic-ui/src` through an alias, so it always shows the current code without building the library first. It never ships with the library package. `npm run site` and `npm run site:build` in the root.
 - **Pages.** A **landing** (`/`) with `MorphHeader` and no sidebar: one line on the idea, one live demo, three or four short sections each with one live part, and the rules in brief. **Getting started** (`/docs`) from `USAGE.md`. **Principles** (`/docs/principles`) from `DECISIONS.md` and `USAGE.md`, a live example per rule. **Explore** (`/components`): every public part grouped by family, its groups as the only filter, a card growing into the part's page. A **part's page** (`/components/:name`): the description from its doc comment, previews rendered from its stories with `composeStories`, the source a tab away, the Situations, an API table from `vue-component-meta`, the keyboard notes, and previous and next.
 - **Layout and look.** `SidebarLayout` + `Sidebar` (`connected`) + `NavTree`, with `SidebarLayoutHeader` holding the breadcrumbs and `ThemeToggle`; `TableOfContents` on long pages, `PageTransition` between them. Light and dark from the start, and a phone.
-- **Order of work.** Scaffold; one part's page end to end (Button), to get it right before scaling; a registry generated from `src/components/*` and their stories, so a new part shows up on its own; Getting started and Principles; landing; the card-to-page transition; a pass in light, dark and at phone width.
-- **Rules.** Everything in English; follow `DECISIONS.md` and `USAGE.md`; do not change `src/` to make the site work — write what is missing in `SITE-NEEDS.md` for the library to do first; no attribution in commits.
+- **Order of work.** Scaffold; one part's page end to end (Button), to get it right before scaling; a registry generated from `packages/elastic-ui/src/components/*` and their stories, so a new part shows up on its own; Getting started and Principles; landing; the card-to-page transition; a pass in light, dark and at phone width.
+- **Rules.** Everything in English; follow `DECISIONS.md` and `USAGE.md`; do not change the library's `src/` to make the site work. Write what is missing in `site/SITE-NEEDS.md` for the library to do first. No attribution in commits.
 
 ## The TEIS web
 

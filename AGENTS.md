@@ -14,5 +14,6 @@
 
 - This is a learning project. Discuss and plan with the user before creating files, installing dependencies or writing code.
 - Only write code when the user explicitly asks for it.
-- Follow the decisions and code rules in `DECISIONS.md`. Keep the code clean.
-- When using the library (stories, examples, other projects), follow `USAGE.md`.
+- This is an npm workspace: the library lives in `packages/elastic-ui` and the site in `site`. Root scripts delegate to them.
+- Follow the decisions and code rules in `packages/elastic-ui/DECISIONS.md`. Keep the code clean.
+- When using the library (stories, examples, other projects), follow `packages/elastic-ui/USAGE.md`.
