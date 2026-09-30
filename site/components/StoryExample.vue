@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, type Component } from 'vue'
 import { CodeBlock, providePortalTarget, Tabs, TabsContent, TabsList, TabsTrigger } from 'elastic-ui'
+import { useFittedHeight } from '../fitted-height'
 import type { StoryInfo } from '../parts'
 
 /**
@@ -21,6 +22,8 @@ const props = withDefaults(
 // Overlays this story opens (a dialog, a menu, a term) teleport into the frame, not the page.
 const frame = ref<HTMLElement>()
 providePortalTarget(frame)
+// The frame grows to hold a panel the story opens, and folds back once it closes.
+const fitted = useFittedHeight(frame, () => props.story.height)
 </script>
 
 <template>
@@ -37,7 +40,7 @@ providePortalTarget(frame)
           ref="frame"
           class="story-stage rounded-[var(--radius-xl)] border border-border"
           :class="story.fullscreen ? 'story-stage--fullscreen' : 'p-6'"
-          :style="{ height: `${story.height}px` }"
+          :style="story.fullscreen ? { height: `${story.height}px` } : { minHeight: `${fitted}px` }"
         >
           <component :is="props.component" v-if="props.component" />
         </div>

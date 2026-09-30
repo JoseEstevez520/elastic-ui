@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { providePortalTarget, StatusText } from 'elastic-ui'
+import { useFittedHeight } from '../fitted-height'
 import { loadPart, type LoadedPart, type RegistryEntry } from '../parts'
 
 /**
@@ -43,6 +44,8 @@ const mainComponent = computed(() => (mainStory.value ? loaded.value?.components
 // Overlays the story opens teleport into this frame, not the page.
 const frame = ref<HTMLElement>()
 providePortalTarget(frame)
+// The frame grows to hold a panel the story opens, and folds back once it closes.
+const fitted = useFittedHeight(frame, () => mainStory.value?.height ?? 320)
 
 </script>
 
@@ -67,7 +70,7 @@ providePortalTarget(frame)
       ref="frame"
       class="story-stage rounded-[var(--radius-xl)] border border-border"
       :class="mainStory?.fullscreen ? 'story-stage--fullscreen' : 'p-6'"
-      :style="{ height: `${mainStory?.height ?? 320}px` }"
+      :style="mainStory?.fullscreen ? { height: `${mainStory.height}px` } : { minHeight: `${fitted}px` }"
     >
       <StatusText v-if="near && !mainComponent" text="Loading" working class="text-copy text-fg-muted" />
       <component :is="mainComponent" v-else-if="mainComponent" />
