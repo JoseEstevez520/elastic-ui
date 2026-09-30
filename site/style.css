@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "elastic-ui/tokens.css";
 
-@source "../src";
+@source "../packages/elastic-ui/src";
 
 body {
   background-color: var(--color-bg);
