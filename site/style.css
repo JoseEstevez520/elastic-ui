@@ -37,7 +37,12 @@ html {
 
 /* A story that asks for the whole canvas (Storybook's `fullscreen` layout) fills the frame, not
    the real viewport. The story's own root gets a definite height too, so a full-height child
-   inside it (`h-full`, `h-dvh`) has something to resolve its 100% against. */
+   inside it (`h-full`, `h-dvh`) has something to resolve its 100% against. Content taller than the
+   frame scrolls inside it, rather than being cut off. */
+.story-stage--fullscreen {
+  overflow: auto;
+  @apply scrollbar-subtle;
+}
 .story-stage--fullscreen > :first-child {
   height: 100%;
 }
