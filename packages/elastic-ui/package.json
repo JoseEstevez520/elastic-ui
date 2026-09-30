@@ -26,8 +26,7 @@
     "ui",
     "tailwindcss",
     "motion",
-    "morph",
-    "reka-ui"
+    "morph"
   ],
   "files": [
     "dist",
