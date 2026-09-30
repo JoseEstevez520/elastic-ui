@@ -5,6 +5,7 @@ import { computed, ref, useId, useTemplateRef, watch, type HTMLAttributes } from
 import { SearchIcon } from '../../icons/internal'
 import { useEventListener } from '../../composables/useEventListener'
 import { useMorphLift } from '../../composables/useMorphLift'
+import { usePortalTarget } from '../../composables/usePortalTarget'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
 import { contentOut, EASE_EMPHASIZED, morphCloseTransition, morphTransition } from '../../utils/motion'
@@ -45,6 +46,7 @@ const props = withDefaults(
 const open = defineModel<boolean>('open', { default: false })
 const query = defineModel<string>('query', { default: '' })
 const close = () => (open.value = false)
+const portalTo = usePortalTarget()
 
 // Where it opened from: its button (a morph) or anywhere else (a fade). Set on every opening, and
 // kept until it has closed, so it leaves the way it came.
@@ -166,7 +168,7 @@ function onContentDone() {
           </span>
         </template>
 
-        <DialogPortal>
+        <DialogPortal :to="portalTo">
           <DialogOverlay :class="dialogMorphOverlayClass" />
           <div v-if="lifted" :class="commandPositionerClass">
             <DialogContent as-child :aria-describedby="undefined" @close-auto-focus="fromTrigger && $event.preventDefault()">

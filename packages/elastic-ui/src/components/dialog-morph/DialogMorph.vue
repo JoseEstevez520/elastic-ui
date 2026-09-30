@@ -3,6 +3,7 @@ import { LayoutGroup, MotionConfig, motion } from 'motion-v'
 import { DialogContent, DialogOverlay, DialogPortal, DialogRoot } from 'reka-ui'
 import { useId, useTemplateRef, type HTMLAttributes } from 'vue'
 import { useMorphLift } from '../../composables/useMorphLift'
+import { usePortalTarget } from '../../composables/usePortalTarget'
 import { cn } from '../../utils/cn'
 import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
 import {
@@ -37,6 +38,7 @@ const trigger = useTemplateRef<{ $el: HTMLElement }>('trigger')
 const { lifted, returned, settled, hide } = useMorphLift(open, trigger)
 
 const id = useId()
+const portalTo = usePortalTarget()
 
 </script>
 
@@ -69,7 +71,7 @@ const id = useId()
           <span :class="dialogMorphLabelOutClass"><slot name="trigger" /></span>
         </span>
 
-        <DialogPortal>
+        <DialogPortal :to="portalTo">
           <DialogOverlay :class="dialogMorphOverlayClass" />
           <div v-if="lifted" class="pointer-events-none fixed inset-0 z-50 grid place-items-center p-4">
             <DialogContent

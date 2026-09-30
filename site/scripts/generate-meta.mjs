@@ -63,6 +63,42 @@ function sentenceCase(name) {
   return words[0] + words.slice(1).toLowerCase()
 }
 
+/** Unwraps `satisfies`/`as`/parentheses down to an object literal, when there is one. */
+function objectOf(node) {
+  let current = node
+  while (current && (ts.isSatisfiesExpression(current) || ts.isAsExpression(current) || ts.isParenthesizedExpression(current)))
+    current = current.expression
+  return current && ts.isObjectLiteralExpression(current) ? current : undefined
+}
+
+/** An object literal's property initializer, by name. */
+function propOf(object, name) {
+  if (!object) return undefined
+  for (const property of object.properties) {
+    if (!ts.isPropertyAssignment(property)) continue
+    if ((ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) && property.name.text === name)
+      return property.initializer
+  }
+  return undefined
+}
+
+function stringOf(object, name) {
+  const value = propOf(object, name)
+  return value && ts.isStringLiteral(value) ? value.text : undefined
+}
+
+function numberOf(object, name) {
+  const value = propOf(object, name)
+  if (!value) return undefined
+  const parsed = ts.isNumericLiteral(value) ? Number(value.text) : ts.isStringLiteral(value) ? Number(value.text) : NaN
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
+/** The frame a preview gets: fullscreen stories fill a taller one; a story can set `previewHeight`. */
+function frameOf(layout, previewHeight) {
+  return { fullscreen: layout === 'fullscreen', height: previewHeight ?? (layout === 'fullscreen' ? 560 : 320) }
+}
+
 /** Reads a stories file: its category (the meta title's group) and each story it exports. */
 function storiesOf(sourcePath) {
   const text = readFileSync(sourcePath, 'utf8')
@@ -78,21 +114,22 @@ function storiesOf(sourcePath) {
     }
   }
 
-  // The meta's title names the group the part belongs to, as in Storybook: "Actions/Button".
+  // The meta's title names the group the part belongs to, as in Storybook: "Actions/Button". Its
+  // parameters set the frame every story gets, unless a story overrides them.
   let category
+  let metaLayout
+  let metaHeight
   for (const statement of ast.statements) {
     if (!ts.isVariableStatement(statement) || !statement.declarationList.declarations.length) continue
     const declaration = statement.declarationList.declarations[0]
     if (!ts.isIdentifier(declaration.name) || declaration.name.text !== 'meta' || !declaration.initializer) continue
     // The object may be wrapped in `satisfies Meta<…>` or `as …`.
-    let initializer = declaration.initializer
-    while (ts.isSatisfiesExpression(initializer) || ts.isAsExpression(initializer)) initializer = initializer.expression
-    if (!ts.isObjectLiteralExpression(initializer)) continue
-    for (const property of initializer.properties) {
-      if (ts.isPropertyAssignment(property) && ts.isIdentifier(property.name) && property.name.text === 'title') {
-        if (ts.isStringLiteral(property.initializer)) category = property.initializer.text.split('/')[0]
-      }
-    }
+    const initializer = objectOf(declaration.initializer)
+    if (!initializer) continue
+    category = stringOf(initializer, 'title')?.split('/')[0] ?? category
+    const parameters = objectOf(propOf(initializer, 'parameters'))
+    metaLayout = stringOf(parameters, 'layout')
+    metaHeight = numberOf(parameters, 'previewHeight')
   }
 
   const stories = []
@@ -109,6 +146,10 @@ function storiesOf(sourcePath) {
         .getText(ast)
         .replace(/^export\s+/, '')
         .replace(/;?\n?$/, '')
+      const storyParameters = objectOf(propOf(objectOf(declaration.initializer), 'parameters'))
+      const layout = stringOf(storyParameters, 'layout') ?? metaLayout
+      const previewHeight = numberOf(storyParameters, 'previewHeight') ?? metaHeight
+      const frame = frameOf(layout, previewHeight)
       stories.push({
         key: declaration.name.text,
         name: sentenceCase(declaration.name.text),
@@ -116,6 +157,8 @@ function storiesOf(sourcePath) {
         source,
         file: sourcePath.split('/').pop(),
         situation: statement.getStart(ast) > situationsAt || undefined,
+        fullscreen: frame.fullscreen || undefined,
+        height: frame.height,
       })
     }
   }

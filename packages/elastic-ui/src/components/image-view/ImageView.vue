@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
+import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarget'
 import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
@@ -36,6 +37,8 @@ const props = withDefaults(
 const open = defineModel<boolean>('open', { default: false })
 const thumb = useTemplateRef<HTMLImageElement>('thumb')
 const full = computed(() => props.fullSrc ?? props.src)
+const portalTo = usePortalTarget()
+const size = usePortalSize()
 
 // The whole picture: as large as fits the screen, with room around it and for its caption, at the
 // image's own proportions, and never larger than the file.
@@ -45,11 +48,12 @@ function fullBox() {
   const img = thumb.value!
   const ratio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 4 / 3
   const room = props.caption ? CAPTION : 0
-  const maxW = innerWidth - MARGIN * 2
-  const maxH = innerHeight - MARGIN * 2 - room
+  const { width: vw, height: vh } = size()
+  const maxW = vw - MARGIN * 2
+  const maxH = vh - MARGIN * 2 - room
   const width = Math.min(maxW, maxH * ratio, props.fullSrc ? maxW : img.naturalWidth || maxW)
   const height = width / ratio
-  return { top: (innerHeight - height - room) / 2, left: (innerWidth - width) / 2, width, height }
+  return { top: (vh - height - room) / 2, left: (vw - width) / 2, width, height }
 }
 
 const radius = ref('0px')
@@ -165,7 +169,7 @@ useEventListener<KeyboardEvent>(
     @keydown.enter.prevent="openView"
     @keydown.space.prevent="openView"
   />
-  <Teleport to="body">
+  <Teleport :to="portalTo">
     <template v-if="shown">
       <div
         :class="[

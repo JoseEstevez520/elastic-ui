@@ -20,6 +20,10 @@ export interface StoryInfo {
   source: string
   file: string
   situation?: boolean
+  /** The story asks for the whole canvas (Storybook's `layout: 'fullscreen'`). */
+  fullscreen?: boolean
+  /** The frame's height in px, from the story's `previewHeight` or its layout's default. */
+  height: number
 }
 
 export interface ApiEntry {

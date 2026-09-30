@@ -2,6 +2,7 @@
 import { DialogClose, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui'
 import { computed, nextTick, onBeforeUnmount, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
+import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarget'
 import { ChevronLeftIcon, XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
@@ -56,12 +57,13 @@ const trigger = useTemplateRef<HTMLButtonElement>('trigger')
 const content = useTemplateRef<HTMLElement>('content')
 const MARGIN = 8
 const MAX = 0.9
+const portalTo = usePortalTarget()
+const size = usePortalSize()
 
 // The sheet: at the bottom, as wide as it may be and as tall as the step on show, read at that
 // width (DECISIONS, "Something measured from its content comes out too tall").
 function sheetBox(height: number) {
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const { width: vw, height: vh } = size()
   const width = Math.min(props.width, vw - MARGIN * 2)
   const h = Math.min(height, vh * MAX)
   return { top: vh - MARGIN - h, left: (vw - width) / 2, width, height: h }
@@ -95,7 +97,7 @@ const surfaceStyle = computed(() =>
 // it; its height is its own, up to what the sheet may take.
 const contentStyle = computed(() => ({
   width: `${to.value?.width ?? 0}px`,
-  maxHeight: `${Math.round(window.innerHeight * MAX)}px`,
+  maxHeight: `${Math.round(size().height * MAX)}px`,
 }))
 
 // A flow is one task: once it has folded back into its button, it starts again from its first
@@ -149,7 +151,7 @@ const scrolled = ref(false)
       </span>
     </button>
 
-    <DialogPortal>
+    <DialogPortal :to="portalTo">
       <DialogOverlay
         :class="[
           'fixed inset-0 z-50 bg-[color:var(--dialog-overlay,rgb(0_0_0/0.4))] transition-opacity duration-300 ease-linear',

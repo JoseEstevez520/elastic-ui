@@ -2,6 +2,7 @@
 import { DialogClose, DialogContent, DialogOverlay, DialogPortal, DialogRoot } from 'reka-ui'
 import { computed, nextTick, ref, useTemplateRef, type HTMLAttributes } from 'vue'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
+import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarget'
 import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
@@ -31,6 +32,8 @@ const props = withDefaults(
 
 const open = defineModel<boolean>('open', { default: false })
 const close = () => (open.value = false)
+const portalTo = usePortalTarget()
+const size = usePortalSize()
 
 // Scrolled down: the content then fades under the cross, as ChatMorph's does.
 const scrolled = ref(false)
@@ -46,8 +49,7 @@ const { shown, grown, visible, settled, returned, to, style } = useMorphBox({
   open,
   from: () => boxOf(trigger.value),
   to: async () => {
-    const vw = window.innerWidth
-    const vh = window.innerHeight
+    const { width: vw, height: vh } = size()
     if (props.side !== 'bottom') {
       const width = Math.min(props.width, vw - MARGIN * 2)
       return {
@@ -101,7 +103,7 @@ const contentStyle = computed(() => ({
       </span>
     </button>
 
-    <DialogPortal>
+    <DialogPortal :to="portalTo">
       <DialogOverlay
         :class="[
           'fixed inset-0 z-50 bg-[color:var(--dialog-overlay,rgb(0_0_0/0.4))] transition-opacity duration-300 ease-linear',

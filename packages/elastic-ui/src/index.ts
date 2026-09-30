@@ -84,6 +84,12 @@ export * from './components/toast'
 export * from './components/toggle'
 export * from './components/tooltip'
 export { useTheme, type Theme } from './composables/useTheme'
+export {
+  providePortalTarget,
+  usePortalSize,
+  usePortalTarget,
+  type PortalTarget,
+} from './composables/usePortalTarget'
 export { cn } from './utils/cn'
 export { defaultLabels, ElasticUi, provideLabels, useLabels, type Labels } from './utils/labels'
 export type { LinkTo } from './utils/link'

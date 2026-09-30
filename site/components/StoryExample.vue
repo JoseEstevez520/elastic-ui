@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Component } from 'vue'
-import { CodeBlock, Tabs, TabsContent, TabsList, TabsTrigger } from 'elastic-ui'
+import { ref, type Component } from 'vue'
+import { CodeBlock, providePortalTarget, Tabs, TabsContent, TabsList, TabsTrigger } from 'elastic-ui'
 import type { StoryInfo } from '../parts'
 
 /**
@@ -17,6 +17,10 @@ const props = withDefaults(
   }>(),
   { level: 2 },
 )
+
+// Overlays this story opens (a dialog, a menu, a term) teleport into the frame, not the page.
+const frame = ref<HTMLElement>()
+providePortalTarget(frame)
 </script>
 
 <template>
@@ -29,7 +33,12 @@ const props = withDefaults(
         <TabsTrigger value="code">Code</TabsTrigger>
       </TabsList>
       <TabsContent value="preview">
-        <div class="story-stage rounded-[var(--radius-xl)] border border-border p-6">
+        <div
+          ref="frame"
+          class="story-stage rounded-[var(--radius-xl)] border border-border"
+          :class="story.fullscreen ? 'story-stage--fullscreen' : 'p-6'"
+          :style="{ height: `${story.height}px` }"
+        >
           <component :is="props.component" v-if="props.component" />
         </div>
       </TabsContent>

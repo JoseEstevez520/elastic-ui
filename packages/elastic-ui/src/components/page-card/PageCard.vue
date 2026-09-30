@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { boxOf, useMorphBox, type Box } from '../../composables/useMorphBox'
+import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarget'
 import { useEventListener } from '../../composables/useEventListener'
 import { ChevronLeftIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
@@ -34,6 +35,8 @@ const props = withDefaults(
   { imageAlt: '', backLabel: labelFor('back') },
 )
 const open = defineModel<boolean>('open', { default: false })
+const portalTo = usePortalTarget()
+const size = usePortalSize()
 
 const card = useTemplateRef<HTMLButtonElement>('card')
 const photo = useTemplateRef<HTMLElement>('photo')
@@ -50,7 +53,7 @@ const { shown, placed, grown, visible, settled, style } = useMorphBox({
     photoBox.value = boxOf(photo.value)
     return boxOf(card.value)
   },
-  to: () => ({ top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }),
+  to: () => ({ top: 0, left: 0, ...size() }),
   returnFocus: () => card.value,
 })
 const surfaceStyle = computed(() => style({ borderRadius: ['var(--radius-2xl)', '0px'] }))
@@ -150,7 +153,7 @@ useEventListener<KeyboardEvent>(
     <div class="px-5 pt-2 pb-5"><slot /></div>
   </button>
 
-  <Teleport to="body">
+  <Teleport :to="portalTo">
     <template v-if="shown">
       <!-- The box: the card's own glow, stretching into the page's ground. -->
       <div

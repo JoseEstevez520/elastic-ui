@@ -5,6 +5,7 @@ import PopoverContent from '../popover/PopoverContent.vue'
 import PopoverTrigger from '../popover/PopoverTrigger.vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
+import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarget'
 import { XIcon } from '../../icons/internal'
 import { labelFor } from '../../utils/labels'
 
@@ -30,6 +31,8 @@ withDefaults(
   { moreLabel: labelFor('seeMore'), closeLabel: labelFor('close') },
 )
 const slots = useSlots()
+const portalTo = usePortalTarget()
+const size = usePortalSize()
 
 const open = ref(false)
 const expanded = ref(false)
@@ -44,10 +47,11 @@ const { shown, grown, visible, settled, style } = useMorphBox({
   open: expanded,
   from: () => boxOf(glance.value?.closest('[data-state]')),
   to: async () => {
-    cardWidth.value = Math.min(560, innerWidth - 32)
+    const { width: vw, height: vh } = size()
+    cardWidth.value = Math.min(560, vw - 32)
     await nextTick()
-    const height = Math.min(content.value?.scrollHeight ?? 320, innerHeight * 0.8)
-    return { top: (innerHeight - height) / 2, left: (innerWidth - cardWidth.value) / 2, width: cardWidth.value, height }
+    const height = Math.min(content.value?.scrollHeight ?? 320, vh * 0.8)
+    return { top: (vh - height) / 2, left: (vw - cardWidth.value) / 2, width: cardWidth.value, height }
   },
   returnFocus: () => seeMore.value,
 })
@@ -109,7 +113,7 @@ useEventListener<KeyboardEvent>(
     </PopoverContent>
   </Popover>
 
-  <Teleport to="body">
+  <Teleport :to="portalTo">
     <template v-if="shown">
       <!-- The page dimmed behind, as under a dialog: never a shadow. Above the glance's own layer,
            which stays (hidden) to be folded back into and would otherwise take the clicks. -->
