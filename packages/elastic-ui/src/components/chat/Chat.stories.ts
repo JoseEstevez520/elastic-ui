@@ -67,9 +67,9 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {}
 
 /**
- * A long answer: your message glides to the top, and once the answer reaches the bottom the view
- * follows it down, gliding at the pace the text comes. Scroll up to reread and it lets go, with a
- * button back to the end.
+ * A long answer: your message glides to the top and the view holds there while the answer grows
+ * below. Scroll down to the end and it follows it, gliding at the pace the text comes; scroll up to
+ * reread and it lets go, with a button back to the end.
  */
 export const LongAnswer: Story = {
   render: () => chat({ long: true }),

@@ -10,9 +10,10 @@ import { ChatThreadReadyKey } from './chat.keys'
 /**
  * The messages, scrolling. While the whole conversation fits, nothing moves. Once it no longer
  * does, sending glides your message to the top, once, leaving the room below for the answer to
- * grow into, and the view holds still while it does, as ChatGPT and Claude now do. Once the answer reaches the bottom, the view follows it down, gliding at the pace the text
- * comes rather than jumping to it. Scrolling up to reread lets go of it, with a button back to
- * the end, which follows it again.
+ * grow into, and the view holds still while it does: the answer grows below without pulling the
+ * view, so it is read at your own pace. Scrolling down to the end follows it again, gliding at the
+ * pace the text comes rather than jumping to it; scrolling up to reread lets go of it, with a
+ * button back to the end.
  */
 const props = defineProps<{ label?: string; class?: HTMLAttributes['class'] }>()
 
@@ -46,23 +47,22 @@ const following = ref(true)
 let lastTop = 0
 let frame = 0
 
-// Where the view is headed: the message just sent at the top, and past it the end of the answer
-// once that outgrows the view. One movement for both, so sending and following never pull against
-// each other.
+// Where the view is headed: the end while it follows the answer, and the message just sent at the
+// top while it holds, so the answer grows below without pulling the view.
 function goal() {
   if (!el.value) return 0
   const bottom = end() - el.value.clientHeight
-  return anchor?.isConnected ? Math.max(anchor.offsetTop - TOP, bottom) : bottom
+  return following.value || !anchor?.isConnected ? bottom : anchor.offsetTop - TOP
 }
 
 // Each frame closes part of the way, so the view glides behind the text as it comes, never
 // jumping, and catches up faster the further behind it is. Only ever down: it never pulls the
 // reader back up.
 function follow() {
-  if (!el.value || !following.value || frame) return
+  if (!el.value || frame) return
   const step = () => {
     frame = 0
-    if (!el.value || !following.value) return
+    if (!el.value) return
     const gap = goal() - el.value.scrollTop
     if (gap <= 0.5) return
     el.value.scrollTop += prefersReducedMotion() ? gap : Math.max(1, gap * 0.12)
@@ -83,7 +83,11 @@ function onScroll() {
   lastTop = top
   below.value = end() - top - el.value.clientHeight > NEAR
   // Scrolling down to the end follows again; only being near it, as right after letting go, does not.
-  if (down && !below.value) following.value = true
+  if (down && !below.value) {
+    following.value = true
+    // Following the end, the message kept at the top is let go, so the view reads naturally.
+    anchor = undefined
+  }
 }
 // The reader heading up lets go at once, before the view has moved: the glide would otherwise
 // undo each small step of a wheel or a finger before it showed.
@@ -100,12 +104,14 @@ const onKeydown = (event: KeyboardEvent) => ['ArrowUp', 'PageUp', 'Home'].includ
 
 function toLatest() {
   following.value = true
+  anchor = undefined
   follow()
 }
 
 // Created on mount: observers do not exist during server rendering. Sending adds your message
-// (and the answer's place after it): the view glides to the first of them and follows from there.
-// Growing refits the room below, and follows once the answer outgrows the view.
+// (and the answer's place after it): the view glides to the first of them and holds there. Growing
+// refits the room below, so the answer grows without moving the view; it follows again only once
+// the reader is back at the end.
 let resized: ResizeObserver | undefined
 let added: MutationObserver | undefined
 onMounted(() => {
@@ -115,16 +121,18 @@ onMounted(() => {
   resized = new ResizeObserver(() => {
     fit()
     onScroll()
-    follow()
+    // Only while the reader is at the end: a held message lets the answer grow below without moving.
+    if (following.value) follow()
   })
   resized.observe(list.value)
   resized.observe(el.value)
   added = new MutationObserver((records) => {
     const first = records.flatMap((r) => [...r.addedNodes]).find((n): n is HTMLElement => n instanceof HTMLElement)
     if (!first) return
-    following.value = true
-    // Everything still fits: nothing to bring up, and nothing moves. It is followed once it outgrows
-    // the view, as any answer is.
+    // A new message is brought to the top and the view holds there: the answer grows below without
+    // pulling it, until the reader scrolls down.
+    following.value = false
+    // Everything still fits: nothing to bring up, and nothing moves.
     anchor = el.value && end() > el.value.clientHeight ? first : undefined
     fit()
     // Once the room is there to scroll into.
@@ -150,7 +158,7 @@ const labels = useLabels()
       :data-scroll-id="scrollId"
       role="log"
       :aria-label="label ?? labels.conversation"
-      :class="cn('relative min-h-0 flex-1 overflow-y-auto overscroll-contain', props.class)"
+      :class="cn('relative min-h-0 flex-1 overflow-y-auto', props.class)"
       @scroll.passive="onScroll"
       @wheel.passive="onWheel"
       @touchstart.passive="onTouchStart"
