@@ -253,7 +253,7 @@ const controlClass =
       :activity="activity"
       :settled="shown > 0"
       :style="chatGlassStyle"
-      class="flex h-[32rem] flex-col rounded-[var(--agent-replay-radius,1.75rem)] border border-[color:var(--color-border)]"
+      class="flex h-[24rem] flex-col rounded-[var(--agent-replay-radius,1.75rem)] border border-[color:var(--color-border)] sm:h-[32rem]"
     >
       <ChatThread class="[mask-image:linear-gradient(to_bottom,transparent,#000_2rem)]">
         <ChatMessage v-if="shown > 0 && prompt" role="user">{{ prompt.text }}</ChatMessage>
