@@ -124,3 +124,30 @@ type Story = StoryObj<typeof meta>
  * TableOfContents beside it (`headingsOf`).
  */
 export const Default: Story = {}
+
+/**
+ * A checklist, as GitHub writes it: each box stands where the bullet would be, a done item steps
+ * back to grey, and a long item wraps under its own text. A plain list beside it keeps its bullets.
+ */
+export const Checklist: Story = {
+  args: {
+    source: [
+      '## Before the exam',
+      '',
+      '- [x] Read the notes on branches',
+      '- [x] Try `git rebase` on a copy of the repository',
+      '- [ ] Write down, in my own words, what happens to the commits a rebase rewrites, and why a pushed branch should not be rebased',
+      '- [ ] Ask about merge conflicts',
+      '',
+      'What to bring:',
+      '',
+      '- A pen',
+      '- The class notes',
+    ].join('\n'),
+  },
+  render: (args) => ({
+    components: { Markdown },
+    setup: () => ({ args }),
+    template: `<div class="mx-auto max-w-2xl px-6 py-16"><Markdown v-bind="args" /></div>`,
+  }),
+}

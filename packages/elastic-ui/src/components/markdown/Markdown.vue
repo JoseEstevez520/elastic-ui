@@ -12,6 +12,8 @@ import TerminalReplay from '../terminal-replay/TerminalReplay.vue'
 import { markdown, parseInfo, parseTerminal, slugify, splitDiff, textOf, uniqueSlug, type Token } from './markdown.utils'
 
 const ALERT = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/
+// A list item opening with `[ ]` or `[x]` is a task, as in GitHub.
+const TASK = /^\[([ xX])\]\s+/
 
 /**
  * Markdown as the library's parts, in an article's type (Prose). Written as it always is, it turns
@@ -21,6 +23,7 @@ const ALERT = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/
  *   plays the edit, with `-` and `+` lines as any diff, and a `terminal` fence into a TerminalReplay
  *   (`$ ` a command, `# ` a comment, anything else what it printed);
  * - GitHub's alerts (`> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`) into Callouts;
+ * - GitHub's task lists (`- [ ]`, `- [x]`) into items with their box, shown and not ticked from here;
  * - a `walkthrough` fence into a CodeWalkthrough and an `agent-replay` fence into an AgentReplay,
  *   both written as JSON (a step's `text` is Markdown too; an event's `icon` names one in `icons`);
  * - headings into anchors with GitHub's ids (`headingsOf` gives them to a TableOfContents);
@@ -112,7 +115,7 @@ export default defineComponent({
     // Builds the block tokens into elements and parts, level by level.
     function build(tokens: Token[]): VNodeChild[] {
       const root: VNodeChild[] = []
-      type Frame = { token: Token; children: VNodeChild[]; alert?: CalloutType }
+      type Frame = { token: Token; children: VNodeChild[]; alert?: CalloutType; done?: boolean }
       const stack: Frame[] = []
       const out = () => stack.at(-1)?.children ?? root
       const seen = new Map<string, number>()
@@ -137,6 +140,17 @@ export default defineComponent({
               if (head && !head.content && next?.type === 'softbreak') first.children!.splice(0, 2)
             }
           }
+          // `- [ ]` and `- [x]` make the item a task: a box (shown, not ticked from here) where
+          // the bullet was, and the marker dropped from its text.
+          if (token.type === 'list_item_open') {
+            const first = tokens[i + 2]
+            const match = first?.type === 'inline' ? TASK.exec(first.content) : null
+            const head = first?.children?.[0]
+            if (match && head?.type === 'text') {
+              frame.done = match[1] !== ' '
+              head.content = head.content.replace(TASK, '')
+            }
+          }
           stack.push(frame)
           return
         }
@@ -151,6 +165,10 @@ export default defineComponent({
         if (open.type === 'heading_open') {
           const id = uniqueSlug(slugify(textOf(tokens[tokens.indexOf(open) + 1])), seen)
           return out().push(h(open.tag, { id }, children))
+        }
+        if (frame.done !== undefined) {
+          const box = h('input', { type: 'checkbox', checked: frame.done, disabled: true })
+          return out().push(h('li', [box, ...children]))
         }
         if (open.type === 'table_open') return out().push(h('div', { class: 'prose-table' }, [h('table', children)]))
         const attrs = Object.fromEntries(open.attrs ?? [])
