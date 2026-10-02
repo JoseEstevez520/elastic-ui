@@ -58,6 +58,22 @@ export const Disabled: Story = {
   }),
 }
 
+/**
+ * No tray: the text alone, part of what it edits. Here a document's title, in the page's own
+ * title size; a very long one ends at the column's edge as any input does.
+ */
+export const Bare: Story = {
+  render: () => ({
+    components: { Input },
+    setup: () => ({ title: ref('Branches in Git') }),
+    template: `
+      <div class="flex w-[min(36rem,100%)] flex-col gap-4">
+        <Input v-model="title" bare class="text-display" placeholder="Untitled" aria-label="Title" />
+        <p class="text-copy text-fg-secondary">The text under the title, as the page goes on.</p>
+      </div>`,
+  }),
+}
+
 /** Grows with its text up to a limit, then scrolls. */
 export const TextareaStory: Story = {
   name: 'Textarea',
