@@ -1,4 +1,5 @@
 import { inject, provide, type App, type InjectionKey } from 'vue'
+import { startFocusModality } from './focusModality'
 import { setMotionPreference, type MotionPreference } from './motion'
 
 /**
@@ -152,5 +153,6 @@ export const ElasticUi = {
   install(app: App, options: { labels?: Partial<Labels>; motion?: MotionPreference } = {}) {
     app.provide(LabelsKey, options.labels ?? {})
     setMotionPreference(options.motion ?? 'auto')
+    startFocusModality()
   },
 }

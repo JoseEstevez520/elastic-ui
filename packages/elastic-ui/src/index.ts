@@ -92,5 +92,6 @@ export {
 } from './composables/usePortalTarget'
 export { cn } from './utils/cn'
 export { defaultLabels, ElasticUi, provideLabels, useLabels, type Labels } from './utils/labels'
+export { startFocusModality } from './utils/focusModality'
 export { getMotionPreference, setMotionPreference, type MotionPreference } from './utils/motion'
 export type { LinkTo } from './utils/link'

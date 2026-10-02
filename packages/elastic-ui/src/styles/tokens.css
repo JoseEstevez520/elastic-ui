@@ -222,6 +222,15 @@
 }
 
 /*
+ * A ring is for the keyboard. Once the last input was the mouse or a finger, no part draws one,
+ * even where a browser would treat the click or the tap as focus-visible. `data-focus` is set on
+ * `<html>` by `startFocusModality`, through the ElasticUi plugin.
+ */
+:root[data-focus='pointer'] :where(.focus-ring, .focus-ring-inset):focus {
+  outline: none;
+}
+
+/*
  * The library's one way of appearing: content comes into focus as one wave running down it.
  * Each piece takes 0.45s and the next starts only 40ms later, well under the 30% of the duration
  * at which a stagger starts to read as separate steps, so the fades overlap into one flowing
