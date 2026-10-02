@@ -6,6 +6,9 @@ import { h, type FunctionalComponent } from 'vue'
 export {
   CircleAlert as AlertIcon,
   ArrowDown as ArrowDownIcon,
+  ArrowLeftRight as ArrowBothIcon,
+  ArrowRight as ArrowRightIcon,
+  ArrowUpRight as ExternalIcon,
   Check as CheckIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,

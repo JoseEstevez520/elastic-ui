@@ -1,1 +1,8 @@
 export { default as Diagram } from './Diagram.vue'
+export { default as DiagramGroup } from './DiagramGroup.vue'
+export { default as DiagramArea } from './DiagramArea.vue'
+export { default as DiagramChip } from './DiagramChip.vue'
+export { default as DiagramItem } from './DiagramItem.vue'
+export { default as DiagramArrow } from './DiagramArrow.vue'
+export { default as DiagramImage } from './DiagramImage.vue'
+export type { DiagramLayout } from './diagram.context'
