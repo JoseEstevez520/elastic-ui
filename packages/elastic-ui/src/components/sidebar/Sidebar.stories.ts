@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { BookOpen, Bot, Calendar, House, Settings, Wrench } from '@lucide/vue'
 import { ref } from 'vue'
+import Button from '../button/Button.vue'
+import Textarea from '../input/Textarea.vue'
 import NavTree from '../nav-tree/NavTree.vue'
 import NavTreeGroup from '../nav-tree/NavTreeGroup.vue'
 import NavTreeItem from '../nav-tree/NavTreeItem.vue'
@@ -115,4 +117,42 @@ export const LongLabels: Story = {
 export const Mobile: Story = {
   globals: { viewport: { value: 'mobile1', isRotated: false } },
   render: meta.render,
+}
+
+/**
+ * The page alone, for writing: `bare` folds the sidebar away to the edge and the header up, the
+ * content first and then the room; pressed again, or Escape, both come back the way they went.
+ * The page is never drawn again, so a half-written line keeps its place.
+ */
+export const Bare: Story = {
+  render: () => ({
+    components: { ...parts, Button, Textarea },
+    setup() {
+      const bare = ref(false)
+      return { bare, page: ref('home'), icons }
+    },
+    template: `
+      <SidebarLayout :bare="bare" @keydown.esc="bare = false">
+        <Sidebar variant="connected">
+          <template #header>
+            <span class="px-2.5 text-sm font-semibold">Class repo</span>
+          </template>
+          <NavTree v-model="page">
+            <NavTreeItem value="home" :icon="icons.home">Home</NavTreeItem>
+            <NavTreeItem value="tools" :icon="icons.wrench">Tools</NavTreeItem>
+          </NavTree>
+        </Sidebar>
+        <main class="min-w-0 flex-1">
+          <SidebarLayoutHeader>
+            <span class="text-sm text-fg-muted">Notes</span>
+          </SidebarLayoutHeader>
+          <div class="mx-auto flex max-w-2xl flex-col gap-4 p-6">
+            <Button variant="ghost" size="sm" class="self-start" @click="bare = !bare">
+              {{ bare ? 'Show the sidebar' : 'Only the page' }}
+            </Button>
+            <Textarea placeholder="Start writing…" aria-label="Notes" />
+          </div>
+        </main>
+      </SidebarLayout>`,
+  }),
 }

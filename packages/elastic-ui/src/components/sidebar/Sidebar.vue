@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
@@ -36,7 +36,12 @@ const sidebar = useRequiredSidebarContext('Sidebar')
 // Read once: the NavTree inside draws its indicator to match, and a variant is a layout choice,
 // not a state that changes.
 provideSidebarVariant(props.variant)
-const { mobile, mobileOpen, collapsed, isOpen } = sidebar
+const { mobile, mobileOpen, collapsed, isOpen, bare } = sidebar
+
+// What changed last: folding to the rail, or going bare. Each moves on its own timing.
+const change = ref<'fold' | 'bare'>('fold')
+watch(collapsed, () => (change.value = 'fold'))
+watch(bare, () => (change.value = 'bare'))
 
 // The panel on a phone closes with Escape and a tap outside, and takes focus while open.
 const aside = useTemplateRef<HTMLElement>('aside')
@@ -50,16 +55,24 @@ watch(mobileOpen, async (isMobileOpen) => {
 
 const style = computed(() => {
   if (mobile.value) return { transform: mobileOpen.value ? 'translateX(0)' : 'translateX(-100%)' }
+  if (bare.value) return { width: '0px' }
   return { width: collapsed.value ? 'var(--sidebar-rail, 3.25rem)' : 'var(--sidebar-width, 16rem)' }
 })
 // As in SkillNet, with its curve (`--ease-glide`). Folding, the labels are erased first and the sidebar narrows
 // 180ms later, along with the labels' room, so it never cuts a word. Unfolding, it widens at once
 // and the labels are written into the room it makes. On a phone the panel slides, faster out
-// than in.
+// than in. Going bare, its content fades at once and then its room closes; coming back, the room
+// opens and the content comes in halfway along, slower in than out.
 const timing = computed(() => {
   if (mobile.value) return isOpen.value ? 'duration-[350ms]' : 'duration-[250ms]'
+  if (change.value === 'bare') return bare.value ? 'duration-300 delay-100' : 'duration-[450ms]'
   return isOpen.value ? 'duration-[320ms]' : 'duration-[320ms] delay-[180ms]'
 })
+const contentClass = computed(() =>
+  bare.value && !mobile.value
+    ? 'opacity-0 transition-opacity duration-100 motion-reduce:transition-none'
+    : 'opacity-100 transition-opacity duration-200 delay-200 motion-reduce:transition-none',
+)
 </script>
 
 <template>
@@ -75,12 +88,13 @@ const timing = computed(() => {
     :id="sidebar.panelId"
     ref="aside"
     :aria-label="label"
-    :inert="mobile && !mobileOpen"
+    :inert="(mobile && !mobileOpen) || bare"
     :data-collapsed="collapsed || undefined"
+    :data-bare="bare || undefined"
     :style="style"
     :class="cn(sidebarVariants({ variant, mobile }), timing, props.class)"
   >
-    <div class="flex h-full flex-col">
+    <div :class="cn('flex h-full flex-col', contentClass)">
       <!-- The header folds like the labels: its own content folds away to the left and leaves the
            toggle alone, centred in the rail. On a phone the toggle lives in the page instead. -->
       <div class="flex shrink-0 items-center p-2">

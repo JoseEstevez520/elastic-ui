@@ -12,7 +12,8 @@ import SidebarToggle from './SidebarToggle.vue'
  * nothing is left under it.
  *
  * Put it first in the page's column, with what goes on its left (breadcrumbs) in the default slot
- * and what goes on its right (search, theme) in `end`.
+ * and what goes on its right (search, theme) in `end`. When the layout goes bare it folds up out
+ * of the way, its content first and then its room, and comes back the way it went.
  */
 const props = defineProps<{
   /** What scrolls, when it is not the page: an element, or a selector for it. */
@@ -58,10 +59,14 @@ onBeforeUnmount(() => {
 <template>
   <header
     ref="header"
+    :inert="sidebar.bare.value"
     :class="
       cn(
-        'sticky top-0 z-30 flex h-14 items-center gap-3 px-4',
-        'bg-[color:var(--page-header-bg,var(--color-bg))] transition-[box-shadow] duration-300',
+        'sticky top-0 z-30 flex items-center gap-3 overflow-hidden px-4',
+        'bg-[color:var(--page-header-bg,var(--color-bg))] motion-reduce:transition-none',
+        sidebar.bare.value
+          ? 'h-0 opacity-0 transition-[height,opacity,box-shadow] duration-[300ms,100ms,300ms] [transition-delay:100ms,0ms,0ms]'
+          : 'h-14 opacity-100 transition-[height,opacity,box-shadow] duration-[450ms,200ms,300ms] [transition-delay:0ms,200ms,0ms]',
         // A hairline, not a shadow, and only once the page has moved under it.
         scrolled && !seamless ? 'shadow-[0_1px_0_var(--color-border)]' : 'shadow-[0_1px_0_transparent]',
         props.class,

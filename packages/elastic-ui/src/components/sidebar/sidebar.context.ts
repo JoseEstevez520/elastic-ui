@@ -12,6 +12,8 @@ export interface SidebarContext {
   /** Whether the toggle has the sidebar open: unfolded, or slid in on a phone. */
   isOpen: Readonly<Ref<boolean>>
   panelId: string
+  /** The page alone: the sidebar and the page's header folded away (`SidebarLayout bare`). */
+  bare: Readonly<Ref<boolean>>
 }
 
 const SidebarContextKey: InjectionKey<SidebarContext> = Symbol('SidebarContext')
