@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue'
+import { effectScope, ref, watch } from 'vue'
 
 export type Theme = 'light' | 'dark'
 
@@ -7,6 +7,11 @@ const DEFAULT_STORAGE_KEY = 'elastic-ui.theme'
 // Module-level so every toggle on the page (the header mounts two) shares one theme.
 const theme = ref<Theme>('light')
 let initialized = false
+
+// Detached, so the singleton watcher lives as long as the module rather than the first toggle
+// that happens to call `useTheme`: a component-scoped watcher would be stopped on unmount, and
+// `initialized` would stop any later toggle from wiring a new one.
+const scope = effectScope(true)
 
 function readInitial(storageKey: string): Theme {
   try {
@@ -34,7 +39,7 @@ export function useTheme(storageKey = DEFAULT_STORAGE_KEY) {
     initialized = true
     theme.value = readInitial(storageKey)
     document.documentElement.dataset.theme = theme.value
-    watch(theme, (value) => apply(value, storageKey))
+    scope.run(() => watch(theme, (value) => apply(value, storageKey)))
   }
 
   const toggle = () => (theme.value = theme.value === 'dark' ? 'light' : 'dark')
