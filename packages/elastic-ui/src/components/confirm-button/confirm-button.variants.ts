@@ -4,12 +4,14 @@
  */
 export const confirmPillClass = [
   'relative inline-flex h-10 items-center overflow-hidden rounded-[14px] align-middle',
-  'transition-[width,background-color] duration-[350ms] ease-emphasized motion-reduce:transition-none',
+  'transition-[width,background-color,border-radius] duration-[350ms] ease-emphasized motion-reduce:transition-none',
   // The keyboard's ring goes round the whole pill: inside it, the pill's own clip would cut it.
   'has-[>button:focus-visible]:outline-2 has-[>button:focus-visible]:outline-offset-2 has-[>button:focus-visible]:outline-[color:var(--color-accent)]',
 ]
 export const confirmPillTone = {
   rest: 'bg-[color:var(--confirm-bg,var(--color-surface))]',
+  /** A ghost one at rest: no surface until it asks, only the ghost Button's hover and radius. */
+  ghost: 'rounded-[var(--radius-md)] bg-transparent hover:bg-bg-muted',
   danger: 'bg-[color:color-mix(in_oklab,var(--color-danger)_16%,var(--confirm-bg,var(--color-surface)))]',
   warning: 'bg-[color:color-mix(in_oklab,var(--color-warning)_18%,var(--confirm-bg,var(--color-surface)))]',
 }

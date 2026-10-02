@@ -29,6 +29,8 @@ Where there is a morphing version, use it. The library's personality is things t
 
 Fields that open (Select, Combobox, DatePicker) grow out of themselves: their outline stretches down to hold the list or the month, and folds back once something is picked. Give them their width on the part itself (`<Select class="w-56">`), since it draws the outline; in a `Field` they fill it.
 
+In a row of quiet actions (a tree, a list's rows), the triggers go ghost so nothing stands out at rest: `Button variant="ghost" size="icon"`, `DialogMorph variant="ghost" size="icon"` and `ConfirmButton variant="ghost"` look alike until one is pressed.
+
 ```vue
 <PopoverMorph role="menu" label="Actions">
   <template #trigger>Actions</template>
@@ -101,6 +103,7 @@ Never hardcode a colour, a duration or a curve. Motion comes from the library's 
 ## 7. Accessible as you use it
 
 - Every `DialogMorph` has a `DialogMorphTitle`.
+- An icon-only `DialogMorph` (`size="icon"`) or `ConfirmButton` gets its name: an sr-only label in the trigger, or `label`.
 - A field without a visible label gets an `aria-label`; one that needs fixing gets `invalid` and a message linked with `aria-describedby`.
 - `NavTree` is bound to the current route with `v-model`, so the active item carries `aria-current`.
 - Don't take focus away from where the library puts it: into a panel as it opens, back to its trigger as it closes.

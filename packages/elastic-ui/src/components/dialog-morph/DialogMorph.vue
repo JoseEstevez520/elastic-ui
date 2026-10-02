@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { LayoutGroup, MotionConfig, motion } from 'motion-v'
 import { DialogContent, DialogOverlay, DialogPortal, DialogRoot } from 'reka-ui'
-import { useId, useTemplateRef, type HTMLAttributes } from 'vue'
+import { computed, useId, useTemplateRef, type HTMLAttributes } from 'vue'
 import { useMorphLift } from '../../composables/useMorphLift'
 import { usePortalTarget } from '../../composables/usePortalTarget'
 import { cn } from '../../utils/cn'
@@ -10,9 +10,11 @@ import {
   dialogMorphLabelOutClass,
   dialogMorphOverlayClass,
   dialogMorphSurfaceClass,
-  dialogMorphTriggerClass,
+  dialogMorphTriggerVariants,
+  morphGhostTriggerPaint,
   morphSurfacePaint,
   morphTriggerPaint,
+  type DialogMorphTriggerVariants,
 } from './dialog-morph.variants'
 
 /**
@@ -26,6 +28,10 @@ const props = defineProps<{
    * click outside does not close it; only its buttons and Escape do.
    */
   alert?: boolean
+  /** The button's look at rest: `outline` (the default), or `ghost` for a row of quiet actions. */
+  variant?: DialogMorphTriggerVariants['variant']
+  /** `icon` for a square button holding only an icon, which then needs an accessible name. */
+  size?: DialogMorphTriggerVariants['size']
   /** Applied to the dialog. */
   class?: HTMLAttributes['class']
 }>()
@@ -38,6 +44,8 @@ const trigger = useTemplateRef<{ $el: HTMLElement }>('trigger')
 const { lifted, returned, settled, hide } = useMorphLift(open, trigger)
 
 const id = useId()
+const triggerClass = computed(() => dialogMorphTriggerVariants({ variant: props.variant, size: props.size }))
+const triggerPaint = computed(() => (props.variant === 'ghost' ? morphGhostTriggerPaint : morphTriggerPaint))
 const portalTo = usePortalTarget()
 
 </script>
@@ -54,8 +62,8 @@ const portalTo = usePortalTarget()
           aria-haspopup="dialog"
           :layout-id="`${id}-surface`"
           :transition="{ layout: morphCloseTransition }"
-          :style="morphTriggerPaint"
-          :class="dialogMorphTriggerClass"
+          :style="triggerPaint"
+          :class="triggerClass"
           @click="open = true"
         >
           <motion.span
@@ -67,7 +75,7 @@ const portalTo = usePortalTarget()
         </motion.button>
         <!-- Holds the button's place while its box is out as the dialog, and lets the label fade
              out right where it was. -->
-        <span v-else aria-hidden="true" :class="cn(dialogMorphTriggerClass, 'bg-transparent')">
+        <span v-else aria-hidden="true" :class="cn(triggerClass, 'bg-transparent')">
           <span :class="dialogMorphLabelOutClass"><slot name="trigger" /></span>
         </span>
 

@@ -40,6 +40,11 @@ const props = withDefaults(
      * the warning colour. `neutral` for what asks but means nothing coloured (a sign-out).
      */
     tone?: 'danger' | 'warning' | 'neutral'
+    /**
+     * Its look at rest: `surface`, a flat square in the muted tone (the default), or `ghost`, as a
+     * ghost Button, for a row of quiet actions. Either way it takes the surface as it asks.
+     */
+    variant?: 'surface' | 'ghost'
     /** Its accessible name, and the question's. */
     label?: string
     confirmLabel?: string
@@ -47,7 +52,7 @@ const props = withDefaults(
     disabled?: boolean
     class?: HTMLAttributes['class']
   }>(),
-  { label: labelFor('delete'), confirmLabel: labelFor('confirm'), cancelLabel: labelFor('cancel'), tone: 'danger' },
+  { label: labelFor('delete'), confirmLabel: labelFor('confirm'), cancelLabel: labelFor('cancel'), tone: 'danger', variant: 'surface' },
 )
 const emit = defineEmits<{ confirm: []; error: [error: unknown] }>()
 
@@ -124,7 +129,11 @@ useEventListener<PointerEvent>(
     :class="
       cn(
         confirmPillClass,
-        tinted && tone !== 'neutral' ? confirmPillTone[tone] : confirmPillTone.rest,
+        tinted && tone !== 'neutral'
+          ? confirmPillTone[tone]
+          : variant === 'ghost' && state === 'rest'
+            ? confirmPillTone.ghost
+            : confirmPillTone.rest,
         disabled && 'opacity-50',
         props.class,
       )
@@ -140,7 +149,7 @@ useEventListener<PointerEvent>(
       :class="[
         'flex size-10 shrink-0 items-center justify-center transition-colors outline-none',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-        tinted ? toneText : 'text-fg-muted hover:text-fg',
+        tinted ? toneText : variant === 'ghost' ? 'text-fg-secondary hover:text-fg' : 'text-fg-muted hover:text-fg',
       ]"
       @click="state === 'asking' ? cancel() : ask()"
     >

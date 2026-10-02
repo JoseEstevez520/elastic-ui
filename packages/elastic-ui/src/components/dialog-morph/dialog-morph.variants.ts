@@ -1,9 +1,30 @@
-/** Looks like an outline Button, since at rest it is one. */
-export const dialogMorphTriggerClass = [
-  'relative inline-flex h-10 cursor-pointer items-center justify-center px-4 text-label whitespace-nowrap text-fg',
-  'bg-[color:var(--dialog-bg,var(--color-surface-raised))]',
-  'focus-ring',
-]
+import { cva, type VariantProps } from 'class-variance-authority'
+
+/**
+ * Looks like a Button at rest, since it is one: an outline one by default, or a ghost one for a
+ * row of quiet actions, which only takes on its box as it lifts into the dialog.
+ */
+export const dialogMorphTriggerVariants = /* @__PURE__ */ cva(
+  ['relative inline-flex cursor-pointer items-center justify-center text-label whitespace-nowrap', 'focus-ring'],
+  {
+    variants: {
+      variant: {
+        outline: ['text-fg', 'bg-[color:var(--dialog-bg,var(--color-surface-raised))]'],
+        ghost: 'bg-transparent text-fg-secondary transition-colors duration-150 hover:bg-bg-muted hover:text-fg',
+      },
+      size: {
+        md: 'h-10 px-4',
+        icon: 'size-10',
+      },
+    },
+    defaultVariants: { variant: 'outline', size: 'md' },
+  },
+)
+
+export type DialogMorphTriggerVariants = VariantProps<typeof dialogMorphTriggerVariants>
+
+/** The outline trigger, which Sheet and SheetFlow share. */
+export const dialogMorphTriggerClass = dialogMorphTriggerVariants()
 
 /**
  * The box clips instead of scrolling: while it grows the content does not fit yet, and a
@@ -31,4 +52,6 @@ export const dialogMorphLabelOutClass = 'animate-[fade-out_0.15s_linear_forwards
  * between them. A CSS border would stretch mid-morph.
  */
 export const morphTriggerPaint = { borderRadius: '8px', boxShadow: '0 0 0 1px var(--color-border-strong)' }
+/** A ghost trigger's: no edge at rest, so the dialog's edge fades in as it grows. */
+export const morphGhostTriggerPaint = { borderRadius: '8px', boxShadow: '0 0 0 1px transparent' }
 export const morphSurfacePaint = { borderRadius: '16px', boxShadow: '0 0 0 1px var(--color-border), var(--shadow-overlay)' }
