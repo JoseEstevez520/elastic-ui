@@ -77,6 +77,8 @@ export const defaultLabels = {
   oneResult: '1 result',
   results: '{count} results',
   commandPlaceholder: 'Type a command or search…',
+  /** SuggestionMenu's list, for screen readers. */
+  suggestions: 'Suggestions',
   noResults: 'No results',
   // Code
   replay: 'Replay',

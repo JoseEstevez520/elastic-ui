@@ -19,7 +19,7 @@ Released as `v0.3.1`, on npm as `@joseestevez/vue-elastic-ui`. Around sixty publ
 
 - **Actions** — Button, ActionButton, ProgressButton, CopyButton, ConfirmButton, SplitActions, ThemeToggle, Toggle & ToggleGroup
 - **Forms** — Input, Textarea, Field, Select, Combobox, Checkbox, Switch, RadioGroup, Slider, NumberField, TagsInput, FileUpload & FileIcon, Calendar, DatePicker, Filters
-- **Overlays** — Popover, PopoverMorph, Menu, Tooltip, DialogMorph, AlertDialog, Sheet, Toast, SelectionMenu, CommandPalette, Term
+- **Overlays** — Popover, PopoverMorph, Menu, Tooltip, DialogMorph, AlertDialog, Sheet, Toast, SelectionMenu, SuggestionMenu, CommandPalette, Term
 - **Disclosure** — Collapsible, Accordion, Tabs, Steps, ExpandableCard, SheetFlow, DynamicIsland
 - **Navigation** — Sidebar, NavTree, MorphHeader, Breadcrumbs, TableOfContents, ScrollIndicator, Pagination, PageTransition, SearchMorph
 - **Content** — Card, Badge, Callout, AnimatedList, Table, DescriptionList, Stat, ActivityGrid, Empty, Progress, Separator, Avatar, Timetable, Diagram
