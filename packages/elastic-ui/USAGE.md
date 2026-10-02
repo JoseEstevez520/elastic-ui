@@ -77,6 +77,7 @@ An icon earns its place when it helps find something at a glance: buttons, menu 
 - In a NavTree, give icons to the top-level items and groups only; subgroups and pages are text. A folded Sidebar still needs its top level's icons for its rail.
 - No decorative marks (dots, badges) where they don't say something the text doesn't.
 - **Lucide** (`@lucide/vue`) for general icons, **Simple Icons** (`simple-icons`) for brand and technology logos, in their own colour.
+- A logo is drawn with `Logo`, given the Simple Icons entry itself (`:icon="siVuedotjs"`): the library ships no icons, so the project picks the ones it uses. A stack is a `LogoList` of `LogoListItem`s, each its logo and its name.
 - Pass the component, not a rendered icon: `:icon="Search"`.
 - An icon alone needs a name: `aria-label` on its button, `label` on the part.
 
@@ -148,6 +149,22 @@ Draw each idea for what it is, as a small SVG made for it, rather than feeding i
 - **Readable at its size:** drawn in a `viewBox` that scales with the column, text never below 12px on screen; where a horizontal drawing crowds a phone, a vertical version of it.
 - **Said in words too:** `role="img"` with an `aria-label` that tells what it shows, or a `figure` with its caption.
 
+Most ideas are pieces that fit together or a flow, and are composed rather than drawn: in a `Diagram`, a `DiagramGroup` lays out `DiagramArea`s (a concept holding others), `DiagramChip`s (a part) and `DiagramArrow`s in a row, a column or a grid. A row runs down on its own when it no longer fits, and its arrows turn with it; keep areas one level deep, never an area in an area. What the parts cannot make (a curve, axes, a timeline) is an SVG with the classes above.
+
+```vue
+<Diagram label="A request goes from the browser to the controller, which answers with JSON">
+  <DiagramGroup>
+    <DiagramChip :icon="Globe" color="#2563eb">Browser</DiagramChip>
+    <DiagramArrow label="GET" />
+    <DiagramArea title="Controller" color="#7c3aed" note="Finds the method for that route.">
+      <DiagramChip>@GetMapping("/products")</DiagramChip>
+    </DiagramArea>
+  </DiagramGroup>
+</Diagram>
+```
+
+**Written elsewhere** (by a model, by a student), a drawing or a piece is shown so it can do no harm: an SVG with `DiagramImage`, as an image that runs nothing; interactive HTML with `SandboxFrame`, in a frame with no way to the page or the network, as tall as what it holds. Both take the theme's tokens and follow its changes. Never put such markup in the page itself (`v-html`).
+
 ## 11. Composing a page
 
 Not a template to fill: a page is composed from what it has to say. What the best explaining pages share (Nielsen Norman's eye-tracking, Every Layout's primitives, Distill's and Tufte's figures tied to their text):
@@ -167,6 +184,7 @@ Not a template to fill: a page is composed from what it has to say. What the bes
 
 - **Detail opens where it is.** A term, a case, an example the reader may want: an ExpandableCard, a Collapsible, a PopoverMorph or a DialogMorph grows out of it and folds back. The reader keeps their place.
 - **A new page is for a new topic**, not for more of the same one.
+- **Where an idea comes from** (a book, a talk, a project) is a `Card` with `href`: the whole card is the link, with an optional `CardImage`, its `CardTitle` and a `CardDescription` line. To another site it opens in a new tab, its title carrying the outward arrow.
 - **Between pages, only the content changes.** The Sidebar, the header and the search stay still; the sidebar's tab slides to the new page and the breadcrumbs morph their words. It happens at every click, so it stays light: the old content fades, the scroll goes back to the top, the new fades in, about a third of a second in all. No wave, no blur, no slides from the side. `PageTransition` round the RouterView's page does all of it.
 
 ## 13. Scrolling
