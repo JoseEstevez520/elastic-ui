@@ -42,6 +42,8 @@ export const defaultLabels = {
   sidebar: 'Sidebar',
   toggleSidebar: 'Toggle sidebar',
   onThisPage: 'On this page',
+  /** A card linking to another site, after its title, for screen readers. */
+  newTab: 'opens in a new tab',
   /** Pagination's landmark, and each page's name before its number. */
   pagination: 'Pagination',
   page: 'Page',

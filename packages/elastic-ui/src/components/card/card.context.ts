@@ -3,6 +3,8 @@ import type { CardSize } from './card.variants'
 
 export interface CardContext {
   size: Readonly<Ref<CardSize>>
+  /** The whole card is a link to another site: its title carries the outward arrow. */
+  external?: Readonly<Ref<boolean>>
 }
 
 const CardContextKey: InjectionKey<CardContext> = Symbol('CardContext')

@@ -82,3 +82,37 @@ export const FreeComposition: Story = {
       </Card>`,
   }),
 }
+
+const REFERENCES = [
+  { title: 'Refactoring UI', text: 'The book behind the type scale and the greys.', href: 'https://www.refactoringui.com', image: IMAGE },
+  { title: 'Every Layout', text: 'Layouts measured from their content, not from breakpoints.', href: 'https://every-layout.dev' },
+  { title: 'Inventing on Principle', text: 'Bret Victor on seeing what you make as you make it.', href: 'https://vimeo.com/906418692' },
+]
+
+/**
+ * A reference: the whole card is the link, with an optional image, a title and a line. To another
+ * site it opens in a new tab, its title carrying the outward arrow; it takes a tone up under the
+ * pointer and the focus ring from the keyboard.
+ */
+export const Link: Story = {
+  render: (args) => ({
+    components: parts,
+    setup: () => ({ args, refs: REFERENCES }),
+    template: `
+      <div class="grid max-w-2xl gap-4 sm:grid-cols-2">
+        <Card v-for="r in refs" :key="r.title" v-bind="args" size="sm" :href="r.href" class="h-full">
+          <CardImage v-if="r.image" :src="r.image" :alt="r.title" fade class="aspect-video" />
+          <CardHeader class="gap-1">
+            <CardTitle>{{ r.title }}</CardTitle>
+            <CardDescription>{{ r.text }}</CardDescription>
+          </CardHeader>
+        </Card>
+        <Card v-bind="args" size="sm" href="#getting-started" class="h-full">
+          <CardHeader class="gap-1">
+            <CardTitle>Getting started</CardTitle>
+            <CardDescription>A page of this site: no arrow, the same tab.</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>`,
+  }),
+}

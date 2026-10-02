@@ -1,6 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, getCurrentInstance, h, type Component, type HTMLAttributes, type PropType, type VNode, type VNodeChild } from 'vue'
 import { cn } from '../../utils/cn'
+import { isExternal } from '../../utils/link'
 import type { AgentReplayEvent } from '../agent-replay/agent-replay.types'
 import AgentReplay from '../agent-replay/AgentReplay.vue'
 import Callout, { type CalloutType } from '../callout/Callout.vue'
@@ -49,8 +50,7 @@ export default defineComponent({
     const routerLink = getCurrentInstance()?.appContext.components.RouterLink
 
     function link(href: string, children: VNodeChild[]): VNode {
-      const external = /^[a-z][a-z\d+.-]*:/i.test(href)
-      if (external) return h('a', { href, target: '_blank', rel: 'noopener noreferrer' }, children)
+      if (isExternal(href)) return h('a', { href, target: '_blank', rel: 'noopener noreferrer' }, children)
       if (routerLink && !href.startsWith('#')) return h(routerLink, { to: href }, () => children)
       return h('a', { href }, children)
     }

@@ -21,10 +21,21 @@ export const cardVariants = /* @__PURE__ */ cva(
         sm: 'gap-4 py-4',
         md: 'gap-6 py-6',
       },
+      // The whole card a link: a tone up under the pointer, never an outline added.
+      interactive: {
+        true: 'group/card cursor-pointer transition-colors duration-150 focus-ring',
+        false: '',
+      },
     },
+    compoundVariants: [
+      { variant: 'default', interactive: true, class: 'hover:bg-[color:var(--card-bg-hover,var(--color-surface-raised))]' },
+      { variant: 'outline', interactive: true, class: 'hover:border-[color:var(--color-border-strong)]' },
+      { variant: 'ghost', interactive: true, class: 'hover:bg-[color:var(--card-bg-hover,var(--color-surface))]' },
+    ],
     defaultVariants: {
       variant: 'default',
       size: 'md',
+      interactive: false,
     },
   },
 )

@@ -32,3 +32,6 @@ export function useLink(props: LinkProps) {
     return undefined
   })
 }
+
+/** Whether an address leads to another site (it has a scheme: `https:`, `mailto:`), to open apart. */
+export const isExternal = (href: string) => /^[a-z][a-z\d+.-]*:/i.test(href)
