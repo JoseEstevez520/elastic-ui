@@ -86,6 +86,7 @@ export * from './components/toggle'
 export * from './components/tooltip'
 export { useTheme, type Theme } from './composables/useTheme'
 export { useTruncated } from './composables/useTruncated'
+export { useTruncated } from './composables/useTruncated'
 export {
   providePortalTarget,
   usePortalSize,
