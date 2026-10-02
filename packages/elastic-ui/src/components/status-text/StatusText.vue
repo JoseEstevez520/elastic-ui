@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
+import { onBeforeUnmount, onMounted, ref, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import TextMorph from '../text-morph/TextMorph.vue'
 
@@ -9,6 +9,9 @@ import TextMorph from '../text-morph/TextMorph.vue'
  * instead of being replaced. When it fails it turns the same way into what went wrong, and into
  * the danger colour: no icon, no box. The one way the library tells that something is under way,
  * as in ChatMessage and ChatTool; short text only, as TextMorph.
+ *
+ * With `delay` it waits that long before showing, and comes into focus then: a wait shorter than
+ * that shows nothing at all, instead of a flash of "Loading…" that is gone before it can be read.
  */
 const props = withDefaults(
   defineProps<{
@@ -16,11 +19,20 @@ const props = withDefaults(
     working?: boolean
     /** Something went wrong: set with the text saying what. */
     error?: boolean
+    /** Milliseconds to wait before showing, for a wait that is often too short to notice. */
+    delay?: number
     as?: string
     class?: HTMLAttributes['class']
   }>(),
-  { as: 'span' },
+  { as: 'span', delay: 0 },
 )
+
+const shown = ref(!props.delay)
+let timer: ReturnType<typeof setTimeout> | undefined
+onMounted(() => {
+  if (props.delay) timer = setTimeout(() => (shown.value = true), props.delay)
+})
+onBeforeUnmount(() => clearTimeout(timer))
 </script>
 
 <template>
@@ -28,10 +40,12 @@ const props = withDefaults(
        colour at rest is the caller's; the danger colour comes in as the words morph. -->
   <component
     :is="as"
+    v-if="shown"
     :role="error ? 'alert' : working ? 'status' : undefined"
     :class="
       cn(
         working && !error ? 'text-shimmer' : 'transition-colors duration-350 ease-emphasized',
+        delay && 'animate-blur-in motion-reduce:animate-none',
         props.class,
         error && 'text-[color:var(--color-danger)]',
       )

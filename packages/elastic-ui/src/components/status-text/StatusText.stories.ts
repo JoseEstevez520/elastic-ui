@@ -39,6 +39,38 @@ export const Steps: Story = {
   }),
 }
 
+/**
+ * A wait that is often short: nothing shows for the first 300 ms, so a quick answer never flashes
+ * "Loading…". Pick a wait to see both: under the delay it never appears.
+ */
+export const Delayed: Story = {
+  render: () => ({
+    components: { Button, StatusText },
+    setup() {
+      const loading = ref(false)
+      let timer: ReturnType<typeof setTimeout> | undefined
+      function wait(ms: number) {
+        clearTimeout(timer)
+        loading.value = true
+        timer = setTimeout(() => (loading.value = false), ms)
+      }
+      onBeforeUnmount(() => clearTimeout(timer))
+      return { loading, wait }
+    },
+    template: `
+      <div class="flex flex-col items-start gap-4 text-sm">
+        <div class="h-5">
+          <StatusText v-if="loading" text="Loading the page…" working :delay="300" />
+          <span v-else class="text-fg-secondary">Ready.</span>
+        </div>
+        <div class="flex gap-2">
+          <Button size="sm" variant="outline" @click="wait(150)">Wait 150 ms</Button>
+          <Button size="sm" variant="outline" @click="wait(1500)">Wait 1.5 s</Button>
+        </div>
+      </div>`,
+  }),
+}
+
 /** It fails: the words morph into what went wrong as the line turns to the danger colour. */
 export const Error: Story = {
   render: () => ({
