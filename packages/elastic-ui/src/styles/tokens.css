@@ -140,6 +140,12 @@
   --animate-popover-out: popover-out 0.15s var(--ease-emphasized) forwards;
 
   /*
+   * A Marquee's band, at a steady speed: its length over the speed asked for, which Marquee works
+   * out into `--marquee-duration`. Linear, since a band that eased would surge at every loop.
+   */
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+
+  /*
    * What floats over the page stands on tones (DECISIONS, "How objects are drawn"): it takes the
    * raised surface and a hairline, and under it a shadow so faint it is barely there, only so a
    * panel over a photo or dense text still reads as on top. Deeper in dark, where it disappears.
@@ -171,6 +177,10 @@
   @keyframes aurora-drift {
     from { translate: 0 0; scale: 1; }
     to { translate: var(--drift); scale: 1.15; }
+  }
+  /* The band holds two equal copies, so moving it by half lands the second where the first began. */
+  @keyframes marquee {
+    to { transform: translate3d(-50%, 0, 0); }
   }
   @keyframes fade-in {
     from { opacity: 0; }
