@@ -1,26 +1,33 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, toRef, useTemplateRef, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { useEventListener } from '../../composables/useEventListener'
-import { provideSocialLinksContext, SOCIAL_LINK_SIZE } from './social-links.context'
+import { ICON_LINK_SIZE, provideIconLinksContext, type IconLinksVariant } from './icon-links.context'
 
 /**
- * A row of the places someone can be found: GitHub, LinkedIn, an email. At rest each is its logo
- * in its own colour on a round tray; pointed at or focused, its tray widens into its handle over a
- * tint of the brand (Instagram's gradient, LinkedIn's blue), and the others make room.
+ * A row of links each shown by its icon alone, that open into their words when pointed at: the
+ * places someone can be found (GitHub, LinkedIn, an email), or what a project offers (its site,
+ * its code). A logo is in its own colour; pointed at or focused, its tray widens into its label
+ * over a tint of the brand (Instagram's gradient, LinkedIn's blue), and the others make room.
+ * `ghost` has no tray at rest, for a row over colour (a Glow) or beside text.
  *
- * Every handle shows from the start where opening one would not fit on the row, measured from the
- * handles rather than guessed from a breakpoint: a tray widening past the edge would drop to the
+ * Every label shows from the start where opening one would not fit on the row, measured from the
+ * labels rather than guessed from a breakpoint: a tray widening past the edge would drop to the
  * next line, out from under the pointer, close, come back under it and open again, for ever. It
  * does too where there is no pointer to hover with, as on a phone.
  */
-const props = defineProps<{
-  /** Every handle shows at rest. */
-  expanded?: boolean
-  /** The list's name, for screen readers. */
-  label?: string
-  class?: HTMLAttributes['class']
-}>()
+const props = withDefaults(
+  defineProps<{
+    /** `default`: a round tray under each icon. `ghost`: the icon alone until it opens. */
+    variant?: IconLinksVariant
+    /** Every label shows at rest. */
+    expanded?: boolean
+    /** The list's name, for screen readers. */
+    label?: string
+    class?: HTMLAttributes['class']
+  }>(),
+  { variant: 'default' },
+)
 
 // A touch screen cannot point at one link to open it, so they all stay open.
 const noHover = ref(false)
@@ -37,8 +44,8 @@ const openWidths = reactive(new Map<string, number>())
 const opensInPlace = computed(() => {
   const widths = [...openWidths.values()]
   if (!widths.length) return true
-  const closed = widths.length * SOCIAL_LINK_SIZE + (widths.length - 1) * gap.value
-  return closed - SOCIAL_LINK_SIZE + Math.max(...widths) <= room.value
+  const closed = widths.length * ICON_LINK_SIZE + (widths.length - 1) * gap.value
+  return closed - ICON_LINK_SIZE + Math.max(...widths) <= room.value
 })
 
 let observer: ResizeObserver | undefined
@@ -54,8 +61,9 @@ onMounted(() => {
 })
 onBeforeUnmount(() => observer?.disconnect())
 
-provideSocialLinksContext({
+provideIconLinksContext({
   expanded: computed(() => props.expanded || noHover.value || !opensInPlace.value),
+  variant: toRef(props, 'variant'),
   reportWidth: (id, width) => {
     if (width === undefined) openWidths.delete(id)
     else if (openWidths.get(id) !== width) openWidths.set(id, width)

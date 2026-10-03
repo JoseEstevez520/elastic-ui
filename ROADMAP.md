@@ -21,8 +21,8 @@ Released as `v0.3.1`, on npm as `@joseestevez/vue-elastic-ui`. Around sixty publ
 - **Forms** — Input, Textarea, Field, Select, Combobox, Checkbox, Switch, RadioGroup, Slider, NumberField, TagsInput, FileUpload & FileIcon, Calendar, DatePicker, Filters
 - **Overlays** — Popover, PopoverMorph, Menu, Tooltip, DialogMorph, AlertDialog, Sheet, Toast, SelectionMenu, SuggestionMenu, CommandPalette, Term
 - **Disclosure** — Collapsible, Accordion, Tabs, Steps, ExpandableCard, SheetFlow, DynamicIsland
-- **Navigation** — Sidebar, NavTree, MorphHeader, Breadcrumbs, TableOfContents, ScrollIndicator, Pagination, PageTransition, SearchMorph
-- **Content** — Card, Badge, Logo, Marquee, SocialLinks, Callout, AnimatedList, Table, DescriptionList, Stat, Chart, ActivityGrid, Empty, Progress, Separator, Avatar, Timeline, Timetable, Diagram & its parts, SandboxFrame
+- **Navigation** — Sidebar, NavTree, MorphHeader, IconLinks, Breadcrumbs, TableOfContents, ScrollIndicator, Pagination, PageTransition, SearchMorph
+- **Content** — Card, Badge, Logo, Marquee, Callout, AnimatedList, Table, DescriptionList, Stat, Chart, ActivityGrid, Empty, Progress, Separator, Avatar, Timeline, Timetable, Diagram & its parts, SandboxFrame
 - **Portfolio** — PageCard, ImageView, Gallery, Carousel, Glow, Glass, Liquid
 - **Text and code** — TextMorph, StatusText, TruncatedText, IconMorph, Prose, Markdown, CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay
 - **AI** — Chat, ChatMorph, Aurora, AgentReplay, ImageReveal, ComposeMorph
