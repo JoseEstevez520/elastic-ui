@@ -1,12 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
 import Button from '../button/Button.vue'
+import Field from '../field/Field.vue'
+import Input from '../input/Input.vue'
+import Select from '../select/Select.vue'
+import SelectContent from '../select/SelectContent.vue'
+import SelectItem from '../select/SelectItem.vue'
+import SelectTrigger from '../select/SelectTrigger.vue'
+import SelectValue from '../select/SelectValue.vue'
+import Switch from '../switch/Switch.vue'
 import DialogMorph from './DialogMorph.vue'
 import DialogMorphClose from './DialogMorphClose.vue'
 import DialogMorphDescription from './DialogMorphDescription.vue'
 import DialogMorphTitle from './DialogMorphTitle.vue'
 
 const parts = { Button, DialogMorph, DialogMorphTitle, DialogMorphDescription, DialogMorphClose }
+const formParts = { ...parts, Field, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch }
 
 const meta = {
   title: 'Overlays/DialogMorph',
@@ -71,6 +80,55 @@ export const Controlled: Story = {
         </DialogMorph>
         <Button variant="ghost" @click="open = true">Open from here</Button>
       </div>`,
+  }),
+}
+
+/**
+ * Content that changes while it is open: picking "Section" adds fields, "Page" takes them away. The
+ * box eases to its new height and the content stays put, uncovered or covered by the box's edge,
+ * never stretched or squashed.
+ */
+export const ChangingContent: Story = {
+  render: () => ({
+    components: formParts,
+    setup: () => ({ kind: ref('page'), title: ref(''), colour: ref('grey'), onHome: ref(false) }),
+    template: `
+      <DialogMorph>
+        <template #trigger>Add</template>
+        <template #default="{ close }">
+          <DialogMorphTitle>Add at the top level</DialogMorphTitle>
+          <DialogMorphDescription>A section can hold pages; a page only has a name.</DialogMorphDescription>
+          <form class="mt-5 flex flex-col gap-4" @submit.prevent="close">
+            <Field label="Kind">
+              <Select v-model="kind">
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="section">Section</SelectItem>
+                  <SelectItem value="page">Page</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="Title">
+              <Input v-model="title" placeholder="Unit 1" />
+            </Field>
+            <template v-if="kind === 'section'">
+              <Field label="Colour" description="Tints the section's cards on the home page.">
+                <Select v-model="colour">
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="name in ['grey', 'blue', 'green', 'violet']" :key="name" :value="name">{{ name }}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Switch v-model="onHome">Show on the home page</Switch>
+            </template>
+            <div class="flex justify-end gap-2">
+              <Button variant="ghost" @click="close">Cancel</Button>
+              <Button type="submit">Add</Button>
+            </div>
+          </form>
+        </template>
+      </DialogMorph>`,
   }),
 }
 

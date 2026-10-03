@@ -80,7 +80,7 @@ A part seen elsewhere (Rare UI, Family, Apple's apps, a post) becomes the librar
 A component is not done until it works in every situation below, and each critical one has its own story so it keeps being checked.
 
 - **Count**: 1, 2, an odd number, many.
-- **Content**: very long and empty text, with and without media, mixed.
+- **Content**: very long and empty text, with and without media, mixed, and content that changes while it is open (fields that come and go).
 - **Size**: mobile (one column), desktop, resizing while open.
 - **Theme**: light and dark.
 - **Keyboard**: Tab, Enter, Escape, and focus never lost when an element unmounts.
@@ -180,6 +180,7 @@ Things that went wrong once, found by measuring frame by frame, and the fix ever
 - **A box jumps a few pixels as it lands.** Scrolling is only turned on once a box that became a panel has landed; a scrollbar appearing then narrowed the content by its width. What scrolls inside keeps its scrollbar's room from the start (`scrollbar-gutter: stable`; useMorphBox's recipe, step 6). Headless Chromium hides scrollbars by default: check with them on (`ignoreDefaultArgs: ['--hide-scrollbars']`).
 - **A travelling image lands a pixel off, or reshapes as it lands.** Measure every box with `getBoundingClientRect` (never `offsetTop`/`offsetWidth`, which round to whole pixels), and give the traveller the radius of what it becomes from the start, read from the tokens rather than assumed.
 - **A box grown from a small one reads as a zoom.** Growing by scaling a shared box (`layoutId`) stretches it: a box that becomes a panel changes its real size (`useMorphBox`).
+- **Text stretches when a box's content changes while it is open.** Motion animates any change of size of a shared box (`layoutId`) by scaling it, the morph's or any other: fields appearing in an open dialog squashed its text until the box caught up. A box that morphs by `layoutId` only morphs as it comes out and goes back (`layout-dependency` on its lifted state, on the box and on whatever inside it has `layout`). Any other change of size is its real size: DialogMorph eases its height to its content, which stays put and is uncovered or covered by the box's edge; CommandPalette's list eases its own; an open ExpandableCard takes its new room at once.
 - **Something measured from its content comes out too tall.** Measure a height only once the content has its final width (a sheet's height from its wrapped text).
 - **A drag stops following the pointer.** The pointer is captured by the element pressed; if that element is re-rendered (a TextMorph inside a slider's thumb), the capture is lost. Children of what captures the pointer take `pointer-events: none`.
 - **A class does not win.** Two Tailwind classes for the same property (`bg-*` and `bg-*`) are decided by their order in the stylesheet, not in the attribute: compute one or the other, or merge with `cn`, never list both.

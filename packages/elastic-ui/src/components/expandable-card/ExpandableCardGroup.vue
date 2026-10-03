@@ -86,7 +86,12 @@ onBeforeUnmount(() => {
   openObserver?.disconnect()
 })
 
-const rootStyle = computed(() => ({ minHeight: `${openHeight.value ?? gridHeight.value}px` }))
+// The open card covers the grid's own height, not the group's: the group follows the card, so a
+// card held to the group's height could never shrink back once its content had grown.
+const rootStyle = computed(() => ({
+  minHeight: `${openHeight.value ?? gridHeight.value}px`,
+  ...(gridHeight.value ? { '--expandable-card-cover': `${gridHeight.value}px` } : {}),
+}))
 
 // Scopes every card's `layoutId`s, so two groups on a page never pair with each other.
 const groupId = useId()

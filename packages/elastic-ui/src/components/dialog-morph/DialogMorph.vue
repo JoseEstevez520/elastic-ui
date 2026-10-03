@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { LayoutGroup, MotionConfig, motion } from 'motion-v'
 import { DialogContent, DialogOverlay, DialogPortal, DialogRoot } from 'reka-ui'
-import { computed, useId, useTemplateRef, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useMorphLift } from '../../composables/useMorphLift'
 import { usePortalTarget } from '../../composables/usePortalTarget'
 import { cn } from '../../utils/cn'
-import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
+import { contentOut, morphCloseTransition, morphTransition, prefersReducedMotion } from '../../utils/motion'
 import {
+  dialogMorphBodyClass,
   dialogMorphLabelOutClass,
+  dialogMorphMeasuredClass,
   dialogMorphOverlayClass,
+  dialogMorphResizeClass,
+  dialogMorphResizeDuration,
   dialogMorphSurfaceClass,
   dialogMorphTriggerVariants,
   morphGhostTriggerPaint,
@@ -48,6 +52,36 @@ const triggerClass = computed(() => dialogMorphTriggerVariants({ variant: props.
 const triggerPaint = computed(() => (props.variant === 'ghost' ? morphGhostTriggerPaint : morphTriggerPaint))
 const portalTo = usePortalTarget()
 
+// While it is open, a change of content (fields that come and go) eases the box's real height, as
+// a box that becomes a panel does: the content stays put, uncovered or covered by the box's edge.
+// The box only morphs when it comes out or goes back (every `layout-dependency="lifted"` below), so
+// Motion never scales it to the new height, which would stretch the text. The height is measured
+// from the content, unset until then so the box opens at its size.
+const body = useTemplateRef<HTMLElement>('body')
+const height = ref<number>()
+const resizing = ref(false)
+let observer: ResizeObserver | undefined
+let resizeTimer: ReturnType<typeof setTimeout> | undefined
+watch(body, (el) => {
+  observer?.disconnect()
+  height.value = undefined
+  if (!el) return
+  observer = new ResizeObserver(([entry]) => {
+    const next = entry.borderBoxSize[0].blockSize
+    if (height.value !== undefined && next !== height.value && settled.value) {
+      // Clipped while it eases, so a scrollbar never flashes on a box still on its way.
+      resizing.value = true
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => (resizing.value = false), prefersReducedMotion() ? 0 : dialogMorphResizeDuration)
+    }
+    height.value = next
+  })
+  observer.observe(el)
+})
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  clearTimeout(resizeTimer)
+})
 </script>
 
 <template>
@@ -61,6 +95,7 @@ const portalTo = usePortalTarget()
           type="button"
           aria-haspopup="dialog"
           :layout-id="`${id}-surface`"
+          :layout-dependency="lifted"
           :transition="{ layout: morphCloseTransition }"
           :style="triggerPaint"
           :class="triggerClass"
@@ -68,6 +103,7 @@ const portalTo = usePortalTarget()
         >
           <motion.span
             layout="position"
+            :layout-dependency="lifted"
             :class="returned && 'animate-[blur-in_0.3s_var(--ease-soft)_0.15s_both] motion-reduce:animate-none'"
           >
             <slot name="trigger" />
@@ -90,9 +126,17 @@ const portalTo = usePortalTarget()
             >
               <motion.div
                 :layout-id="`${id}-surface`"
+                :layout-dependency="lifted"
                 :transition="{ layout: morphTransition }"
-                :style="morphSurfacePaint"
-                :class="cn(dialogMorphSurfaceClass, props.class)"
+                :style="height === undefined ? morphSurfacePaint : { ...morphSurfacePaint, '--dialog-content-height': `${height}px` }"
+                :class="
+                  cn(
+                    dialogMorphSurfaceClass,
+                    height !== undefined && dialogMorphMeasuredClass,
+                    settled && dialogMorphResizeClass,
+                    props.class,
+                  )
+                "
               >
                 <!-- The content comes into focus as one wave, like every content in the library,
                      from halfway through the box's journey (as ChatMorph's): early enough to feel
@@ -100,19 +144,22 @@ const portalTo = usePortalTarget()
                      it. Leaving, it fades before the box folds back. -->
                 <motion.div
                   layout
+                  :layout-dependency="lifted"
                   :initial="false"
                   :animate="{ opacity: open ? 1 : 0, transition: open ? { duration: 0 } : contentOut }"
                   :class="
                     cn(
-                      'min-h-0 overscroll-contain scrollbar-subtle stagger-children p-6 [--stagger-delay:0.25s]',
+                      'min-h-0 overscroll-contain scrollbar-subtle',
                       // The scrollbar's room is kept from the start, so nothing narrows as it lands.
                       '[scrollbar-gutter:stable]',
-                      settled ? 'overflow-y-auto' : 'overflow-hidden',
+                      settled && !resizing ? 'overflow-y-auto' : 'overflow-hidden',
                     )
                   "
                   @animation-complete="hide"
                 >
-                  <slot :close="close" />
+                  <div ref="body" :class="dialogMorphBodyClass">
+                    <slot :close="close" />
+                  </div>
                 </motion.div>
               </motion.div>
             </DialogContent>

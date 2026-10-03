@@ -36,6 +36,27 @@ export const dialogMorphSurfaceClass = [
   'bg-[color:var(--dialog-bg,var(--color-surface-raised))] text-fg outline-none',
 ]
 
+/**
+ * The box's height once its content is measured, capped in the height itself: easing from content
+ * taller than the cap, a height left above it would spend most of the change out of sight and then
+ * shrink all at once (as CommandList's).
+ */
+export const dialogMorphMeasuredClass = 'h-[min(var(--dialog-content-height),85dvh)]'
+
+/**
+ * Once it has landed, a change of content eases the box's real height, in the time of a shape
+ * growing a little in place (as PopoverMorph's), instead of jumping or being scaled.
+ */
+export const dialogMorphResizeDuration = 350 // ms, the same as the class's duration
+export const dialogMorphResizeClass = 'transition-[height] duration-[350ms] ease-emphasized motion-reduce:transition-none'
+
+/**
+ * The content, laid out at its own height and pinned to the top of the box, which clips it: as the
+ * box eases to a new height the content is uncovered or covered, never squeezed. It comes into
+ * focus as one wave from halfway through the box's journey.
+ */
+export const dialogMorphBodyClass = 'stagger-children p-6 [--stagger-delay:0.25s]'
+
 /** Dims the page while the dialog is out; fades with the box's morph both ways. */
 export const dialogMorphOverlayClass = [
   'fixed inset-0 z-50 bg-[color:var(--dialog-overlay,rgb(0_0_0/0.4))]',

@@ -152,9 +152,13 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
       </div>
     </div>
 
+    <!-- It only morphs as it lifts out of its cell and lands back (`layout-dependency`): a change
+         of its content while open just takes its room, rather than Motion scaling the card (and
+         its text) to the new height. -->
     <motion.article
       v-if="lifted"
       :layout-id="`${id}-card`"
+      :layout-dependency="lifted"
       :style="paint"
       data-expandable-card-open
       :class="
@@ -162,7 +166,7 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
           boxTransition,
           box,
           variant === 'ghost' && !boxedAtOpen && noBoxOnArrival,
-          'absolute inset-x-0 top-0 z-20 flex min-h-full cursor-pointer flex-col overflow-hidden',
+          'absolute inset-x-0 top-0 z-20 flex min-h-[var(--expandable-card-cover,100%)] cursor-pointer flex-col overflow-hidden',
         )
       "
       @click="closeFromCard"
@@ -199,6 +203,7 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
       <motion.div
         :id="bodyId"
         layout
+        :layout-dependency="lifted"
         :initial="false"
         :animate="{ opacity: expanded ? 1 : 0, transition: expanded ? { duration: 0 } : contentOut }"
         class="relative flex flex-1 flex-col px-4 pb-4 sm:px-6 sm:pb-6"

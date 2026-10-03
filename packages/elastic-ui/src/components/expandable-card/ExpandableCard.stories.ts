@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { ref } from 'vue'
 import { BookOpen, FolderOpen, Scissors, Users } from '@lucide/vue'
+import { Button } from '../button'
 import { CardTitle } from '../card'
 import { Glow } from '../glow'
 import ExpandableCard from './ExpandableCard.vue'
@@ -211,6 +213,36 @@ export const MixedImages: Story = {
 
 export const LongText: Story = {
   args: { count: 2, longText: true },
+}
+
+/**
+ * A body that changes while the card is open: the details come and go, and the card takes its new
+ * height without its text being stretched, and shrinks back as they go.
+ */
+export const ChangingContent: Story = {
+  render: () => ({
+    components: { ExpandableCardGroup, ExpandableCard, ExpandableCardMorph, CardTitle, Button },
+    setup: () => ({ PROJECTS: PROJECTS.slice(0, 2), details: ref(false) }),
+    template: `
+      <div class="mx-auto max-w-4xl py-10">
+        <ExpandableCardGroup>
+          <ExpandableCard v-for="project in PROJECTS" :key="project.name">
+            <ExpandableCardMorph name="title" class="min-w-0">
+              <CardTitle>{{ project.name }}</CardTitle>
+            </ExpandableCardMorph>
+            <template #body>
+              <p class="text-fg-secondary">{{ project.description }}</p>
+              <div class="pt-4">
+                <Button variant="ghost" size="sm" @click="details = !details">{{ details ? 'Hide the details' : 'Show the details' }}</Button>
+              </div>
+              <ul v-if="details" class="flex flex-col gap-2 pt-2 text-fg-secondary">
+                <li v-for="tag in project.tags" :key="tag">{{ tag }}: where it was used, and why it was picked over the rest.</li>
+              </ul>
+            </template>
+          </ExpandableCard>
+        </ExpandableCardGroup>
+      </div>`,
+  }),
 }
 
 export const TwoGroups: Story = {
