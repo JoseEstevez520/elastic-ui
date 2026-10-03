@@ -26,9 +26,11 @@ const props = defineProps<{
 const tree = useNavTreeContext()
 const group = useNavTreeGroupContext()
 const { sidebar, railed, placement } = useNavTreePlacement()
-// A plain-text label in a sidebar is erased and written back letter by letter.
+// A plain-text label in a sidebar is erased and written back letter by letter. It is read on
+// every render, not cached in a computed: the slot is a function, not reactive state, so a
+// computed would keep the first label after the parent hands in a new one.
 const slots = useSlots()
-const text = computed(() => (sidebar ? textOf(slots.default) : undefined))
+const label = () => (sidebar ? textOf(slots.default) : undefined)
 const index = tree.nextIndex()
 
 // In a tree to pick from the item is an option, never a link.
@@ -78,8 +80,8 @@ onBeforeUnmount(() => active.value && group?.holdActive(false))
         @keydown="onKeydown"
       >
         <component :is="icon" v-if="icon" aria-hidden="true" :class="navTreeIconClass" />
-        <span :class="navTreeLabelVariants({ placement, fade: !text })">
-          <SidebarTypewriter v-if="text" :text="text" :shown="!railed" :index="index" />
+        <span :class="navTreeLabelVariants({ placement, fade: !label() })">
+          <SidebarTypewriter v-if="label()" :text="label()!" :shown="!railed" :index="index" />
           <slot v-else />
         </span>
       </component>
