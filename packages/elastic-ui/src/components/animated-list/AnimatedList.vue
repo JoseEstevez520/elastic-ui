@@ -3,7 +3,10 @@ import { AnimatePresence, MotionConfig, motion } from 'motion-v'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { travel } from '../../utils/travel'
-import { contentOut, morphCloseTransition } from '../../utils/motion'
+import { contentOut, morphCloseTransition, useReducedMotion } from '../../utils/motion'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 /**
  * A list whose items find their new place when it is filtered, sorted or changed, instead of
@@ -160,7 +163,7 @@ function enterDelay(item: T, index: number) {
 </script>
 
 <template>
-  <MotionConfig reduced-motion="user">
+  <MotionConfig :reduced-motion="reducedMotion">
     <!-- Leaving items stay in the flow while they fade or fold away (see `onExitDone`). -->
     <component :is="as" v-bind="$attrs" :class="cn('relative', props.class)">
       <AnimatePresence :initial="false">

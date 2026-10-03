@@ -5,6 +5,10 @@ import { toRef, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { provideTabsContext } from './tabs.context'
 import type { TabsVariant } from './tabs.variants'
+import { useReducedMotion } from '../../utils/motion'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 /**
  * Tabs whose indicator stretches over to the active tab instead of jumping (see TabsList).
@@ -23,7 +27,7 @@ provideTabsContext({ value, variant: toRef(() => props.variant ?? 'underline') }
 </script>
 
 <template>
-  <MotionConfig reduced-motion="user">
+  <MotionConfig :reduced-motion="reducedMotion">
     <TabsRoot v-model="value" :class="cn('flex flex-col gap-4', props.class)">
       <slot />
     </TabsRoot>

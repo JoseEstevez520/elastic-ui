@@ -5,10 +5,13 @@ import { useEventListener } from '../../composables/useEventListener'
 import { useScrolled } from '../../composables/useScrolled'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
-import { contentOut, EASE_GLIDE, morphCloseTransition, morphTransition } from '../../utils/motion'
+import { contentOut, EASE_GLIDE, morphCloseTransition, morphTransition, useReducedMotion } from '../../utils/motion'
 import MorphHeaderRegion from './MorphHeaderRegion.vue'
 import { provideMorphHeaderContext } from './morph-header.context'
 import { morphHeaderGlassClass, morphHeaderSurfaceVariants, morphHeaderWidth } from './morph-header.variants'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 const props = withDefaults(
   defineProps<{
@@ -168,7 +171,7 @@ watch(open, (isOpen) => {
     ref="header"
     :class="cn('pointer-events-none fixed inset-x-0 top-0 z-50 flex flex-col items-center', props.class)"
   >
-    <MotionConfig :transition="collapsing ? morphCloseTransition : morphTransition" reduced-motion="user">
+    <MotionConfig :transition="collapsing ? morphCloseTransition : morphTransition" :reduced-motion="reducedMotion">
       <motion.div
         layout
         :initial="false"

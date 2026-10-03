@@ -4,6 +4,10 @@ import { computed, useId, type HTMLAttributes } from 'vue'
 import { useTheme } from '../../composables/useTheme'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
+import { useReducedMotion } from '../../utils/motion'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 const props = withDefaults(
   defineProps<{
@@ -40,7 +44,7 @@ const fromCenter = { transformOrigin: 'center', transformBox: 'fill-box' } as co
 </script>
 
 <template>
-  <MotionConfig reduced-motion="user">
+  <MotionConfig :reduced-motion="reducedMotion">
     <button
       type="button"
       role="switch"

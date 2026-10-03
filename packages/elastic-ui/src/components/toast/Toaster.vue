@@ -4,9 +4,12 @@ import { computed, onBeforeUnmount, ref, shallowRef, watch, type HTMLAttributes 
 import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
-import { contentOut, morphCloseTransition, morphTransition } from '../../utils/motion'
+import { contentOut, morphCloseTransition, morphTransition, useReducedMotion } from '../../utils/motion'
 import { useToasts, type Toast, type ToastStore } from './toast.store'
 import { toastClass, toasterVariants, type ToasterPosition } from './toast.variants'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 /**
  * Where toasts show up: one per app. Each toast arrives from the screen's edge while the others
@@ -170,7 +173,7 @@ const labels = useLabels()
     @focusin="focused = true"
     @focusout="onFocusOut"
   >
-    <MotionConfig :transition="morphTransition" reduced-motion="user">
+    <MotionConfig :transition="morphTransition" :reduced-motion="reducedMotion">
       <!-- Present from the start, so screen readers announce every toast added to it. -->
       <ol aria-live="polite" class="flex w-full flex-col">
         <AnimatePresence :initial="false">

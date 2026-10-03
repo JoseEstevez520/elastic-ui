@@ -8,7 +8,7 @@ import { useMorphLift } from '../../composables/useMorphLift'
 import { usePortalTarget } from '../../composables/usePortalTarget'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
-import { contentOut, EASE_EMPHASIZED, morphCloseTransition, morphTransition } from '../../utils/motion'
+import { contentOut, EASE_EMPHASIZED, morphCloseTransition, morphTransition, useReducedMotion } from '../../utils/motion'
 import {
   dialogMorphLabelOutClass,
   dialogMorphOverlayClass,
@@ -21,6 +21,9 @@ import {
   commandSurfaceClass,
   commandTriggerClass,
 } from './command-palette.variants'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 /**
  * A search over the app's commands and pages. Opened from its button, the button's box grows into
@@ -125,7 +128,7 @@ function onContentDone() {
 </script>
 
 <template>
-  <MotionConfig reduced-motion="user">
+  <MotionConfig :reduced-motion="reducedMotion">
     <LayoutGroup>
       <DialogRoot :open="lifted" @update:open="open = $event">
         <template v-if="trigger">

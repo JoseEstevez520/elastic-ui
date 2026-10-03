@@ -6,7 +6,7 @@ import { provideFieldRoom } from '../../composables/useFieldRoom'
 import { useMorphLift } from '../../composables/useMorphLift'
 import { usePortalTarget } from '../../composables/usePortalTarget'
 import { cn } from '../../utils/cn'
-import { contentOut, morphCloseTransition, morphTransition, prefersReducedMotion } from '../../utils/motion'
+import { contentOut, morphCloseTransition, morphTransition, prefersReducedMotion, useReducedMotion } from '../../utils/motion'
 import {
   dialogMorphBodyClass,
   dialogMorphLabelOutClass,
@@ -21,6 +21,9 @@ import {
   morphTriggerPaint,
   type DialogMorphTriggerVariants,
 } from './dialog-morph.variants'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 /**
  * A button that becomes its dialog: the button's box travels to the middle of the screen and
@@ -96,7 +99,7 @@ const { room } = provideFieldRoom({
 </script>
 
 <template>
-  <MotionConfig reduced-motion="user">
+  <MotionConfig :reduced-motion="reducedMotion">
     <LayoutGroup>
       <DialogRoot :open="lifted" @update:open="open = $event">
         <!-- Landing back is faster than leaving (see morphCloseTransition). -->

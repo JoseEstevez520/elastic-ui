@@ -3,8 +3,11 @@ import { LayoutGroup, MotionConfig } from 'motion-v'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { cn } from '../../utils/cn'
-import { morphTransition, prefersReducedMotion } from '../../utils/motion'
+import { morphTransition, prefersReducedMotion, useReducedMotion } from '../../utils/motion'
 import { provideExpandableCardGroup } from './expandable-card.context'
+
+// The app's motion preference (setMotionPreference), not only the system's.
+const reducedMotion = useReducedMotion()
 
 /**
  * A grid of cards where the one you open lifts out of its cell and grows to cover the whole
@@ -99,7 +102,7 @@ const groupId = useId()
 
 <template>
   <LayoutGroup :id="groupId">
-    <MotionConfig :transition="morphTransition" reduced-motion="user">
+    <MotionConfig :transition="morphTransition" :reduced-motion="reducedMotion">
       <!-- Grows at the open pace and shrinks at the faster close pace. -->
       <div
         ref="root"

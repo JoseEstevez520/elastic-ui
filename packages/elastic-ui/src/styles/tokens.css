@@ -12,6 +12,13 @@
  * also read them through their own `--<component>-*` fallbacks.
  */
 
+/*
+ * `motion-reduce:` follows the app's motion preference, not only the system's: it applies with
+ * `<html data-motion="none">`, which setMotionPreference sets when animations are off, by the app
+ * or (with the preference on `auto`) by the system.
+ */
+@custom-variant motion-reduce (html[data-motion='none'] &);
+
 @theme static {
   /* Surfaces */
   --color-bg: light-dark(#f5f5f5, #0a0a0a);
@@ -278,6 +285,9 @@
     html:not([data-motion='full']) &,
     html:not([data-motion='full']) & > * { animation: none; }
   }
+  /* The app turned animations off (setMotionPreference('none')), whatever the system says. */
+  html[data-motion='none'] &,
+  html[data-motion='none'] & > * { animation: none; }
 }
 
 @utility stagger-items {
@@ -307,6 +317,8 @@
   @media (prefers-reduced-motion: reduce) {
     html:not([data-motion='full']) & > * { animation: none; }
   }
+  /* The app turned animations off (setMotionPreference('none')), whatever the system says. */
+  html[data-motion='none'] & > * { animation: none; }
 }
 
 /*
@@ -446,6 +458,12 @@
       color: var(--color-fg-muted);
     }
   }
+  /* The app turned animations off (setMotionPreference('none')), whatever the system says. */
+  html[data-motion='none'] & {
+    animation: none;
+    mask-image: none;
+    color: var(--color-fg-muted);
+  }
 }
 
 /*
@@ -464,6 +482,12 @@
       mask-image: none;
       opacity: 0.7;
     }
+  }
+  /* The app turned animations off (setMotionPreference('none')), whatever the system says. */
+  html[data-motion='none'] & {
+    animation: none;
+    mask-image: none;
+    opacity: 0.7;
   }
 }
 
@@ -830,6 +854,11 @@ html.theme-switching *::after {
       opacity: 1;
       animation: none !important;
     }
+  }
+  /* The app turned animations off (setMotionPreference('none')), whatever the system says. */
+  html[data-motion='none'] & .diagram-in {
+    opacity: 1;
+    animation: none !important;
   }
 }
 
