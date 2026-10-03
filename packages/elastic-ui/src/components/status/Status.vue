@@ -11,8 +11,8 @@ import { pathOf, type Glyph, type Stroke } from '../icon-morph/glyphs'
  * in place of a coloured Badge. One ring for every state; what is inside it changes in place, and
  * the label stays grey: only the icon carries colour, and only an outcome has one (done, needs a
  * look, failed). Discarded is a normal decision, so it is grey and not the danger colour. Working
- * is a fixed arc: the arc and the label say it is under way, nothing turns (DECISIONS, "One thing
- * leads"). At rest nothing moves; a state that changes while you watch turns into the next one,
+ * is an arc that turns, the one thing here that moves on its own (it stops under reduced motion). Every
+ * other state is at rest; a state that changes while you watch turns into the next one,
  * the icon's strokes travelling (as IconMorph) and the label morphing (TextMorph).
  *
  * `reason` says why, on hover and focus, and to screen readers. The phases are the library's
@@ -86,13 +86,16 @@ const dash = computed(() => (props.state === 'working' ? `${CIRCUMFERENCE * 0.72
       aria-hidden="true"
       :class="['size-4 shrink-0 transition-colors duration-350 ease-emphasized motion-reduce:transition-none', tones[state]]"
     >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        :stroke-dasharray="dash"
-        class="origin-center -rotate-90 transition-[stroke-dasharray] duration-[350ms] ease-emphasized motion-reduce:transition-none"
-      />
+      <!-- Only the arc turns, so it reads as under way; the hands inside stay put. -->
+      <g :class="state === 'working' && 'origin-center animate-[spin_1.1s_linear_infinite] motion-reduce:animate-none'">
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          :stroke-dasharray="dash"
+          class="origin-center -rotate-90 transition-[stroke-dasharray] duration-[350ms] ease-emphasized motion-reduce:transition-none"
+        />
+      </g>
       <path
         v-for="(stroke, i) in inside[state]"
         :key="i"
