@@ -3,14 +3,13 @@ import { Moon, Sun } from '@lucide/vue'
 import { computed, ref, useTemplateRef, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
-import Button from '../button/Button.vue'
 import IconSwap from '../icon-swap/IconSwap.vue'
 
 /**
  * Times of a day on a strip of the day itself, the night a tone deeper than the daylight.
  * Each time is a knob you drag to its hour (every quarter), with its time over it; the sun or
  * the moon in it says which side of the day it is on. Press the strip, or "Add a time", to put
- * another; arrows move a knob by a quarter (Shift, an hour), Delete takes it away. Times go in and
+ * another (Enter on the strip does, from the keyboard); arrows move a knob by a quarter (Shift, an hour), Delete takes it away. Times go in and
  * out as "HH:MM", in order.
  */
 const props = withDefaults(
@@ -97,12 +96,15 @@ function addNext() {
     <div role="group" :aria-label="label" class="relative pt-7">
       <div
         ref="track"
+        tabindex="0"
+        :aria-label="addLabel"
         class="relative h-12 cursor-copy rounded-lg"
         :style="{
           background:
             'linear-gradient(to right, var(--color-surface-sunk) 0%, var(--color-surface-sunk) 22%, var(--color-surface-raised) 30%, var(--color-surface-raised) 78%, var(--color-surface-sunk) 86%, var(--color-surface-sunk) 100%)',
         }"
         @pointerdown.self="add(minutesAt($event.clientX))"
+        @keydown.self.enter.prevent="addNext"
       >
         <div
           v-for="(time, i) in times"
@@ -135,6 +137,5 @@ function addNext() {
         <span>00</span><span>06</span><span>12</span><span>18</span><span>24</span>
       </div>
     </div>
-    <Button variant="ghost" size="sm" class="mt-2" :disabled="times.length >= max" @click="addNext">{{ addLabel }}</Button>
   </div>
 </template>
