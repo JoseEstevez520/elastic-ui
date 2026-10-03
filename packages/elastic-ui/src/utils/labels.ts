@@ -40,6 +40,15 @@ export const defaultLabels = {
   statusDiscarded: 'Discarded',
   statusFlagged: 'Needs a look',
   statusError: 'Failed',
+  /** WeekPillbox: its name, and what its line says for the sets of days that have one. */
+  days: 'Days',
+  everyDay: 'Every day',
+  weekdays: 'Weekdays',
+  weekends: 'Weekends',
+  noDays: 'No days',
+  /** DayStrip: its name, and the button that puts another time on it. */
+  times: 'Times',
+  addTime: 'Add a time',
   // Navigation
   menu: 'Menu',
   mainNav: 'Main',
