@@ -5,11 +5,9 @@ import { labelFor, useLabels } from '../../utils/labels'
 import TextMorph from '../text-morph/TextMorph.vue'
 
 /**
- * The days of a week as a pillbox. Seven compartments, each with a lid; a day that is on has
- * its lid tipped open, a pill showing in the well, as the bin's lid tips. At rest it is flat and
- * still; only the lid you press moves. Under it a line says what that adds up to ("Weekdays",
- * "Mon, Wed, Fri"), so the lids never have to be read one by one. Days go in and out as numbers,
- * 1 (Monday) to 7 (Sunday).
+ * The days of a week as a row of tiles, each with its letter: a day that is on is filled, one that
+ * is off is empty. Under it a line says what that adds up to ("Weekdays", "Mon, Wed, Fri"), so the
+ * tiles never have to be read one by one. Days go in and out as numbers, 1 (Monday) to 7 (Sunday).
  */
 const props = withDefaults(
   defineProps<{
@@ -58,29 +56,17 @@ const toggle = (day: number) =>
 
 <template>
   <div :class="cn('flex w-full max-w-md flex-col gap-3', props.class)">
-    <!-- Headroom above the wells: an open lid lifts up into it. The compartments share the width. -->
-    <div role="group" :aria-label="label" class="flex gap-1.5 rounded-xl bg-surface-sunk px-2.5 pb-2 pt-8">
+    <div role="group" :aria-label="label" class="flex gap-1.5">
       <button
         v-for="d in names"
         :key="d.day"
         type="button"
         :aria-pressed="days.includes(d.day)"
         :aria-label="d.long"
-        class="group flex min-w-0 flex-1 flex-col items-center gap-2 rounded-md"
+        class="flex h-12 min-w-0 flex-1 items-center justify-center rounded-md bg-bg-inset text-label text-fg-muted transition-colors duration-350 ease-emphasized hover:bg-surface-sunk motion-reduce:transition-none aria-pressed:bg-fg aria-pressed:text-bg aria-pressed:hover:bg-fg"
         @click="toggle(d.day)"
       >
-        <span class="relative block h-14 w-full [perspective:260px]">
-          <!-- The well, a tone deeper than the tray, with its pill. -->
-          <span class="absolute inset-0 rounded-md bg-bg-inset" />
-          <span
-            class="absolute inset-x-0 bottom-3 mx-auto h-5 w-2.5 rounded-full bg-fg-secondary opacity-0 transition-opacity duration-[350ms] ease-emphasized motion-reduce:transition-none group-aria-pressed:opacity-100"
-          />
-          <!-- The lid, hinged along its top edge: it lifts back and up, never sideways over its neighbours. -->
-          <span
-            class="absolute inset-0 rounded-md bg-surface-raised [transform-origin:top] [transform:rotateX(0deg)] transition-transform duration-[350ms] ease-emphasized motion-reduce:transition-none group-aria-pressed:[transform:rotateX(-112deg)]"
-          />
-        </span>
-        <span class="text-label text-fg-muted transition-colors duration-350 ease-emphasized group-aria-pressed:text-fg">{{ d.narrow }}</span>
+        {{ d.narrow }}
       </button>
     </div>
     <TextMorph :text="summary" class="text-label text-fg-secondary" aria-live="polite" />

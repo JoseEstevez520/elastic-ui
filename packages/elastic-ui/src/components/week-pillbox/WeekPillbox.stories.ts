@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>
 
 const es = { everyDay: 'Todos los días', weekdays: 'Entre semana', weekends: 'Fines de semana', none: 'Ningún día' }
 
-/** Press a lid to tip it open (that day is on) or shut; the line under it says what it adds up to. */
+/** Press a tile to fill it (that day is on) or empty it; the line under it says what it adds up to. */
 export const Default: Story = {
   render: () => ({
     components: { WeekPillbox },
