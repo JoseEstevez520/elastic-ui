@@ -97,6 +97,8 @@ An icon earns its place when it helps find something at a glance: buttons, menu 
 - No decorative marks (dots, badges) where they don't say something the text doesn't.
 - **Lucide** (`@lucide/vue`) for general icons, **Simple Icons** (`simple-icons`) for brand and technology logos, in their own colour.
 - A logo is drawn with `Logo`, given the Simple Icons entry itself (`:icon="siVuedotjs"`): the library ships no icons, so the project picks the ones it uses. A stack is a `LogoList` of `LogoListItem`s, each its logo and its name.
+- Over colour (a Glow, a photo) a `LogoList` goes `bare`: a tray under each name would cut holes in it.
+- Links that each have a recognisable icon (GitHub, LinkedIn, an email, a project's site and its code) are an `IconLinks` row: the icon alone at rest, opening into its label when pointed at. `ghost` drops the trays, for a row over colour or beside text. A link given `copy` copies an address instead of going anywhere.
 - Pass the component, not a rendered icon: `:icon="Search"`.
 - An icon alone needs a name: `aria-label` on its button, `label` on the part.
 
@@ -269,6 +271,10 @@ Not a template to fill: a page is composed from what it has to say. What the bes
 - **Breadcrumbs hold the rest**: the path to the page, and its siblings behind each chevron.
 - **TableOfContents** for the headings of a long page. Three levels in three places, each short.
 - **The page's bar is `SidebarLayoutHeader`**, first in the page's column: breadcrumbs on the left, search and theme on the right. It stays at the top, brings the sidebar's toggle on a phone, and tells TableOfContents and headings its height, so no offset is set by hand.
+- **A page without a sidebar** (a landing, a portfolio) takes `MorphHeader`: a bar across the top that turns into a pill once the page scrolls. Its `menu` says where the links go:
+  - `responsive`, the default: inline while they fit, in the bar and in the pill; behind the menu button when they don't.
+  - `scrolled`: inline at the top of the page, while the reader is deciding where to go; once scrolled, the pill holds only the logo and the menu button, so it takes as little room as it can while they read. The links fade before the pill folds, so keep the threshold low (`:scroll-threshold="8"`) for it to answer the first scroll.
+  - `always`: only the logo and the menu button, at every width, for a site with many sections.
 
 ## 16. Setting up a project
 
