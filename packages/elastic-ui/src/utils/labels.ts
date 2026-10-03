@@ -49,6 +49,8 @@ export const defaultLabels = {
   /** DayStrip: its name, and the button that puts another time on it. */
   times: 'Times',
   addTime: 'Add a time',
+  /** TreeDragHandle: its name; keys move the item from the keyboard. */
+  moveItem: 'Move',
   // Navigation
   menu: 'Menu',
   mainNav: 'Main',

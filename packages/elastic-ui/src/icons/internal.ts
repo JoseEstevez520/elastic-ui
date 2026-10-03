@@ -14,6 +14,7 @@ export {
   ChevronRight as ChevronRightIcon,
   Copy as CopyIcon,
   ListFilter as FilterIcon,
+  GripVertical as GripIcon,
   Info as InfoIcon,
   Lightbulb as LightbulbIcon,
   Minus as MinusIcon,
