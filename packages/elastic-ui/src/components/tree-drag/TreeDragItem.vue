@@ -68,7 +68,7 @@ function onKeydown(event: KeyboardEvent) {
       cn(
         'group/row relative rounded-md',
         !props.handle && 'cursor-grab',
-        dragging && 'z-10 cursor-grabbing bg-surface-raised',
+        dragging && 'z-10 cursor-grabbing bg-surface-raised transition-[translate] duration-150 ease-emphasized motion-reduce:transition-none',
         lit && 'bg-fg/10',
         moving && !dragging && 'transition-[transform,background-color] duration-200 ease-emphasized motion-reduce:transition-none',
         props.class,
@@ -76,7 +76,7 @@ function onKeydown(event: KeyboardEvent) {
     "
     :style="
       dragging
-        ? { transform: `translateY(${context.offset.value}px)`, pointerEvents: 'none' }
+        ? { transform: `translateY(${context.offset.value}px)`, translate: `${context.offsetX.value}px`, pointerEvents: 'none' }
         : moving
           ? { transform: `translateY(${shift}px)` }
           : undefined

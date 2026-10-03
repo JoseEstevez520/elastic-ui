@@ -12,17 +12,22 @@ import {
 /**
  * Makes a tree of rows movable by hand. Each row is a `TreeDragItem`; pressing one and moving
  * lifts it, the rows make room where it would land (the hole it left closes, a gap opens), and a
- * section it would go inside is lit. On release it says so with `move` (which parent, which
+ * section that would hold it is lit, and, after the last row of a section, how far left or right the pointer is picks the level: further left steps out. On release it says so with `move` (which parent, which
  * place). It moves nothing itself: the app moves its data and the rows follow. From the keyboard,
  * Alt with the arrows on a row moves it up or down among its siblings, out of its section, or
  * into the section above it.
  */
 const props = defineProps<{ class?: HTMLAttributes['class'] }>()
-const emit = defineEmits<{ move: [move: TreeDragMove] }>()
+const emit = defineEmits<{
+  move: [move: TreeDragMove]
+  /** The row has hovered over this section for a moment: the app may open it, to drop inside. */
+  reveal: [id: TreeDragId]
+}>()
 
 const items = new Set<() => TreeDragMeta>()
 const draggingId = ref<TreeDragId | null>(null)
 const offset = ref(0)
+const offsetX = ref(0)
 const insideId = ref<TreeDragId | null>(null)
 const shifts = ref<Record<string, number>>({})
 
@@ -34,6 +39,7 @@ interface Box {
   top: number
   bottom: number
   height: number
+  left: number
 }
 let boxes = new Map<TreeDragId, Box>()
 const box = (m: TreeDragMeta) => boxes.get(m.id)!
@@ -42,7 +48,7 @@ function measure() {
   boxes = new Map(
     metas().map((m) => {
       const r = m.el.getBoundingClientRect()
-      return [m.id, { top: r.top + scrollY, bottom: r.bottom + scrollY, height: r.height }]
+      return [m.id, { top: r.top + scrollY, bottom: r.bottom + scrollY, height: r.height, left: r.left + scrollX }]
     }),
   )
 }
@@ -65,12 +71,17 @@ function withinDragged(all: TreeDragMeta[], id: TreeDragId) {
 
 interface Drop {
   move: TreeDragMove
-  inside: boolean
+  /** The section that would hold it, lit so the level reads without a line. */
+  holder: TreeDragId | null
   /** Where the gap opens, on the page, when the row goes between two. */
   gapAt: number | null
+  /** The left edge of the level it would land at. */
+  left: number
+  /** It would go inside the section under the pointer, not between rows. */
+  inside: boolean
 }
 
-function locate(id: TreeDragId, y: number): Drop | null {
+function locate(id: TreeDragId, y: number, x: number): Drop | null {
   const all = metas()
   const dragged = all.find((m) => m.id === id)
   if (!dragged) return null
@@ -87,24 +98,71 @@ function locate(id: TreeDragId, y: number): Drop | null {
   const fraction = Math.min(Math.max((y - over.b.top) / over.b.height, 0), 1)
 
   let kind: 'before' | 'after' | 'inside' = fraction < 0.5 ? 'before' : 'after'
-  if (over.m.section && fraction > 0.3 && fraction < 0.7) kind = 'inside'
+  if (over.m.section && fraction > 0.25 && fraction < 0.75) kind = 'inside'
 
-  const parentId = kind === 'inside' ? over.m.id : over.m.parentId
-  let index = kind === 'inside' ? over.m.count : kind === 'before' ? over.m.index : over.m.index + 1
+  const shown = (m: TreeDragMeta) => rows.some((r) => r.m.parentId === m.id)
+  let parentId: TreeDragId | null
+  let index: number
+  let gapAt: number | null = null
+  // Where a row lands inside a section: level with its rows, or an indent in if it has none.
+  const insideLeft = (m: TreeDragMeta, b: Box) => rows.find((r) => r.m.parentId === m.id)?.b.left ?? b.left + 20
+  let left = over.b.left
+
+  if (kind === 'inside') {
+    parentId = over.m.id
+    index = over.m.count
+    left = insideLeft(over.m, over.b)
+  } else if (kind === 'before') {
+    parentId = over.m.parentId
+    index = over.m.index
+    gapAt = over.b.top
+  } else if (over.m.section && shown(over.m)) {
+    // Under an open section is its first place: the gap opens between it and its rows.
+    parentId = over.m.id
+    index = 0
+    gapAt = over.b.bottom
+    left = insideLeft(over.m, over.b)
+  } else {
+    // After the last row of a section, the pointer picks the level: further right stays inside
+    // it, further left steps out to the section's own level, and so on up.
+    const levels: { parentId: TreeDragId | null; index: number; left: number }[] = [
+      { parentId: over.m.parentId, index: over.m.index + 1, left: over.b.left },
+    ]
+    let at = over.m
+    while (at.parentId != null) {
+      const parent = rows.find((r) => r.m.id === at.parentId)
+      if (!parent || rows.some((r) => r.m.parentId === parent.m.id && r.m.index > at.index)) break
+      levels.push({ parentId: parent.m.parentId, index: parent.m.index + 1, left: parent.b.left })
+      at = parent.m
+    }
+    const pick = levels.find((level) => x >= level.left + 8) ?? levels[levels.length - 1]
+    parentId = pick.parentId
+    index = pick.index
+    gapAt = over.b.bottom
+    left = pick.left
+  }
+
   // Once the dragged row leaves, the places after it close up by one.
   if (parentId === dragged.parentId && dragged.index < index) index -= 1
   // Dropped where it already is: nothing moves, and no gap opens.
   if (parentId === dragged.parentId && index === dragged.index) return null
-  return {
-    move: { id, parentId, index },
-    inside: kind === 'inside',
-    gapAt: kind === 'inside' ? null : kind === 'before' ? over.b.top : over.b.bottom,
-  }
+  return { move: { id, parentId, index }, holder: parentId, gapAt, left, inside: kind === 'inside' }
 }
 
 let current: Drop | null = null
+let waitingOn: TreeDragId | null = null
+let waitTimer: ReturnType<typeof setTimeout> | undefined
+
+// Held over one section for a moment, it is asked to open (once), so the row can go among its rows.
+function wait(id: TreeDragId | null) {
+  if (id === waitingOn) return
+  clearTimeout(waitTimer)
+  waitingOn = id
+  if (id != null) waitTimer = setTimeout(() => emit('reveal', id), 600)
+}
 let startY = 0
 let lastY = 0
+let lastX = 0
 let scrollFrame = 0
 
 // Closes the hole the row left and opens a gap where it would land, with transforms only.
@@ -141,7 +199,9 @@ function place(next: Drop | null) {
     if (shift) moved[String(m.id)] = shift
   }
   shifts.value = moved
-  insideId.value = current?.inside ? current.move.parentId : null
+  offsetX.value = current ? current.left - own.left : 0
+  insideId.value = current?.holder ?? null
+  wait(current?.inside ? current.move.parentId : null)
 }
 
 function frame() {
@@ -158,7 +218,7 @@ function frame() {
 function update() {
   if (draggingId.value == null) return
   offset.value = lastY + scrollY - startY
-  place(locate(draggingId.value, lastY + scrollY))
+  place(locate(draggingId.value, lastY + scrollY, lastX + scrollX))
 }
 
 // A press is a drag only once it moves, so a click on a row still clicks.
@@ -177,6 +237,7 @@ function onMove(event: PointerEvent) {
   }
   if (draggingId.value == null) return
   lastY = event.clientY
+  lastX = event.clientX
   update()
 }
 
@@ -209,10 +270,13 @@ function stop() {
   removeEventListener('keydown', onKey)
   removeEventListener('touchmove', onTouchMove)
   document.documentElement.style.userSelect = ''
+  clearTimeout(waitTimer)
+  waitingOn = null
   pending = null
   current = null
   draggingId.value = null
   offset.value = 0
+  offsetX.value = 0
   insideId.value = null
   shifts.value = {}
 }
@@ -221,6 +285,7 @@ function start(id: TreeDragId, event: PointerEvent) {
   if (event.button !== 0 || draggingId.value != null || pending) return
   pending = { id, x: event.clientX, y: event.clientY }
   lastY = event.clientY
+  lastX = event.clientX
   addEventListener('pointermove', onMove)
   addEventListener('pointerup', onUp)
   addEventListener('pointercancel', onCancel)
@@ -252,6 +317,7 @@ provideTreeDragContext({
   },
   draggingId,
   offset,
+  offsetX,
   insideId,
   shifts,
   start,
