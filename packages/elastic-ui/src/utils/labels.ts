@@ -55,6 +55,10 @@ export const defaultLabels = {
   /** Stat's trend, for screen readers. */
   trendUp: 'Up',
   trendDown: 'Down',
+  /** Chart: how to read it from the keyboard, and its table's headings. */
+  chartKeys: 'Use the arrow keys to read each value',
+  series: 'Series',
+  name: 'Name',
   /** Gallery's filter for everything, and its group of categories. */
   all: 'All',
   categories: 'Categories',
