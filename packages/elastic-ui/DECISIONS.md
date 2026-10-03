@@ -72,7 +72,7 @@ A part seen elsewhere (Rare UI, Family, Apple's apps, a post) becomes the librar
 - **One thing leads.** On a screen, one movement draws the eye. When a morph is the main one (the MorphHeader growing into its panel, a card lifting), what changes around it, such as an icon or a label, changes quietly instead of animating on its own and competing with it: MorphHeader's menu icon switches to its close without IconMorph.
 - **Loading is not a stand-in.** No skeletons, no grey shapes pretending to be content. While something loads, a StatusText says so with its shimmer; when it arrives, it comes in as everything does, into focus as a wave (`blur-in`, `stagger-children`, the chat's streaming), and the box around it eases to its new height so nothing below it jumps. (A skeleton whose shapes stretched into the content was tried and left out.)
 - **What is open when the page loads just shows.** Entrances play for a change the user makes, not for the first render: an Accordion or a NavTree group open from the start is simply there (`useHasChanged`).
-- **Truncate with a fading edge, not an ellipsis**, in anything that morphs. An ellipsis is on or off and cannot be animated; a `mask-image` edge can. When the line gets room, the visible part stays still and the edge plus the hidden rest fade in with the same timing as everything else (`ExpandableCardText`).
+- **Truncate with a fading edge, not an ellipsis**, in anything that morphs. An ellipsis is on or off and cannot be animated; a `mask-image` edge can. When the line gets room, the visible part stays still and the edge plus the hidden rest fade in with the same timing as everything else (`ExpandableCardText`). Only a line that runs past fades: one that fits keeps every letter (`TruncatedText`).
 - **Heights don't depend on width** in anything that morphs, so a line count change never lands as a jump mid-animation.
 
 ## Situations
@@ -191,6 +191,7 @@ Things that went wrong once, found by measuring frame by frame, and the fix ever
 - **A size from the type scale vanishes.** `tailwind-merge` takes an unknown `text-*` for a colour, so `cn('text-title text-fg')` kept only `text-fg`. `cn` knows the scale's names; a new size goes into its list too.
 - **Clicks do nothing on a card over a popover.** A popover kept mounted but hidden (to fold back into) still has its layer above the page: what opens over it sits higher (Term's card).
 - **A marker lands off inside a panel that grows in.** A Popover grows from 97%, so boxes measured on screen while it does are scaled, and an indicator placed from them (NavTree's) stays off once the panel is full size. Divide what is measured by the container's scale: its box on screen over its laid-out width (`getBoundingClientRect().width / offsetWidth`).
+- **A line that fits loses its last letters.** `mask-fade-r` fades the end of its box whether the text runs past or not, so a label put in it by habit lost its last letters, in this library and in the projects using it. A line that may fit is a `TruncatedText` (or, on an element a part already owns, `useTruncated`), which fades only while it runs past; the bare class is for content that always overflows.
 - **A new story renders unstyled in Storybook.** The dev server misses Tailwind classes in new files: `touch .storybook/preview.css`.
 
 ## Two component tiers

@@ -3,7 +3,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch, type Ref, type WatchS
 /**
  * Whether an element's content runs past it, to end it in a fading edge only when it does (see
  * `mask-fade-r`). Measured as the element resizes, and as `content` changes: text growing in a box
- * already at its widest does not resize it.
+ * already at its widest does not resize it. For a line of its own, `TruncatedText` does this itself.
  */
 export function useTruncated(el: Readonly<Ref<HTMLElement | null>>, content?: WatchSource) {
   const truncated = ref(false)

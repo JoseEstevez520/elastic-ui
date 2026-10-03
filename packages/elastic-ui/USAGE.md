@@ -117,7 +117,7 @@ Never hardcode a colour, a duration or a curve. Motion comes from the library's 
 ## 6. Text that fits the motion
 
 - Keep labels short; the library is built for another language making them longer, but not for paragraphs in a button.
-- A line that doesn't fit ends in a fading edge (`mask-fade-r`, `ExpandableCardText`), never an ellipsis.
+- A line that doesn't fit ends in a fading edge, never an ellipsis, and a line that fits keeps every letter. Put such a line in `TruncatedText`: it fades only when its content runs past, and measures itself as it resizes or changes, row by row in a list. For one element you already own and can't wrap, `useTruncated` tells you when to add the edge. The bare `mask-fade-r` class always fades the end, so keep it for content that always overflows (an edge of something that scrolls). Text that grows into more room is `ExpandableCardText`.
 - Inside anything that morphs, don't let a height depend on the width: keep such text to one line.
 
 ## 7. Accessible as you use it

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useLink } from '../../utils/link'
+import TruncatedText from '../truncated-text/TruncatedText.vue'
 import type { TimetableEvent } from './timetable.types'
 
 // Internal: one block of a Timetable, a link to its page when it has one.
@@ -27,6 +28,6 @@ const tint = computed(() => props.event.color ?? 'var(--color-fg-muted)')
     :style="{ backgroundColor: `color-mix(in oklab, ${tint} 14%, var(--color-bg))` }"
   >
     <span class="text-label leading-tight" :style="{ color: `color-mix(in oklab, ${tint} 75%, var(--color-fg))` }">{{ event.title }}</span>
-    <span v-if="event.detail" class="mask-fade-r text-meta leading-tight whitespace-nowrap text-fg-secondary">{{ event.detail }}</span>
+    <TruncatedText v-if="event.detail" class="text-meta leading-tight text-fg-secondary">{{ event.detail }}</TruncatedText>
   </component>
 </template>

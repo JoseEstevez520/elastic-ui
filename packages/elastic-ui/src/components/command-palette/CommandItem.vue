@@ -4,6 +4,7 @@ import { computed, onBeforeUnmount, ref, useId, useSlots, watch, type Component,
 import { cn } from '../../utils/cn'
 import { textOf } from '../../utils/textOf'
 import { matchesQuery } from '../../utils/search'
+import TruncatedText from '../truncated-text/TruncatedText.vue'
 import { useCommandGroup, useCommandPaletteContext } from './command-palette.context'
 import {
   commandIconClass,
@@ -57,10 +58,10 @@ function onSelect(event: CustomEvent) {
     @select="onSelect"
   >
     <component :is="icon" v-if="icon" aria-hidden="true" :class="commandIconClass" />
-    <!-- Fills the row, so the fading edge only reaches text too long for it. -->
-    <span class="min-w-0 flex-1 overflow-hidden whitespace-nowrap mask-fade-r">
+    <!-- Fills the row; only text too long for it ends in a fading edge. -->
+    <TruncatedText class="min-w-0 flex-1">
       <slot />
-    </span>
+    </TruncatedText>
     <span v-if="shortcut" :class="commandShortcutClass">{{ shortcut }}</span>
   </ListboxItem>
 </template>

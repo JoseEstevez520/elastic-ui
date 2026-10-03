@@ -14,7 +14,7 @@ Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](h
 | Disclosure | Collapsible, Accordion, Tabs, Steps, ExpandableCard |
 | Navigation | Sidebar, NavTree, MorphHeader, Breadcrumbs, TableOfContents, SearchMorph, ScrollIndicator |
 | Content | Card, Badge, Callout, AnimatedList, DynamicIsland |
-| Text | TextMorph, StatusText, Prose, Markdown |
+| Text | TextMorph, StatusText, TruncatedText, Prose, Markdown |
 | Code | CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay |
 | AI | Chat, ChatMorph, Aurora, AgentReplay, ImageReveal |
 

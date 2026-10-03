@@ -24,7 +24,7 @@ Released as `v0.3.1`, on npm as `@joseestevez/vue-elastic-ui`. Around sixty publ
 - **Navigation** — Sidebar, NavTree, MorphHeader, Breadcrumbs, TableOfContents, ScrollIndicator, Pagination, PageTransition, SearchMorph
 - **Content** — Card, Badge, Logo, Callout, AnimatedList, Table, DescriptionList, Stat, Chart, ActivityGrid, Empty, Progress, Separator, Avatar, Timetable, Diagram & its parts, SandboxFrame
 - **Portfolio** — PageCard, ImageView, Gallery, Carousel, Glow, Glass, Liquid
-- **Text and code** — TextMorph, StatusText, IconMorph, Prose, Markdown, CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay
+- **Text and code** — TextMorph, StatusText, TruncatedText, IconMorph, Prose, Markdown, CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay
 - **AI** — Chat, ChatMorph, Aurora, AgentReplay, ImageReveal, ComposeMorph
 
 ## Next · polish, and many more parts

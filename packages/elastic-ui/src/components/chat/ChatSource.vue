@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, type Component, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import TruncatedText from '../truncated-text/TruncatedText.vue'
 import { chatSourceClass } from './chat.variants'
 
 /**
- * One source an answer read, as a line of text: the site's mark, its title fading at its edge,
- * and where it comes from. No card; the title brightens under the pointer. Opens in a new tab.
+ * One source an answer read, as a line of text: the site's mark, its title (fading at its edge
+ * when too long) and where it comes from. No card; the title brightens under the pointer. Opens in a new tab.
  */
 const props = defineProps<{
   title: string
@@ -34,10 +35,10 @@ const domain = computed(() => {
         <component :is="icon" v-if="icon" class="size-3" />
         <template v-else>{{ domain[0] }}</template>
       </span>
-      <span class="mask-fade-r min-w-0 flex-1 overflow-hidden whitespace-nowrap">
+      <TruncatedText class="min-w-0 flex-1">
         <span class="text-fg-secondary transition-colors duration-150 group-hover/source:text-fg">{{ title }}</span>
         <span class="ml-2 text-meta text-fg-faint">{{ domain }}</span>
-      </span>
+      </TruncatedText>
     </a>
   </li>
 </template>
