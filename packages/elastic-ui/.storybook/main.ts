@@ -5,7 +5,11 @@ const config: StorybookConfig = {
   // The sandbox runtime, served as a host would serve it, for SandboxFrame's pieces made of the
   // library's parts. Built before Storybook starts (`prestorybook`); served as a plain file, so a
   // new build shows on the next reload.
-  staticDirs: [{ from: '../dist', to: '/runtime' }],
+  staticDirs: [
+    { from: '../dist', to: '/runtime' },
+    // The library's mark, for Storybook's own header and tab (manager.ts, manager-head.html).
+    { from: '../../../assets', to: '/brand' },
+  ],
   framework: {
     name: '@storybook/vue3-vite',
     options: { docgen: 'vue-component-meta' },

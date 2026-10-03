@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/logo.png" alt="" width="96" />
+</p>
+
 # elastic-ui
 
 A Vue 3 component library where things transform instead of appearing: a button grows into its dialog, a tab's indicator travels to the next tab, an answer flows in as a wave. Clean, soft and quiet, with one movement leading on each screen.

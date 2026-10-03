@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png" />
+    <img src="assets/logo.png" alt="" width="96" />
+  </picture>
+</p>
+
 # elastic-ui
 
 A Vue 3 component library where things transform instead of appearing, and the site that shows it. The repository is a workspace with two packages:
