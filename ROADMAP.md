@@ -60,6 +60,7 @@ Open: a **tear-off calendar** (Date tile): the day's page lifting over the bindi
 - **From other products** (Family, Things, Apple, Emil Kowalski, Rauno), to redo our own way: drag to close a Sheet (Vaul); hold to confirm (Rauno's Hold Enter); toasts stacked by tone, fanning out on hover (Sonner); what is pending travels to where it will live (Family).
 - Where the `DynamicIsland` lives in a page with chrome, and a hidden state it morphs in from.
 - A Priority+ variant for `MorphHeader` (show what fits, the rest in a "More" menu), and `CommandPalette`'s nested pages (Linear's "Change status…").
+- **A status**, for a thing's state in a list (a note pending, processed or discarded; a run going, done or failed), in place of a coloured `Badge`. A small icon carries the colour and the label stays grey. Discarded is a normal outcome, grey and not the danger colour; only a failure is red. The reason shows on hover or focus. A state that changes while you watch morphs into the new one (`IconMorph`, `TextMorph`). Asked for by Kolmi.
 - Documentation beyond Storybook once the API settles.
 
 ## Out of scope
