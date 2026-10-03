@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
+import { provideFieldRoom } from '../../composables/useFieldRoom'
 import { RovingFocusGroup } from 'reka-ui'
 import { cn } from '../../utils/cn'
 import { providePopoverMorphContext } from './popover-morph.context'
@@ -86,6 +87,16 @@ onMounted(() => {
   for (const el of [trigger.value, panel.value]) if (el) observer.observe(el)
 })
 onBeforeUnmount(() => observer?.disconnect())
+
+// A field that opens inside (a Select's list) reaches past the content: the panel grows to hold it,
+// up to its cap, and scrolls it into view past that.
+const spacer = useTemplateRef<HTMLElement>('spacer')
+const { room } = provideFieldRoom({
+  spacer,
+  scroller: () => panel.value,
+  space: () => window.innerHeight * 0.7,
+  settle: 350,
+})
 
 // Where the panel goes, as Popover's collision handling (Reka UI's) would put it: sideways by as
 // much as keeps it off the screen's edges, and on the side asked unless the other has more room.
@@ -190,6 +201,7 @@ watch(open, async (isOpen) => {
           <slot :close="close" />
         </RovingFocusGroup>
         <slot v-else :close="close" />
+        <div ref="spacer" aria-hidden="true" :style="{ height: `${room}px` }" />
       </div>
     </div>
 

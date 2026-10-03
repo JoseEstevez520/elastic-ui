@@ -52,7 +52,7 @@ function onPick(next: unknown) {
         ref="list"
         :class="
           cn(
-            'stagger-items max-h-72 overflow-y-auto overscroll-contain p-1 outline-none scrollbar-subtle [--stagger-delay:0.05s] [&:has(>:nth-child(9))>*]:animate-none',
+            'stagger-items max-h-[min(18rem,var(--field-panel-max-height,18rem))] overflow-y-auto overscroll-contain p-1 outline-none scrollbar-subtle [--stagger-delay:0.05s] [&:has(>:nth-child(9))>*]:animate-none',
             props.class,
           )
         "

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DialogClose, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui'
 import { computed, nextTick, onBeforeUnmount, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { provideFieldRoom } from '../../composables/useFieldRoom'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
 import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarget'
 import { ChevronLeftIcon, XIcon } from '../../icons/internal'
@@ -129,6 +130,12 @@ watch(step, (to) => {
 
 // Scrolled down, the step fades under the bar, as Sheet's content does under its cross.
 const scrolled = ref(false)
+
+// A field that opens inside a step (a Select's list) reaches past the content: the content gets the
+// room to scroll to it, and scrolls it into view.
+const spacer = useTemplateRef<HTMLElement>('spacer')
+const scroller = () => spacer.value?.parentElement
+const { room } = provideFieldRoom({ spacer, scroller, space: () => scroller()?.clientHeight ?? 0 })
 </script>
 
 <template>
@@ -203,6 +210,7 @@ const scrolled = ref(false)
             @scroll="scrolled = ($event.target as HTMLElement).scrollTop > 0"
           >
             <slot />
+            <div ref="spacer" aria-hidden="true" :style="{ height: `${room}px` }" />
           </div>
         </div>
       </DialogContent>

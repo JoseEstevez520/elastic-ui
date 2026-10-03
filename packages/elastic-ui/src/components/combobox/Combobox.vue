@@ -78,7 +78,7 @@ const open = ref(false)
       <template #panel>
         <ComboboxContent position="inline" class="border-t border-[color:var(--color-border)] text-ui text-fg">
           <!-- A wave from the field downwards, none past the eighth. -->
-          <ComboboxViewport class="stagger-items max-h-72 overflow-y-auto overscroll-contain p-1 scrollbar-subtle [--stagger-delay:0.05s]">
+          <ComboboxViewport class="stagger-items max-h-[min(18rem,var(--field-panel-max-height,18rem))] overflow-y-auto overscroll-contain p-1 scrollbar-subtle [--stagger-delay:0.05s]">
             <ComboboxEmpty class="px-3 py-6 text-center text-ui text-fg-muted">{{ emptyLabel }}</ComboboxEmpty>
             <ComboboxItem
               v-for="option in list"

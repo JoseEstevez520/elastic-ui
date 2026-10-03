@@ -6,6 +6,11 @@ import DialogMorphDescription from '../dialog-morph/DialogMorphDescription.vue'
 import DialogMorphTitle from '../dialog-morph/DialogMorphTitle.vue'
 import Field from '../field/Field.vue'
 import Input from '../input/Input.vue'
+import Select from '../select/Select.vue'
+import SelectContent from '../select/SelectContent.vue'
+import SelectItem from '../select/SelectItem.vue'
+import SelectTrigger from '../select/SelectTrigger.vue'
+import SelectValue from '../select/SelectValue.vue'
 import Switch from '../switch/Switch.vue'
 import Sheet from './Sheet.vue'
 
@@ -18,6 +23,11 @@ const parts = {
   SheetDescription: DialogMorphDescription,
   SheetTitle: DialogMorphTitle,
   Switch,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 }
 
 const settings = `
@@ -84,6 +94,36 @@ export const LongContent: Story = {
           <template #trigger>Changelog</template>
           <SheetTitle>What changed</SheetTitle>
           <p v-for="n in 40" :key="n" class="mt-3 text-sm text-fg-secondary">Version 0.{{ n }}: small fixes and a new part.</p>
+        </Sheet>
+      </div>`,
+  }),
+}
+
+/**
+ * A long list at the sheet's foot: the content gets the room to scroll to the open list, and
+ * scrolls it into view; the list scrolls in its own bounds.
+ */
+export const FieldsThatOpen: Story = {
+  args: { side: 'bottom' },
+  render: (args) => ({
+    components: parts,
+    setup: () => ({ args, icon: ref('icon-1'), icons: Array.from({ length: 40 }, (_, i) => `icon-${i + 1}`) }),
+    template: `
+      <div class="flex h-screen items-end justify-center p-6">
+        <Sheet v-bind="args">
+          <template #trigger>Edit section</template>
+          <SheetTitle>Edit section</SheetTitle>
+          <div class="mt-6 flex flex-col gap-5">
+            <Field label="Title"><Input model-value="Unit 1" /></Field>
+            <Field label="Icon">
+              <Select v-model="icon">
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="name in icons" :key="name" :value="name">{{ name }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+          </div>
         </Sheet>
       </div>`,
   }),

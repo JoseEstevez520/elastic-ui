@@ -2,6 +2,7 @@
 import { LayoutGroup, MotionConfig, motion } from 'motion-v'
 import { DialogContent, DialogOverlay, DialogPortal, DialogRoot } from 'reka-ui'
 import { computed, onBeforeUnmount, ref, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { provideFieldRoom } from '../../composables/useFieldRoom'
 import { useMorphLift } from '../../composables/useMorphLift'
 import { usePortalTarget } from '../../composables/usePortalTarget'
 import { cn } from '../../utils/cn'
@@ -82,6 +83,16 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resizeTimer)
 })
+
+// A field that opens inside (a Select's list) reaches past the content: the box grows to hold it,
+// as it does for any other content, and scrolls it into view when it is already at its tallest.
+const spacer = useTemplateRef<HTMLElement>('spacer')
+const { room } = provideFieldRoom({
+  spacer,
+  scroller: () => body.value?.parentElement,
+  space: () => window.innerHeight * 0.85,
+  settle: dialogMorphResizeDuration,
+})
 </script>
 
 <template>
@@ -159,6 +170,7 @@ onBeforeUnmount(() => {
                 >
                   <div ref="body" :class="dialogMorphBodyClass">
                     <slot :close="close" />
+                    <div ref="spacer" aria-hidden="true" :style="{ height: `${room}px` }" />
                   </div>
                 </motion.div>
               </motion.div>

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { DialogClose, DialogContent, DialogOverlay, DialogPortal, DialogRoot } from 'reka-ui'
-import { computed, nextTick, ref, useTemplateRef, type HTMLAttributes } from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { provideFieldRoom } from '../../composables/useFieldRoom'
 import { boxOf, useMorphBox } from '../../composables/useMorphBox'
 import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarget'
 import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
+import { morphTransition } from '../../utils/motion'
 import { dialogMorphTriggerClass } from '../dialog-morph/dialog-morph.variants'
 import { sheetContentVariants } from './sheet.variants'
 
@@ -73,6 +75,26 @@ const surfaceStyle = computed(() =>
   }),
 )
 
+// A field that opens inside (a Select's list) reaches past the content: the content gets the room
+// and scrolls it into view. A sheet at the bottom, as tall as its content, also grows to hold it,
+// up to its cap, its top easing as the morph's does.
+const spacer = useTemplateRef<HTMLElement>('spacer')
+const scroller = () => spacer.value?.parentElement
+const bottom = computed(() => props.side === 'bottom')
+const { room } = provideFieldRoom({
+  spacer,
+  scroller,
+  space: () => (bottom.value ? size().height * 0.85 : (scroller()?.clientHeight ?? 0)),
+  settle: bottom.value ? morphTransition.duration * 1000 : 0,
+})
+watch(room, async () => {
+  if (!bottom.value || !grown.value || !to.value) return
+  await nextTick()
+  const vh = size().height
+  const height = Math.min(content.value?.scrollHeight ?? to.value.height, vh * 0.85)
+  to.value = { ...to.value, top: vh - MARGIN - height, height }
+})
+
 // The content keeps the sheet's size from the start, pinned to the edge the sheet grows to, so
 // the box uncovers it rather than squeezing it.
 const contentStyle = computed(() => ({
@@ -135,6 +157,7 @@ const contentStyle = computed(() => ({
             @scroll="scrolled = ($event.target as HTMLElement).scrollTop > 0"
           >
             <slot :close="close" />
+            <div ref="spacer" aria-hidden="true" :style="{ height: `${room}px` }" />
           </div>
           <DialogClose
             :aria-label="closeLabel"

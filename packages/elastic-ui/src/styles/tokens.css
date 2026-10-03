@@ -270,6 +270,10 @@
   & > :nth-child(7) { --stagger-index: 6; }
   & > :nth-child(n + 8) { --stagger-index: 7; }
 
+  /* Each block keeps its animation, so each is a layer of its own, and an open field's panel, drawn
+     over what follows it, would sit under the next block: the block holding it comes above. */
+  & > :has([data-field-open]) { position: relative; z-index: 1; }
+
   @media (prefers-reduced-motion: reduce) {
     html:not([data-motion='full']) &,
     html:not([data-motion='full']) & > * { animation: none; }

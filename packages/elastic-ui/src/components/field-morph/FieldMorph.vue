@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
+import { useFieldRoom } from '../../composables/useFieldRoom'
 import { cn } from '../../utils/cn'
 
 /**
@@ -37,6 +38,27 @@ watch(open, (isOpen) => {
 })
 onBeforeUnmount(() => clearTimeout(foldTimer))
 
+// In a box that clips its content (a dialog, a sheet, a popover), the outline is drawn over what
+// follows, out of the flow, so the box would cut the panel off: it is told how far the field reaches
+// open, makes room for it and scrolls it into view, and the panel is capped to what the box can
+// show. The room is given back once the field has folded, so the box closes after it.
+const room = useFieldRoom()
+const panelMax = computed(() => (room.space.value === undefined ? undefined : room.space.value - size.value.row - 1))
+let revealed = false
+watch([open, folding, size], async ([isOpen, isFolding]) => {
+  if (!isOpen) {
+    revealed = false
+    if (!isFolding) room.claim(undefined)
+    return
+  }
+  if (!revealed) room.measureSpace()
+  await nextTick()
+  const top = root.value?.getBoundingClientRect().top
+  if (top === undefined) return
+  room.claim(top + size.value.row + size.value.panel, revealed ? undefined : top)
+  revealed = true
+})
+
 useEventListener<KeyboardEvent>(() => document, 'keydown', (event) => {
   if (open.value && event.key === 'Escape') open.value = false
 })
@@ -49,7 +71,11 @@ defineExpose({ panel, nextTick })
 </script>
 
 <template>
-  <div ref="root" :class="cn('group/fm relative w-full', (open || folding) && 'z-50', props.class)">
+  <div
+    ref="root"
+    :data-field-open="open || folding || undefined"
+    :class="cn('group/fm relative w-full', (open || folding) && 'z-50', props.class)"
+  >
     <!-- The outline, growing down from the field into the panel, and folding back into it. -->
     <div
       :class="[
@@ -73,7 +99,7 @@ defineExpose({ panel, nextTick })
           'absolute inset-x-0',
           open ? 'animate-[blur-in_0.35s_var(--ease-soft)_0.08s_both] motion-reduce:animate-none' : 'invisible opacity-0 transition-[opacity,visibility] duration-150',
         ]"
-        :style="{ top: `${size.row}px` }"
+        :style="{ top: `${size.row}px`, '--field-panel-max-height': panelMax && `${panelMax}px` }"
       >
         <slot name="panel" />
       </div>

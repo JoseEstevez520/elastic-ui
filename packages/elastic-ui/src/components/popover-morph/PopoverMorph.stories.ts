@@ -2,6 +2,12 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Archive, Copy, Folder, FolderInput, Pencil, Settings, Trash2 } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import Button from '../button/Button.vue'
+import Field from '../field/Field.vue'
+import Select from '../select/Select.vue'
+import SelectContent from '../select/SelectContent.vue'
+import SelectItem from '../select/SelectItem.vue'
+import SelectTrigger from '../select/SelectTrigger.vue'
+import SelectValue from '../select/SelectValue.vue'
 import NavTree from '../nav-tree/NavTree.vue'
 import NavTreeGroup from '../nav-tree/NavTreeGroup.vue'
 import NavTreeItem from '../nav-tree/NavTreeItem.vue'
@@ -205,6 +211,26 @@ export const SideTop: Story = {
           <p class="text-fg-secondary">Grows upwards from the trigger.</p>
         </PopoverMorph>
       </div>`,
+  }),
+}
+
+/** A long list in the panel: the panel grows to hold the open list, and the list scrolls in its own bounds. */
+export const FieldsThatOpen: Story = {
+  render: () => ({
+    components: { Field, PopoverMorph, Select, SelectContent, SelectItem, SelectTrigger, SelectValue },
+    setup: () => ({ icon: ref('icon-1'), icons: Array.from({ length: 40 }, (_, i) => `icon-${i + 1}`) }),
+    template: `
+      <PopoverMorph label="Icon">
+        <template #trigger>Icon</template>
+        <Field label="Icon">
+          <Select v-model="icon">
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="name in icons" :key="name" :value="name">{{ name }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+      </PopoverMorph>`,
   }),
 }
 

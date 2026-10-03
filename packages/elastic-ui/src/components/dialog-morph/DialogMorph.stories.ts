@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
 import Button from '../button/Button.vue'
+import Combobox from '../combobox/Combobox.vue'
+import DatePicker from '../date-picker/DatePicker.vue'
 import Field from '../field/Field.vue'
 import Input from '../input/Input.vue'
 import Select from '../select/Select.vue'
@@ -16,6 +18,7 @@ import DialogMorphTitle from './DialogMorphTitle.vue'
 
 const parts = { Button, DialogMorph, DialogMorphTitle, DialogMorphDescription, DialogMorphClose }
 const formParts = { ...parts, Field, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch }
+const openFieldParts = { ...formParts, Combobox, DatePicker }
 
 const meta = {
   title: 'Overlays/DialogMorph',
@@ -133,6 +136,75 @@ export const ChangingContent: Story = {
 }
 
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
+
+/**
+ * Fields that open, with long lists at the top of the dialog and at its foot: the box grows to hold
+ * the open list, the month or the matches, and a list scrolls in its own bounds (wheel, trackpad,
+ * touch, arrow keys). On a short screen the dialog's content scrolls to bring the open field into
+ * view, and a list is no taller than the dialog can show.
+ */
+export const FieldsThatOpen: Story = {
+  render: () => ({
+    components: openFieldParts,
+    setup: () => ({
+      parent: ref('unit-1'),
+      title: ref('Unit 1'),
+      topic: ref<string>(),
+      opens: ref<string>(),
+      topics: Array.from({ length: 40 }, (_, i) => `Topic ${i + 1}`),
+      icon: ref('icon-1'),
+      colour: ref('grey'),
+      units: Array.from({ length: 40 }, (_, i) => `unit-${i + 1}`),
+      icons: Array.from({ length: 40 }, (_, i) => `icon-${i + 1}`),
+    }),
+    template: `
+      <DialogMorph>
+        <template #trigger>Edit section</template>
+        <template #default="{ close }">
+          <DialogMorphTitle>Edit section</DialogMorphTitle>
+          <form class="mt-5 flex flex-col gap-4" @submit.prevent="close">
+            <Field label="Parent">
+              <Select v-model="parent">
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="name in units" :key="name" :value="name">{{ name }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="Title">
+              <Input v-model="title" />
+            </Field>
+            <Field label="Topic">
+              <Combobox v-model="topic" :options="topics" placeholder="Search a topic" />
+            </Field>
+            <Field label="Opens on">
+              <DatePicker v-model="opens" locale="en-GB" />
+            </Field>
+            <Field label="Icon">
+              <Select v-model="icon">
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="name in icons" :key="name" :value="name">{{ name }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field label="Colour">
+              <Select v-model="colour">
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem v-for="name in ['grey', 'blue', 'green', 'violet']" :key="name" :value="name">{{ name }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+            <div class="flex justify-end gap-2">
+              <Button variant="ghost" @click="close">Cancel</Button>
+              <Button type="submit">Save</Button>
+            </div>
+          </form>
+        </template>
+      </DialogMorph>`,
+  }),
+}
 
 /** Taller than the screen: the dialog scrolls inside, the page behind stays put. */
 export const LongContent: Story = {
