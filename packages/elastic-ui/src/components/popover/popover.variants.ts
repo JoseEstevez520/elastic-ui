@@ -16,3 +16,10 @@ export const popoverContentClass = [
   'w-[var(--popover-width,18rem)] max-w-[var(--reka-popover-content-available-width)]',
   'max-h-[var(--reka-popover-content-available-height)] overflow-y-auto overscroll-contain scrollbar-subtle p-4',
 ]
+
+/**
+ * `fluid`: on a phone the panel fills the screen's width less the margin Reka UI keeps it off the
+ * edges with (`collisionPadding`), so a panel a little narrower than the screen does not float
+ * beside a sliver of page.
+ */
+export const popoverFluidClass = 'max-sm:w-[calc(100vw_-_2rem)]'

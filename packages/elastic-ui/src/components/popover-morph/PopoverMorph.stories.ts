@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { Archive, Copy, FolderInput, Pencil, Trash2 } from '@lucide/vue'
-import { ref } from 'vue'
+import { Archive, Copy, Folder, FolderInput, Pencil, Settings, Trash2 } from '@lucide/vue'
+import { computed, ref } from 'vue'
 import Button from '../button/Button.vue'
+import NavTree from '../nav-tree/NavTree.vue'
+import NavTreeGroup from '../nav-tree/NavTreeGroup.vue'
+import NavTreeItem from '../nav-tree/NavTreeItem.vue'
 import PopoverMorph from './PopoverMorph.vue'
 import PopoverMorphItem from './PopoverMorphItem.vue'
 import PopoverMorphSeparator from './PopoverMorphSeparator.vue'
@@ -83,7 +86,113 @@ export const Controlled: Story = {
   }),
 }
 
+/**
+ * Ghost triggers (`variant="ghost"`), for a quiet bar or a row of actions: bare at rest, they take
+ * on the panel's tone and edge only as they grow into it. `size="sm"` for a bar, `size="icon"`
+ * for an icon alone, which needs its name. They sit beside ghost Buttons without standing out.
+ */
+export const Ghost: Story = {
+  render: () => ({
+    components: { Button, PopoverMorph, PopoverMorphItem },
+    setup: () => ({ icons: { Folder, Pencil, Copy, Settings } }),
+    template: `
+      <div class="flex items-center gap-1">
+        <Button variant="ghost" size="sm">Back</Button>
+        <PopoverMorph variant="ghost" size="sm" label="Folder">
+          <template #trigger><component :is="icons.Folder" aria-hidden="true" />Unit 2 · CSS</template>
+          <p class="text-fg-secondary">Saved in Web client, unit 2.</p>
+        </PopoverMorph>
+        <PopoverMorph variant="ghost" label="Details">
+          <template #trigger>Details</template>
+          <p class="text-fg-secondary">A ghost trigger at the usual size.</p>
+        </PopoverMorph>
+        <PopoverMorph variant="ghost" size="icon" role="menu" label="Actions" class="[--popover-width:12rem]">
+          <template #trigger><component :is="icons.Settings" aria-hidden="true" /><span class="sr-only">Actions</span></template>
+          <PopoverMorphItem :icon="icons.Pencil">Rename</PopoverMorphItem>
+          <PopoverMorphItem :icon="icons.Copy">Duplicate</PopoverMorphItem>
+        </PopoverMorph>
+      </div>`,
+  }),
+}
+
+const places: Record<string, string> = {
+  unsure: 'Not sure',
+  'web-client': 'Web client',
+  'unit-1': 'Unit 1 · HTML',
+  'unit-2': 'Unit 2 · CSS',
+  'web-server': 'Web server',
+  php: 'PHP',
+  laravel: 'Laravel',
+}
+
+/**
+ * A place to pick, from a quiet button at the end of a bar: a ghost trigger grows into a
+ * `selectable` NavTree, and picking a place closes it (`@select="close"`). On a phone it fills the
+ * width (`fluid`).
+ */
+export const Picker: Story = {
+  render: () => ({
+    components: { Button, PopoverMorph, NavTree, NavTreeGroup, NavTreeItem },
+    setup: () => {
+      const place = ref<string>()
+      return { place, Folder, shown: computed(() => (place.value ? places[place.value] : 'Where does it go?')) }
+    },
+    template: `
+      <div class="flex items-center justify-between gap-2">
+        <Button variant="ghost" size="sm">Back</Button>
+        <PopoverMorph variant="ghost" size="sm" align="end" fluid label="Where it goes">
+          <template #trigger><component :is="Folder" aria-hidden="true" />{{ shown }}</template>
+          <template #default="{ close }">
+            <NavTree v-model="place" selectable label="Where it goes" @select="close">
+              <NavTreeItem value="unsure">Not sure</NavTreeItem>
+              <NavTreeGroup label="Web client" value="web-client">
+                <NavTreeItem value="unit-1">Unit 1 · HTML</NavTreeItem>
+                <NavTreeItem value="unit-2">Unit 2 · CSS</NavTreeItem>
+              </NavTreeGroup>
+              <NavTreeGroup label="Web server" value="web-server">
+                <NavTreeItem value="php">PHP</NavTreeItem>
+                <NavTreeItem value="laravel">Laravel</NavTreeItem>
+              </NavTreeGroup>
+            </NavTree>
+          </template>
+        </PopoverMorph>
+      </div>`,
+  }),
+}
+
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
+
+/**
+ * By a screen's edge: lined up with its start, the panel would run off the right, so it keeps the
+ * screen's margin instead, the box moving sideways as it grows from the button. Near the bottom it
+ * opens upwards, though `side` asks for down.
+ */
+export const NearTheEdge: Story = {
+  render: () => ({
+    components: { PopoverMorph },
+    template: `
+      <div class="flex h-[85vh] flex-col justify-between">
+        <div class="flex justify-end">
+          <PopoverMorph label="Right edge">
+            <template #trigger>At the right edge</template>
+            <p class="text-fg-secondary">Lined up with the start, it would run off the screen; it keeps the margin instead.</p>
+          </PopoverMorph>
+        </div>
+        <div class="flex justify-end">
+          <PopoverMorph variant="ghost" size="sm" label="Bottom corner">
+            <template #trigger>In the bottom corner</template>
+            <p v-for="n in 4" :key="n" class="mb-2 text-fg-secondary">No room below: it opens upwards, and keeps off the right edge.</p>
+          </PopoverMorph>
+        </div>
+      </div>`,
+  }),
+}
+
+/** On a phone, `fluid` fills the width less the screen's margin, wherever the trigger is. */
+export const PhoneWidth: Story = {
+  ...Picker,
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+}
 
 /** Opens upwards, for a trigger near the bottom of the screen. */
 export const SideTop: Story = {

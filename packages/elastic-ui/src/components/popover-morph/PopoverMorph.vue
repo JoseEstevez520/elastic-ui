@@ -9,7 +9,8 @@ import {
   popoverMorphListClass,
   popoverMorphPanelVariants,
   popoverMorphSurfaceVariants,
-  popoverMorphTriggerClass,
+  popoverMorphTriggerVariants,
+  type PopoverMorphTriggerVariants,
 } from './popover-morph.variants'
 
 /**
@@ -19,12 +20,22 @@ import {
  *
  * With `role="menu"` it is a menu: PopoverMorphItems are reached with the arrow keys and by
  * typing their first letter, and choosing one closes it.
+ *
+ * Near a screen's edge the panel keeps the screen's margin: it moves sideways as it grows,
+ * still starting on the button's box, and opens upwards when there is no room below.
  */
 const props = withDefaults(
   defineProps<{
-    /** The edge the panel lines up with, and the corner it grows from. */
+    /** The edge the panel lines up with, and the corner it grows from, where there is room. */
     align?: 'start' | 'end'
+    /** Where it opens, where there is room; otherwise it opens the other way. */
     side?: 'bottom' | 'top'
+    /** The button's look at rest: `outline` (the default), or `ghost` for a quiet bar or row. */
+    variant?: PopoverMorphTriggerVariants['variant']
+    /** `sm` for a bar, `icon` for a square button holding only an icon, which then needs a name. */
+    size?: PopoverMorphTriggerVariants['size']
+    /** On a phone, the panel fills the screen's width, less its margin on each side. */
+    fluid?: boolean
     /** A `dialog` holds any content; a `menu` holds PopoverMorphItems. */
     role?: 'dialog' | 'menu'
     /** Accessible name of the panel. */
@@ -68,6 +79,7 @@ onMounted(() => {
   const measure = () => {
     if (trigger.value) triggerSize.value = { width: trigger.value.offsetWidth, height: trigger.value.offsetHeight }
     if (panel.value) panelSize.value = { width: panel.value.offsetWidth, height: panel.value.offsetHeight }
+    fitSideways()
   }
   measure()
   observer = new ResizeObserver(measure)
@@ -75,10 +87,53 @@ onMounted(() => {
 })
 onBeforeUnmount(() => observer?.disconnect())
 
+// Where the panel goes, as Popover's collision handling (Reka UI's) would put it: sideways by as
+// much as keeps it off the screen's edges, and on the side asked unless the other has more room.
+// The surface moves by `shift` as it grows, and the panel inside moves back by as much on the same
+// curve, so it never leaves its place. `shift` is kept up to date while closed too, so the panel
+// already stands there when it opens; the side depends on the scroll, so it is chosen on opening.
+const MARGIN = 16
+const shift = ref(0)
+const flipped = ref(false)
+const placedSide = computed(() => (flipped.value ? (props.side === 'bottom' ? 'top' : 'bottom') : props.side))
+
+function fitSideways() {
+  const box = root.value?.getBoundingClientRect()
+  const size = panelSize.value
+  if (!box || !size) return
+  const room = document.documentElement.clientWidth
+  const left = props.align === 'start' ? box.left : box.right - size.width
+  shift.value = Math.round(Math.max(MARGIN, Math.min(left, room - MARGIN - size.width)) - left)
+}
+
+function chooseSide() {
+  const box = root.value?.getBoundingClientRect()
+  const size = panelSize.value
+  if (!box || !size) return
+  // It grows over the trigger: going down it starts at the trigger's top, going up at its bottom.
+  const below = window.innerHeight - MARGIN - box.top
+  const above = box.bottom - MARGIN
+  const [asked, other] = props.side === 'bottom' ? [below, above] : [above, below]
+  flipped.value = asked < size.height && other > asked
+}
+
 const surfaceStyle = computed(() => {
   const size = open.value ? panelSize.value : triggerSize.value
-  return size ? { width: `${size.width}px`, height: `${size.height}px` } : { inset: 0 }
+  const box = size ? { width: `${size.width}px`, height: `${size.height}px` } : { inset: 0 }
+  return { ...box, translate: `${open.value ? shift.value : 0}px 0` }
 })
+const panelStyle = computed(() => ({ translate: `${open.value ? 0 : shift.value}px 0` }))
+
+watch(
+  open,
+  (isOpen) => {
+    if (!isOpen) return
+    fitSideways()
+    chooseSide()
+  },
+  { flush: 'pre' },
+)
+useEventListener(() => window, 'resize', fitSideways, { passive: true })
 
 useEventListener<KeyboardEvent>(() => document, 'keydown', (event) => {
   if (open.value && event.key === 'Escape') close()
@@ -105,7 +160,10 @@ watch(open, async (isOpen) => {
   const hadFocus = panel.value?.contains(document.activeElement)
   await nextTick()
   if (isOpen) {
-    const first = panel.value?.querySelector<HTMLElement>('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+    // The first stop Tab would reach: a row a tree takes out of the tab order is skipped.
+    const first = panel.value?.querySelector<HTMLElement>(
+      ':is(a[href], button, input, select, textarea, [tabindex]):not([tabindex="-1"], :disabled)',
+    )
     ;(first ?? panel.value)?.focus({ preventScroll: true })
   } else if (hadFocus) {
     trigger.value?.focus({ preventScroll: true })
@@ -115,7 +173,7 @@ watch(open, async (isOpen) => {
 
 <template>
   <div ref="root" :class="cn('relative inline-block align-top', (open || folding) && 'z-50')">
-    <div :class="popoverMorphSurfaceVariants({ align, side, open })" :style="surfaceStyle">
+    <div :class="popoverMorphSurfaceVariants({ variant, align, side: placedSide, open })" :style="surfaceStyle">
       <div
         :id="panelId"
         ref="panel"
@@ -123,7 +181,8 @@ watch(open, async (isOpen) => {
         :aria-label="label"
         tabindex="-1"
         :inert="!open"
-        :class="cn(popoverMorphPanelVariants({ align, side, open, menu: isMenu }), props.class)"
+        :style="panelStyle"
+        :class="cn(popoverMorphPanelVariants({ align, side: placedSide, open, menu: isMenu, fluid }), props.class)"
         @keydown="onTypeahead"
       >
         <!-- A menu's items take the arrow keys, looping round at the ends. -->
@@ -142,7 +201,7 @@ watch(open, async (isOpen) => {
       :aria-expanded="open"
       :aria-controls="panelId"
       :inert="open"
-      :class="cn(popoverMorphTriggerClass, open ? popoverMorphLabelState.open : popoverMorphLabelState.closed)"
+      :class="cn(popoverMorphTriggerVariants({ variant, size }), open ? popoverMorphLabelState.open : popoverMorphLabelState.closed)"
       @click="open = !open"
     >
       <slot name="trigger" />

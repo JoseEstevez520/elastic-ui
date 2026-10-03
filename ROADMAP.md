@@ -59,7 +59,6 @@ Open: a **tear-off calendar** (Date tile): the day's page lifting over the bindi
 - **Objects in the bin's family** (ConfirmButton, FileIcon): a recognisable thing whose parts move, at a size where the gesture reads without explaining it. A padlock as a private/public switch; a copy as a sheet that doubles for CopyButton.
 - **From other products** (Family, Things, Apple, Emil Kowalski, Rauno), to redo our own way: drag to close a Sheet (Vaul); hold to confirm (Rauno's Hold Enter); toasts stacked by tone, fanning out on hover (Sonner); what is pending travels to where it will live (Family).
 - Where the `DynamicIsland` lives in a page with chrome, and a hidden state it morphs in from.
-- `PopoverMorph` flipping or shifting near the screen's edges (today `align` and `side` are chosen by hand).
 - A Priority+ variant for `MorphHeader` (show what fits, the rest in a "More" menu), and `CommandPalette`'s nested pages (Linear's "Change status…").
 - Documentation beyond Storybook once the API settles.
 

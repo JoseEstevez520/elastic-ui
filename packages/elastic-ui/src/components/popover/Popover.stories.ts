@@ -145,3 +145,24 @@ export const TwoInstances: Story = {
       </div>`,
   }),
 }
+
+/**
+ * On a phone, `fluid` fills the screen's width, less the margin kept off its edges, so the panel
+ * does not float beside a sliver of page. Wider screens keep `--popover-width`.
+ */
+export const PhoneWidth: Story = {
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  render: () => ({
+    components: parts,
+    template: `
+      <div class="flex justify-end">
+        <Popover>
+          <PopoverTrigger as-child><Button variant="ghost" size="sm">Options</Button></PopoverTrigger>
+          <PopoverContent align="end" fluid>
+            <p class="font-medium">The whole width</p>
+            <p class="mt-1 text-fg-secondary">Filled on a phone, with the usual margin on both sides.</p>
+          </PopoverContent>
+        </Popover>
+      </div>`,
+  }),
+}
