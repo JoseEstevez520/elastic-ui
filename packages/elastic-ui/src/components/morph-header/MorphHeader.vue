@@ -16,9 +16,11 @@ const props = withDefaults(
     scrollThreshold?: number
     /**
      * `responsive`: links inline whenever they fit in the bar, behind the menu button otherwise.
+     * `scrolled`: as `responsive` at the top of the page; once scrolled, the pill holds only the
+     * logo and the menu button, the smallest it can be while reading.
      * `always`: only the logo and the menu button, at every width.
      */
-    menu?: 'responsive' | 'always'
+    menu?: 'responsive' | 'scrolled' | 'always'
     menuLabel?: string
     class?: HTMLAttributes['class']
   }>(),
@@ -44,7 +46,50 @@ function onPanelHidden() {
 }
 
 const scrolled = useScrolled(() => props.scrollThreshold)
-const responsive = computed(() => props.menu === 'responsive')
+
+// `scrolled` folds the links away once the page has moved, in two steps, as leaving comes before
+// making room (DECISIONS, Motion rules): the links fade where they stand, and halfway through
+// their fade the bar starts folding into the pill and the menu button comes in, so it answers the
+// scroll at once. Back at the top, the pill grows into the bar first and
+// the links come back once it has arrived. Swapping them in the frame the morph starts tore it.
+// The links leave quicker than content usually does: the fold waits on them.
+const LINKS_OUT = 100
+// The menu button comes in while the pill is still forming, not once it has landed.
+const menuIn = { duration: 0.22, delay: 0.12, ease: 'linear' } as const
+const folded = ref(false)
+const linksHidden = ref(false)
+const menuEntering = ref(false)
+let foldTimer: ReturnType<typeof setTimeout> | undefined
+watch(
+  scrolled,
+  (isScrolled, wasScrolled) => {
+    if (props.menu !== 'scrolled') return
+    clearTimeout(foldTimer)
+    // Already scrolled when the page loads: it just shows folded.
+    if (wasScrolled === undefined) {
+      folded.value = linksHidden.value = isScrolled
+      return
+    }
+    if (isScrolled) {
+      linksHidden.value = true
+      foldTimer = setTimeout(() => {
+        menuEntering.value = true
+        folded.value = true
+      }, LINKS_OUT / 2)
+    } else {
+      menuEntering.value = false
+      folded.value = false
+      foldTimer = setTimeout(() => (linksHidden.value = false), morphTransition.duration * 1000)
+    }
+  },
+  { immediate: true },
+)
+onBeforeUnmount(() => clearTimeout(foldTimer))
+
+// The pill's shape and glass follow the fold in `scrolled`, the scroll itself otherwise.
+const pill = computed(() => (props.menu === 'scrolled' ? folded.value : scrolled.value))
+// Whether the links may sit inline now.
+const responsive = computed(() => props.menu === 'responsive' || (props.menu === 'scrolled' && !folded.value))
 
 // Whether the inline nav fits is measured, not guessed from a breakpoint, so it holds for any
 // number of links, any label length and any language. An invisible, inert copy of the nav and
@@ -73,7 +118,7 @@ const inline = computed(() => responsive.value && fits.value !== false)
 const inlineClass = computed(() => (fits.value === undefined ? 'hidden lg:flex' : 'flex'))
 const menuClass = computed(() => (responsive.value && fits.value === undefined ? 'lg:hidden' : undefined))
 const showMenu = computed(() => !responsive.value || fits.value !== true)
-const shape = computed(() => (expanded.value ? 'panel' : scrolled.value ? 'pill' : 'bar'))
+const shape = computed(() => (expanded.value ? 'panel' : pill.value ? 'pill' : 'bar'))
 
 // Radius and hairline live inline on the element that owns `layout`, so Motion can correct them
 // against its scale. A CSS border would stretch to several pixels mid-morph.
@@ -105,8 +150,8 @@ useEventListener<PointerEvent>(() => document, 'pointerdown', (event) => {
   if (open.value && event.target instanceof Node && !header.value?.contains(event.target)) close()
 })
 // Once the links fit inline again the panel has nothing left to show.
-watch(fits, (nowFits) => {
-  if (responsive.value && nowFits) close()
+watch([fits, responsive], ([nowFits, inlineAllowed]) => {
+  if (inlineAllowed && nowFits) close()
 })
 
 // Focus inside the panel would be lost when it unmounts, so it goes back to the menu button.
@@ -137,8 +182,8 @@ watch(open, (isOpen) => {
           v-if="!expanded"
           aria-hidden="true"
           :initial="false"
-          :animate="{ opacity: scrolled ? 1 : 0, scaleX: scrolled ? 1 : 0.9 }"
-          :transition="{ duration: scrolled ? 0.3 : 0.16, delay: scrolled ? 0.12 : 0, ease: EASE_GLIDE }"
+          :animate="{ opacity: pill ? 1 : 0, scaleX: pill ? 1 : 0.9 }"
+          :transition="{ duration: pill ? 0.3 : 0.16, delay: pill ? 0.12 : 0, ease: EASE_GLIDE }"
           :style="{ borderRadius: 'inherit' }"
           :class="morphHeaderGlassClass"
         />
@@ -158,7 +203,17 @@ watch(open, (isOpen) => {
             <div ref="logo" class="flex items-center"><slot name="logo" /></div>
           </motion.div>
 
-          <motion.div v-if="inline" layout :class="cn('items-center gap-5', inlineClass)">
+          <motion.div
+            v-if="inline"
+            layout
+            :class="
+              cn(
+                'items-center gap-5 transition-opacity motion-reduce:transition-none',
+                linksHidden ? 'opacity-0 duration-100 ease-linear' : 'opacity-100 duration-[450ms] ease-soft',
+                inlineClass,
+              )
+            "
+          >
             <MorphHeaderRegion placement="inline">
               <slot />
             </MorphHeaderRegion>
@@ -167,7 +222,13 @@ watch(open, (isOpen) => {
             </motion.div>
           </motion.div>
 
-          <motion.div v-if="showMenu" layout :class="cn('flex shrink-0', menuClass)">
+          <motion.div
+            v-if="showMenu"
+            layout
+            :initial="menuEntering ? { opacity: 0 } : false"
+            :animate="{ opacity: 1, transition: menuIn }"
+            :class="cn('flex shrink-0', menuClass)"
+          >
             <button
               ref="menuButton"
               type="button"
@@ -219,7 +280,7 @@ watch(open, (isOpen) => {
     </MotionConfig>
 
     <!-- Measures whether the inline nav fits; see `fits`. Inert, so it is never focused or read. -->
-    <div v-if="responsive" aria-hidden="true" inert class="invisible absolute inset-x-0 top-0 h-0 overflow-hidden">
+    <div v-if="menu !== 'always'" aria-hidden="true" inert class="invisible absolute inset-x-0 top-0 h-0 overflow-hidden">
       <div ref="measureBar" :class="morphHeaderWidth" />
       <div ref="measureNav" class="flex w-max items-center gap-5 whitespace-nowrap">
         <MorphHeaderRegion placement="measure">
