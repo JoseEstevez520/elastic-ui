@@ -65,6 +65,18 @@ export const Colours: Story = {
   }),
 }
 
+/** No trays, for a list over colour (a Glow) or set in a line of text. */
+export const Bare: Story = {
+  render: () => ({
+    components: { LogoList, LogoListItem },
+    setup: () => ({ stack: STACK }),
+    template: `
+      <LogoList bare class="max-w-md">
+        <LogoListItem v-for="icon in stack" :key="icon.slug" :icon="icon">{{ icon.title }}</LogoListItem>
+      </LogoList>`,
+  }),
+}
+
 /** In the text's colour throughout, for a quieter row. */
 export const Mono: Story = {
   render: () => ({
