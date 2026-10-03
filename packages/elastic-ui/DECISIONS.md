@@ -190,6 +190,7 @@ Things that went wrong once, found by measuring frame by frame, and the fix ever
 - **A toast shows several times.** Every `<Toaster>` reads the app's queue, so a page holding several (examples side by side) shows each toast in all of them. An app has one Toaster; anywhere with more, each takes its own queue (`createToastStore()` as its `store`).
 - **A size from the type scale vanishes.** `tailwind-merge` takes an unknown `text-*` for a colour, so `cn('text-title text-fg')` kept only `text-fg`. `cn` knows the scale's names; a new size goes into its list too.
 - **Clicks do nothing on a card over a popover.** A popover kept mounted but hidden (to fold back into) still has its layer above the page: what opens over it sits higher (Term's card).
+- **A marker lands off inside a panel that grows in.** A Popover grows from 97%, so boxes measured on screen while it does are scaled, and an indicator placed from them (NavTree's) stays off once the panel is full size. Divide what is measured by the container's scale: its box on screen over its laid-out width (`getBoundingClientRect().width / offsetWidth`).
 - **A new story renders unstyled in Storybook.** The dev server misses Tailwind classes in new files: `touch .storybook/preview.css`.
 
 ## Two component tiers

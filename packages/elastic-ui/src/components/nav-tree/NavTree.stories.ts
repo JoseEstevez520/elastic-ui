@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { ref } from 'vue'
+import { Folder } from '@lucide/vue'
+import { computed, ref } from 'vue'
+import Button from '../button/Button.vue'
+import Popover from '../popover/Popover.vue'
+import PopoverContent from '../popover/PopoverContent.vue'
+import PopoverTrigger from '../popover/PopoverTrigger.vue'
 import NavTree from './NavTree.vue'
 import NavTreeGroup from './NavTreeGroup.vue'
 import NavTreeItem from './NavTreeItem.vue'
@@ -75,6 +80,82 @@ export const Links: Story = {
           <NavTreeItem value="/blog" href="/blog">Blog</NavTreeItem>
           <NavTreeItem value="/changelog" href="/changelog">Changelog</NavTreeItem>
         </NavTree>
+      </div>`,
+  }),
+}
+
+/**
+ * A tree to pick a place from (`selectable`): items, and groups with a `value`, are options rather
+ * than links. A group's label picks it and its chevron folds it. It is announced as a tree, the
+ * chosen row `aria-selected`; Tab reaches one row, the arrows move between rows and fold groups,
+ * Enter or Space picks.
+ */
+export const Selectable: Story = {
+  render: () => ({
+    components: parts,
+    setup: () => ({ place: ref('unit-2') }),
+    template: `
+      <div class="flex gap-10">
+        <NavTree v-model="place" selectable label="Where it goes" class="w-64">
+          <NavTreeItem value="unsure">Not sure</NavTreeItem>
+          <NavTreeGroup label="Web client" value="web-client" default-open>
+            <NavTreeItem value="unit-1">Unit 1 · HTML</NavTreeItem>
+            <NavTreeItem value="unit-2">Unit 2 · CSS</NavTreeItem>
+            <NavTreeGroup label="Unit 3 · JavaScript" value="unit-3">
+              <NavTreeItem value="unit-3-1">Variables</NavTreeItem>
+              <NavTreeItem value="unit-3-2">Functions</NavTreeItem>
+            </NavTreeGroup>
+          </NavTreeGroup>
+          <NavTreeGroup label="Web server" value="web-server">
+            <NavTreeItem value="php">PHP</NavTreeItem>
+            <NavTreeItem value="laravel">Laravel</NavTreeItem>
+          </NavTreeGroup>
+        </NavTree>
+        <p class="text-sm text-fg-muted">Chosen: {{ place }}</p>
+      </div>`,
+  }),
+}
+
+/**
+ * The picker in a Popover, from a quiet button in a bar: picking a place emits `select`, which
+ * closes the popover, and the button says where it goes. The chosen row is marked as the panel
+ * grows in, measured in the panel's own units so the scale-in never moves it off.
+ */
+export const PickerInPopover: Story = {
+  render: () => ({
+    components: { ...parts, Button, Popover, PopoverTrigger, PopoverContent },
+    setup: () => {
+      const names: Record<string, string> = {
+        unsure: 'Not sure',
+        'web-client': 'Web client',
+        'unit-1': 'Unit 1 · HTML',
+        'unit-2': 'Unit 2 · CSS',
+        'web-server': 'Web server',
+        php: 'PHP',
+      }
+      const place = ref<string>()
+      const open = ref(false)
+      return { place, open, Folder, shown: computed(() => (place.value ? names[place.value] : 'Where does it go?')) }
+    },
+    template: `
+      <div class="flex justify-end">
+        <Popover v-model:open="open">
+          <PopoverTrigger as-child>
+            <Button variant="ghost" size="sm" :icon="Folder">{{ shown }}</Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" fluid>
+            <NavTree v-model="place" selectable label="Where it goes" @select="open = false">
+              <NavTreeItem value="unsure">Not sure</NavTreeItem>
+              <NavTreeGroup label="Web client" value="web-client">
+                <NavTreeItem value="unit-1">Unit 1 · HTML</NavTreeItem>
+                <NavTreeItem value="unit-2">Unit 2 · CSS</NavTreeItem>
+              </NavTreeGroup>
+              <NavTreeGroup label="Web server" value="web-server">
+                <NavTreeItem value="php">PHP</NavTreeItem>
+              </NavTreeGroup>
+            </NavTree>
+          </PopoverContent>
+        </Popover>
       </div>`,
   }),
 }

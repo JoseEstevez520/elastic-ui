@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, useSlots, watch, type Component, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, useId, useSlots, watch, type Component, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { useLink, type LinkTo } from '../../utils/link'
 import { Passthrough } from '../../utils/Passthrough'
@@ -12,7 +12,7 @@ import { navTreeIconClass, navTreeLabelVariants, navTreeRowClass } from './nav-t
 const props = defineProps<{
   /** Identifies the item; it is active while it equals the NavTree's `v-model`. */
   value: string
-  /** Renders a link; without it (or `to`) the item is a button. */
+  /** Renders a link; without it (or `to`) the item is a button. Ignored in a `selectable` tree. */
   href?: string
   /** Renders the app's RouterLink to this location, so navigating never reloads the page. */
   to?: LinkTo
@@ -31,8 +31,18 @@ const slots = useSlots()
 const text = computed(() => (sidebar ? textOf(slots.default) : undefined))
 const index = tree.nextIndex()
 
-const link = useLink(props)
+// In a tree to pick from the item is an option, never a link.
+const anyLink = useLink(props)
+const link = computed(() => (tree.selectable.value ? undefined : anyLink.value))
 const active = computed(() => tree.active.value === props.value)
+const rowId = useId()
+const level = (group?.level ?? 0) + 1
+
+function onKeydown(event: KeyboardEvent) {
+  if (!tree.selectable.value || event.key !== 'ArrowLeft' || !group) return
+  event.preventDefault()
+  group.focusHeader()
+}
 
 // The active item is never left hidden inside a folded group.
 watch(active, (isActive) => isActive && group?.reveal(), { immediate: true })
@@ -49,17 +59,23 @@ onBeforeUnmount(() => active.value && group?.holdActive(false))
 </script>
 
 <template>
-  <li>
+  <li :role="tree.selectable.value ? 'none' : undefined">
     <!-- In a sidebar folded to its rail only the icon shows; the label comes back as a tooltip. -->
     <component :is="sidebar ? Tooltip : Passthrough" side="right" :disabled="!railed">
       <component
         :is="link?.is ?? 'button'"
         v-bind="link?.attrs"
+        :id="rowId"
         :type="link ? undefined : 'button'"
-        :aria-current="active ? (link ? 'page' : 'true') : undefined"
+        :role="tree.selectable.value ? 'treeitem' : undefined"
+        :aria-selected="tree.selectable.value ? active : undefined"
+        :aria-level="tree.selectable.value ? level : undefined"
+        :tabindex="tree.tabIndex(rowId, active, index)"
+        :aria-current="active && !tree.selectable.value ? (link ? 'page' : 'true') : undefined"
         :data-nav-tree-active="(active && !group?.railedAway.value) || undefined"
         :class="cn(navTreeRowClass, active && 'text-fg', props.class)"
         @click="tree.select(value)"
+        @keydown="onKeydown"
       >
         <component :is="icon" v-if="icon" aria-hidden="true" :class="navTreeIconClass" />
         <span :class="navTreeLabelVariants({ placement, fade: !text })">

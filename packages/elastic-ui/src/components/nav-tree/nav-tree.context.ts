@@ -8,6 +8,13 @@ export interface NavTreeContext {
   select: (value: string) => void
   /** The row's place in the tree, in the order rows are set up, for cascades down the list. */
   nextIndex: () => number
+  /** A tree to pick from rather than to navigate: rows are options, never links. */
+  selectable: Readonly<Ref<boolean>>
+  /**
+   * A selectable tree's `tabindex` for a row: only one row is reached with Tab, and the arrow
+   * keys move between them. `undefined` in a navigation tree.
+   */
+  tabIndex: (rowId: string, isActive: boolean, index: number) => number | undefined
 }
 
 export interface NavTreeGroupContext {
@@ -17,6 +24,10 @@ export interface NavTreeGroupContext {
   holdActive: (isActive: boolean) => void
   /** Whether its items are tucked away in a sidebar's rail, where the group stands in for them. */
   railedAway: Readonly<Ref<boolean>>
+  /** The group's depth: 1 at the top level. */
+  level: number
+  /** Moves the focus to the group's own row, as the left arrow does in a selectable tree. */
+  focusHeader: () => void
 }
 
 const NavTreeContextKey: InjectionKey<NavTreeContext> = Symbol('NavTreeContext')

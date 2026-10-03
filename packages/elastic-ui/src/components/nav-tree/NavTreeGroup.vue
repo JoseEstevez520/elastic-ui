@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CollapsibleContent } from 'reka-ui'
-import { computed, onBeforeUnmount, onMounted, ref, watch, type Component, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useId, watch, type Component, type HTMLAttributes } from 'vue'
 import { useHasChanged } from '../../composables/useHasChanged'
 import { cn } from '../../utils/cn'
 import { useLink, type LinkTo } from '../../utils/link'
@@ -28,7 +28,8 @@ import {
 /**
  * A heading that folds its items (and nested groups) open, like a Collapsible. Given a `value` and
  * a link (`to`, `href`), the heading is also a page of its own, as a section's index in a
- * documentation site: its label goes there, and its chevron alone folds it.
+ * documentation site: its label goes there, and its chevron alone folds it. In a `selectable`
+ * tree a `value` alone makes it an option: its label picks it, and its chevron folds it.
  */
 const props = defineProps<{
   label: string
@@ -55,7 +56,12 @@ if (props.defaultOpen) open.value = true
 const { sidebar, railed, placement } = useNavTreePlacement()
 const tree = useNavTreeContext()
 const index = tree.nextIndex()
-const link = useLink(props)
+// In a tree to pick from the group's own row is an option, never a link.
+const anyLink = useLink(props)
+const link = computed(() => (tree.selectable.value ? undefined : anyLink.value))
+const choosable = computed(() => !!link.value || (tree.selectable.value && props.value !== undefined))
+const rowId = useId()
+const childrenId = useId()
 
 // Whether the group last opened or closed because the sidebar folded, not from its header.
 const byRail = ref(false)
@@ -87,6 +93,7 @@ const heldActive = ref(0)
 const holdsActive = computed(() => heldActive.value > 0)
 
 const parent = useNavTreeGroupContext()
+const level = (parent?.level ?? 0) + 1
 
 // The group's own page: while it is the active one, it opens to show what it holds, and the groups
 // around it open to show it and count it, as they do for an item.
@@ -115,6 +122,32 @@ function go() {
   shownOpen.value = true
 }
 
+// In a selectable tree, as in any tree: right unfolds, then goes to the first row inside; left
+// folds, then goes up to the group around it.
+function onKeydown(event: KeyboardEvent) {
+  if (!tree.selectable.value || (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft')) return
+  event.preventDefault()
+  if (event.key === 'ArrowRight') {
+    if (!shownOpen.value) shownOpen.value = true
+    else document.getElementById(childrenId)?.querySelector<HTMLElement>('[role="treeitem"]')?.focus()
+  } else if (shownOpen.value) shownOpen.value = false
+  else parent?.focusHeader()
+}
+
+// The row's part in a selectable tree: an option that holds a group of others.
+const treeitem = computed(() =>
+  tree.selectable.value
+    ? {
+        id: rowId,
+        role: 'treeitem',
+        'aria-expanded': shownOpen.value,
+        'aria-owns': childrenId,
+        'aria-level': level,
+        tabindex: tree.tabIndex(rowId, active.value, index),
+      }
+    : {},
+)
+
 provideNavTreeGroupContext({
   reveal: () => {
     open.value = true
@@ -125,25 +158,31 @@ provideNavTreeGroupContext({
     parent?.holdActive(isActive)
   },
   railedAway: computed(() => railed.value || !!parent?.railedAway.value),
+  level,
+  focusHeader: () => document.getElementById(rowId)?.focus(),
 })
 </script>
 
 <template>
-  <li>
+  <li :role="tree.selectable.value ? 'none' : undefined">
     <Collapsible v-model:open="shownOpen">
       <component :is="sidebar ? Tooltip : Passthrough" side="right" :content="label" :disabled="!railed">
-        <!-- A page of its own: the label is a link, and only the chevron folds the group. -->
+        <!-- A page of its own, or an option: the label goes there or picks it, and only the
+             chevron folds the group. -->
         <div
-          v-if="link"
+          v-if="choosable"
           :data-nav-tree-active="(active && !parent?.railedAway.value) || (railed && holdsActive && !parent) || undefined"
           :class="cn(navTreeRowClass, 'cursor-default p-0 text-label text-fg hover:text-fg', props.class)"
         >
           <component
-            :is="link.is"
-            v-bind="link.attrs"
-            :aria-current="active ? 'page' : undefined"
-            class="flex min-w-0 flex-1 items-center rounded-[inherit] py-1.5 pl-2.5 outline-none focus-ring-inset"
+            :is="link?.is ?? 'button'"
+            v-bind="{ ...link?.attrs, ...treeitem }"
+            :type="link ? undefined : 'button'"
+            :aria-current="active && link ? 'page' : undefined"
+            :aria-selected="tree.selectable.value ? active : undefined"
+            class="flex min-w-0 flex-1 cursor-pointer items-center rounded-[inherit] py-1.5 pl-2.5 text-left outline-none focus-ring-inset"
             @click="go"
+            @keydown="onKeydown"
           >
             <component :is="icon" v-if="icon" aria-hidden="true" :class="navTreeIconClass" />
             <span :class="navTreeLabelVariants({ placement, edge: true })">
@@ -151,10 +190,15 @@ provideNavTreeGroupContext({
               <template v-else>{{ label }}</template>
             </span>
           </component>
+          <!-- In a selectable tree the arrow keys fold it from the label, so the chevron is only
+               for the pointer, and pressing it leaves the focus where it was. -->
           <CollapsibleTrigger
             :chevron="false"
             :aria-label="toggleLabel ?? label"
+            :aria-hidden="tree.selectable.value || undefined"
+            :tabindex="tree.selectable.value ? -1 : undefined"
             :class="['w-auto shrink-0 rounded-[inherit] py-1.5 pr-2.5 pl-2 transition-opacity duration-150', railed && 'pointer-events-none opacity-0']"
+            @mousedown="tree.selectable.value && $event.preventDefault()"
           >
             <DisclosureChevron />
           </CollapsibleTrigger>
@@ -162,7 +206,9 @@ provideNavTreeGroupContext({
         <!-- The chevron sits inside the label, so it folds away with it into the rail. -->
         <CollapsibleTrigger
           v-else
+          v-bind="treeitem"
           :chevron="false"
+          @keydown="onKeydown"
           :data-nav-tree-active="(railed && holdsActive && !parent) || undefined"
           :class="cn(navTreeRowClass, 'justify-start gap-0 text-label text-fg', props.class)"
         >
@@ -182,7 +228,11 @@ provideNavTreeGroupContext({
         </CollapsibleTrigger>
       </component>
       <CollapsibleContent data-nav-tree-content :class="byRail ? navTreeRailContentClass : settled ? disclosureContentClass : 'overflow-hidden'">
-        <ul role="list" :class="navTreeChildrenVariants({ wave: changed && !byRail })">
+        <ul
+          :id="childrenId"
+          :role="tree.selectable.value ? 'group' : 'list'"
+          :class="navTreeChildrenVariants({ wave: changed && !byRail })"
+        >
           <slot />
         </ul>
       </CollapsibleContent>
