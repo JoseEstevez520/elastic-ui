@@ -9,11 +9,14 @@ import Aurora from '../aurora/Aurora.vue'
  * wash of the same colours, under its grain), its colours taken from an image. Put it behind what
  * shows that image (a project, a track, a cover), filling its box. The Aurora on its own is the
  * light for AI; the Glow is the same light in the colour of the content. Changing `src`, the new
- * colours fade in over the old.
+ * colours fade in over the old. Something with no image of its own (a project without a logo yet)
+ * gives its colours instead, up to four.
  */
 const props = withDefaults(
   defineProps<{
-    src: string
+    src?: string
+    /** Its colours, when there is no image to take them from: any CSS colours, up to four. */
+    colors?: string[]
     /** `soft` for text on it; `vivid` for colour alone. */
     variant?: 'soft' | 'vivid'
     class?: HTMLAttributes['class']
@@ -23,8 +26,18 @@ const props = withDefaults(
 
 const palette = ref<string[]>([])
 watch(
-  () => props.src,
-  async (src) => {
+  () => [props.src, props.colors?.join()] as const,
+  async ([src]) => {
+    if (props.colors?.length) {
+      // The Aurora always has four lights: fewer colours take turns.
+      const colors = props.colors.slice(0, 4)
+      palette.value = Array.from({ length: 4 }, (_, i) => colors[i % colors.length]!)
+      return
+    }
+    if (!src) {
+      palette.value = []
+      return
+    }
     try {
       palette.value = await paletteOf(src)
     } catch {
@@ -53,7 +66,7 @@ const lights = computed(() =>
       leave-active-class="transition-opacity duration-[1.2s] ease-linear"
       leave-to-class="opacity-0"
     >
-      <Aurora v-if="palette.length" :key="src" class="absolute inset-0" :style="lights" />
+      <Aurora v-if="palette.length" :key="src ?? palette.join()" class="absolute inset-0" :style="lights" />
     </Transition>
   </div>
 </template>
