@@ -33,6 +33,13 @@ export const defaultLabels = {
   stop: 'Stop',
   somethingWentWrong: 'Something went wrong',
   next: 'Next',
+  /** Status: what each state says when the part is given no label. */
+  statusIdle: 'Pending',
+  statusWorking: 'Working',
+  statusDone: 'Done',
+  statusDiscarded: 'Discarded',
+  statusFlagged: 'Needs a look',
+  statusError: 'Failed',
   // Navigation
   menu: 'Menu',
   mainNav: 'Main',
