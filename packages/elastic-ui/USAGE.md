@@ -149,7 +149,7 @@ Draw each idea for what it is, as a small SVG made for it, rather than feeding i
 - **Readable at its size:** drawn in a `viewBox` that scales with the column, text never below 12px on screen; where a horizontal drawing crowds a phone, a vertical version of it.
 - **Said in words too:** `role="img"` with an `aria-label` that tells what it shows, or a `figure` with its caption.
 
-Most ideas are pieces that fit together or a flow, and are composed rather than drawn: in a `Diagram`, a `DiagramGroup` lays out `DiagramArea`s (a concept holding others), `DiagramChip`s (a part) and `DiagramArrow`s in a row, a column or a grid. A row runs down on its own when it no longer fits, and its arrows turn with it; keep areas one level deep, never an area in an area. What the parts cannot make (a curve, axes, a timeline) is an SVG with the classes above.
+Most ideas are pieces that fit together or a flow, and are composed rather than drawn: in a `Diagram`, a `DiagramGroup` lays out `DiagramArea`s (a concept holding others), `DiagramChip`s (a part) and `DiagramArrow`s in a row, a column or a grid. A row runs down on its own when it no longer fits, and its arrows turn with it; keep areas one level deep, never an area in an area. Data on axes, real values measured or compared, is a `Chart` (below). What neither can make (a curve that only shows a shape, a timeline) is an SVG with the classes above.
 
 ```vue
 <Diagram label="A request goes from the browser to the controller, which answers with JSON">
@@ -163,7 +163,51 @@ Most ideas are pieces that fit together or a flow, and are composed rather than 
 </Diagram>
 ```
 
+### Charts
+
+`Chart` draws values on real axes: a `line` for something that changes along x, `bars` to compare categories, `points` for two measures of the same things (a model's cost against its score). The data goes in as props, `series` of `{ x, y, label? }`, and each axis takes a `title`, a `unit` and a `scale` (`log` when the values span several orders of magnitude).
+
+- **Grey until colour means something.** One series stays grey and the chart's `label` names it. Several take the palette's four hues in order, always in that order, with a legend; past four they turn grey, so fold the rest into one or draw two charts. A series that is the same concept on every page can carry its own `color`.
+- **Name only the points the text talks about.** A `label` on a point is written by it when it fits and left to the tooltip when it would collide. A name on every point is noise.
+- **One y axis.** Two measures with different units are two charts.
+- **Say what it shows** in `label`, as a sentence with the conclusion: it is the name screen readers hear, and the caption of the table they get.
+
+```vue
+<Chart
+  variant="points"
+  :series="[{ name: 'Models', points: [{ x: 0.4, y: 52, label: 'Flash' }, { x: 9, y: 78, label: 'Large' }] }]"
+  :x="{ title: 'Cost per million tokens', unit: 'USD', scale: 'log' }"
+  :y="{ title: 'Score', unit: '%' }"
+  label="Score against cost: it rises with cost, then flattens past ten dollars"
+/>
+```
+
 **Written elsewhere** (by a model, by a student), a drawing or a piece is shown so it can do no harm: an SVG with `DiagramImage`, as an image that runs nothing; interactive HTML with `SandboxFrame`, in a frame with no way to the page or the network, as tall as what it holds. Both take the theme's tokens and follow its changes. Never put such markup in the page itself (`v-html`).
+
+A piece in a `SandboxFrame` can be plain HTML or be made of the library's own parts:
+
+- **Plain HTML** (`html`) for what needs no parts: a canvas, a drawing that moves, a few native fields. Plain buttons and fields already take the library's look, and it loads nothing.
+- **Library parts** (`piece`) when the piece is controls and figures that should look like the page's: a `Button` that counts, a `Slider` driving a value, `DiagramChip`s that appear, a `Chart`. The piece is a Vue single-file component with a `<template>` and a plain `<script>`, and the parts are used by name, with nothing to register:
+
+```vue
+<template>
+  <Button @click="count++">Ask for one</Button>
+  <DiagramChip v-for="n in count" :key="n">Instance #{{ n }}</DiagramChip>
+</template>
+
+<script>
+import { ref } from 'vue'
+
+export default {
+  setup() {
+    const count = ref(0)
+    return { count }
+  },
+}
+</script>
+```
+
+It runs on the sandbox runtime, `dist/sandbox-runtime.js` in the package (about 220 KB gzipped: Vue with its template compiler, the parts and their CSS). The host serves that file and passes its address as `runtime`; with Vite, `import sandboxRuntime from '@joseestevez/vue-elastic-ui/sandbox-runtime.js?url'`, or copy it to `public/`. Only pages with such a piece load it, once for all of them. Rules for the piece: `<script setup>` does not work (there is no compiler for it in the frame), imports come only from `vue` and `@joseestevez/vue-elastic-ui`, and its own classes are limited to a small set of layout utilities (`flex`, `grid`, `gap-*`, `p-*`, the type sizes and colours). Its parts are the controls, the figures, the diagram's and the chart; navigation, overlays and chat are left out. The frame stays as closed as with plain HTML: it may load that one file and nothing else. It also allows `eval`, which Vue's compiler needs; inline code could already run anything, so the piece gains nothing by it.
 
 ## 11. Composing a page
 
