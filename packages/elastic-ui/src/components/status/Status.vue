@@ -87,7 +87,7 @@ const dash = computed(() => (props.state === 'working' ? `${CIRCUMFERENCE * 0.72
       :class="['size-4 shrink-0 transition-colors duration-350 ease-emphasized motion-reduce:transition-none', tones[state]]"
     >
       <!-- Only the arc turns, so it reads as under way; the hands inside stay put. -->
-      <g :class="state === 'working' && 'origin-center animate-[spin_1.1s_linear_infinite] motion-reduce:animate-none'">
+      <g :class="state === 'working' && 'origin-center animate-[spin_1.3s_linear_infinite] motion-reduce:animate-none'">
         <circle
           cx="12"
           cy="12"
