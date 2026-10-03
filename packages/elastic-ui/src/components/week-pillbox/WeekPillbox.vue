@@ -57,33 +57,32 @@ const toggle = (day: number) =>
 </script>
 
 <template>
-  <div class="inline-flex flex-col items-center gap-3">
-  <!-- Headroom above the wells: an open lid swings up into it. -->
-  <div role="group" :aria-label="label" :class="cn('inline-flex gap-1.5 rounded-xl bg-surface-sunk px-2.5 pb-2 pt-9', props.class)">
-    <button
-      v-for="d in names"
-      :key="d.day"
-      type="button"
-      :aria-pressed="days.includes(d.day)"
-      :aria-label="d.long"
-      class="group relative z-0 flex flex-col items-center gap-1.5 rounded-md transition-[z-index] delay-[350ms] duration-0 aria-pressed:z-10 aria-pressed:delay-0"
-      @click="toggle(d.day)"
-    >
-      <span class="relative block h-10 w-8">
-        <!-- The well, a tone deeper than the tray, with its pill. -->
-        <span class="absolute inset-0 rounded-md bg-bg-inset" />
-        <span
-          class="absolute inset-x-0 bottom-2.5 mx-auto h-4 w-2 rounded-full bg-fg-secondary opacity-0 transition-opacity duration-[350ms] ease-emphasized motion-reduce:transition-none group-aria-pressed:opacity-100"
-        />
-        <!-- The lid, hinged at its top left corner. Tipped, its far corner swings past its own column, so
-             an open day stays above its neighbours until its lid has folded back (z-index above). -->
-        <span
-          class="absolute inset-0 origin-top-left rounded-md bg-surface-raised transition-transform duration-[350ms] ease-emphasized motion-reduce:transition-none group-aria-pressed:-rotate-[64deg]"
-        />
-      </span>
-      <span class="text-meta text-fg-muted transition-colors duration-350 ease-emphasized group-aria-pressed:text-fg">{{ d.narrow }}</span>
-    </button>
-  </div>
-  <TextMorph :text="summary" class="text-label text-fg-secondary" aria-live="polite" />
+  <div :class="cn('flex w-full max-w-md flex-col gap-3', props.class)">
+    <!-- Headroom above the wells: an open lid lifts up into it. The compartments share the width. -->
+    <div role="group" :aria-label="label" class="flex gap-1.5 rounded-xl bg-surface-sunk px-2.5 pb-2 pt-8">
+      <button
+        v-for="d in names"
+        :key="d.day"
+        type="button"
+        :aria-pressed="days.includes(d.day)"
+        :aria-label="d.long"
+        class="group flex min-w-0 flex-1 flex-col items-center gap-2 rounded-md"
+        @click="toggle(d.day)"
+      >
+        <span class="relative block h-14 w-full [perspective:260px]">
+          <!-- The well, a tone deeper than the tray, with its pill. -->
+          <span class="absolute inset-0 rounded-md bg-bg-inset" />
+          <span
+            class="absolute inset-x-0 bottom-3 mx-auto h-5 w-2.5 rounded-full bg-fg-secondary opacity-0 transition-opacity duration-[350ms] ease-emphasized motion-reduce:transition-none group-aria-pressed:opacity-100"
+          />
+          <!-- The lid, hinged along its top edge: it lifts back and up, never sideways over its neighbours. -->
+          <span
+            class="absolute inset-0 rounded-md bg-surface-raised [transform-origin:top] [transform:rotateX(0deg)] transition-transform duration-[350ms] ease-emphasized motion-reduce:transition-none group-aria-pressed:[transform:rotateX(-112deg)]"
+          />
+        </span>
+        <span class="text-label text-fg-muted transition-colors duration-350 ease-emphasized group-aria-pressed:text-fg">{{ d.narrow }}</span>
+      </button>
+    </div>
+    <TextMorph :text="summary" class="text-label text-fg-secondary" aria-live="polite" />
   </div>
 </template>

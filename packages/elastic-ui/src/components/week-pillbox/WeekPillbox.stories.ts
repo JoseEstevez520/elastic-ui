@@ -2,7 +2,13 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
 import WeekPillbox from './WeekPillbox.vue'
 
-const meta = { title: 'Forms/WeekPillbox', component: WeekPillbox, parameters: { layout: 'centered' } } satisfies Meta<typeof WeekPillbox>
+const meta = {
+  title: 'Forms/WeekPillbox',
+  component: WeekPillbox,
+  parameters: { layout: 'centered' },
+  // It fills the width it is given, up to a limit.
+  decorators: [() => ({ template: '<div class="w-96"><story /></div>' })],
+} satisfies Meta<typeof WeekPillbox>
 export default meta
 type Story = StoryObj<typeof meta>
 
@@ -49,6 +55,6 @@ export const Phone: Story = {
   render: () => ({
     components: { WeekPillbox },
     setup: () => ({ days: ref([2, 4]) }),
-    template: `<div class="w-[320px]"><WeekPillbox v-model="days" class="w-full justify-between" /></div>`,
+    template: `<div class="w-[320px]"><WeekPillbox v-model="days" /></div>`,
   }),
 }
