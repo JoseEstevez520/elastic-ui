@@ -6,7 +6,7 @@ import TextMorph from '../text-morph/TextMorph.vue'
 
 /**
  * The days of a week as a row of tiles, each with its letter: a day that is on is filled, one that
- * is off is empty. Under it a line says what that adds up to ("Weekdays", "Mon, Wed, Fri"), so the
+ * is off is empty. Over it a line says what that adds up to ("Weekdays", "Mon, Wed, Fri"), so the
  * tiles never have to be read one by one. Days go in and out as numbers, 1 (Monday) to 7 (Sunday).
  */
 const props = withDefaults(
@@ -55,7 +55,11 @@ const toggle = (day: number) =>
 </script>
 
 <template>
-  <div :class="cn('flex w-full max-w-md flex-col gap-3', props.class)">
+  <div :class="cn('flex w-full max-w-md flex-col', props.class)">
+    <!-- The same height DayStrip keeps over its bar for the time, so a row of both lines up. -->
+    <div class="flex h-7 items-start">
+      <TextMorph :text="summary" class="text-label text-fg-secondary" aria-live="polite" />
+    </div>
     <div role="group" :aria-label="label" class="flex gap-1.5">
       <button
         v-for="d in names"
@@ -69,6 +73,5 @@ const toggle = (day: number) =>
         {{ d.narrow }}
       </button>
     </div>
-    <TextMorph :text="summary" class="text-label text-fg-secondary" aria-live="polite" />
   </div>
 </template>

@@ -97,7 +97,7 @@ function addNext() {
     <div role="group" :aria-label="label" class="relative pt-7">
       <div
         ref="track"
-        class="relative h-10 cursor-copy rounded-lg"
+        class="relative h-12 cursor-copy rounded-lg"
         :style="{
           background:
             'linear-gradient(to right, var(--color-surface-sunk) 0%, var(--color-surface-sunk) 22%, var(--color-surface-raised) 30%, var(--color-surface-raised) 78%, var(--color-surface-sunk) 86%, var(--color-surface-sunk) 100%)',
