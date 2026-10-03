@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
-import { computed, nextTick, useId, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { computed, nextTick, useId, useSlots, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
-import { contentOut, morphCloseTransition } from '../../utils/motion'
+import { contentOut, EASE_SOFT, morphCloseTransition } from '../../utils/motion'
 import ExpandableCardMorph from './ExpandableCardMorph.vue'
 import ExpandableCardRegion from './ExpandableCardRegion.vue'
 import { useExpandableCardGroup } from './expandable-card.context'
@@ -66,9 +66,11 @@ watch(lifted, async (isLifted) => {
 
 // Radius and edge live inline on the element that owns the `layoutId`, where Motion corrects
 // them against its scale. A CSS border would stretch to several pixels mid-morph.
+// A card with a backdrop draws no edge: its colour is in the backdrop, and depth comes from tones.
+const slots = useSlots()
 const paint = computed(() => ({
   borderRadius: `${props.radius}px`,
-  boxShadow: '0 0 0 1px var(--expandable-card-edge)',
+  boxShadow: slots.backdrop ? undefined : '0 0 0 1px var(--expandable-card-edge)',
   '--expandable-card-brand': props.brand,
 }))
 
@@ -102,6 +104,8 @@ const boxOnArrival = [
 // A `ghost` card opened without its box showing (by touch) materializes the box as it grows.
 const noBoxOnArrival = 'starting:bg-transparent starting:[--expandable-card-edge:transparent]'
 const siblingsIn = { duration: 0.22, ease: 'linear' } as const
+// Slower than the body: a colour washing in, not text switching on.
+const backdropIn = { duration: 0.6, delay: 0.25, ease: EASE_SOFT } as const
 const head = 'relative block w-full cursor-pointer text-left focus-ring-inset'
 // 16px of padding on phones, the margin Material and Apple's guidelines use on compact widths.
 // Parts may wrap, so a `basis-full` part (a subtitle) gets a line of its own at full width.
@@ -163,6 +167,17 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
       "
       @click="closeFromCard"
     >
+      <!-- What the project brings behind its open card (a Glow in its colours): it comes in as the
+           card lands, with the body, and leaves at once before the card folds back. -->
+      <motion.div
+        v-if="$slots.backdrop"
+        aria-hidden="true"
+        :initial="{ opacity: 0 }"
+        :animate="{ opacity: expanded ? 1 : 0, transition: expanded ? backdropIn : contentOut }"
+        class="pointer-events-none absolute inset-0"
+      >
+        <slot name="backdrop" />
+      </motion.div>
       <button
         ref="openButton"
         type="button"

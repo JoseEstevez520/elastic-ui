@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { BookOpen, FolderOpen, Scissors, Users } from '@lucide/vue'
 import { CardTitle } from '../card'
+import { Glow } from '../glow'
 import ExpandableCard from './ExpandableCard.vue'
 import ExpandableCardGroup from './ExpandableCardGroup.vue'
 import ExpandableCardIndicator from './ExpandableCardIndicator.vue'
@@ -16,6 +17,7 @@ const PROJECTS = [
     name: 'Northwind',
     image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80',
     brand: '#2e9bf7',
+    glow: ['#2e9bf7', '#7cc4ff', '#1d4ed8'],
     period: '2025',
     tagline: 'A dashboard that tracks orders and stock for a small shop.',
     description:
@@ -26,6 +28,7 @@ const PROJECTS = [
     name: 'Beacon',
     image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80',
     brand: '#1c8853',
+    glow: ['#1c8853', '#6fd3a0', '#0f5f3a'],
     period: '2024',
     tagline: 'A tool that watches a page and pings you when it changes.',
     description: 'You point it at an address and a rule; it checks on a schedule and sends a message when something matches.',
@@ -35,6 +38,7 @@ const PROJECTS = [
     name: 'Harbor',
     image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80',
     brand: '#a48a27',
+    glow: ['#d4af37', '#f2d98a', '#8a6d12'],
     period: '2024',
     tagline: 'A booking site for a small studio.',
     description: 'Visitors pick a time from a live calendar and get a reminder; the studio sees the day at a glance.',
@@ -44,6 +48,7 @@ const PROJECTS = [
     name: 'Mosaic',
     image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&q=80',
     brand: undefined,
+    glow: ['#9b9a97', '#c9c8c4'],
     period: '2023',
     tagline: 'A shared folder of notes, organised by subject.',
     description: 'A small group project to keep class materials in one place, sorted by subject and week.',
@@ -68,6 +73,8 @@ interface GridArgs {
   longText: boolean
   /** Renders two independent groups, one after the other. */
   groups: number
+  /** A Glow in each project's colours behind its open card. */
+  glow: boolean
 }
 
 // `args` stays reactive, so the Controls panel updates the grid without remounting it.
@@ -81,6 +88,7 @@ const projectGrid = (args: GridArgs) => ({
     ExpandableCardText,
     ExpandableCardImage,
     CardTitle,
+    Glow,
   },
   setup: () => ({
     args,
@@ -100,6 +108,10 @@ const projectGrid = (args: GridArgs) => ({
           :variant="args.variant"
           :brand="args.brandColors ? project.brand : undefined"
         >
+          <template v-if="args.glow" #backdrop>
+            <Glow :colors="project.glow" />
+          </template>
+
           <template v-if="hasImage(index)" #media>
             <ExpandableCardImage :src="project.image" alt="" fade />
           </template>
@@ -139,7 +151,7 @@ const projectGrid = (args: GridArgs) => ({
 
 const meta = {
   title: 'Disclosure/ExpandableCard',
-  args: { variant: 'default', count: 4, images: 'none', brandColors: false, longText: false, groups: 1 },
+  args: { variant: 'default', count: 4, images: 'none', brandColors: false, longText: false, groups: 1, glow: false },
   argTypes: {
     count: { control: { type: 'range', min: 1, max: PROJECTS.length, step: 1 } },
     variant: { control: 'inline-radio', options: ['default', 'ghost'] },
@@ -165,6 +177,14 @@ export const Ghost: Story = {
 
 export const BrandColors: Story = {
   args: { brandColors: true },
+}
+
+/**
+ * Opened, each card glows in its project's colours (Glow, given its colours or its logo as `src`),
+ * washing in as the card lands; closed, the four stay quiet and alike.
+ */
+export const GlowWhenOpen: Story = {
+  args: { brandColors: true, glow: true },
 }
 
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
