@@ -18,6 +18,8 @@ const props = withDefaults(
   { max: 6, step: 15, label: labelFor('times'), addLabel: labelFor('addTime') },
 )
 const times = defineModel<string[]>({ default: () => [] })
+// What was settled, once a knob is let go or a time is added or removed: not every pixel of a drag.
+const emit = defineEmits<{ changed: [times: string[]] }>()
 
 const DAY = 24 * 60
 const pad = (n: number) => String(n).padStart(2, '0')
@@ -28,6 +30,7 @@ const isDay = (m: number) => m >= 6 * 60 && m < 20 * 60
 const minutes = computed(() => times.value.map(toMinutes))
 const track = useTemplateRef<HTMLElement>('track')
 const dragging = ref(-1)
+let dragged = false
 
 // A knob never crosses its neighbours, so each keeps its place in the order.
 function clamp(index: number, m: number) {
@@ -40,7 +43,9 @@ const snap = (m: number) => Math.round(m / props.step) * props.step
 function set(index: number, m: number) {
   const next = [...times.value]
   next[index] = toTime(clamp(index, snap(m)))
+  if (next[index] === times.value[index]) return
   times.value = next
+  dragged = true
 }
 function minutesAt(x: number) {
   const box = track.value!.getBoundingClientRect()
@@ -51,15 +56,23 @@ function add(m: number) {
   const at = snap(Math.min(m, DAY - props.step))
   if (minutes.value.includes(at)) return
   times.value = [...times.value, toTime(at)].sort()
+  emit('changed', times.value)
 }
-const remove = (index: number) => (times.value = times.value.filter((_, i) => i !== index))
+function remove(index: number) {
+  times.value = times.value.filter((_, i) => i !== index)
+  emit('changed', times.value)
+}
 
 function down(event: PointerEvent, index: number) {
   dragging.value = index
   ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
 }
 const move = (event: PointerEvent, index: number) => dragging.value === index && set(index, minutesAt(event.clientX))
-const up = () => (dragging.value = -1)
+function up() {
+  dragging.value = -1
+  if (dragged) emit('changed', times.value)
+  dragged = false
+}
 
 function key(event: KeyboardEvent, index: number) {
   const jump = event.shiftKey ? 60 : props.step
@@ -68,6 +81,8 @@ function key(event: KeyboardEvent, index: number) {
   else if (event.key === 'Delete' || event.key === 'Backspace') remove(index)
   else return
   event.preventDefault()
+  // A key press is settled at once.
+  if (dragged) up()
 }
 
 // The first free quarter after the last time, for "Add a time" without a pointer.
