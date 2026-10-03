@@ -280,7 +280,8 @@ Not a template to fill: a page is composed from what it has to say. What the bes
 
 - **Installing before npm.** Pack the library (`npm pack` in its folder) and install the `.tgz` from the project (`vendor/elastic-ui-x.y.z.tgz`). Installing the folder itself writes a path from your disk into `package.json` and links the library's own `node_modules`, with its own Vue.
 - **CSS.** `@import "tailwindcss";`, then `@import "elastic-ui/tokens.css";` and `@source` pointing at the library's `dist`: it ships no compiled CSS, your Tailwind builds its classes.
-- **Your language.** Set the library's own texts once, `app.use(ElasticUi, { labels: { copy: 'Copiar', onThisPage: 'En esta página', … } })`; a prop on a part still wins.
+- **Your language.** Set the library's own texts once, `app.use(ElasticUi, { labels: { copy: 'Copiar', onThisPage: 'En esta página', … } })`; a prop on a part still wins. To switch language without remounting, pass a `reactive()` object and update it in place: parts read their texts as they render.
+- **Animations on or off.** By default the library follows the system's reduced-motion setting. `setMotionPreference('full')` always animates and `setMotionPreference('none')` never does, whatever the system says: for a settings switch. It covers the JS animations, motion-v's `MotionConfig` in the parts, tokens.css and the `motion-reduce:` variant.
 - **A router.** Links take `to` and render your RouterLink (`as` for another, such as NuxtLink), so navigating never reloads the page: `NavTreeItem`, `NavTreeGroup` (a section with its own page) and `Button`.
 - **A forced theme without a flash.** ThemeToggle keeps the choice in `localStorage` under `elastic-ui.theme`. Read it before the page paints, in the `<head>`:
 

@@ -142,15 +142,39 @@ export type Labels = typeof defaultLabels
 
 const LabelsKey: InjectionKey<Partial<Labels>> = Symbol('ElasticUiLabels')
 
+// Texts are read through, not copied: an app that passes a reactive object (a language switch)
+// sees its parts follow the change in place, wherever they read a text while rendering.
+const readThrough = <T extends object>(...layers: Partial<T>[]) =>
+  new Proxy({} as T, {
+    get: (_, key) => {
+      for (const layer of layers) {
+        const value = (layer as Record<PropertyKey, unknown>)[key]
+        if (value !== undefined) return value
+      }
+      return undefined
+    },
+    // So it still spreads and serialises like a plain object (SandboxFrame sends it as JSON).
+    ownKeys: () => [...new Set(layers.flatMap((layer) => Reflect.ownKeys(layer)))],
+    getOwnPropertyDescriptor: (target, key) => ({
+      value: Reflect.get(target, key),
+      enumerable: true,
+      configurable: true,
+    }),
+  })
+
 /** Sets the library's texts for everything below this component. */
 export function provideLabels(labels: Partial<Labels>) {
   const around = inject(LabelsKey, {})
-  provide(LabelsKey, { ...around, ...labels })
+  provide(LabelsKey, readThrough<Partial<Labels>>(labels, around))
 }
 
-/** The library's texts where this component sits. Call in `setup` or in a prop's default. */
+/**
+ * The library's texts where this component sits. Call in `setup` or in a prop's default. Read a
+ * text while rendering (in the template or a computed) and it follows a language switch; a prop's
+ * default is read once, when the part is created.
+ */
 export function useLabels(): Labels {
-  return { ...defaultLabels, ...inject(LabelsKey, {}) }
+  return readThrough<Labels>(inject(LabelsKey, {}), defaultLabels)
 }
 
 /** One of the library's texts, for a prop's default: `{ label: () => labelFor('search') }`. */
