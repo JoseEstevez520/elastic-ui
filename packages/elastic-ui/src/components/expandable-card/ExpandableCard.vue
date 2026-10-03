@@ -106,6 +106,12 @@ const noBoxOnArrival = 'starting:bg-transparent starting:[--expandable-card-edge
 const siblingsIn = { duration: 0.22, ease: 'linear' } as const
 // Slower than the body: a colour washing in, not text switching on.
 const backdropIn = { duration: 0.6, delay: 0.25, ease: EASE_SOFT } as const
+// Over colour, text is `fg` or `fg-secondary` only (USAGE, "Colour"): the greys below them are
+// lost on it, so inside a card with a backdrop they read as the secondary grey.
+const onColour = '[--color-fg-muted:var(--color-fg-secondary)] [--color-fg-faint:var(--color-fg-secondary)]'
+// The colour is held back where the text is, the head and the body's first lines, and comes in
+// full towards the bottom and the edges: where colour hurts reading, the colour gives way.
+const backdropFade = 'linear-gradient(to bottom, rgb(0 0 0 / 0.3), rgb(0 0 0 / 0.55) 45%, #000 100%)'
 const head = 'relative block w-full cursor-pointer text-left focus-ring-inset'
 // 16px of padding on phones, the margin Material and Apple's guidelines use on compact widths.
 // Parts may wrap, so a `basis-full` part (a subtitle) gets a line of its own at full width.
@@ -167,6 +173,7 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
           box,
           variant === 'ghost' && !boxedAtOpen && noBoxOnArrival,
           'absolute inset-x-0 top-0 z-20 flex min-h-[var(--expandable-card-cover,100%)] cursor-pointer flex-col overflow-hidden',
+          $slots.backdrop && onColour,
         )
       "
       @click="closeFromCard"
@@ -179,6 +186,7 @@ const headRow = 'flex w-full flex-wrap items-start gap-x-3 gap-y-1 p-4 sm:gap-x-
         :initial="{ opacity: 0 }"
         :animate="{ opacity: expanded ? 1 : 0, transition: expanded ? backdropIn : contentOut }"
         class="pointer-events-none absolute inset-0"
+        :style="{ maskImage: backdropFade }"
       >
         <slot name="backdrop" />
       </motion.div>
