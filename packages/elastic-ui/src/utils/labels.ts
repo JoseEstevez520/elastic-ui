@@ -122,6 +122,9 @@ export const defaultLabels = {
   /** FileUpload. `{size}` is the largest a file may be. */
   dropFiles: 'Drop files here, or browse',
   dropToAdd: 'Let go to add them',
+  chooseFiles: 'Choose files',
+  /** FileDropZone's layer while files are held over the page. */
+  dropToAttach: 'Drop to attach',
   tooLarge: 'Larger than {size}',
   notAccepted: 'Not a kind it takes',
   uploadFailed: 'Could not upload',

@@ -8,13 +8,17 @@ import FileIcon from '../file-icon/FileIcon.vue'
 import { progressFillVariants } from '../progress-button/progress-button.variants'
 import TextMorph from '../text-morph/TextMorph.vue'
 import type { Uploader, UploadFile } from './file-upload.types'
-import { dropZoneClass, fileRowClass } from './file-upload.variants'
+import { compactZoneClass, dropZoneClass, fileRowClass } from './file-upload.variants'
 
 /**
  * Files dropped on it, or chosen from the button it is. Each file becomes its row, opening its room
  * under the zone and coming into focus; with `upload`, the row is its own progress, filling from
  * the left as the file goes up, and its icon turns into a check (or what went wrong). A row taken
  * away fades where it is, then its room folds up. The list is `v-model`; without `upload`, files are just listed, for a form.
+ *
+ * `compact` drops the big zone for a small "Choose files" action, for inside a panel; the rows are
+ * the same. Files that arrive from elsewhere (a FileDropZone over the page, a paste) go in through
+ * the exposed `add`.
  */
 const props = withDefaults(
   defineProps<{
@@ -26,12 +30,21 @@ const props = withDefaults(
     upload?: Uploader
     invalid?: boolean
     disabled?: boolean
+    /** A small action in place of the dashed zone, for a panel or a bar. */
+    compact?: boolean
     /** The zone's words, at rest. */
     dropLabel?: string
     removeLabel?: string
+    /** The compact action's words. */
+    chooseLabel?: string
     class?: HTMLAttributes['class']
   }>(),
-  { multiple: true, dropLabel: labelFor('dropFiles'), removeLabel: labelFor('remove') },
+  {
+    multiple: true,
+    dropLabel: labelFor('dropFiles'),
+    removeLabel: labelFor('remove'),
+    chooseLabel: labelFor('chooseFiles'),
+  },
 )
 
 const files = defineModel<UploadFile[]>({ default: () => [] })
@@ -66,8 +79,8 @@ const update = (id: string, patch: Partial<UploadFile>) =>
 const remove = (id: string) => (files.value = files.value.filter((f) => f.id !== id))
 
 let count = 0
-function add(list: FileList | null) {
-  if (!list?.length) return
+function add(list: FileList | File[] | null) {
+  if (!list?.length || props.disabled) return
   const added = [...list].slice(0, props.multiple ? undefined : 1).map<UploadFile>((file) => {
     const tooLarge = props.maxSize !== undefined && file.size > props.maxSize
     const refused = !accepted(file)
@@ -109,6 +122,8 @@ function onDrop(event: DragEvent) {
   if (!props.disabled) add(event.dataTransfer?.files ?? null)
 }
 
+defineExpose({ add })
+
 const input = useTemplateRef<HTMLInputElement>('input')
 function onPick() {
   add(input.value?.files ?? null)
@@ -123,15 +138,15 @@ function onPick() {
       v-bind="fieldAttrs"
       :disabled="disabled"
       :data-over="over"
-      :class="dropZoneClass"
+      :class="compact ? compactZoneClass : dropZoneClass"
       @click="input?.click()"
       @dragenter.prevent="depth++"
       @dragleave="depth = Math.max(0, depth - 1)"
       @dragover.prevent
       @drop.prevent="onDrop"
     >
-      <UploadIcon aria-hidden="true" class="size-5" />
-      <TextMorph :text="over ? labels.dropToAdd : dropLabel" />
+      <UploadIcon aria-hidden="true" :class="compact ? 'size-4' : 'size-5'" />
+      <TextMorph :text="over ? labels.dropToAdd : compact ? chooseLabel : dropLabel" />
     </button>
     <input
       ref="input"

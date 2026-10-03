@@ -18,7 +18,7 @@ Storybook's dev server misses Tailwind classes in newly created files; `touch pa
 Released as `v0.3.1`, on npm as `@joseestevez/vue-elastic-ui`. Around sixty public parts, each with its stories, its API and a story per critical situation (`DECISIONS.md`, Situations). Browse them by family here and in the README; the detail of each one lives in Storybook, not in this file.
 
 - **Actions** — Button, ActionButton, ProgressButton, CopyButton, ConfirmButton, SplitActions, ThemeToggle, Toggle & ToggleGroup
-- **Forms** — Input, Textarea, Field, Select, Combobox, Checkbox, Switch, RadioGroup, Slider, NumberField, TagsInput, FileUpload & FileIcon, Calendar, DatePicker, Filters
+- **Forms** — Input, Textarea, Field, Select, Combobox, Checkbox, Switch, RadioGroup, Slider, NumberField, TagsInput, FileUpload (default and `compact`), FileDropZone & FileIcon, Calendar, DatePicker, Filters
 - **Overlays** — Popover, PopoverMorph, Menu, Tooltip, DialogMorph, AlertDialog, Sheet, Toast, SelectionMenu, SuggestionMenu, CommandPalette, Term
 - **Disclosure** — Collapsible, Accordion, Tabs, Steps, ExpandableCard, SheetFlow, DynamicIsland
 - **Navigation** — Sidebar, NavTree, MorphHeader, IconLinks, Breadcrumbs, TableOfContents, ScrollIndicator, Pagination, PageTransition, SearchMorph

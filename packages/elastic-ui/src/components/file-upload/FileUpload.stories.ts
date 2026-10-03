@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
 import Field from '../field/Field.vue'
+import PopoverMorph from '../popover-morph/PopoverMorph.vue'
 import type { Uploader, UploadFile } from './file-upload.types'
 import FileUpload from './FileUpload.vue'
 
@@ -74,3 +75,35 @@ export const EveryState: Story = {
 export const OneFile: Story = { args: { multiple: false } }
 
 export const Disabled: Story = { args: { disabled: true } }
+
+/** `compact`: a small action instead of the dashed zone, for a panel or a bar. Files still go in on it, and its rows are the same. */
+export const Compact: Story = { args: { compact: true } }
+
+/** Inside a PopoverMorph, as an editor's "Attach" button opens it. */
+export const CompactInPopover: Story = {
+  render: () => ({
+    components: { FileUpload, PopoverMorph },
+    setup: () => ({
+      files: ref<UploadFile[]>([
+        { id: '1', name: 'report.pdf', size: 482_000, status: 'done' },
+        { id: '2', name: 'photos-of-the-trip-to-the-mountains.zip', size: 24_600_000, status: 'uploading', progress: 0.42 },
+        { id: '3', name: 'notes.txt', size: 2_300, status: 'error', error: 'The server refused it' },
+      ]),
+      fakeUpload,
+    }),
+    template: `
+      <div class="flex justify-end">
+        <PopoverMorph variant="ghost" size="sm" align="end" fluid label="Attachments">
+          <template #trigger>Attach</template>
+          <FileUpload v-model="files" compact :upload="fakeUpload" />
+        </PopoverMorph>
+      </div>`,
+  }),
+}
+
+export const CompactDark: Story = { ...CompactInPopover, globals: { theme: 'dark' } }
+
+export const CompactPhoneWidth: Story = {
+  ...CompactInPopover,
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+}

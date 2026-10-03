@@ -58,6 +58,20 @@ A tree to pick from is a `NavTree` with `selectable`: its items, and its groups 
 </PopoverMorph>
 ```
 
+### Files on a calm screen
+
+A big dashed `FileUpload` zone shouts on a page meant for writing. There, files are quiet: a ghost `PopoverMorph` in the bar (an "Attach" with a paperclip) holds a `FileUpload compact`, which is a small "Choose files" action and the list of rows. Over the whole editor a `FileDropZone` takes files dragged anywhere on it, with its quiet "Drop to attach" layer, and with `paste` those pasted with Ctrl+V; both arrive as `add`, which goes into the upload through its exposed `add`. Use the default zone when sending files is the page's job, and this when it is a side matter.
+
+```vue
+<FileDropZone paste @add="upload?.add($event)">
+  <PopoverMorph variant="ghost" size="sm" align="end" fluid label="Attachments">
+    <template #trigger><Paperclip aria-hidden="true" />Attach</template>
+    <FileUpload ref="upload" v-model="files" compact :upload="send" />
+  </PopoverMorph>
+  <Textarea />
+</FileDropZone>
+```
+
 ## 2. One thing leads
 
 On a screen, one movement draws the eye. When a morph is the main one, everything around it changes quietly.
