@@ -42,14 +42,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./tokens.css": "./dist/tokens.css"
+    "./tokens.css": "./dist/tokens.css",
+    "./sandbox-runtime.js": "./dist/sandbox-runtime.js"
   },
   "sideEffects": [
     "**/*.css"
   ],
   "scripts": {
+    "prestorybook": "npm run build:sandbox",
     "storybook": "storybook dev -p 6006",
-    "build": "vite build && cp src/styles/tokens.css dist/tokens.css",
+    "build": "vite build && npm run build:sandbox && cp src/styles/tokens.css dist/tokens.css",
+    "build:sandbox": "vite build -c vite.sandbox.config.ts",
+    "prebuild-storybook": "npm run build:sandbox",
     "build-storybook": "storybook build",
     "typecheck": "vue-tsc -b",
     "prepare": "npm run build"

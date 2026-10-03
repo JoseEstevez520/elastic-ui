@@ -5,9 +5,12 @@ export const FRAME_HEIGHT = 'elastic-ui:frame-height'
 export const FRAME_THEME = 'elastic-ui:frame-theme'
 
 // No network from inside: only its own inline code and data URLs. First in its head, before
-// anything of its own can run.
-const CSP =
-  "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:"
+// anything of its own can run. A piece made of the library's parts may also load the runtime, from
+// that one address, and compile its template (Vue's compiler builds its render function with
+// `new Function`, hence `unsafe-eval`; inline code can already run anything, so this lets it do
+// nothing more).
+const policy = (runtime?: string) =>
+  `default-src 'none'; script-src 'unsafe-inline'${runtime ? ` 'unsafe-eval' ${runtime}` : ''}; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:`
 
 // Plain elements in the library's type and controls, so a piece looks native without a class.
 const BASE = `
@@ -61,9 +64,41 @@ export const themeSheet = (declarations: string, dark: boolean) =>
  * nothing may come before it.
  */
 export function frameDocument(html: string, theme: string) {
-  const head =
-    `<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${CSP}">` +
-    `<meta name="viewport" content="width=device-width, initial-scale=1">` +
-    `<style id="elastic-ui-theme">${theme}</style><style>${BASE}${diagramSheet}</style><script>${SCRIPT}</script>`
-  return `<!doctype html><html><head>${head}</head>${html.replace(/^\s*<!doctype[^>]*>/i, '')}`
+  return `<!doctype html><html><head>${head(theme, BASE)}</head>${html.replace(/^\s*<!doctype[^>]*>/i, '')}`
+}
+
+const head = (theme: string, base: string, runtime?: string) =>
+  `<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${policy(runtime)}">` +
+  `<meta name="viewport" content="width=device-width, initial-scale=1">` +
+  `<style id="elastic-ui-theme">${theme}</style><style>${base}${diagramSheet}</style><script>${SCRIPT}</script>`
+
+/**
+ * The runtime's address as the policy and the script take it: absolute (the frame has no origin
+ * of its own to resolve it against) and with nothing that could end the policy's directive.
+ */
+export function runtimeAddress(url: string): string | undefined {
+  try {
+    const href = new URL(url, location.href).href
+    return /^https?:/.test(href) && !/[\s;,'"]/.test(href) ? href : undefined
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * A piece made of the library's parts, a Vue component written as a single-file component, as a
+ * document: the runtime, loaded from the host, mounts it with the library's texts in the page's
+ * language. The runtime brings its own stylesheet, so no plain-element styles here.
+ */
+export function pieceDocument(piece: string, theme: string, runtime: string | undefined, labels: object) {
+  // As JSON in a script, with `<` escaped so nothing in the piece can close the script early.
+  const json = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c')
+  const mount =
+    `if (window.ElasticUiSandbox) ElasticUiSandbox.mount(${json(piece)}, { labels: ${json(labels)} });` +
+    `else document.getElementById('app').textContent = 'The library\\'s runtime could not be loaded.'`
+  return (
+    `<!doctype html><html><head>${head(theme, '', runtime)}` +
+    (runtime ? `<script src="${runtime}"></script>` : '') +
+    `</head><body><div id="app"></div><script>${mount}</script></body></html>`
+  )
 }

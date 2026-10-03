@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import SandboxFrame from './SandboxFrame.vue'
+// The host serves the runtime; here Storybook does, from the package's own build
+// (`npm run build:sandbox`, run before Storybook starts; see .storybook/main.ts).
+const runtime = '/runtime/sandbox-runtime.js'
 
 // Pieces as a model might write them: plain HTML, inline script, the library's tokens as CSS variables.
 const COUNTER = `<!doctype html>
@@ -54,6 +57,79 @@ const FETCHES = `
     )
   </script>`
 
+// Pieces made of the library's parts, as a model would write them: a single-file component with a
+// plain <script>, the parts used by name in the template.
+const INSTANCES = `<template>
+  <div class="flex flex-col gap-4">
+    <p class="m-0 text-ui text-fg-secondary">Each press asks the container for a logger.</p>
+    <div class="flex flex-wrap gap-2">
+      <Button @click="ask">Ask for a logger</Button>
+      <Button variant="ghost" :disabled="!asked" @click="reset">Start over</Button>
+    </div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div v-for="scope in scopes" :key="scope.name" class="flex flex-col gap-2">
+        <span class="text-label text-fg">{{ scope.name }}
+          <TextMorph class="text-fg-muted" :text="count(scope)" />
+        </span>
+        <div class="flex flex-wrap gap-2">
+          <DiagramChip v-for="n in scope.instances" :key="n" :color="scope.color">Logger #{{ n }}</DiagramChip>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { computed, ref } from 'vue'
+
+export default {
+  setup() {
+    const asked = ref(0)
+    const scopes = computed(() => [
+      { name: 'Singleton', color: '#2563eb', instances: asked.value ? 1 : 0 },
+      { name: 'Prototype', color: '#d97706', instances: asked.value },
+    ])
+    const count = (scope) => scope.instances === 1 ? '1 instance' : scope.instances + ' instances'
+    return {
+      asked,
+      scopes,
+      count,
+      ask: () => asked.value++,
+      reset: () => (asked.value = 0),
+    }
+  },
+}
+</script>`
+
+const SERVERS = `<template>
+  <div class="flex flex-col gap-4">
+    <Field label="Requests per second">
+      <Slider v-model="load" :min="10" :max="400" :step="10" :format="(v) => v + ' req/s'" />
+    </Field>
+    <Switch v-model="cached">Cache the answers</Switch>
+    <div class="flex flex-wrap items-center gap-2">
+      <DiagramChip v-for="n in servers" :key="n" color="#0891b2">Server {{ n }}</DiagramChip>
+    </div>
+    <p class="m-0 text-ui text-fg-secondary">
+      <TextMorph :text="servers === 1 ? 'One server is enough.' : servers + ' servers needed.'" />
+    </p>
+  </div>
+</template>
+
+<script>
+import { computed, ref } from 'vue'
+
+export default {
+  setup() {
+    const load = ref(120)
+    const cached = ref(false)
+    // Each server takes 50 requests a second; a cache answers half of them itself.
+    const servers = computed(() => Math.max(1, Math.ceil((cached.value ? load.value / 2 : load.value) / 50)))
+    return { load, cached, servers }
+  },
+}
+</script>`
+
 const meta = {
   title: 'Content/SandboxFrame',
   component: SandboxFrame,
@@ -98,4 +174,38 @@ export const TwoOnAPhone: Story = {
         <SandboxFrame :html="grows" label="A list that grows" />
       </div>`,
   }),
+}
+
+/**
+ * Made of the library's parts: a Vue piece with Buttons, DiagramChips and a TextMorph, run in the
+ * frame by the sandbox runtime. Press to ask for an instance: a singleton stays at one, a
+ * prototype makes one each time. Switch the theme: the count stays.
+ */
+export const WithLibraryParts: Story = {
+  args: { html: undefined, piece: INSTANCES, runtime, label: 'Singleton against prototype: how many instances each press makes' },
+}
+
+/** A Slider and a Switch driving a value, the chips and the sentence following it. */
+export const ASliderDrivingAValue: Story = {
+  args: { html: undefined, piece: SERVERS, runtime, label: 'How many servers a load needs' },
+}
+
+/** Both on a phone, each as tall as what it holds, in the theme of the page. */
+export const LibraryPartsOnAPhone: Story = {
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  render: () => ({
+    components: { SandboxFrame },
+    setup: () => ({ instances: INSTANCES, servers: SERVERS, runtime }),
+    template: `
+      <div class="flex flex-col gap-6">
+        <SandboxFrame :piece="instances" :runtime="runtime" label="Singleton against prototype" />
+        <SandboxFrame :piece="servers" :runtime="runtime" label="How many servers a load needs" />
+      </div>`,
+  }),
+}
+
+/** The same pieces in the dark theme. */
+export const LibraryPartsInTheDark: Story = {
+  ...LibraryPartsOnAPhone,
+  globals: { theme: 'dark', viewport: { value: 'mobile1', isRotated: false } },
 }

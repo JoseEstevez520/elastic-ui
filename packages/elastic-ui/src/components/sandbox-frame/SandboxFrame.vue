@@ -3,7 +3,8 @@ import { computed, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
 import { useThemeTokens } from '../../composables/useThemeTokens'
 import { cn } from '../../utils/cn'
-import { FRAME_HEIGHT, FRAME_THEME, frameDocument, themeSheet } from './sandbox-frame.document'
+import { useLabels } from '../../utils/labels'
+import { FRAME_HEIGHT, FRAME_THEME, frameDocument, pieceDocument, runtimeAddress, themeSheet } from './sandbox-frame.document'
 
 /**
  * An interactive piece written elsewhere (by a model, by a student), its HTML run in a frame of
@@ -13,11 +14,20 @@ import { FRAME_HEIGHT, FRAME_THEME, frameDocument, themeSheet } from './sandbox-
  * fields and the diagram classes styled in them, and a change of theme reaches it without a
  * reload, so what was done in it stays. It is as tall as what it holds, told by the frame itself,
  * so it never scrolls inside on a phone; it comes into focus once loaded.
+ *
+ * A piece can also be made of the library's own parts: `piece` is a Vue component written as a
+ * single-file component (a `<template>` and a plain `<script>`), mounted in the frame by the
+ * sandbox runtime (`dist/sandbox-runtime.js`), which the host serves and passes as `runtime`. The
+ * frame stays as closed: that one address is the only one it may load, and nothing else.
  */
 const props = withDefaults(
   defineProps<{
     /** The piece's HTML: a whole document or a fragment. */
-    html: string
+    html?: string
+    /** Instead of `html`, a Vue component made of the library's parts, run by the runtime. */
+    piece?: string
+    /** Where the host serves `sandbox-runtime.js`, for a `piece`. */
+    runtime?: string
     /** What it is, for those who cannot see it. */
     label: string
     /** Its height in pixels until it says its own. */
@@ -30,14 +40,19 @@ const props = withDefaults(
 const frame = useTemplateRef<HTMLIFrameElement>('frame')
 const tokens = useThemeTokens()
 const sheet = computed(() => tokens.value && themeSheet(tokens.value.declarations, tokens.value.dark))
+const labels = useLabels()
 
 // Built from the theme only when the HTML changes: the frame reloads on a new document, and a new
 // theme goes in by message instead, keeping its state.
 const srcdoc = ref<string>()
 watch(
-  [() => props.html, () => !!sheet.value],
-  ([html, ready]) => {
-    if (ready) srcdoc.value = frameDocument(html, sheet.value!)
+  [() => props.html, () => props.piece, () => props.runtime, () => !!sheet.value],
+  ([html, piece, runtime, ready]) => {
+    if (!ready) return
+    srcdoc.value =
+      piece !== undefined
+        ? pieceDocument(piece, sheet.value!, runtime && runtimeAddress(runtime), labels)
+        : frameDocument(html ?? '', sheet.value!)
   },
   { immediate: true },
 )
