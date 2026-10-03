@@ -29,6 +29,10 @@ export interface TreeDragContext {
   draggingId: Readonly<Ref<TreeDragId | null>>
   /** How far the dragged row is from where it started, in pixels. */
   offset: Readonly<Ref<number>>
+  /** The row a drop would go inside, lit while it would. */
+  insideId: Readonly<Ref<TreeDragId | null>>
+  /** How far each other row moves aside, in pixels, to close the hole and open the gap. */
+  shifts: Readonly<Ref<Record<string, number>>>
   start: (id: TreeDragId, event: PointerEvent) => void
   step: (id: TreeDragId, key: TreeDragKey) => void
 }

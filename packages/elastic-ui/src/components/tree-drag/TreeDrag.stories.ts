@@ -30,24 +30,28 @@ function moveIn(nodes: Node[], { id, parentId, index }: TreeDragMove): Node[] {
 
 const Branch: ReturnType<typeof defineComponent> = defineComponent({
   name: 'Branch',
-  props: { nodes: { type: Array as PropType<Node[]>, required: true }, parentId: { type: null as unknown as PropType<TreeDragId | null>, default: null } },
+  props: {
+    nodes: { type: Array as PropType<Node[]>, required: true },
+    parentId: { type: null as unknown as PropType<TreeDragId | null>, default: null },
+    handle: Boolean,
+  },
   setup(props) {
     const rows = computed(() => props.nodes.filter((n) => n.parentId === props.parentId))
     return () =>
       h(
         'ul',
-        { class: props.parentId == null ? 'flex flex-col gap-0.5' : 'ml-4 flex flex-col gap-0.5 border-l border-border pl-3' },
+        { class: props.parentId == null ? 'flex flex-col gap-0.5' : 'ml-5 flex flex-col gap-0.5' },
         rows.value.map((node, i) => {
           const count = props.nodes.filter((n) => n.parentId === node.id).length
           return h('li', { key: node.id }, [
-            h(TreeDragItem, { id: node.id, parentId: props.parentId, index: i, section: node.section, count }, () =>
-              h('div', { class: 'flex items-center gap-2 px-1.5 py-1' }, [
-                h(TreeDragHandle),
+            h(TreeDragItem, { id: node.id, parentId: props.parentId, index: i, section: node.section, count, handle: props.handle }, () =>
+              h('div', { class: 'flex items-center gap-2 px-1.5 py-1.5' }, [
+                props.handle ? h(TreeDragHandle) : null,
                 h(node.section ? Folder : File, { class: 'size-4 text-fg-muted', 'aria-hidden': 'true' }),
                 h('span', { class: 'text-label text-fg' }, node.title),
               ]),
             ),
-            h(Branch, { nodes: props.nodes, parentId: node.id }),
+            h(Branch, { nodes: props.nodes, parentId: node.id, handle: props.handle }),
           ])
         }),
       )
@@ -67,7 +71,7 @@ const sample = (): Node[] => [
   { id: 10, parentId: null, title: 'Welcome' },
 ]
 
-/** Drag a row by its grip: a line shows where it lands, a lit section means inside it. Alt with the arrows does it from the keyboard. */
+/** Press a row and move it: the rows make room where it would land, a lit section means inside it. Alt with the arrows does it from the keyboard. */
 export const Default: Story = {
   render: () => ({
     components: { TreeDrag, Branch },
@@ -106,5 +110,17 @@ export const LongTitle: Story = {
       return { nodes, move: (m: TreeDragMove) => (nodes.value = moveIn(nodes.value, m)) }
     },
     template: `<TreeDrag class="w-56" @move="move"><Branch :nodes="nodes" :parent-id="null" /></TreeDrag>`,
+  }),
+}
+
+/** With `handle` on the item, only the grip lifts a row, and the rest of the row is left alone. */
+export const WithHandle: Story = {
+  render: () => ({
+    components: { TreeDrag, Branch },
+    setup() {
+      const nodes = ref(sample())
+      return { nodes, move: (m: TreeDragMove) => (nodes.value = moveIn(nodes.value, m)) }
+    },
+    template: `<TreeDrag class="w-80" @move="move"><Branch :nodes="nodes" :parent-id="null" handle /></TreeDrag>`,
   }),
 }
