@@ -21,7 +21,7 @@ Released as `v0.3.1`, on npm as `@joseestevez/vue-elastic-ui`. Around sixty publ
 - **Forms** — Input, Textarea, Field, Select, Combobox, Checkbox, Switch, RadioGroup, Slider, NumberField, TagsInput, FileUpload (default and `compact`), FileDropZone & FileIcon, Calendar, DatePicker, IconPicker, WeekPillbox, DayStrip, Filters
 - **Overlays** — Popover, PopoverMorph, Menu, Tooltip, DialogMorph, AlertDialog, Sheet, Toast, SelectionMenu, SuggestionMenu, CommandPalette, Term, Tour
 - **Disclosure** — Collapsible, Accordion, Tabs, Steps, ExpandableCard, SheetFlow, DynamicIsland
-- **Navigation** — Sidebar, NavTree, MorphHeader, StickyHeader, IconLinks, Breadcrumbs, TableOfContents, TreeDrag, ScrollIndicator, Pagination, PageTransition, SearchMorph
+- **Navigation** — Sidebar, NavTree, MorphHeader, StickyHeader, PageNav, IconLinks, Breadcrumbs, TableOfContents, TreeDrag, ScrollIndicator, Pagination, PageTransition, SearchMorph
 - **Content** — Card, Badge, Status, FolderIcon, Logo, Marquee, Callout, AnimatedList, Table, DescriptionList, Stat, Chart, ActivityGrid, Empty, Progress, Separator, Avatar, Timeline, Timetable, Diagram & its parts, SandboxFrame
 - **Portfolio** — PageCard, ImageView, Gallery, Carousel, Glow, Glass, Liquid
 - **Text and code** — TextMorph, StatusText, TruncatedText, IconMorph, Prose, Markdown, CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay
@@ -56,6 +56,8 @@ Open: a **tear-off calendar** (Date tile): the day's page lifting over the bindi
 
 ## Later / ideas
 
+- **Polish `WeekPillbox`.** Used raw in Kolmi for picking a week's days; a pass over its visual and motion details, and the keyboard and screen-reader edges, the same bar the rest of Forms clears.
+- **A proper time-picker.** A real part for picking a time of day, replacing the native `<input type="time">` used raw across projects (inconsistent, browser-styled). In the vein of `DatePicker`: its own display, keyboard and mobile behaviour, not a thin wrapper around the native control.
 - **Objects in the bin's family** (ConfirmButton, FileIcon): a recognisable thing whose parts move, at a size where the gesture reads without explaining it. A padlock as a private/public switch; a copy as a sheet that doubles for CopyButton.
 - **From other products** (Family, Things, Apple, Emil Kowalski, Rauno), to redo our own way: drag to close a Sheet (Vaul); hold to confirm (Rauno's Hold Enter); toasts stacked by tone, fanning out on hover (Sonner); what is pending travels to where it will live (Family).
 - Where the `DynamicIsland` lives in a page with chrome, and a hidden state it morphs in from.

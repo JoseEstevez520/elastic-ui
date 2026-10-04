@@ -282,6 +282,7 @@ Not a template to fill: a page is composed from what it has to say. What the bes
 ## 15. Finding your way
 
 - **The Sidebar holds the sections**, a handful, without folding groups. The section of the page you are on is the active one.
+- **A page in a sequence** (a guide, a course) ends with a `PageNav`: a `PageNavLink` for the page before (`direction="previous"`) and one for the page after (`direction="next"`, with a `description` saying what it covers). On the first page there is only a next, on the last only a previous; each keeps its side. It is not `Pagination`, which is for the pages of one list.
 - **Breadcrumbs hold the rest**: the path to the page, and its siblings behind each chevron.
 - **TableOfContents** for the headings of a long page. Three levels in three places, each short.
 - **The page's bar is `SidebarLayoutHeader`**, first in the page's column: breadcrumbs on the left, search and theme on the right. It stays at the top, brings the sidebar's toggle on a phone, and tells TableOfContents and headings its height, so no offset is set by hand.

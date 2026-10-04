@@ -61,6 +61,7 @@ export const defaultLabels = {
   // Navigation
   menu: 'Menu',
   mainNav: 'Main',
+  pageNav: 'Previous and next page',
   sections: 'Sections',
   breadcrumb: 'Breadcrumb',
   pagesAtThisLevel: 'Pages at this level',
