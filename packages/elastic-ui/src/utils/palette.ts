@@ -3,7 +3,22 @@
  * grouped by hue, each counted by how colourful it is, so a grey sky or a white wall does not win
  * over the red of a roof. An image with little colour gives its tones instead.
  */
-export async function paletteOf(src: string, count = 4): Promise<string[]> {
+export function paletteOf(src: string, count = 4): Promise<string[]> {
+  const key = `${count}|${src}`
+  let palette = cache.get(key)
+  if (!palette) {
+    palette = read(src, count)
+    cache.set(key, palette)
+    // A failed read is not kept: the image may be there next time.
+    palette.catch(() => cache.delete(key))
+  }
+  return palette.then((colours) => [...colours])
+}
+
+// Each image is read once: a Glow opened again, or by another card with the same logo, finds it here.
+const cache = new Map<string, Promise<string[]>>()
+
+async function read(src: string, count: number): Promise<string[]> {
   const image = new Image()
   image.crossOrigin = 'anonymous'
   image.src = src
