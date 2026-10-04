@@ -47,7 +47,14 @@ watch(open, async (isOpen) => {
   if (!isOpen) return
   await nextTick()
   const panel = morph.value?.panel
-  ;(panel?.querySelector<HTMLElement>('[data-icons] [aria-checked=true]') ?? panel?.querySelector<HTMLElement>('[data-icons] [role=radio]'))?.focus({ preventScroll: true })
+  const grid = panel?.querySelector<HTMLElement>('[data-icons]')
+  const chosen = grid?.querySelector<HTMLElement>('[aria-checked=true]') ?? grid?.querySelector<HTMLElement>('[role=radio]')
+  chosen?.focus({ preventScroll: true })
+  // Brought into view inside the grid only, never by scrolling the page (DECISIONS, pitfalls).
+  if (grid && chosen) {
+    const inside = chosen.getBoundingClientRect().top - grid.getBoundingClientRect().top + grid.scrollTop
+    grid.scrollTop = Math.max(0, inside - (grid.clientHeight - chosen.offsetHeight) / 2)
+  }
 })
 
 const pickIcon = (value: unknown) => (icon.value = value === NONE ? null : (value as string))
