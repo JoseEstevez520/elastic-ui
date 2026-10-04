@@ -66,12 +66,12 @@ watch(picture, () => (loaded.value = false))
       <!-- The page, and its corner folded down over it. -->
       <path
         d="M6 0.5h13.5L31.5 12.5V34a5.5 5.5 0 0 1-5.5 5.5H6A5.5 5.5 0 0 1 0.5 34V6A5.5 5.5 0 0 1 6 0.5Z"
-        class="fill-[color:color-mix(in_oklab,var(--kind)_10%,var(--color-bg))] stroke-[color:color-mix(in_oklab,var(--kind)_28%,var(--color-bg))]"
+        :class="size === 'xs' ? 'fill-[color:color-mix(in_oklab,var(--kind)_18%,var(--color-bg))] stroke-[color:color-mix(in_oklab,var(--kind)_55%,var(--color-bg))]' : 'fill-[color:color-mix(in_oklab,var(--kind)_10%,var(--color-bg))] stroke-[color:color-mix(in_oklab,var(--kind)_28%,var(--color-bg))]'"
         stroke-width="1"
       />
       <path
         d="M19.5 0.5V8a4.5 4.5 0 0 0 4.5 4.5h7.5"
-        class="fill-[color:color-mix(in_oklab,var(--kind)_22%,var(--color-bg))] stroke-[color:color-mix(in_oklab,var(--kind)_28%,var(--color-bg))]"
+        :class="size === 'xs' ? 'fill-[color:color-mix(in_oklab,var(--kind)_36%,var(--color-bg))] stroke-[color:color-mix(in_oklab,var(--kind)_55%,var(--color-bg))]' : 'fill-[color:color-mix(in_oklab,var(--kind)_22%,var(--color-bg))] stroke-[color:color-mix(in_oklab,var(--kind)_28%,var(--color-bg))]'"
         stroke-width="1"
         stroke-linejoin="round"
       />
