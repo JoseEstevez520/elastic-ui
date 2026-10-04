@@ -106,12 +106,16 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
         ref="field"
         :class="['absolute inset-0 transition-[opacity,translate,scale] duration-[1.6s] ease-glide motion-reduce:transition-none', fieldClass]"
       >
+        <!-- The drift moves the outer box; the blur sits on a still child, so the compositor keeps
+             the blurred light and only moves it, instead of blurring it again on every frame. -->
         <div
           v-for="(light, i) in lights"
           :key="i"
-          :class="['absolute aspect-square rounded-full blur-3xl will-change-transform', light.place, 'animate-[aurora-drift_var(--period)_var(--ease-in-out)_infinite_alternate] motion-reduce:animate-none', !inView && '[animation-play-state:paused]']"
-          :style="{ background: `radial-gradient(closest-side, ${light.color}, transparent)`, '--drift': light.drift, '--period': `${light.period}s` }"
-        />
+          :class="['absolute aspect-square will-change-transform', light.place, 'animate-[aurora-drift_var(--period)_var(--ease-in-out)_infinite_alternate] motion-reduce:animate-none', !inView && '[animation-play-state:paused]']"
+          :style="{ '--drift': light.drift, '--period': `${light.period}s` }"
+        >
+          <div class="size-full rounded-full blur-3xl" :style="{ background: `radial-gradient(closest-side, ${light.color}, transparent)` }" />
+        </div>
       </div>
       <div class="absolute inset-0 opacity-25 mix-blend-overlay" :style="{ backgroundImage: GRAIN }" />
     </div>
