@@ -139,6 +139,22 @@ export const TwoRows: Story = {
   args: { rows: 2 },
 }
 
+/** In a flex item that wraps its content (a header's actions): it opens on hover, never stays open. */
+export const ShrinkWrapped: Story = {
+  render: () => ({
+    components: { IconLinks, IconLink },
+    setup: () => ({ siGithub }),
+    template: `
+      <div class="mx-auto flex max-w-2xl justify-end py-10">
+        <div class="flex shrink-0 items-center gap-1">
+          <IconLinks label="Project" variant="ghost">
+            <IconLink :icon="siGithub" label="GitHub" href="https://github.com" />
+          </IconLinks>
+        </div>
+      </div>`,
+  }),
+}
+
 export const Mobile: Story = {
   args: { count: PLACES.length },
   globals: { viewport: { value: 'mobile1', isRotated: false } },

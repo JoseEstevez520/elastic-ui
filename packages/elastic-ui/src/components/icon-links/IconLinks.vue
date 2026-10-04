@@ -45,6 +45,10 @@ const opensInPlace = computed(() => {
   const widths = [...openWidths.values()]
   if (!widths.length) return true
   const closed = widths.length * ICON_LINK_SIZE + (widths.length - 1) * gap.value
+  // A row as wide as its closed trays is shrink-wrapped (in a flex item, `w-fit`): nothing limits it,
+  // it grows with the tray, so opening one fits. Measured against itself it never would, and the
+  // links would stay open for ever.
+  if (Math.abs(room.value - closed) < 1) return true
   return closed - ICON_LINK_SIZE + Math.max(...widths) <= room.value
 })
 
