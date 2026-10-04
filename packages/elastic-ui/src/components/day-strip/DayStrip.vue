@@ -21,6 +21,9 @@ const times = defineModel<string[]>({ default: () => [] })
 const emit = defineEmits<{ changed: [times: string[]] }>()
 
 const DAY = 24 * 60
+// The night a tone under the day, and a long dawn and dusk between them, so no edge shows.
+const NIGHT = 'color-mix(in oklab, var(--color-surface-sunk) 50%, var(--color-surface-raised))'
+const DAY_LIGHT = `linear-gradient(to right, ${NIGHT} 0%, ${NIGHT} 14%, var(--color-surface-raised) 36%, var(--color-surface-raised) 66%, ${NIGHT} 88%, ${NIGHT} 100%)`
 const pad = (n: number) => String(n).padStart(2, '0')
 const toMinutes = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5))
 const toTime = (m: number) => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`
@@ -100,8 +103,7 @@ function addNext() {
         :aria-label="addLabel"
         class="relative h-12 cursor-copy rounded-lg"
         :style="{
-          background:
-            'linear-gradient(to right, var(--color-surface-sunk) 0%, var(--color-surface-sunk) 22%, var(--color-surface-raised) 30%, var(--color-surface-raised) 78%, var(--color-surface-sunk) 86%, var(--color-surface-sunk) 100%)',
+          background: DAY_LIGHT,
         }"
         @pointerdown.self="add(minutesAt($event.clientX))"
         @keydown.self.enter.prevent="addNext"
