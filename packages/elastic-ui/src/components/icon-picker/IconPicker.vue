@@ -2,7 +2,6 @@
 import { RadioGroupItem, RadioGroupRoot } from 'reka-ui'
 import { computed, nextTick, ref, useTemplateRef, watch, type Component, type HTMLAttributes } from 'vue'
 import { MinusIcon } from '../../icons/internal'
-import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import FieldMorph from '../field-morph/FieldMorph.vue'
 
