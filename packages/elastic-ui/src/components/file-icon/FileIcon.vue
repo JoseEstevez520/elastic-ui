@@ -18,6 +18,8 @@ const props = withDefaults(
     /** The file itself, for an image just dropped or chosen: its thumbnail is made from it. */
     file?: File
     size?: keyof typeof fileIconSize
+    /** Any CSS colour, in place of the kind's own. */
+    color?: string
     class?: HTMLAttributes['class']
   }>(),
   { size: 'md' },
@@ -47,7 +49,7 @@ watch(picture, () => (loaded.value = false))
   <span
     aria-hidden="true"
     :class="cn('relative inline-block shrink-0', fileIconSize[size], props.class)"
-    :style="{ '--kind': `var(--file-icon-color, ${kindColor[kind]})` }"
+    :style="{ '--kind': props.color ?? `var(--file-icon-color, ${kindColor[kind]})` }"
   >
     <img
       v-if="picture && kind === 'image'"
@@ -83,7 +85,7 @@ watch(picture, () => (loaded.value = false))
         stroke-linecap="round"
       />
       <text
-        v-if="label && size !== 'sm'"
+        v-if="label && size !== 'sm' && size !== 'xs'"
         x="16"
         y="34.5"
         text-anchor="middle"

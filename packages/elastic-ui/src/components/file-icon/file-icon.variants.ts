@@ -51,5 +51,5 @@ export const kindColor: Record<FileKind, string> = {
   other: 'var(--color-fg-muted)',
 }
 
-/** Sizes, as a page is taller than wide: sm beside a line of text, md for a row or a list, lg for a card. */
-export const fileIconSize = { sm: 'h-8 w-[26px]', md: 'h-10 w-8', lg: 'h-16 w-[52px]' } as const
+/** Sizes, as a page is taller than wide: xs inside a row's icon box, sm beside a line of text, md for a row or a list, lg for a card. */
+export const fileIconSize = { xs: 'h-[17px] w-[14px]', sm: 'h-8 w-[26px]', md: 'h-10 w-8', lg: 'h-16 w-[52px]' } as const
