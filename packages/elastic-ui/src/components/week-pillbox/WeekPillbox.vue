@@ -5,8 +5,8 @@ import { labelFor, useLabels } from '../../utils/labels'
 import TextMorph from '../text-morph/TextMorph.vue'
 
 /**
- * The days of a week as a row of tiles, each with its letter: a day that is on is filled, one that
- * is off is empty. Over it a line says what that adds up to ("Weekdays", "Mon, Wed, Fri"), so the
+ * The days of a week as a row of tiles in a tray, each with its letter: a day that is on stands on
+ * the raised tone, as a pressed Toggle does, and one that is off is flat. Over it a line says what that adds up to ("Weekdays", "Mon, Wed, Fri"), so the
  * tiles never have to be read one by one. Days go in and out as numbers, 1 (Monday) to 7 (Sunday).
  */
 const props = withDefaults(
@@ -60,14 +60,15 @@ const toggle = (day: number) =>
     <div class="flex h-7 items-start">
       <TextMorph :text="summary" class="text-label text-fg-secondary" aria-live="polite" />
     </div>
-    <div role="group" :aria-label="label" class="flex gap-1.5">
+    <!-- A tray a tone off the page, as a ToggleGroup's: a day that is on stands on the raised tone. -->
+    <div role="group" :aria-label="label" class="flex gap-0.5 rounded-[var(--toggle-group-radius,var(--radius-lg))] bg-surface p-0.5">
       <button
         v-for="d in names"
         :key="d.day"
         type="button"
         :aria-pressed="days.includes(d.day)"
         :aria-label="d.long"
-        class="flex h-12 min-w-0 flex-1 items-center justify-center rounded-md bg-bg-inset text-label text-fg-muted transition-colors duration-350 ease-emphasized hover:bg-surface-sunk motion-reduce:transition-none aria-pressed:bg-fg aria-pressed:text-bg aria-pressed:hover:bg-fg"
+        class="flex h-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-md text-label text-fg-muted transition-[background-color,color] duration-150 ease-out hover:text-fg focus-ring motion-reduce:transition-none aria-pressed:bg-surface-raised aria-pressed:text-fg"
         @click="toggle(d.day)"
       >
         {{ d.narrow }}

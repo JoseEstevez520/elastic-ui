@@ -16,7 +16,7 @@ const props = withDefaults(
   defineProps<{
     /** The icons to choose from, by name. */
     icons: Record<string, Component>
-    /** The colours to choose from; `null` is the neutral one, drawn in the text colour. */
+    /** The colours to choose from; `null` is the neutral one, drawn in a grey. */
     colors?: { value: string | null; label: string }[]
     /** Names the field for screen readers. */
     label?: string
@@ -111,7 +111,7 @@ function onKeydown(event: KeyboardEvent) {
               type="button"
               :aria-label="c.label"
               class="group/dot grid size-6 place-items-center rounded-full focus-ring"
-              :style="{ background: c.value ?? 'var(--color-fg)' }"
+              :style="{ background: c.value ?? 'var(--color-fg-secondary)' }"
             >
               <!-- The one chosen has a dot in the ground's colour: a mark, not an outline. -->
               <span class="size-2 rounded-full bg-bg opacity-0 transition-opacity duration-150 group-aria-checked/dot:opacity-100 motion-reduce:transition-none" />
@@ -130,7 +130,7 @@ function onKeydown(event: KeyboardEvent) {
             <button
               type="button"
               :aria-label="noneLabel"
-              class="grid size-9 place-items-center rounded-md text-fg-faint transition-colors duration-150 hover:bg-surface-raised aria-checked:bg-fg aria-checked:text-bg focus-ring"
+              class="grid size-9 place-items-center rounded-md text-fg-faint transition-colors duration-150 hover:bg-bg-inset aria-checked:bg-surface-raised aria-checked:text-fg focus-ring"
             >
               <MinusIcon class="size-4" aria-hidden="true" />
             </button>
@@ -140,7 +140,7 @@ function onKeydown(event: KeyboardEvent) {
               type="button"
               :aria-label="humanise(name)"
               :title="humanise(name)"
-              class="grid size-9 place-items-center rounded-md text-fg-secondary transition-colors duration-150 hover:bg-surface-raised aria-checked:bg-fg aria-checked:text-bg focus-ring"
+              class="grid size-9 place-items-center rounded-md text-fg-secondary transition-colors duration-150 hover:bg-bg-inset aria-checked:bg-surface-raised aria-checked:text-fg focus-ring"
             >
               <component :is="icons[name]" class="size-4" :stroke-width="1.75" aria-hidden="true" />
             </button>

@@ -121,7 +121,7 @@ function addNext() {
             :aria-valuemax="DAY - step"
             :aria-valuenow="minutes[i]"
             :aria-valuetext="time"
-            class="flex size-6 cursor-grab touch-none items-center justify-center rounded-full bg-fg text-bg active:cursor-grabbing"
+            class="flex size-6 cursor-grab touch-none items-center justify-center rounded-full border border-[color:var(--color-border-strong)] bg-[color:var(--color-bg)] text-fg shadow-soft transition-[border-color] duration-150 hover:border-[color:var(--color-fg-faint)] focus-ring active:cursor-grabbing"
             @pointerdown="down($event, i)"
             @pointermove="move($event, i)"
             @pointerup="up"
