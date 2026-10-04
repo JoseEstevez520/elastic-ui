@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Coffee } from '@lucide/vue'
+import { ref } from 'vue'
 import Timetable from './Timetable.vue'
 import type { TimetableEvent } from './timetable.types'
 
@@ -62,3 +63,31 @@ export const Default: Story = {}
 
 /** As an image would show it: the whole week, even on a phone. */
 export const Still: Story = { args: { still: true } }
+
+/**
+ * The editor: drag an empty cell to lay a new block down, drag a block to move it, drag its top
+ * or bottom edge to lengthen or shorten it, click one to select it, Delete to remove it.
+ */
+export const Editable: Story = {
+  render: (args) => ({
+    components: { Timetable },
+    setup: () => {
+      const list = ref<TimetableEvent[]>(events.map((e, i) => ({ ...e, id: i })))
+      let nextId = list.value.length
+      function create(slot: { day: number; start: string; end: string }) {
+        list.value = [...list.value, { ...slot, id: nextId++, title: 'New', color: '#9333ea' }]
+      }
+      function move(id: TimetableEvent['id'], day: number, start: string, end: string) {
+        list.value = list.value.map((e) => (e.id === id ? { ...e, day, start, end } : e))
+      }
+      function resize(id: TimetableEvent['id'], start: string, end: string) {
+        list.value = list.value.map((e) => (e.id === id ? { ...e, start, end } : e))
+      }
+      function remove(id: TimetableEvent['id']) {
+        list.value = list.value.filter((e) => e.id !== id)
+      }
+      return { args, list, create, move, resize, remove }
+    },
+    template: `<Timetable v-bind="args" :events="list" editable :session-minutes="50" class="max-w-3xl" @create="create" @move="move" @resize="resize" @remove="remove" />`,
+  }),
+}

@@ -3,6 +3,8 @@ import type { LinkTo } from '../../utils/link'
 
 /** One slot in the week: a class, a shift, a meeting. Times as "HH:MM". */
 export interface TimetableEvent {
+  /** Identifies it to `editable`'s create/move/resize/select events; itself if left out. */
+  id?: string | number
   /** Which of `days`, from 0. */
   day: number
   start: string
