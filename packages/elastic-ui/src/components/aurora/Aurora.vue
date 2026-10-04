@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, useTemplateRef, watch, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 
 export type AuroraActivity = 'rest' | 'thinking' | 'answering'
@@ -63,6 +63,19 @@ watch(
 )
 onBeforeUnmount(() => cancelAnimationFrame(frame))
 
+// Out of view the lights are paused: four large blurred layers drifting for nobody still cost a
+// frame's work each. The animations keep their place, so they carry on from where they stopped.
+const root = useTemplateRef<HTMLElement>('root')
+const inView = ref(true)
+let observer: IntersectionObserver | undefined
+onMounted(() => {
+  observer = new IntersectionObserver(([entry]) => {
+    if (entry) inView.value = entry.isIntersecting
+  })
+  if (root.value) observer.observe(root.value)
+})
+onBeforeUnmount(() => observer?.disconnect())
+
 // Thinking draws the lights in and brightens them; answering spreads them a little; at rest a
 // settled aurora sinks and dims.
 const fieldClass = computed(() =>
@@ -81,7 +94,7 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
 </script>
 
 <template>
-  <div :class="cn('relative isolate overflow-hidden', props.class)">
+  <div ref="root" :class="cn('relative isolate overflow-hidden', props.class)">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
       <!-- A wash of the same colours under the lights, so no plain background shows between them. -->
       <div
@@ -96,7 +109,7 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
         <div
           v-for="(light, i) in lights"
           :key="i"
-          :class="['absolute aspect-square rounded-full blur-3xl will-change-transform', light.place, 'animate-[aurora-drift_var(--period)_var(--ease-in-out)_infinite_alternate] motion-reduce:animate-none']"
+          :class="['absolute aspect-square rounded-full blur-3xl will-change-transform', light.place, 'animate-[aurora-drift_var(--period)_var(--ease-in-out)_infinite_alternate] motion-reduce:animate-none', !inView && '[animation-play-state:paused]']"
           :style="{ background: `radial-gradient(closest-side, ${light.color}, transparent)`, '--drift': light.drift, '--period': `${light.period}s` }"
         />
       </div>
