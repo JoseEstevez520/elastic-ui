@@ -117,7 +117,9 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
           <div class="size-full rounded-full blur-3xl" :style="{ background: `radial-gradient(closest-side, ${light.color}, transparent)` }" />
         </div>
       </div>
-      <div class="absolute inset-0 opacity-25 mix-blend-overlay" :style="{ backgroundImage: GRAIN }" />
+      <!-- On touch screens the grain is laid over the lights instead of blended into them: a blend
+           reads what is behind it on every frame, which costs a phone about a fifth of its work. -->
+      <div class="absolute inset-0 opacity-25 mix-blend-overlay pointer-coarse:opacity-[0.06] pointer-coarse:mix-blend-normal" :style="{ backgroundImage: GRAIN }" />
     </div>
     <slot />
   </div>
