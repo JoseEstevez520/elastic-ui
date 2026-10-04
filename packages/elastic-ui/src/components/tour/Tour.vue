@@ -16,7 +16,9 @@ import { provideTourContext, type TourStepMeta } from './tour.context'
  * beside it carrying the text and the controls; moving on, the ring and the card travel to the
  * next element rather than disappearing and reappearing (Philosophy 1: nothing appears or
  * disappears without a transition). No dark veil with a hole cut in it: that is the spectacle the
- * library avoids (Philosophy 2, "fewer boxes").
+ * library avoids (Philosophy 2, "fewer boxes"). A step on another screen gets there first: await
+ * `beforeStep`, given that step's meta (its `to`), before the target is measured — the ring and
+ * card hold their place until it resolves, rather than vanishing while the app navigates.
  */
 const props = withDefaults(
   defineProps<{
@@ -24,6 +26,8 @@ const props = withDefaults(
     nextLabel?: string
     backLabel?: string
     skipLabel?: string
+    /** Awaited before a step is measured; an app with routes navigates here, from the step's `to`. */
+    beforeStep?: (meta: TourStepMeta) => unknown
     class?: HTMLAttributes['class']
   }>(),
   { label: labelFor('tour'), nextLabel: labelFor('next'), backLabel: labelFor('back'), skipLabel: labelFor('skip') },
@@ -79,6 +83,8 @@ useEventListener(() => window, 'scroll', measure, { capture: true })
 watch(
   currentId,
   async () => {
+    const meta = currentId.value ? metas.value[currentId.value] : undefined
+    if (meta && props.beforeStep) await props.beforeStep(meta)
     await nextTick()
     measure()
   },

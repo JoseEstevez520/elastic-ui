@@ -159,3 +159,45 @@ export const Spanish: Story = {
       </div>`,
   }),
 }
+
+/** Situation: a step on another "screen" — `beforeStep` switches which panel shows and waits a
+ * moment (as a route change would), the ring and card holding their place meanwhile. */
+export const AcrossScreens: Story = {
+  render: () => ({
+    components: { Tour, TourStep, Button },
+    setup() {
+      const open = ref(true)
+      const screen = ref('home')
+      function beforeStep(meta: { to?: unknown }) {
+        if (!meta.to || meta.to === screen.value) return
+        return new Promise<void>((resolve) =>
+          setTimeout(() => {
+            screen.value = meta.to as string
+            resolve()
+          }, 400),
+        )
+      }
+      return { open, screen, beforeStep }
+    },
+    template: `
+      <div class="flex min-h-screen flex-col gap-10 p-16">
+        <div class="flex items-center justify-between">
+          <span class="text-title text-fg">{{ screen === 'home' ? 'Home' : 'Notes' }}</span>
+          <Button data-tour="notes-link" variant="ghost">Notes</Button>
+        </div>
+        <div v-if="screen === 'home'" class="mt-20 flex justify-center">
+          <span data-tour="home" class="text-copy text-fg-secondary">The class, on Home.</span>
+        </div>
+        <div v-else class="mt-20 flex justify-center">
+          <Button data-tour="new-note">New note</Button>
+        </div>
+
+        <Tour v-model:open="open" :before-step="beforeStep">
+          <TourStep target="home" to="home" title="This is Home">Everything the class shares.</TourStep>
+          <TourStep target="new-note" to="notes" title="Leave a note">
+            This only exists on Notes: the tour gets there first.
+          </TourStep>
+        </Tour>
+      </div>`,
+  }),
+}

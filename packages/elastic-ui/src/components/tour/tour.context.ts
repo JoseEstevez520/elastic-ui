@@ -3,6 +3,8 @@ import { inject, provide, type InjectionKey, type Ref } from 'vue'
 export interface TourStepMeta {
   target: string
   title: string
+  /** Opaque to the library: an app with routes passes what `beforeStep` needs to get there. */
+  to?: unknown
   /** The step's slot, rendered as a functional component inside the travelling card. */
   body?: () => unknown
 }
