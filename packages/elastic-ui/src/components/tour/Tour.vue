@@ -70,13 +70,28 @@ const currentId = computed(() => ids.value[active.value])
 const currentMeta = computed(() => (currentId.value ? metas.value[currentId.value] : undefined))
 
 // The current step's element, found live: never cached across a render, since the app around it
-// may lay out differently step to step (a folded section opening, say).
+// may lay out differently step to step (a folded section opening, say). It may not be there the
+// instant `beforeStep` resolves (a page transition still inserting it, a section still opening),
+// so a miss is retried a moment rather than given up on; a newer call always wins over an older
+// one still retrying.
 const box = ref<Box>()
+let measureToken = 0
 function measure() {
   if (!currentMeta.value) return
-  const el = document.querySelector<HTMLElement>(`[data-tour="${currentMeta.value.target}"]`)
-  box.value = boxOf(el)
-  el?.scrollIntoView({ block: 'center', behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
+  const token = ++measureToken
+  const target = currentMeta.value.target
+  const giveUpAt = Date.now() + 1500
+  const attempt = () => {
+    if (token !== measureToken) return
+    const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`)
+    if (el) {
+      box.value = boxOf(el)
+      el.scrollIntoView({ block: 'center', behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
+    } else if (Date.now() < giveUpAt) {
+      requestAnimationFrame(attempt)
+    }
+  }
+  attempt()
 }
 useEventListener(() => window, 'resize', measure)
 useEventListener(() => window, 'scroll', measure, { capture: true })
