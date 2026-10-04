@@ -51,6 +51,10 @@ export const defaultLabels = {
   addTime: 'Add a time',
   /** TreeDragHandle: its name; keys move the item from the keyboard. */
   moveItem: 'Move',
+  /** IconPicker: its name, what a missing icon says, and the name of the colours. */
+  icon: 'Icon',
+  noIcon: 'No icon',
+  color: 'Colour',
   // Navigation
   menu: 'Menu',
   mainNav: 'Main',
