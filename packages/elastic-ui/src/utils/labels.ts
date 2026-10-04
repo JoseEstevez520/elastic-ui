@@ -55,6 +55,9 @@ export const defaultLabels = {
   icon: 'Icon',
   noIcon: 'No icon',
   color: 'Colour',
+  /** Tour: its region's name, and the button that leaves it early. */
+  tour: 'Guided tour',
+  skip: 'Skip',
   // Navigation
   menu: 'Menu',
   mainNav: 'Main',
