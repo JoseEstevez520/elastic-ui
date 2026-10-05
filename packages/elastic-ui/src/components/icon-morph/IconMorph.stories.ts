@@ -12,6 +12,7 @@ const pairs: [GlyphName, GlyphName, string][] = [
   ['chevronRight', 'chevronDown', 'Expand'],
   ['arrowRight', 'check', 'Send, then done'],
   ['arrowUp', 'check', 'Upload, then done'],
+  ['arrowDown', 'check', 'Download, then done'],
   ['arrowLeft', 'close', 'Back, then close'],
 ]
 

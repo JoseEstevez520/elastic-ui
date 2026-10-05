@@ -139,6 +139,18 @@ export const glyphs = {
     },
     at([12, 5]),
   ],
+  arrowDown: [
+    { points: line([12, 5], [12, 19]) },
+    {
+      points: [
+        [6, 13],
+        [12, 19],
+        [18, 13],
+        [18, 13],
+      ],
+    },
+    at([12, 19]),
+  ],
 } satisfies Record<string, Glyph>
 
 export type GlyphName = keyof typeof glyphs

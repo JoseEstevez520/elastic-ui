@@ -24,6 +24,7 @@ export const OtherActions: Story = {
       <div class="flex flex-wrap gap-3">
         <ActionButton v-bind="args" label="Save" done-label="Saved" error-label="Not saved" icon="plus" />
         <ActionButton v-bind="args" label="Publish" done-label="Published" error-label="Not published" icon="arrowUp" />
+        <ActionButton v-bind="args" label="Download" done-label="Downloaded" error-label="Not downloaded" icon="arrowDown" />
         <ActionButton v-bind="args" label="Hand in" done-label="Handed in" error-label="Not handed in" />
       </div>`,
   }),
