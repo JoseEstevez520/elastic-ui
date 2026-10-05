@@ -14,6 +14,11 @@ import { labelFor } from '../../utils/labels'
  * sits on the right in `actions`. Below `md` the links fold away and the logo and actions stay.
  * Its height is published as `--page-header-height`, which TableOfContents and Prose's headings
  * read, so an anchor never lands under it.
+ *
+ * `clear` leaves it with no veil while the page is at the top, for a page that opens on colour (an
+ * Aurora, a Glow, a photo) running up behind the bar: the colour shows through untouched, and the
+ * veil comes in with the hairline once the page moves. The page pulls that first block up under
+ * the bar (`-mt-14`) itself.
  */
 const props = withDefaults(
   defineProps<{
@@ -21,6 +26,8 @@ const props = withDefaults(
     label?: string
     /** No hairline under it even once the page has moved. */
     seamless?: boolean
+    /** No veil while the page is at the top: what runs up behind the bar shows through. */
+    clear?: boolean
     class?: HTMLAttributes['class']
   }>(),
   { label: labelFor('mainNav') },
@@ -53,7 +60,9 @@ onBeforeUnmount(() => {
     :class="
       cn(
         'sticky top-0 z-40 border-b backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300 ease-glide',
-        'bg-[color:var(--sticky-header-bg,color-mix(in_srgb,var(--color-bg)_70%,transparent))]',
+        clear && !scrolled
+          ? 'bg-transparent'
+          : 'bg-[color:var(--sticky-header-bg,color-mix(in_srgb,var(--color-bg)_70%,transparent))]',
         scrolled && !seamless ? 'border-border' : 'border-transparent',
         props.class,
       )
