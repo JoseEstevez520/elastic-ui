@@ -195,6 +195,7 @@ Things that went wrong once, found by measuring frame by frame, and the fix ever
 - **Clicks do nothing on a card over a popover.** A popover kept mounted but hidden (to fold back into) still has its layer above the page: what opens over it sits higher (Term's card).
 - **A marker lands off inside a panel that grows in.** A Popover grows from 97%, so boxes measured on screen while it does are scaled, and an indicator placed from them (NavTree's) stays off once the panel is full size. Divide what is measured by the container's scale: its box on screen over its laid-out width (`getBoundingClientRect().width / offsetWidth`).
 - **A line that fits loses its last letters.** `mask-fade-r` fades the end of its box whether the text runs past or not, so a label put in it by habit lost its last letters, in this library and in the projects using it. A line that may fit is a `TruncatedText` (or, on an element a part already owns, `useTruncated`), which fades only while it runs past; the bare class is for content that always overflows.
+- **A row opens and closes for ever.** A part that decides whether something fits from its own width (IconLinks) measured that width while a tray was halfway open, took it for a limit, and changed what it showed, which changed its width again. A width that follows the content is no limit: compare it with what it holds now, not with a state it is passing through.
 - **A new story renders unstyled in Storybook.** The dev server misses Tailwind classes in new files: `touch .storybook/preview.css`.
 
 ## Two component tiers

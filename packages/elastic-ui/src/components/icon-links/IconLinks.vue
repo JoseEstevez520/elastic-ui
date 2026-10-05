@@ -34,10 +34,11 @@ const noHover = ref(false)
 const hoverQuery = () => window.matchMedia('(hover: none)')
 useEventListener<MediaQueryListEvent>(hoverQuery, 'change', (event) => (noHover.value = event.matches))
 
-// The row's room and its gap, and each link's width when open.
+// The row's room and its gap, how wide its links are now, and each link's width when open.
 const list = useTemplateRef<HTMLElement>('list')
 const room = ref(Infinity)
 const gap = ref(0)
+const content = ref(0)
 const openWidths = reactive(new Map<string, number>())
 
 // The row closed, with its widest link open in place of one tray.
@@ -45,10 +46,12 @@ const opensInPlace = computed(() => {
   const widths = [...openWidths.values()]
   if (!widths.length) return true
   const closed = widths.length * ICON_LINK_SIZE + (widths.length - 1) * gap.value
-  // A row as wide as its closed trays is shrink-wrapped (in a flex item, `w-fit`): nothing limits it,
-  // it grows with the tray, so opening one fits. Measured against itself it never would, and the
-  // links would stay open for ever.
-  if (Math.abs(room.value - closed) < 1) return true
+  // A row as wide as its links are now is shrink-wrapped (in a flex item, `w-fit`): nothing limits
+  // it, it grows with the tray, so opening one fits. Measured against itself it never would. It is
+  // checked against the links as they are, not as they are closed: halfway through a tray opening
+  // or closing, the row is that wide too, and taking it for a limit opened every label, which
+  // widened the row, which closed them again, for ever.
+  if (Math.abs(room.value - content.value) < 1) return true
   return closed - ICON_LINK_SIZE + Math.max(...widths) <= room.value
 })
 
@@ -59,7 +62,12 @@ onMounted(() => {
   if (!el) return
   gap.value = parseFloat(getComputedStyle(el).columnGap) || 0
   observer = new ResizeObserver(([entry]) => {
-    if (entry) room.value = entry.contentRect.width
+    if (!entry) return
+    const links = [...el.children]
+    content.value =
+      links.reduce((sum, link) => sum + link.getBoundingClientRect().width, 0) +
+      Math.max(links.length - 1, 0) * gap.value
+    room.value = entry.contentRect.width
   })
   observer.observe(el)
 })
