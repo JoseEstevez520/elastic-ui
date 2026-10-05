@@ -1,31 +1,33 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/logo.png" alt="" width="96" />
+  <img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/logo.png" alt="elastic-ui" width="104" />
 </p>
 
 # elastic-ui
+
+[Español](./README.es.md)
 
 A Vue 3 component library where things transform instead of appearing: a button grows into its dialog, a tab's indicator travels to the next tab, an answer flows in as a wave. Clean, soft and quiet, with one movement leading on each screen.
 
 Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](https://motion.dev/docs/vue).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/chat-morph.gif" alt="A button turns into a chat panel over a soft aurora; a typed question flies up into the conversation" width="560" />
+  <img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/readme/chat-morph.gif" alt="A button turns into a chat panel over a soft aurora; a typed question flies up into the conversation" width="560" />
 </p>
 
 ## See it move
 
 <table>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/compose-morph.gif" alt="A Comment button grows into a small form, sends, and folds back" /></td>
-    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/dialog-morph.gif" alt="A Delete button travels to the middle of the screen and grows into its dialog" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/readme/compose-morph.gif" alt="A Comment button grows into a small form, sends, and folds back" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/readme/dialog-morph.gif" alt="A Delete button travels to the middle of the screen and grows into its dialog" /></td>
   </tr>
   <tr>
     <td align="center"><sub><code>ComposeMorph</code>: a button that becomes a form.</sub></td>
     <td align="center"><sub><code>DialogMorph</code>: the button becomes the dialog.</sub></td>
   </tr>
   <tr>
-    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/dynamic-island.gif" alt="A black pill changes shape for music, a timer, an upload and a call" /></td>
-    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/agent-replay.gif" alt="A recorded agent session playing step by step next to its explanation" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/readme/dynamic-island.gif" alt="A black pill changes shape for music, a timer, an upload and a call" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/readme/agent-replay.gif" alt="A recorded agent session playing step by step next to its explanation" /></td>
   </tr>
   <tr>
     <td align="center"><sub><code>DynamicIsland</code>: a pill that takes the shape of what it shows.</sub></td>

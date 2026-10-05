@@ -7,7 +7,7 @@
 
 ## Language
 
-- Everything in the project is written in English: code, comments, docs and commit messages.
+- Everything in the project is written in English: code, comments, docs and commit messages. The exception is `README.es.md` (and `packages/elastic-ui/README.es.md`), the Spanish translations of the READMEs. A README always ships in both languages: edit one and the other in the same commit.
 - Chat with the user in Spanish.
 
 ## Workflow
