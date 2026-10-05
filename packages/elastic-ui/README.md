@@ -8,6 +8,31 @@ A Vue 3 component library where things transform instead of appearing: a button 
 
 Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](https://motion.dev/docs/vue).
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/chat-morph.gif" alt="A button turns into a chat panel over a soft aurora; a typed question flies up into the conversation" width="560" />
+</p>
+
+## See it move
+
+<table>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/compose-morph.gif" alt="A Comment button grows into a small form, sends, and folds back" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/dialog-morph.gif" alt="A Delete button travels to the middle of the screen and grows into its dialog" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><code>ComposeMorph</code>: a button that becomes a form.</sub></td>
+    <td align="center"><sub><code>DialogMorph</code>: the button becomes the dialog.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/dynamic-island.gif" alt="A black pill changes shape for music, a timer, an upload and a call" /></td>
+    <td width="50%"><img src="https://raw.githubusercontent.com/JoseEstevez520/elastic-ui/main/assets/demos/agent-replay.gif" alt="A recorded agent session playing step by step next to its explanation" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><code>DynamicIsland</code>: a pill that takes the shape of what it shows.</sub></td>
+    <td align="center"><sub><code>AgentReplay</code>: an agent session you can step through.</sub></td>
+  </tr>
+</table>
+
 ## What is in it
 
 | Family | Parts |
