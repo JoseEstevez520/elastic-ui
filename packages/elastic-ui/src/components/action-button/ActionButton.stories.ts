@@ -30,6 +30,15 @@ export const OtherActions: Story = {
   }),
 }
 
+/** Without a fill at rest, for a page's header or a row of quiet actions; it still gathers and widens. */
+export const Ghost: Story = {
+  render: (args) => ({
+    components: { ActionButton },
+    setup: () => ({ args }),
+    template: `<ActionButton v-bind="args" variant="ghost" label="Download" done-label="Downloaded" error-label="Not downloaded" icon="arrowDown" />`,
+  }),
+}
+
 // Situations every change has to keep working. See "Situations" in DECISIONS.md.
 
 /** It fails: it widens into what went wrong, tinted with the danger colour, then is itself again. */

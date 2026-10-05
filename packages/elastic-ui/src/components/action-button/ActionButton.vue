@@ -26,9 +26,11 @@ const props = withDefaults(
     doneLabel?: string
     errorLabel?: string
     disabled?: boolean
+    /** `ghost` has no fill at rest, for a row of quiet actions or a page's header. */
+    variant?: 'solid' | 'ghost'
     class?: HTMLAttributes['class']
   }>(),
-  { icon: 'arrowRight', label: labelFor('send'), doneLabel: labelFor('sent'), errorLabel: labelFor('sendError') },
+  { variant: 'solid', icon: 'arrowRight', label: labelFor('send'), doneLabel: labelFor('sent'), errorLabel: labelFor('sendError') },
 )
 
 type State = 'rest' | 'working' | 'done' | 'failed'
@@ -76,7 +78,9 @@ async function run() {
       'transition-[width,background-color,color] duration-[400ms] ease-emphasized motion-reduce:transition-none',
       state === 'failed'
         ? 'bg-[color:color-mix(in_oklab,var(--color-danger)_16%,var(--color-surface))] text-[color:var(--color-danger)]'
-        : 'bg-[color:var(--color-fg)] text-[color:var(--color-bg)]',
+        : props.variant === 'ghost'
+          ? 'bg-transparent text-[color:var(--color-fg-secondary)] hover:bg-[color:color-mix(in_oklab,var(--color-fg)_8%,transparent)] hover:text-[color:var(--color-fg)]'
+          : 'bg-[color:var(--color-fg)] text-[color:var(--color-bg)]',
       props.class,
     ]"
     :style="{ width: width ? `${width}px` : undefined }"
