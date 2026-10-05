@@ -59,10 +59,11 @@ onBeforeUnmount(() => {
     ref="header"
     :class="
       cn(
-        'sticky top-0 z-40 border-b backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300 ease-glide',
+        'sticky top-0 z-40 border-b transition-[background-color,border-color,backdrop-filter] duration-300 ease-glide',
+        // Clear at the top is clear all the way: a blur with no veil still shows as a band.
         clear && !scrolled
           ? 'bg-transparent'
-          : 'bg-[color:var(--sticky-header-bg,color-mix(in_srgb,var(--color-bg)_70%,transparent))]',
+          : 'bg-[color:var(--sticky-header-bg,color-mix(in_srgb,var(--color-bg)_70%,transparent))] backdrop-blur-xl backdrop-saturate-150',
         scrolled && !seamless ? 'border-border' : 'border-transparent',
         props.class,
       )
