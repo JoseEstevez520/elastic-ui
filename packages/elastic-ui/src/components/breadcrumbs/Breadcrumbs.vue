@@ -42,13 +42,20 @@ const props = withDefaults(
 
 const labels = useLabels()
 
+// How long the crumbs hold still before the row is taken to its end (see below).
+const SETTLE_MS = 140
+
 // Crumbs there when the page loads just show; only a change made afterwards brings one in.
 const ready = ref(false)
 onMounted(() => nextTick(() => (ready.value = true)))
 
 // A row too long for its room scrolls, held at its end so the current page always shows. The
 // crumbs above it slide out behind a fading edge, only while some are out of sight; they can be
-// scrolled back to. Kept at the end as the row resizes and whenever the crumbs change.
+// scrolled back to. Kept at the end as the row resizes and whenever the crumbs change, but only
+// once they stop changing size: a crumb that changes page morphs its name, and TextMorph grows
+// its box over a moment while the new text already measures its full width. For those frames
+// the row overflows by what has not grown yet, and scrolling it to the end then would push
+// every crumb to the left and back, the ones that did not change included.
 const nav = useTemplateRef<HTMLElement>('nav')
 const hidden = ref(false)
 const row = () => nav.value?.querySelector('ol')
@@ -61,13 +68,22 @@ function toEnd() {
 function onScroll() {
   hidden.value = (row()?.scrollLeft ?? 0) > 0
 }
+let settle: ReturnType<typeof setTimeout> | undefined
+function toEndWhenSettled() {
+  clearTimeout(settle)
+  settle = setTimeout(toEnd, SETTLE_MS)
+}
 let observer: ResizeObserver | undefined
 onMounted(() => {
-  observer = new ResizeObserver(toEnd)
+  toEnd()
+  observer = new ResizeObserver(toEndWhenSettled)
   if (nav.value) observer.observe(nav.value)
 })
-onUpdated(toEnd)
-onBeforeUnmount(() => observer?.disconnect())
+onUpdated(toEndWhenSettled)
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  clearTimeout(settle)
+})
 
 const isCurrent = (page: { label: string }, item: BreadcrumbsItem) => page.label === item.label
 </script>
