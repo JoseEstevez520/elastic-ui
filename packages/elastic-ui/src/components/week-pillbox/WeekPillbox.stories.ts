@@ -14,12 +14,24 @@ type Story = StoryObj<typeof meta>
 
 const es = { everyDay: 'Todos los días', weekdays: 'Entre semana', weekends: 'Fines de semana', none: 'Ningún día' }
 
-/** Press a tile to fill it (that day is on) or empty it; the line under it says what it adds up to. */
+/**
+ * Press a day to turn it on or off, or drag across several. Days side by side melt into one pill; the
+ * line over them says what they add up to.
+ */
 export const Default: Story = {
   render: () => ({
     components: { WeekPillbox },
-    setup: () => ({ days: ref([1, 2, 3, 4, 5]) }),
+    setup: () => ({ days: ref([1, 2, 3, 5]) }),
     template: `<div class="flex flex-col items-center gap-3"><WeekPillbox v-model="days" /><p class="text-meta tabular-nums text-fg-muted">{{ days.join(', ') || 'none' }}</p></div>`,
+  }),
+}
+
+/** Runs: three days or more in a row are one stretch, on the line ("Mon–Thu, Sat") as in the pills. */
+export const Runs: Story = {
+  render: () => ({
+    components: { WeekPillbox },
+    setup: () => ({ days: ref([1, 2, 3, 4, 6]) }),
+    template: `<WeekPillbox v-model="days" />`,
   }),
 }
 
@@ -50,7 +62,7 @@ export const Two: Story = {
   }),
 }
 
-/** Situation, size: on a phone's width the seven compartments still fit. */
+/** Situation, size: on a phone's width the seven days still fit, each a finger wide. */
 export const Phone: Story = {
   render: () => ({
     components: { WeekPillbox },
