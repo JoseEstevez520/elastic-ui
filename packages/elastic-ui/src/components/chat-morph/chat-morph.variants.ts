@@ -56,3 +56,7 @@ export const chatMorphTriggerState = {
   open: 'pointer-events-none opacity-0 blur-[2px] duration-100',
   closed: 'duration-300 delay-[180ms]',
 }
+
+/** A control in the box's corner row: the cross, and what the `actions` slot adds beside it. */
+export const chatMorphActionClass =
+  'flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:text-fg focus-ring'

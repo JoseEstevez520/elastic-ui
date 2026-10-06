@@ -189,6 +189,7 @@ Around the aurora:
 - **It starts where it is looked at.** What plays on its own starts once it is in full view, and a moment after, not while it only peeks in at an edge; the library's parts already do.
 - **Every part to watch or play with ends in its conclusion, where it can be seen**: a session's last note stands out once it has played, and the text right after it says the conclusion again in bold. Whoever only glances at the end still leaves with the idea.
 - **The text around it frames it, and does not retell it**: a sentence before says what to watch for, a sentence after says what it showed.
+- **An action beside a ChatMorph's cross** (open the conversation in full) goes in its `actions` slot: an icon alone, `chatMorphActionClass` for the corner's look, in a Tooltip for its name. One or two at most; the cross stays last.
 
 ### A change the assistant proposes
 

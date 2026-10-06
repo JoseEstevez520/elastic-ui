@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { Globe } from '@lucide/vue'
+import { Globe, Maximize2 } from '@lucide/vue'
+import Tooltip from '../tooltip/Tooltip.vue'
 import ChatComposer from '../chat/ChatComposer.vue'
 import ChatMessage from '../chat/ChatMessage.vue'
 import ChatSource from '../chat/ChatSource.vue'
@@ -8,6 +9,7 @@ import ChatThread from '../chat/ChatThread.vue'
 import ChatTool from '../chat/ChatTool.vue'
 import { fakeModel } from '../chat/chat.fixtures'
 import ChatMorph from './ChatMorph.vue'
+import { chatMorphActionClass } from './chat-morph.variants'
 
 const meta = {
   title: 'AI/ChatMorph',
@@ -75,6 +77,39 @@ export const Inline: Story = {
                   <ChatSources><ChatSource v-for="s in m.tool.sources" :key="s.url" v-bind="s" /></ChatSources>
                 </ChatTool>
               </template>
+              <template v-if="m.role === 'user'">{{ m.text }}</template>
+            </ChatMessage>
+          </ChatThread>
+          <p v-else class="flex flex-1 items-center justify-center px-6 text-center text-xl font-medium">What can I help with?</p>
+          <ChatComposer :responding="responding" @send="send" @stop="stop" />
+        </ChatMorph>
+      </div>`,
+  }),
+}
+
+/** The `actions` slot: an icon action beside the cross, such as opening the conversation in full. It takes the corner's look, and a tooltip for its name. */
+export const WithAction: Story = {
+  render: () => ({
+    components: { ChatComposer, ChatMessage, ChatMorph, ChatThread, Maximize2, Tooltip },
+    setup: () => ({ ...fakeModel([]), Maximize2, chatMorphActionClass }),
+    template: `
+      <div class="min-h-screen p-10">
+        <p class="max-w-md text-fg-secondary">A page of your app. The assistant waits at the bottom right.</p>
+        <ChatMorph :settled="messages.length > 0" :activity="activity">
+          <template #actions>
+            <Tooltip content="Open in full">
+              <button type="button" aria-label="Open in full" :class="chatMorphActionClass"><Maximize2 class="size-4" /></button>
+            </Tooltip>
+          </template>
+          <ChatThread v-if="messages.length">
+            <ChatMessage
+              v-for="m in messages"
+              :key="m.id"
+              :role="m.role"
+              :text="m.role === 'assistant' ? m.text : undefined"
+              :streaming="m.id === streamingId"
+              :status="status"
+            >
               <template v-if="m.role === 'user'">{{ m.text }}</template>
             </ChatMessage>
           </ChatThread>

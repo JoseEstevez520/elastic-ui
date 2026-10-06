@@ -6,7 +6,7 @@ import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import Aurora, { type AuroraActivity } from '../aurora/Aurora.vue'
 import { chatGlassStyle } from '../chat/chat.variants'
-import { chatMorphTriggerState, chatMorphPanelVariants, chatMorphSurfaceVariants, chatMorphTriggerClass } from './chat-morph.variants'
+import { chatMorphActionClass, chatMorphTriggerState, chatMorphPanelVariants, chatMorphSurfaceVariants, chatMorphTriggerClass } from './chat-morph.variants'
 
 /**
  * An orb that becomes a chat box of its own. The button is a small circle of drifting aurora, no
@@ -16,6 +16,11 @@ import { chatMorphTriggerState, chatMorphPanelVariants, chatMorphSurfaceVariants
  * Floating by default, held at the bottom right of the screen and opening upwards; inline, it
  * grows from wherever it sits. Closing (Escape, the cross, a click elsewhere) keeps the
  * conversation: the box only folds away.
+ *
+ * The `actions` slot puts icon actions in the corner row, beside the cross and to its left
+ * ("open in full"). Give each the corner's look with `chatMorphActionClass`, and a Tooltip for its
+ * name, since an icon alone has no word. The slot receives `close`. Without it, the row is the
+ * cross alone.
  */
 const props = withDefaults(
   defineProps<{
@@ -116,17 +121,15 @@ const labels = useLabels()
         :class="cn(chatMorphPanelVariants({ floating, open }), props.class)"
       >
         <div class="flex min-h-0 flex-1 flex-col">
-          <!-- No header: the box is the conversation, with only a way out in its corner. -->
+          <!-- No header: the box is the conversation, with only a way out in its corner, and any actions beside it. -->
           <h2 :id="titleId" class="sr-only">{{ title }}</h2>
-          <button
-            type="button"
-            :aria-label="labels.close"
-            class="absolute top-3 right-3 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:text-fg focus-ring"
-            @click="close"
-          >
-            <XIcon class="size-4" />
-          </button>
-          <!-- The conversation ends below the cross's row, never under it, and fades out gently, on an
+          <div class="absolute top-3 right-3 z-10 flex items-center gap-1">
+            <slot name="actions" :close="close" />
+            <button type="button" :aria-label="labels.close" :class="chatMorphActionClass" @click="close">
+              <XIcon class="size-4" />
+            </button>
+          </div>
+          <!-- The conversation ends below the corner's row, never under it, and fades out gently, on an
                eased curve, as it reaches that edge. -->
           <div :style="chatGlassStyle" class="mt-12 flex min-h-0 flex-1 flex-col [mask-image:linear-gradient(to_bottom,transparent,rgb(0_0_0/0.03)_0.5rem,rgb(0_0_0/0.15)_1rem,rgb(0_0_0/0.35)_1.5rem,rgb(0_0_0/0.6)_2rem,rgb(0_0_0/0.82)_2.5rem,rgb(0_0_0/0.95)_3rem,#000_3.5rem)]">
             <slot :close="close" />
