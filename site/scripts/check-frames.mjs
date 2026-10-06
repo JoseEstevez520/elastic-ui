@@ -33,6 +33,8 @@ const VIEWPORTS = [
 // The least a story may be shrunk to fit before it counts as not fitting (story-fit.ts stops here).
 const MIN_ZOOM = 0.5
 const NETWORK = /net::ERR_|Failed to load resource/
+// A sandbox refusing what a piece asks of the network is the sandbox working (SandboxFrame).
+const SANDBOXED = /Content Security Policy/
 
 const server = await preview({ root: siteRoot, preview: { port: 0, strictPort: false }, logLevel: 'error' })
 const base = server.resolvedUrls.local[0].replace(/\/$/, '')
@@ -49,7 +51,7 @@ for (const { name: view, ...options } of VIEWPORTS) {
     page.on('pageerror', (error) => fail(`threw: ${error.message.split('\n')[0]}`))
     page.on('console', (message) => {
       if (message.type() !== 'error') return
-      if (NETWORK.test(message.text())) notes.push(`${where}: ${message.text().slice(0, 120)}`)
+      if (NETWORK.test(message.text()) || SANDBOXED.test(message.text())) notes.push(`${where}: ${message.text().slice(0, 120)}`)
       else fail(`logged: ${message.text().split('\n')[0].slice(0, 160)}`)
     })
 
@@ -69,10 +71,9 @@ for (const { name: view, ...options } of VIEWPORTS) {
         const stories = [...document.querySelectorAll('article section')].map((section) => {
           const title = section.querySelector('h2, h3')?.textContent?.trim() ?? '?'
           const content = section.querySelector('.story-content')
-          if (content) {
-            const zoom = Number(getComputedStyle(content).zoom) || 1
-            return { title, overflow: content.scrollWidth - content.clientWidth, zoom }
-          }
+          // The frame's own measure of what is left over once fitted (story-fit.ts), so the check
+          // and the frame never disagree about what counts as sticking out.
+          if (content) return { title, overflow: Number(content.dataset.overflow ?? 0), zoom: Number(content.dataset.zoom ?? 1) }
           const frame = section.querySelector('iframe')
           const doc = frame?.contentDocument?.documentElement
           if (doc) return { title, overflow: doc.scrollWidth - doc.clientWidth, zoom: 1, frame: true }

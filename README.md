@@ -90,6 +90,7 @@ npm run build           # build the library
 npm run build-storybook # static Storybook
 npm run typecheck       # library and site
 npm run site:build      # static site
+npm run site:check      # every story fits its frame, on a desktop and a phone
 ```
 
 To use the library in a project, install it from npm and follow

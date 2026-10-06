@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 import { loadPart, type LoadedPart } from '../parts'
 
@@ -26,6 +26,14 @@ onMounted(async () => {
     observer.observe(host, { attributes: true, attributeFilter: ['data-theme'] })
   }
   loaded.value = await loadPart(String(route.params.name))
+  // A story drawn for a wider screen than this frame (a phone at 360px, on a narrower phone) is
+  // shrunk to the frame's width rather than scrolled sideways, as StoryFrame does in its box.
+  await nextTick()
+  setTimeout(() => {
+    const page = document.documentElement
+    if (page.scrollWidth > page.clientWidth + 1)
+      document.body.style.zoom = String(Math.max(0.5, page.clientWidth / page.scrollWidth))
+  }, 400)
 })
 onBeforeUnmount(() => observer?.disconnect())
 </script>

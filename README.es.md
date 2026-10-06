@@ -92,6 +92,7 @@ npm run build           # compila la librería
 npm run build-storybook # Storybook estático
 npm run typecheck       # librería y sitio
 npm run site:build      # sitio estático
+npm run site:check      # cada story cabe en su marco, en escritorio y en móvil
 ```
 
 Para usar la librería en un proyecto, instálala desde npm y sigue el
