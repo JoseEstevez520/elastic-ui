@@ -176,9 +176,13 @@ useEventListener<PointerEvent>(
           :class="[confirmGlyphClass, 'size-4', state !== 'working' && confirmGlyphHidden]"
         >
           <!-- The turn is the arc's own, apart from the fade and scale of the svg around it, and calm:
-               at the usual 1s, this small, it reads as a tremble. -->
+               at the usual 1s, this small, it reads as a tremble. Hidden, it stops where it is: a
+               turn inside an svg is redrawn on every frame, even unseen. -->
           <g
-            class="origin-[12px_12px] animate-[spin_1.3s_linear_infinite] [transform-box:view-box] motion-reduce:animate-none"
+            :class="[
+              'origin-[12px_12px] animate-[spin_1.3s_linear_infinite] [transform-box:view-box] motion-reduce:animate-none',
+              state !== 'working' && '[animation-play-state:paused]',
+            ]"
           >
             <path d="M12 3a9 9 0 1 0 9 9" />
           </g>
