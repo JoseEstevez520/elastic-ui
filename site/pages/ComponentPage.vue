@@ -44,7 +44,7 @@ const moreCount = computed(() => restExamples.value.length + situations.value.le
     <p v-if="part.description">{{ part.description }}</p>
     <p v-for="credit in part.credits ?? []" :key="credit"><em>{{ credit }}</em></p>
 
-    <StoryExample v-if="mainExample" :story="mainExample" :component="loaded?.components[mainExample.key]" />
+    <StoryExample v-if="mainExample" :slug="slug" :story="mainExample" :component="loaded?.components[mainExample.key]" />
 
     <Collapsible class="not-prose">
       <CollapsibleTrigger class="text-label text-fg-secondary hover:text-fg">
@@ -53,6 +53,7 @@ const moreCount = computed(() => restExamples.value.length + situations.value.le
       <CollapsibleContent>
         <StoryExample
           v-for="story in restExamples"
+          :slug="slug"
           :key="story.key"
           :story="story"
           :component="loaded?.components[story.key]"
@@ -66,6 +67,7 @@ const moreCount = computed(() => restExamples.value.length + situations.value.le
           </p>
           <StoryExample
             v-for="story in situations"
+            :slug="slug"
             :key="story.key"
             :story="story"
             :component="loaded?.components[story.key]"

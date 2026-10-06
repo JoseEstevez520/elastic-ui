@@ -33,7 +33,8 @@
     "build-storybook": "npm run build-storybook -w packages/elastic-ui",
     "typecheck": "npm run typecheck -w packages/elastic-ui && npm run typecheck -w site",
     "site": "npm run dev -w site",
-    "site:build": "npm run build -w site"
+    "site:build": "npm run build -w site",
+    "site:check": "npm run check -w site"
   },
   "engines": {
     "node": ">=20"

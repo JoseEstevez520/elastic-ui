@@ -94,9 +94,12 @@ function numberOf(object, name) {
   return Number.isFinite(parsed) ? parsed : undefined
 }
 
-/** The frame a preview gets: fullscreen stories fill a taller one; a story can set `previewHeight`. */
+/**
+ * The frame a preview gets: a fullscreen story a page of its own, 560px tall unless it asks; any
+ * other the height of its story, or the `previewHeight` it asks for (StoryFrame).
+ */
 function frameOf(layout, previewHeight) {
-  return { fullscreen: layout === 'fullscreen', height: previewHeight ?? (layout === 'fullscreen' ? 560 : 320) }
+  return { fullscreen: layout === 'fullscreen', height: previewHeight ?? (layout === 'fullscreen' ? 560 : undefined) }
 }
 
 /** Reads a stories file: its category (the meta title's group) and each story it exports. */
@@ -116,7 +119,9 @@ function storiesOf(sourcePath) {
 
   // The meta's title names the group the part belongs to, as in Storybook: "Actions/Button". Its
   // parameters set the frame every story gets, unless a story overrides them.
+  let title
   let category
+  let metaDocs
   let metaLayout
   let metaHeight
   for (const statement of ast.statements) {
@@ -126,7 +131,9 @@ function storiesOf(sourcePath) {
     // The object may be wrapped in `satisfies Meta<…>` or `as …`.
     const initializer = objectOf(declaration.initializer)
     if (!initializer) continue
-    category = stringOf(initializer, 'title')?.split('/')[0] ?? category
+    title = stringOf(initializer, 'title') ?? title
+    category = title?.split('/')[0] ?? category
+    metaDocs ??= docsOf(ast, statement)
     const parameters = objectOf(propOf(initializer, 'parameters'))
     metaLayout = stringOf(parameters, 'layout')
     metaHeight = numberOf(parameters, 'previewHeight')
@@ -140,8 +147,7 @@ function storiesOf(sourcePath) {
     for (const declaration of statement.declarationList.declarations) {
       if (!ts.isIdentifier(declaration.name)) continue
       // The story's docs are the JSDoc right above it; its code is the statement, as written.
-      const jsDoc = ts.getJSDocCommentsAndTags(ast, statement).find((node) => ts.isJSDoc(node))
-      const docs = jsDoc ? String(ts.getJSDocCommentAsPlainText(jsDoc) ?? '').trim() : undefined
+      const docs = docsOf(ast, statement)
       const source = statement
         .getText(ast)
         .replace(/^export\s+/, '')
@@ -162,7 +168,13 @@ function storiesOf(sourcePath) {
       })
     }
   }
-  return { category, stories }
+  return { title, category, docs: metaDocs, stories }
+}
+
+/** The JSDoc right above a statement, as plain text. */
+function docsOf(ast, statement) {
+  const jsDoc = ts.getJSDocCommentsAndTags(ast, statement).find((node) => ts.isJSDoc(node))
+  return jsDoc ? String(ts.getJSDocCommentAsPlainText(jsDoc) ?? '').trim() || undefined : undefined
 }
 
 /**
@@ -221,8 +233,11 @@ for (const folder of folders) {
   const storiesFiles = readdirSync(dir)
     .filter((file) => file.endsWith('.stories.ts'))
     .sort()
-  const inputs = [...vueFiles, ...storiesFiles].map((file) => join(dir, file))
-  if (!vueFiles.length || !storiesFiles.length) continue
+  // This script is an input too: a change to what it writes regenerates every part.
+  const inputs = [...vueFiles, ...storiesFiles].map((file) => join(dir, file)).concat(fileURLToPath(import.meta.url))
+  // A part shows up once it has stories; one without a component of its own (a material such as
+  // Glass) is shown from its stories alone.
+  if (!storiesFiles.length) continue
 
   const outPath = join(outDir, `${folder}.json`)
   if (fingerprints[folder] === fingerprint(inputs) && existsSync(outPath)) {
@@ -230,13 +245,19 @@ for (const folder of folders) {
     continue
   }
 
+  let title
   let category
+  let docs
   const stories = []
   for (const file of storiesFiles) {
     const parsed = storiesOf(join(dir, file))
+    title ??= parsed.title
     category ??= parsed.category
+    docs ??= parsed.docs
     stories.push(...parsed.stories)
   }
+  // The name the stories give it ("Checkbox & Switch"), each half findable on its own.
+  const titled = title?.split('/').at(-1)
 
   const apis = []
   const seen = new Set()
@@ -250,10 +271,10 @@ for (const folder of folders) {
 
   const part = {
     slug: folder,
-    name: main?.name ?? pascalCase(folder),
+    name: main?.name ?? titled ?? pascalCase(folder),
     category: category ?? 'Other',
-    description: main?.description,
-    credits: creditsOf(join(dir, vueFiles[0])),
+    description: main?.description ?? docs?.split(/\n\s*\n/)[0]?.replace(/\n/g, ' '),
+    credits: vueFiles.length ? creditsOf(join(dir, vueFiles[0])) : undefined,
     stories,
     api: apis,
     registryEntry: undefined,
@@ -264,6 +285,10 @@ for (const folder of folders) {
     category: part.category,
     description: part.description,
     stories: stories.length,
+    // Other names to find it by: the family's other parts and the halves of its stories' title.
+    aliases: [...new Set([...apis.map((api) => api.name), ...(titled?.split(/\s*&\s*/) ?? [])])].filter(
+      (alias) => alias !== part.name,
+    ),
   }
   writeFileSync(outPath, JSON.stringify(part, null, 2))
   fingerprints[folder] = fingerprint(inputs)

@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import { composeStories } from '@storybook/vue3-vite'
+import type { composeStories } from '@storybook/vue3-vite'
 import registryJson from './generated/parts.json'
 import { storyLoaders } from './generated/stories'
 
@@ -10,6 +10,8 @@ export interface RegistryEntry {
   category: string
   description?: string
   stories: number
+  /** Other names to find it by: the family's other parts ("Switch" finds Checkbox & Switch). */
+  aliases?: string[]
 }
 
 /** A story, as extracted from its stories file: its title, docs, source and where it lives. */
@@ -22,8 +24,9 @@ export interface StoryInfo {
   situation?: boolean
   /** The story asks for the whole canvas (Storybook's `layout: 'fullscreen'`). */
   fullscreen?: boolean
-  /** The frame's height in px, from the story's `previewHeight` or its layout's default. */
-  height: number
+  /** The frame's height in px: the story's `previewHeight`, or a fullscreen story's page. Without
+   *  either, the frame takes the story's own height (StoryFrame). */
+  height?: number
 }
 
 export interface ApiEntry {
@@ -59,7 +62,7 @@ export interface PartData {
 
 export const registry = registryJson as RegistryEntry[]
 
-const dataLoaders = import.meta.glob('./generated/*.json', { import: 'default' })
+const dataLoaders = import.meta.glob(['./generated/*.json', '!./generated/parts.json'], { import: 'default' })
 
 export interface LoadedPart {
   data: PartData
@@ -73,9 +76,11 @@ export async function loadPart(slug: string): Promise<LoadedPart | undefined> {
   if (!load) return undefined
   const data = (await load()) as PartData
   const components: Record<string, Component> = {}
+  // Storybook's helper is only needed once a part's stories render, not by the pages that list them.
+  const { composeStories: compose } = await import('@storybook/vue3-vite')
   for (const loadModule of storyLoaders[slug] ?? []) {
     const module = (await loadModule()) as Parameters<typeof composeStories>[0]
-    Object.assign(components, composeStories(module))
+    Object.assign(components, compose(module))
   }
   return { data, components }
 }
@@ -98,7 +103,9 @@ export interface RegistryGroup {
  */
 export function groupedRegistry(query = ''): RegistryGroup[] {
   const q = query.trim().toLowerCase()
-  const matches = (entry: RegistryEntry) => !q || entry.name.toLowerCase().includes(q) || entry.category.toLowerCase().includes(q)
+  const matches = (entry: RegistryEntry) =>
+    !q ||
+    [entry.name, entry.category, ...(entry.aliases ?? [])].some((name) => name.toLowerCase().includes(q))
   const byCategory = new Map<string, RegistryEntry[]>()
   for (const entry of registry) {
     if (!matches(entry)) continue

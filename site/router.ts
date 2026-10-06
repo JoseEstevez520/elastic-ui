@@ -1,10 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DocsLayout from './layouts/DocsLayout.vue'
-import ComponentPage from './pages/ComponentPage.vue'
-import ComponentsPage from './pages/ComponentsPage.vue'
-import DocsPage from './pages/DocsPage.vue'
-import LandingPage from './pages/LandingPage.vue'
-import PrinciplesPage from './pages/PrinciplesPage.vue'
 import { registry } from './parts'
 
 declare module 'vue-router' {
@@ -90,13 +85,16 @@ export const router = createRouter({
       path: '/',
       component: DocsLayout,
       children: [
-        { path: '', component: LandingPage, meta: { title: 'elastic-ui' } },
-        { path: 'docs', component: DocsPage, meta: { title: 'Get started' } },
-        { path: 'docs/principles', component: PrinciplesPage, meta: { title: 'Principles' } },
-        { path: 'components', component: ComponentsPage, meta: { title: 'Components' } },
-        { path: 'components/:name', component: ComponentPage },
+        // Each page loads when it is first visited, so opening one does not load them all.
+        { path: '', component: () => import('./pages/LandingPage.vue'), meta: { title: 'elastic-ui' } },
+        { path: 'docs', component: () => import('./pages/DocsPage.vue'), meta: { title: 'Get started' } },
+        { path: 'docs/principles', component: () => import('./pages/PrinciplesPage.vue'), meta: { title: 'Principles' } },
+        { path: 'components', component: () => import('./pages/ComponentsPage.vue'), meta: { title: 'Components' } },
+        { path: 'components/:name', component: () => import('./pages/ComponentPage.vue') },
       ],
     },
+    // A story alone, outside the shell, for the iframe a story of the page itself is shown in.
+    { path: '/frame/:name/:story', component: () => import('./pages/FramePage.vue') },
   ],
 })
 

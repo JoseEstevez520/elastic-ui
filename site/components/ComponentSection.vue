@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import { providePortalTarget, StatusText } from 'elastic-ui'
-import { useFittedHeight } from '../fitted-height'
+import { StatusText } from 'elastic-ui'
 import { loadPart, type LoadedPart, type RegistryEntry } from '../parts'
+import StoryFrame from './StoryFrame.vue'
 
 /**
  * One part, read on the scrolling Components page (ROADMAP.md, the site plan): its name, a one-line description,
@@ -40,13 +40,6 @@ watch(near, async (isNear) => {
 
 const mainStory = computed(() => loaded.value?.data.stories.find((story) => !story.situation))
 const mainComponent = computed(() => (mainStory.value ? loaded.value?.components[mainStory.value.key] : undefined))
-
-// Overlays the story opens teleport into this frame, not the page.
-const frame = ref<HTMLElement>()
-providePortalTarget(frame)
-// The frame grows to hold a panel the story opens, and folds back once it closes.
-const fitted = useFittedHeight(frame, () => mainStory.value?.height ?? 320)
-
 </script>
 
 <template>
@@ -66,14 +59,9 @@ const fitted = useFittedHeight(frame, () => mainStory.value?.height ?? 320)
     </div>
     <p v-if="entry.description" class="line-clamp-1 text-copy text-fg-secondary">{{ entry.description }}</p>
 
-    <div
-      ref="frame"
-      class="story-stage rounded-[var(--radius-xl)] border border-border"
-      :class="mainStory?.fullscreen ? 'story-stage--fullscreen' : 'p-6'"
-      :style="mainStory?.fullscreen ? { height: `${mainStory.height}px` } : { minHeight: `${fitted}px` }"
-    >
-      <StatusText v-if="near && !mainComponent" text="Loading" working class="text-copy text-fg-muted" />
-      <component :is="mainComponent" v-else-if="mainComponent" />
+    <StoryFrame v-if="mainStory && mainComponent" :slug="entry.slug" :story="mainStory" :component="mainComponent" />
+    <div v-else class="min-h-44 rounded-[var(--radius-xl)] border border-border p-6">
+      <StatusText v-if="near" text="Loading" working class="text-copy text-fg-muted" />
     </div>
   </section>
 </template>

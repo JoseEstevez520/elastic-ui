@@ -21,34 +21,17 @@ html {
   scroll-margin-top: calc(var(--page-header-height, 0px) + 1.5rem);
 }
 
-/* The frame a story's live preview sits in: a small screen of its own. Many parts share one page
-   here, unlike Storybook's one canvas at a time, so a part that positions itself against the screen
-   in real use (a chat launcher, a dynamic island, a toast corner) needs a screen to do it against:
-   `transform` makes this frame the containing block for its `position: fixed` descendants, and the
-   height comes from the story (fullscreen ones fill a taller frame). It clips whatever the story
-   opens, so a panel stays inside the frame instead of covering the page below it; overlays the
-   library teleports to `body` are pulled back into the frame through its portal target. */
+/* The frame a story's live preview sits in (StoryFrame): a small screen of its own. Many parts
+   share one page here, unlike Storybook's one canvas at a time, so a part that positions itself
+   against the screen in real use (a chat launcher, a dynamic island, a toast corner) needs a screen
+   to do it against: `transform` makes this frame the containing block for its `position: fixed`
+   descendants. It clips whatever the story opens, so a panel stays inside the frame instead of
+   covering the page below it; overlays the library teleports to `body` are pulled back into the
+   frame through its portal target. A story of the page itself is not framed here but in an iframe,
+   a page of its own (FramePage). */
 .story-stage {
   position: relative;
   overflow: hidden;
   isolation: isolate;
   transform: translateZ(0);
-}
-
-/* A story that asks for the whole canvas (Storybook's `fullscreen` layout) fills the frame, not
-   the real viewport. The story's own root gets a definite height too, so a full-height child
-   inside it (`h-full`, `h-dvh`) has something to resolve its 100% against. Content taller than the
-   frame scrolls inside it, rather than being cut off. */
-.story-stage--fullscreen {
-  overflow: auto;
-  @apply scrollbar-subtle;
-}
-.story-stage--fullscreen > :first-child {
-  height: 100%;
-}
-.story-stage :where(.h-screen, .h-dvh) {
-  height: 100%;
-}
-.story-stage :where(.min-h-screen, .min-h-dvh) {
-  min-height: 100%;
 }

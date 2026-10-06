@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
-import Calendar from '../calendar/Calendar.vue'
 import Field from '../field/Field.vue'
 import DatePicker from './DatePicker.vue'
 
@@ -38,14 +37,5 @@ export const Spanish: Story = {
       <Field label="Fecha de entrega" class="max-w-xs">
         <DatePicker v-model="day" locale="es-ES" pick-label="Elegir fecha" />
       </Field>`,
-  }),
-}
-
-/** A Calendar on its own, on the page. */
-export const OnThePage: Story = {
-  render: () => ({
-    components: { Calendar },
-    setup: () => ({ day: ref('2026-10-14') }),
-    template: `<Calendar v-model="day" locale="en-GB" />`,
   }),
 }

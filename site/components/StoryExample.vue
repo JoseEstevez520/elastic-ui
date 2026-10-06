@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, type Component } from 'vue'
-import { CodeBlock, providePortalTarget, Tabs, TabsContent, TabsList, TabsTrigger } from 'elastic-ui'
-import { useFittedHeight } from '../fitted-height'
+import type { Component } from 'vue'
+import { CodeBlock, Tabs, TabsContent, TabsList, TabsTrigger } from 'elastic-ui'
 import type { StoryInfo } from '../parts'
+import StoryFrame from './StoryFrame.vue'
 
 /**
- * One story of a part: its live preview, with its source a tab away (ROADMAP.md, the site plan). The preview is
- * framed because it is real grouping, and anchored at the top left, as on a page: a centred story
- * moves as a part grows, so its motion could not be judged.
+ * One story of a part: its live preview, with its source a tab away (ROADMAP.md, the site plan).
+ * The preview is framed because it is real grouping; how it fits its frame is StoryFrame's.
  */
-const props = withDefaults(
+withDefaults(
   defineProps<{
+    slug: string
     story: StoryInfo
     component?: Component
     /** Deeper when listed under Situations. */
@@ -18,12 +18,6 @@ const props = withDefaults(
   }>(),
   { level: 2 },
 )
-
-// Overlays this story opens (a dialog, a menu, a term) teleport into the frame, not the page.
-const frame = ref<HTMLElement>()
-providePortalTarget(frame)
-// The frame grows to hold a panel the story opens, and folds back once it closes.
-const fitted = useFittedHeight(frame, () => props.story.height)
 </script>
 
 <template>
@@ -36,14 +30,7 @@ const fitted = useFittedHeight(frame, () => props.story.height)
         <TabsTrigger value="code">Code</TabsTrigger>
       </TabsList>
       <TabsContent value="preview">
-        <div
-          ref="frame"
-          class="story-stage rounded-[var(--radius-xl)] border border-border"
-          :class="story.fullscreen ? 'story-stage--fullscreen' : 'p-6'"
-          :style="story.fullscreen ? { height: `${story.height}px` } : { minHeight: `${fitted}px` }"
-        >
-          <component :is="props.component" v-if="props.component" />
-        </div>
+        <StoryFrame :slug="slug" :story="story" :component="component" />
       </TabsContent>
       <TabsContent value="code">
         <CodeBlock :code="story.source" :title="story.file" language="TypeScript" />
