@@ -1,5 +1,5 @@
 import { computed, inject, provide, type InjectionKey, type Ref } from 'vue'
-import { useSidebarContext } from '../sidebar/sidebar.context'
+import { useSidebarContext, useSidebarVariant } from '../sidebar/sidebar.context'
 import type { NavTreeLabelPlacement } from './nav-tree.variants'
 
 export interface NavTreeContext {
@@ -52,9 +52,13 @@ export function useNavTreeGroupContext(): NavTreeGroupContext | null {
   return inject(NavTreeGroupContextKey, null)
 }
 
-/** Where a row renders: on its own, in an open Sidebar, or in one folded to its rail. */
+/**
+ * Where a row renders: on its own, in an open Sidebar, or in one folded to its rail. Only a tree
+ * inside the Sidebar itself follows it: one in the page beside it (a picker in a popover) stays
+ * on its own, so a folded sidebar never erases its labels.
+ */
 export function useNavTreePlacement() {
-  const sidebar = useSidebarContext()
+  const sidebar = useSidebarVariant() ? useSidebarContext() : null
   const railed = computed(() => !!sidebar?.collapsed.value)
   const placement = computed<NavTreeLabelPlacement>(() => (!sidebar ? 'standalone' : railed.value ? 'rail' : 'sidebar'))
   return { sidebar, railed, placement }
