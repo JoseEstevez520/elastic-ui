@@ -47,7 +47,7 @@ Built on Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) and [motion-v](h
 | Content | Card, Badge, Callout, AnimatedList, DynamicIsland |
 | Text | TextMorph, StatusText, TruncatedText, Prose, Markdown |
 | Code | CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay |
-| AI | Chat, ChatMorph, Aurora, AgentReplay, ImageReveal |
+| AI | Chat, ChatMorph, ChatProposal, Aurora, AgentReplay, ImageReveal |
 
 ## Install
 

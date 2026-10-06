@@ -14,6 +14,9 @@ export const defaultLabels = {
   /** ConfirmButton. */
   delete: 'Delete',
   confirm: 'Confirm',
+  /** ChatProposal. */
+  edit: 'Edit',
+  revertEdits: 'Undo edits',
   /** ActivityGrid's tray. */
   mostActiveIn: 'Most active in',
   /** Term's glance. */
@@ -40,6 +43,7 @@ export const defaultLabels = {
   statusDiscarded: 'Discarded',
   statusFlagged: 'Needs a look',
   statusError: 'Failed',
+  statusCancelled: 'Cancelled',
   /** WeekPillbox: its name, and what its line says for the sets of days that have one. */
   days: 'Days',
   everyDay: 'Every day',

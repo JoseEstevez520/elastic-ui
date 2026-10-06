@@ -19,6 +19,7 @@ export {
   Lightbulb as LightbulbIcon,
   Minus as MinusIcon,
   OctagonAlert as OctagonAlertIcon,
+  Pencil as EditIcon,
   Pause as PauseIcon,
   Play as PlayIcon,
   Plus as PlusIcon,

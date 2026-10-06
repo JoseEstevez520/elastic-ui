@@ -25,7 +25,7 @@ Released as `v0.3.1`, on npm as `@joseestevez/vue-elastic-ui`. Around sixty publ
 - **Content** — Card, Badge, Status, FolderIcon, Logo, Marquee, Callout, AnimatedList, Table, DescriptionList, Stat, Chart, ActivityGrid, Empty, Progress, Separator, Avatar, Timeline, Timetable, Diagram & its parts, SandboxFrame
 - **Portfolio** — PageCard, ImageView, Gallery, Carousel, Glow, Glass, Liquid
 - **Text and code** — TextMorph, StatusText, TruncatedText, IconMorph, Prose, Markdown, CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay
-- **AI** — Chat, ChatMorph, Aurora, AgentReplay, ImageReveal, ComposeMorph
+- **AI** — Chat, ChatMorph, ChatProposal, Aurora, AgentReplay, ImageReveal, ComposeMorph
 
 ## Next · polish, and many more parts
 

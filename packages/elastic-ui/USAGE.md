@@ -190,6 +190,27 @@ Around the aurora:
 - **Every part to watch or play with ends in its conclusion, where it can be seen**: a session's last note stands out once it has played, and the text right after it says the conclusion again in bold. Whoever only glances at the end still leaves with the idea.
 - **The text around it frames it, and does not retell it**: a sentence before says what to watch for, a sentence after says what it showed.
 
+### A change the assistant proposes
+
+`ChatProposal` goes in `ChatMessage`'s `after` slot, under the answer, one per proposal. `ChatTool` stays for steps already taken, in `before`. It is generic: it knows nothing of your API, and you set `state` from what your request does. Credit: after Vercel AI Elements' Confirmation and the OpenAI Agents SDK's tool approvals.
+
+- `label` (it morphs as it changes), `icon`, `args` (key → value, shown as a DescriptionList).
+- `state`: `proposed`, `working`, `done`, `error`, `cancelled`.
+- `destructive`: Confirm becomes a ConfirmButton (ghost, danger tone) that asks again in its own square.
+- `confirmLabel`, `editLabel`, `cancelLabel`, `cancelledLabel`, `revertLabel` for the texts.
+- `v-model:editing`: the args become fields in place (Input, Textarea, Switch, JSON in a Textarea for the rest). "Undo edits" reverts, Escape leaves, Enter in a one-line field confirms. Invalid JSON or a number left empty keeps Confirm off.
+- `v-model:open`: the result, collapsible like ChatTool's.
+- Emits `confirm(args)`, typed back and with the edited values when edited, and `cancel`.
+- Default slot: the result or the error (ChatToolDetail, ChatSources), shown once `done` or `error`.
+
+Rules:
+
+- **Every change an assistant wants to make is a proposal**, never a step already run.
+- **Mark `destructive` the ones that can't be undone.**
+- **Set `working` while the request runs**, and `done` or `error` after.
+- **The label is a verb phrase** ("Create a note", "Move Maven"); the args are the few the person needs to judge it, with readable keys.
+- **One proposal per change.**
+
 ## 10. Diagrams
 
 Draw each idea for what it is, as a small SVG made for it, rather than feeding it to a generic diagram: a chart of how two things grow, a row of steps, the parts of a request. What makes them read at a glance:
