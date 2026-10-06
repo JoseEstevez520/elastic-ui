@@ -23,14 +23,27 @@ Where there is a morphing version, use it. The library's personality is things t
 | Picking one value | `Select`, or `Combobox` to type and filter | — |
 | Picking a place in a tree (a section, a folder) | `NavTree selectable` in a `PopoverMorph`, closed on `@select` | — |
 | Picking a date | `DatePicker`, or `Calendar` when the month is the page's content | — |
-| An action that takes a moment (send, save, publish) | `ActionButton`: it gathers round while it works and widens into what happened; `variant="ghost"` with no fill at rest, in a header or among quiet actions | the amount done is known: `ProgressButton`, which fills |
+| An action that takes a moment (send, save, publish) | `ActionButton`: it gathers round while it works and widens into what happened; `variant="ghost"` with no fill at rest, in a header or among quiet actions; `size="icon"` for its icon alone | the amount done is known: `ProgressButton`, which fills |
 | An action that cannot be undone (delete, reset) | `ConfirmButton`: it asks in its own place, in the danger colour | it can be undone: `tone="warning"` with `ArchiveIcon` for an archive, `tone="neutral"` for a sign-out |
 | Two to four quick actions, each clear from its icon (share to…, react) | `SplitActions`: they pull out of the button as drops (`row`, `fan`), or it grows into a ring or a split column round them (`ring`, `column`) | they need words: `PopoverMorph role="menu"` |
 | Cards that open | `ExpandableCard` in an `ExpandableCardGroup` | the content is a page of its own: link to it |
 
 Fields that open (Select, Combobox, DatePicker) grow out of themselves: their outline stretches down to hold the list or the month, and folds back once something is picked. Give them their width on the part itself (`<Select class="w-56">`), since it draws the outline; in a `Field` they fill it. In a DialogMorph, a Sheet or a PopoverMorph the box makes room for the open field on its own; don't put them in a box of your own that clips (`overflow-hidden`, `overflow-auto`), which would cut the list off.
 
-In a row of quiet actions (a tree, a list's rows, a page's top bar), the triggers go ghost so nothing stands out at rest: `Button variant="ghost" size="icon"`, `DialogMorph variant="ghost" size="icon"`, `PopoverMorph variant="ghost"` (`size="sm"` beside small Buttons, `size="icon"` for an icon alone) and `ConfirmButton variant="ghost"` look alike until one is pressed.
+In a row of quiet actions (a tree, a list's rows, a page's top bar), the triggers go ghost so nothing stands out at rest: `Button variant="ghost" size="icon"`, `DialogMorph variant="ghost" size="icon"`, `PopoverMorph variant="ghost"` (`size="sm"` beside small Buttons, `size="icon"` for an icon alone), `ActionButton variant="ghost" size="icon"` and `ConfirmButton variant="ghost"` look alike until one is pressed.
+
+```vue
+<ActionButton
+  variant="ghost"
+  size="icon"
+  icon="arrowDown"
+  label="Download"
+  working-label="Downloading"
+  done-label="Downloaded"
+  error-label="Not downloaded"
+  :action="download"
+/>
+```
 
 A PopoverMorph near a screen's edge keeps the screen's margin: its box moves sideways as it grows, and it opens upwards when there is no room below. `align` and `side` say where it goes when there is room. On a phone, give a panel that holds a list or a tree `fluid`, on `PopoverMorph` or `PopoverContent`: it fills the width less the margin, rather than floating beside a strip of page. Wider screens keep `--popover-width`.
 
@@ -144,6 +157,7 @@ Never hardcode a colour, a duration or a curve. Motion comes from the library's 
 
 - Every `DialogMorph` has a `DialogMorphTitle`.
 - An icon-only `DialogMorph` (`size="icon"`) or `ConfirmButton` gets its name: an sr-only label in the trigger, or `label`.
+- An icon-only `ActionButton` (`size="icon"`) takes its name from its labels, one per state (`label`, `workingLabel`, `doneLabel`, `errorLabel`): it is its name, its tooltip and what is announced, so give it all four.
 - A field without a visible label gets an `aria-label`; one that needs fixing gets `invalid` and a message linked with `aria-describedby`.
 - `NavTree` is bound to the current route with `v-model`, so the active item carries `aria-current`. A tree to pick from takes `selectable` instead of buttons dressed as links: it is announced as a tree, the chosen row selected, and moved through with the arrow keys.
 - Don't take focus away from where the library puts it: into a panel as it opens, back to its trigger as it closes.
