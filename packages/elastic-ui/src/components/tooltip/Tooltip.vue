@@ -17,6 +17,8 @@ const props = withDefaults(
     side?: 'top' | 'right' | 'bottom' | 'left'
     /** Hides the tooltip without changing the markup, as a folded sidebar's labels need. */
     disabled?: boolean
+    /** Stays open when its trigger is pressed, for a trigger whose label follows what it does. */
+    persistent?: boolean
     class?: HTMLAttributes['class']
   }>(),
   { side: 'top' },
@@ -29,12 +31,14 @@ const Wrapper = grouped ? Passthrough : TooltipProvider
 
 <template>
   <component :is="Wrapper">
-    <TooltipRoot :disabled="disabled" :delay-duration="grouped ? undefined : TOOLTIP_DELAY">
+    <TooltipRoot :disabled="disabled" :disable-closing-trigger="persistent || undefined" :delay-duration="grouped ? undefined : TOOLTIP_DELAY">
       <TooltipTrigger as-child>
         <slot />
       </TooltipTrigger>
       <TooltipPortal>
-        <TooltipContent :side="side" :side-offset="6" :collision-padding="8" :class="cn(tooltipContentClass, props.class)">
+        <!-- Its text is also what screen readers are told, kept in step as it changes (Reka UI reads
+             the content's text only once). -->
+        <TooltipContent :aria-label="content" :side="side" :side-offset="6" :collision-padding="8" :class="cn(tooltipContentClass, props.class)">
           <slot name="content">{{ content }}</slot>
         </TooltipContent>
       </TooltipPortal>
