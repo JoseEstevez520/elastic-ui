@@ -108,5 +108,7 @@ watch(
       <div class="[grid-area:1/1]"><ChatStream :text="text" :streaming="streaming" @caught-up="caughtUp = true" /></div>
     </div>
     <slot v-else />
+    <!-- Below the answer: what it proposes to do, waiting for the person (ChatProposal). -->
+    <slot name="after" />
   </div>
 </template>
