@@ -53,36 +53,41 @@ for (const { name: view, ...options } of VIEWPORTS) {
       else fail(`logged: ${message.text().split('\n')[0].slice(0, 160)}`)
     })
 
-    await page.goto(`${base}/components/${part.slug}`, { waitUntil: 'networkidle' })
-    // Every example and situation, not just the first.
-    const more = page.getByText(/^Every example and the API/)
-    // Clicked from the page itself: a story may open a panel over the trigger as it mounts.
-    if (await more.count()) await more.first().evaluate((trigger) => trigger.click())
-    // Stories of the page load their iframe only near the view; here all of them, now.
-    await page.evaluate(() => document.querySelectorAll('iframe').forEach((frame) => (frame.loading = 'eager')))
-    await page.waitForLoadState('networkidle')
-    await page.waitForTimeout(1200)
+    // One page that cannot be checked is a failure of its own, not the end of the run.
+    try {
+      await page.goto(`${base}/components/${part.slug}`, { waitUntil: 'networkidle' })
+      // Every example and situation, not just the first.
+      const more = page.getByText(/^Every example and the API/)
+      // Clicked from the page itself: a story may open a panel over the trigger as it mounts.
+      if (await more.count()) await more.first().evaluate((trigger) => trigger.click())
+      // Stories of the page load their iframe only near the view; here all of them, now.
+      await page.evaluate(() => document.querySelectorAll('iframe').forEach((frame) => (frame.loading = 'eager')))
+      await page.waitForLoadState('networkidle')
+      await page.waitForTimeout(1200)
 
-    const report = await page.evaluate(() => {
-      const stories = [...document.querySelectorAll('article section')].map((section) => {
-        const title = section.querySelector('h2, h3')?.textContent?.trim() ?? '?'
-        const content = section.querySelector('.story-content')
-        if (content) {
-          const zoom = Number(getComputedStyle(content).zoom) || 1
-          return { title, overflow: content.scrollWidth - content.clientWidth, zoom }
-        }
-        const frame = section.querySelector('iframe')
-        const doc = frame?.contentDocument?.documentElement
-        if (doc) return { title, overflow: doc.scrollWidth - doc.clientWidth, zoom: 1, frame: true }
-        return { title, missing: !frame }
+      const report = await page.evaluate(() => {
+        const stories = [...document.querySelectorAll('article section')].map((section) => {
+          const title = section.querySelector('h2, h3')?.textContent?.trim() ?? '?'
+          const content = section.querySelector('.story-content')
+          if (content) {
+            const zoom = Number(getComputedStyle(content).zoom) || 1
+            return { title, overflow: content.scrollWidth - content.clientWidth, zoom }
+          }
+          const frame = section.querySelector('iframe')
+          const doc = frame?.contentDocument?.documentElement
+          if (doc) return { title, overflow: doc.scrollWidth - doc.clientWidth, zoom: 1, frame: true }
+          return { title, missing: !frame }
+        })
+        return { pageOverflow: document.documentElement.scrollWidth - innerWidth, stories }
       })
-      return { pageOverflow: document.documentElement.scrollWidth - innerWidth, stories }
-    })
-    if (report.pageOverflow > 1) fail(`the page scrolls sideways by ${report.pageOverflow}px`)
-    for (const story of report.stories) {
-      if (story.missing) continue
-      if (story.overflow > 1) fail(`"${story.title}" is ${story.overflow}px wider than its ${story.frame ? 'page' : 'frame'}`)
-      else if (story.zoom <= MIN_ZOOM) fail(`"${story.title}" only fits shrunk to ${Math.round(story.zoom * 100)}%`)
+      if (report.pageOverflow > 1) fail(`the page scrolls sideways by ${report.pageOverflow}px`)
+      for (const story of report.stories) {
+        if (story.missing) continue
+        if (story.overflow > 1) fail(`"${story.title}" is ${story.overflow}px wider than its ${story.frame ? 'page' : 'frame'}`)
+        else if (story.zoom <= MIN_ZOOM) fail(`"${story.title}" only fits shrunk to ${Math.round(story.zoom * 100)}%`)
+      }
+    } catch (error) {
+      fail(`could not be checked: ${error.message.split('\n')[0]}`)
     }
     await page.close()
   }
