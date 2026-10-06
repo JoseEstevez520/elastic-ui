@@ -1,6 +1,10 @@
 # What the site found missing or awkward in the parts
 
-Collected as the site is built, for the library to fix before the site works around it (ROADMAP.md, "The library's site"). Both items the site first hit are fixed in the library, so nothing is open here.
+Collected as the site is built, for the library to fix before the site works around it (ROADMAP.md, "The library's site").
+
+## StickyHeader's links run past the bar when they don't fit — open
+
+Found by `npm run site:check`: with long labels (the `LongLabels` story), StickyHeader's links keep their width and push its actions about 9px past the bar's right edge, at any width from `md` up, so the page scrolls sideways. MorphHeader measures whether its links fit and folds them behind its menu when they don't (DECISIONS, "Languages"); StickyHeader only folds them below `md`. It should measure as MorphHeader does. Until it does, the check reports this story.
 
 ## TabsList moved the whole page into view on mount — fixed
 
