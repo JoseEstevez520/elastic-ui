@@ -26,7 +26,11 @@ const props = withDefaults(
   }>(),
   { locale: 'en', weekStartsOn: 1, label: labelFor('days') },
 )
-const days = defineModel<number[]>({ default: () => [] })
+const model = defineModel<number[]>({ default: () => [] })
+// While a drag paints across days they change here only, and the model once, as it ends: one change
+// per gesture, so a project that saves each change saves a stroke once, not a day at a time.
+const draft = ref<number[]>()
+const days = computed(() => draft.value ?? model.value)
 
 // 2024-01-01 was a Monday: a fixed week to take the names from, in any language.
 const week = computed(() => {
@@ -64,9 +68,12 @@ const summary = computed(() => {
 // Each pair of neighbours that are both on, by the index of the first: a bridge joins them.
 const bridges = computed(() => week.value.slice(0, -1).map((d, i) => on(d.day) && on(week.value[i + 1]!.day)))
 
+const toggled = (list: number[], day: number, value: boolean) =>
+  value ? [...new Set([...list, day])].sort() : list.filter((d) => d !== day)
 const set = (day: number, value: boolean) => {
   if (on(day) === value) return
-  days.value = value ? [...days.value, day].sort() : days.value.filter((d) => d !== day)
+  if (draft.value) draft.value = toggled(draft.value, day, value)
+  else model.value = toggled(model.value, day, value)
 }
 
 // Pressing a day turns it on or off; dragging on across others sets each the same way, so a run is
@@ -82,6 +89,7 @@ function down(e: PointerEvent) {
   const day = dayAt(e.clientX)
   if (e.button !== 0 || day === undefined) return
   painting = !on(day)
+  draft.value = [...model.value]
   set(day, painting)
   row.value?.setPointerCapture(e.pointerId)
 }
@@ -90,7 +98,13 @@ function move(e: PointerEvent) {
   const day = dayAt(e.clientX)
   if (day !== undefined) set(day, painting)
 }
-const up = () => (painting = undefined)
+function up() {
+  painting = undefined
+  if (!draft.value) return
+  const next = draft.value
+  draft.value = undefined
+  if (next.length !== model.value.length || next.some((d) => !model.value.includes(d))) model.value = next
+}
 // A press already set its day on pointerdown; only a click from the keyboard (Enter, Space) toggles.
 const click = (e: MouseEvent, day: number) => e.detail === 0 && set(day, !on(day))
 
