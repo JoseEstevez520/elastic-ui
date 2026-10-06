@@ -159,6 +159,7 @@ Around the aurora:
 - **Nothing on top of it but the library's glass.** No gradient, image or fill of your own behind the composer, the bubbles or the steps, and no dark fill over it: they read as holes in the colour. The glass comes with the parts (`chatGlassStyle`).
 - **Text over it in `fg` and `fg-secondary` only**, never `fg-faint`, which is for placeholders. If a colour you chose makes text hard to read, it is the colour that changes, not the text.
 - **No shadows of your own**, and no glass inside glass.
+- **On a touch screen it holds still at rest** (a Glow too) and drifts only while its `activity` is `thinking` or `answering`. Nothing to do on your side; just don't expect the drift on a phone.
 
 ## 9. Explaining with AI parts
 

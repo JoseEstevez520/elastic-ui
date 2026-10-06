@@ -13,6 +13,11 @@ export type AuroraActivity = 'rest' | 'thinking' | 'answering'
  * hurry; answering, they spread out and flow at an easier pace; at rest they drift slowly again.
  * The speed changes by easing the lights' own animations up and down, so they never jump.
  *
+ * On a touch screen the lights hold still at rest and only drift while the work behind them moves
+ * (thinking, answering). Drifting, they are redrawn on every frame for as long as they show, which
+ * keeps a phone's graphics busy and warm for a movement too slow to see on its screen, and leaves
+ * it no room for what the page does next (a card opening over it).
+ *
  * Its colours are its own (blue, violet, peach, pink), not the accent: a project with a neutral
  * accent keeps a coloured aurora. Change them with `--aurora-1` to `--aurora-4`.
  */
@@ -65,6 +70,7 @@ onBeforeUnmount(() => cancelAnimationFrame(frame))
 
 // Out of view the lights are paused: four large blurred layers drifting for nobody still cost a
 // frame's work each. The animations keep their place, so they carry on from where they stopped.
+// On a touch screen they are paused at rest too (see above).
 const root = useTemplateRef<HTMLElement>('root')
 const inView = ref(true)
 let observer: IntersectionObserver | undefined
@@ -111,7 +117,7 @@ const GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
         <div
           v-for="(light, i) in lights"
           :key="i"
-          :class="['absolute aspect-square will-change-transform', light.place, 'animate-[aurora-drift_var(--period)_var(--ease-in-out)_infinite_alternate] motion-reduce:animate-none', !inView && '[animation-play-state:paused]']"
+          :class="['absolute aspect-square will-change-transform', light.place, 'animate-[aurora-drift_var(--period)_var(--ease-in-out)_infinite_alternate] motion-reduce:animate-none', !inView && '[animation-play-state:paused]', activity === 'rest' && 'pointer-coarse:[animation-play-state:paused]']"
           :style="{ '--drift': light.drift, '--period': `${light.period}s` }"
         >
           <div class="size-full rounded-full blur-3xl" :style="{ background: `radial-gradient(closest-side, ${light.color}, transparent)` }" />
