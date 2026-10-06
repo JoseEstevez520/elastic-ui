@@ -135,8 +135,10 @@
   --animate-disclosure-close: disclosure-close 0.3s var(--ease-emphasized);
   /* Content leaves at once, before the shape folds back. */
   --animate-content-out: fade-out 0.15s linear both;
-  /* Content coming into focus (see `blur-in`): the library's one way of appearing. */
-  --animate-blur-in: blur-in 0.45s var(--ease-soft) both;
+  /* Content coming into focus (see `blur-in`): the library's one way of appearing. It holds its
+     first frame through a delay (`backwards`) but not its last: an animation still in effect keeps
+     its element a layer of its own, and a page of them weighs on a phone. */
+  --animate-blur-in: blur-in 0.45s var(--ease-soft) backwards;
 
   /*
    * Floating panels (Popover, and later Select and menus) appear from their trigger: they fade in
@@ -192,11 +194,6 @@
   @keyframes fade-in {
     from { opacity: 0; }
   }
-  /* A fade that also comes into focus, as in Magic UI's Blur Fade: text sharpens rather than
-     switching on. No offset: sliding on top of a morph is too much motion. */
-  @keyframes blur-in {
-    from { opacity: 0; filter: blur(2px); }
-  }
   @keyframes fade-out {
     to { opacity: 0; }
   }
@@ -204,9 +201,29 @@
   @keyframes tag-in {
     from { background-color: transparent; padding-inline: 0; }
   }
-  /* The way back of `blur-in`, for something large folding away with its room. */
+}
+
+/*
+ * Outside the theme, so they come out in this order: Tailwind writes the theme's keyframes after
+ * everything else, where they would win over the touch screen's.
+ */
+/* A fade that also comes into focus, as in Magic UI's Blur Fade: text sharpens rather than
+   switching on. No offset: sliding on top of a morph is too much motion. */
+@keyframes blur-in {
+  from { opacity: 0; filter: blur(2px); }
+}
+/* The way back of `blur-in`, for something large folding away with its room. */
+@keyframes blur-out {
+  to { opacity: 0; filter: blur(4px); }
+}
+/* On a touch screen, appearing is a fade: a phone redraws an animated `filter` on every frame,
+   and a wave of blocks coming into focus at once is the heaviest thing a page asks of it. */
+@media (pointer: coarse) {
+  @keyframes blur-in {
+    from { opacity: 0; }
+  }
   @keyframes blur-out {
-    to { opacity: 0; filter: blur(4px); }
+    to { opacity: 0; }
   }
 }
 
@@ -263,10 +280,10 @@
   /* Every child but inline text (links, emphasis, code…) is a block of the wave, so prose with
      inline elements is never split; without any block it comes in as one. */
   &:not(:has(> :not(a, abbr, b, bdi, bdo, br, cite, code, data, dfn, em, i, kbd, mark, q, s, samp, small, span, strong, sub, sup, time, u, var, wbr))) {
-    animation: blur-in 0.45s var(--ease-soft) var(--stagger-delay, 0.12s) both;
+    animation: blur-in 0.45s var(--ease-soft) var(--stagger-delay, 0.12s) backwards;
   }
   & > :not(a, abbr, b, bdi, bdo, br, cite, code, data, dfn, em, i, kbd, mark, q, s, samp, small, span, strong, sub, sup, time, u, var, wbr) {
-    animation: blur-in 0.45s var(--ease-soft) both;
+    animation: blur-in 0.45s var(--ease-soft) backwards;
     animation-delay: calc(var(--stagger-delay, 0.12s) + 40ms * var(--stagger-index, 0));
   }
   & > :nth-child(2) { --stagger-index: 1; }
@@ -277,8 +294,8 @@
   & > :nth-child(7) { --stagger-index: 6; }
   & > :nth-child(n + 8) { --stagger-index: 7; }
 
-  /* Each block keeps its animation, so each is a layer of its own, and an open field's panel, drawn
-     over what follows it, would sit under the next block: the block holding it comes above. */
+  /* While its wave plays each block is a layer of its own, and an open field's panel, drawn over
+     what follows it, would sit under the next block: the block holding it comes above. */
   & > :has([data-field-open]) { position: relative; z-index: 1; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -292,7 +309,7 @@
 
 @utility stagger-items {
   & > * {
-    animation: blur-in 0.45s var(--ease-soft) both;
+    animation: blur-in 0.45s var(--ease-soft) backwards;
     animation-delay: calc(var(--stagger-delay, 0.12s) + 40ms * var(--stagger-index, 0));
   }
   & > :nth-child(2) { --stagger-index: 1; }
@@ -847,7 +864,7 @@ html.theme-switching *::after {
     opacity: 0;
   }
   &[data-shown] .diagram-in {
-    animation: blur-in 0.45s var(--ease-soft) calc(min(var(--diagram-index, 0), 7) * 60ms) both;
+    animation: blur-in 0.45s var(--ease-soft) calc(min(var(--diagram-index, 0), 7) * 60ms) backwards;
   }
   @media (prefers-reduced-motion: reduce) {
     html:not([data-motion='full']) & .diagram-in {

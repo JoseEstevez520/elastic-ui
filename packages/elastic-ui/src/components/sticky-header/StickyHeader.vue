@@ -60,10 +60,17 @@ onBeforeUnmount(() => {
     :class="
       cn(
         'sticky top-0 z-40 border-b transition-[background-color,border-color,backdrop-filter] duration-300 ease-glide',
+        // On a touch screen the blur is lighter, over a denser veil, and switches rather than fades:
+        // a phone blurs what scrolls under the bar again on every frame, and a blur in transition
+        // is the costliest of all.
+        'pointer-coarse:transition-[background-color,border-color]',
         // Clear at the top is clear all the way: a blur with no veil still shows as a band.
         clear && !scrolled
           ? 'bg-transparent'
-          : 'bg-[color:var(--sticky-header-bg,color-mix(in_srgb,var(--color-bg)_70%,transparent))] backdrop-blur-xl backdrop-saturate-150',
+          : [
+              'bg-[color:var(--sticky-header-bg,color-mix(in_srgb,var(--color-bg)_70%,transparent))] backdrop-blur-xl backdrop-saturate-150',
+              'pointer-coarse:bg-[color:var(--sticky-header-bg,color-mix(in_srgb,var(--color-bg)_85%,transparent))] pointer-coarse:backdrop-blur-md',
+            ],
         scrolled && !seamless ? 'border-border' : 'border-transparent',
         props.class,
       )

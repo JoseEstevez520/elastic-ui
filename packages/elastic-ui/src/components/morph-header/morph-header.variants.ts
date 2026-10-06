@@ -3,9 +3,12 @@ import { cva } from 'class-variance-authority'
 // Lines up with a centered content column by default: 86% of the viewport, 60% from `sm`.
 export const morphHeaderWidth = 'w-[var(--morph-header-width,86%)] sm:w-[var(--morph-header-width,60%)]'
 const width = morphHeaderWidth
+// On a touch screen the blur is lighter and the veil denser: a phone blurs what scrolls under the
+// glass again on every frame, and a smaller blur over a denser veil reads the same.
 const glass = [
-  'backdrop-blur-xl backdrop-saturate-150',
+  'backdrop-blur-xl backdrop-saturate-150 pointer-coarse:backdrop-blur-md',
   'bg-[color:var(--morph-header-bg,color-mix(in_srgb,var(--color-bg)_72%,transparent))]',
+  'pointer-coarse:bg-[color:var(--morph-header-bg,color-mix(in_srgb,var(--color-bg)_85%,transparent))]',
 ]
 
 /** The surface's three shapes: a wide bar at the top, a pill once scrolled, a panel when open. */
