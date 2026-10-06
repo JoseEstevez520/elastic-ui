@@ -6,8 +6,9 @@ import Liquid from '../liquid/Liquid.vue'
 import TextMorph from '../text-morph/TextMorph.vue'
 
 /**
- * The days of a week as pills: a day that is on is a drop of the accent, and days side by side melt
- * into one capsule (a Liquid), so a run reads as one shape: Monday to Friday is one long pill, the
+ * The days of a week as pills: a day that is on is a drop of a quiet grey (the text colour mixed into
+ * the ground, so it stands out in the light and the dark theme alike, and its letter stays in the
+ * text colour), and days side by side melt into one capsule (a Liquid), so a run reads as one shape: Monday to Friday is one long pill, the
  * weekend apart. A day that is off is an empty ring, the place its pill would take. Over it a line
  * says what that adds up to ("Weekdays", "Mon–Thu, Sat"), so the days never have to be read one by
  * one. Press a day to turn it on or off, or drag across several to set them all the same way. Days
@@ -142,7 +143,7 @@ const grow = 'transition-[scale] duration-500 ease-emphasized motion-reduce:tran
         <div class="size-full rounded-full border border-dashed border-border-strong" />
       </div>
 
-      <Liquid fill="var(--color-accent)" :reach="5" class="absolute inset-0">
+      <Liquid fill="color-mix(in oklab, var(--color-fg) 16%, var(--color-bg))" :reach="5" class="absolute inset-0">
         <template #shapes>
           <div v-for="(d, i) in week" :key="`pill-${d.day}`" :class="['absolute inset-y-0 p-0.5', grow]" :style="{ ...column(i), scale: on(d.day) ? 1 : 0 }">
             <div class="size-full rounded-full bg-black" />
@@ -169,7 +170,7 @@ const grow = 'transition-[scale] duration-500 ease-emphasized motion-reduce:tran
           :tabindex="i === focused ? 0 : -1"
           :class="[
             'relative flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full text-label transition-colors duration-300 focus-ring motion-reduce:transition-none',
-            on(d.day) ? 'text-[color:var(--color-accent-fg)]' : 'text-fg-muted hover:text-fg',
+            on(d.day) ? 'text-fg' : 'text-fg-muted hover:text-fg',
           ]"
           @click="click($event, d.day)"
           @keydown="key($event, i)"

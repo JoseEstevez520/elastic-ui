@@ -15,8 +15,8 @@ type Story = StoryObj<typeof meta>
 const es = { everyDay: 'Todos los días', weekdays: 'Entre semana', weekends: 'Fines de semana', none: 'Ningún día' }
 
 /**
- * Press a day to turn it on or off, or drag across several. Days side by side melt into one pill; the
- * line over them says what they add up to.
+ * Press a day to turn it on or off, or drag across several. Days side by side melt into one pill, in a
+ * quiet grey that holds in both themes; the line over them says what they add up to.
  */
 export const Default: Story = {
   render: () => ({
@@ -85,5 +85,14 @@ export const Saving: Story = {
       return { saved, save }
     },
     template: `<div class="flex flex-col items-center gap-3"><WeekPillbox :model-value="saved" @update:model-value="save" /><p class="text-meta tabular-nums text-fg-muted">Saved: {{ saved.join(', ') || 'none' }}</p></div>`,
+  }),
+}
+
+/** Situation, ground: the grey is mixed from the text colour, so it also reads on a surface or a card, not only on the page. */
+export const OnSurface: Story = {
+  render: () => ({
+    components: { WeekPillbox },
+    setup: () => ({ days: ref([1, 2, 3, 4, 6]) }),
+    template: `<div class="rounded-xl bg-surface p-4"><WeekPillbox v-model="days" /></div>`,
   }),
 }
