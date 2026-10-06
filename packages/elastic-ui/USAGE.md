@@ -34,11 +34,13 @@ In a row of quiet actions (a tree, a list's rows, a page's top bar), the trigger
 
 A PopoverMorph near a screen's edge keeps the screen's margin: its box moves sideways as it grows, and it opens upwards when there is no room below. `align` and `side` say where it goes when there is room. On a phone, give a panel that holds a list or a tree `fluid`, on `PopoverMorph` or `PopoverContent`: it fills the width less the margin, rather than floating beside a strip of page. Wider screens keep `--popover-width`.
 
+A trigger's label that can be long (a place's path, a file's name) goes in a `TruncatedText`, on a PopoverMorph with `shrink`: in a row with no room it shrinks with the row and the label is cut short, rather than pushing the row's other parts off the screen.
+
 A tree to pick from is a `NavTree` with `selectable`: its items, and its groups with a `value`, are options rather than links, and every pick emits `select`, the moment to close the panel.
 
 ```vue
-<PopoverMorph variant="ghost" size="sm" align="end" fluid label="Where it goes">
-  <template #trigger><Folder aria-hidden="true" />{{ placeName }}</template>
+<PopoverMorph variant="ghost" size="sm" align="end" fluid shrink label="Where it goes">
+  <template #trigger><Folder aria-hidden="true" /><TruncatedText>{{ placeName }}</TruncatedText></template>
   <template #default="{ close }">
     <NavTree v-model="place" selectable label="Where it goes" @select="close">
       <NavTreeItem value="unsure">Not sure</NavTreeItem>

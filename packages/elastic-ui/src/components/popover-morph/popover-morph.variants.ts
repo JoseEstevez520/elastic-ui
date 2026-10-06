@@ -77,7 +77,7 @@ export const popoverMorphListClass = 'stagger-items [--stagger-delay:0.1s]'
  */
 export const popoverMorphTriggerVariants = /* @__PURE__ */ cva(
   [
-    'relative z-10 inline-flex cursor-pointer items-center justify-center gap-2 text-label whitespace-nowrap',
+    'relative z-10 inline-flex max-w-full cursor-pointer items-center justify-center gap-2 text-label whitespace-nowrap',
     'rounded-[var(--button-radius,var(--radius-md))] motion-reduce:transition-none',
     '[&_svg]:size-4 [&_svg]:shrink-0',
     'focus-ring',

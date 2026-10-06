@@ -37,6 +37,12 @@ const props = withDefaults(
     size?: PopoverMorphTriggerVariants['size']
     /** On a phone, the panel fills the screen's width, less its margin on each side. */
     fluid?: boolean
+    /**
+     * In a row with no room, the button shrinks with it and its label is cut short (put the label
+     * in a TruncatedText), rather than pushing the row's other parts off. Without it the button
+     * keeps its width, as any button does.
+     */
+    shrink?: boolean
     /** A `dialog` holds any content; a `menu` holds PopoverMorphItems. */
     role?: 'dialog' | 'menu'
     /** Accessible name of the panel. */
@@ -183,7 +189,7 @@ watch(open, async (isOpen) => {
 </script>
 
 <template>
-  <div ref="root" :class="cn('relative inline-block align-top', (open || folding) && 'z-50')">
+  <div ref="root" :class="cn('relative inline-block max-w-full align-top', shrink && 'min-w-0', (open || folding) && 'z-50')">
     <div :class="popoverMorphSurfaceVariants({ variant, align, side: placedSide, open })" :style="surfaceStyle">
       <div
         :id="panelId"
