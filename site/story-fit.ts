@@ -67,6 +67,35 @@ function paintedBox(content: HTMLElement) {
   return right > left ? { left, top, right, width: right - left, height: bottom - top } : undefined
 }
 
+interface Fit {
+  zoom: number
+  x: number
+  y: number
+  overflow: number
+}
+interface Job {
+  /** Takes the story back to its own layout; false when it is not to be fitted now. */
+  clear(): boolean
+  read(): Fit
+  write(fit: Fit): void
+}
+
+// Every frame waiting to be fitted, done together in the next frame: all cleared, then all read,
+// then all written, so reading one never makes the browser lay the page out again for the next.
+const pending = new Set<Job>()
+let flushing = 0
+function enqueue(job: Job) {
+  pending.add(job)
+  flushing ||= requestAnimationFrame(flush)
+}
+function flush() {
+  flushing = 0
+  const jobs = [...pending].filter((job) => job.clear())
+  pending.clear()
+  const fits = jobs.map((job) => job.read())
+  jobs.forEach((job, i) => job.write(fits[i]!))
+}
+
 /**
  * Fits a story to its frame, whatever the part, with nothing set by hand: a story wider than the
  * frame (a toolbar on a phone) is shrunk until it fits, and one that leaves the frame mostly empty
@@ -84,43 +113,50 @@ export function useStoryFit(
   minHeight: () => number,
   remeasureOn: WatchSource,
 ) {
-  function measure() {
-    const box = frame.value
-    const el = content.value
-    if (!box || !el || box.querySelector(OPEN)) return
-    // Measured from scratch each time, in one go, so the neutral layout is never painted.
-    el.style.zoom = '1'
-    el.style.paddingInlineStart = '0px'
-    el.style.paddingTop = '0px'
-    const width = el.clientWidth
-    const painted = paintedBox(el)
-    // How wide the story is to the eye, from the frame's start or from wherever it starts before it.
-    const extent = painted ? Math.max(painted.right, width) - Math.min(painted.left, 0) : width
-    const nextZoom = extent <= width + 1 ? 1 : Math.max(MIN_ZOOM, width / extent)
-    el.style.zoom = String(nextZoom)
-    // What is left over once shrunk as far as it goes, for the site's check (scripts/check-frames.mjs).
-    el.dataset.overflow = String(Math.max(0, Math.round(extent * nextZoom - width)))
-    el.dataset.zoom = nextZoom.toFixed(2)
-    let x = 0
-    let y = 0
-    if (painted && nextZoom === 1) {
-      const room = width - painted.width
-      // Centred only when it leaves real room either side; a part that fills the frame stays put.
-      if (room > 24) x = Math.max(0, room / 2 - painted.left)
-      const padding = parseFloat(getComputedStyle(box).paddingTop) * 2
-      const inner = minHeight() - padding
-      if (painted.height < inner) y = Math.max(0, (inner - painted.height) / 2 - painted.top)
-    }
-    // Written straight onto the element, which owns them: nothing else sets these.
-    el.style.paddingInlineStart = `${Math.round(x)}px`
-    el.style.paddingTop = `${Math.round(y)}px`
+  // Each fit is done in three steps (clear, read, write) shared with every other frame waiting to
+  // be fitted (see `flush`), so a page of stories is laid out once for all of them, not once each.
+  const job: Job = {
+    clear() {
+      const el = content.value
+      if (!el || !frame.value || frame.value.querySelector(OPEN)) return false
+      // Measured from scratch each time, in one go, so the neutral layout is never painted.
+      el.style.zoom = '1'
+      el.style.paddingInlineStart = '0px'
+      el.style.paddingTop = '0px'
+      return true
+    },
+    read() {
+      const el = content.value!
+      const width = el.clientWidth
+      const painted = paintedBox(el)
+      // How wide the story is to the eye, from the frame's start or from wherever it starts before it.
+      const extent = painted ? Math.max(painted.right, width) - Math.min(painted.left, 0) : width
+      const zoom = extent <= width + 1 ? 1 : Math.max(MIN_ZOOM, width / extent)
+      let x = 0
+      let y = 0
+      if (painted && zoom === 1) {
+        const room = width - painted.width
+        // Centred only when it leaves real room either side; a part that fills the frame stays put.
+        if (room > 24) x = Math.max(0, room / 2 - painted.left)
+        const padding = parseFloat(getComputedStyle(frame.value!).paddingTop) * 2
+        const inner = minHeight() - padding
+        if (painted.height < inner) y = Math.max(0, (inner - painted.height) / 2 - painted.top)
+      }
+      // What is left over once shrunk as far as it goes, for the site's check (scripts/check-frames.mjs).
+      return { zoom, x, y, overflow: Math.max(0, Math.round(extent * zoom - width)) }
+    },
+    write({ zoom, x, y, overflow }) {
+      const el = content.value
+      if (!el) return
+      // Written straight onto the element, which owns them: nothing else sets these.
+      el.style.zoom = String(zoom)
+      el.style.paddingInlineStart = `${Math.round(x)}px`
+      el.style.paddingTop = `${Math.round(y)}px`
+      el.dataset.overflow = String(overflow)
+      el.dataset.zoom = zoom.toFixed(2)
+    },
   }
-
-  let raf = 0
-  const schedule = () => {
-    cancelAnimationFrame(raf)
-    raf = requestAnimationFrame(measure)
-  }
+  const schedule = () => enqueue(job)
 
   // A story can still be settling a moment after it mounts (fonts, an image, a part measuring
   // itself), so it is measured again once things have landed.
@@ -147,7 +183,7 @@ export function useStoryFit(
   })
   onBeforeUnmount(() => {
     observer?.disconnect()
-    cancelAnimationFrame(raf)
+    pending.delete(job)
     clearTimeout(settle)
   })
 

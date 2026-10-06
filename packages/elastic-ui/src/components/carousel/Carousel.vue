@@ -163,10 +163,12 @@ const pillStyle = computed(() => ({
     aria-roledescription="carousel"
     :class="cn('flex flex-col gap-4 outline-none', props.class)"
   >
+    <!-- `touch-pan-y`: a sideways drag is the carousel's, a vertical one the page's. Without it a
+         phone takes over a drag that starts a little slanted and cancels it halfway. -->
     <div
       ref="viewport"
       tabindex="0"
-      class="overflow-hidden rounded-[var(--carousel-radius,var(--radius-xl))] focus-ring"
+      class="touch-pan-y overflow-hidden rounded-[var(--carousel-radius,var(--radius-xl))] focus-ring"
       @keydown="key"
       @pointerdown="down"
       @pointermove="move"
