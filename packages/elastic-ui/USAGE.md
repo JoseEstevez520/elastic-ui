@@ -91,6 +91,8 @@ Two different moments, two different movements:
 
 The short rule: if the user just caused the change, or it is a value they follow, it morphs; if it is new content, it comes into focus.
 
+On a touch screen, coming into focus is a plain fade: the blur is left out there (DECISIONS, Performance). Nothing to do on your side; the parts and `blur-in` handle it.
+
 Neither, just replace it:
 
 - Long text or paragraphs that change: morphing them is dizzying.
