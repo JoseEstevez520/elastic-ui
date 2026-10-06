@@ -70,3 +70,20 @@ export const Phone: Story = {
     template: `<div class="w-[320px]"><WeekPillbox v-model="days" /></div>`,
   }),
 }
+
+/**
+ * Situation, content that changes: a project that writes the days back only once it has saved them.
+ * The pills keep what was pressed or painted while the save takes, instead of going back to the old
+ * days and then on again.
+ */
+export const Saving: Story = {
+  render: () => ({
+    components: { WeekPillbox },
+    setup: () => {
+      const saved = ref([1, 2, 3, 4, 5])
+      const save = (days: number[]) => setTimeout(() => (saved.value = [...days]), 400)
+      return { saved, save }
+    },
+    template: `<div class="flex flex-col items-center gap-3"><WeekPillbox :model-value="saved" @update:model-value="save" /><p class="text-meta tabular-nums text-fg-muted">Saved: {{ saved.join(', ') || 'none' }}</p></div>`,
+  }),
+}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, type HTMLAttributes } from 'vue'
+import { computed, ref, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import Liquid from '../liquid/Liquid.vue'
@@ -28,7 +28,10 @@ const props = withDefaults(
 )
 const model = defineModel<number[]>({ default: () => [] })
 // While a drag paints across days they change here only, and the model once, as it ends: one change
-// per gesture, so a project that saves each change saves a stroke once, not a day at a time.
+// per gesture, so a project that saves each change saves a stroke once, not a day at a time. The days
+// it ends on stay shown until the model takes them: a project that writes the model back only once
+// it has saved would otherwise have the pills go back to the old days for as long as the save takes,
+// and then on again.
 const draft = ref<number[]>()
 const days = computed(() => draft.value ?? model.value)
 
@@ -72,14 +75,17 @@ const toggled = (list: number[], day: number, value: boolean) =>
   value ? [...new Set([...list, day])].sort() : list.filter((d) => d !== day)
 const set = (day: number, value: boolean) => {
   if (on(day) === value) return
-  if (draft.value) draft.value = toggled(draft.value, day, value)
-  else model.value = toggled(model.value, day, value)
+  draft.value = toggled(days.value, day, value)
+  if (painting === undefined) model.value = draft.value
 }
 
 // Pressing a day turns it on or off; dragging on across others sets each the same way, so a run is
 // one stroke. Vertical drags are left to the page (`touch-pan-y`).
 const row = ref<HTMLElement>()
 let painting: boolean | undefined
+watch(model, () => {
+  if (painting === undefined) draft.value = undefined
+})
 const dayAt = (x: number) => {
   const box = row.value?.getBoundingClientRect()
   if (!box) return undefined
@@ -89,7 +95,7 @@ function down(e: PointerEvent) {
   const day = dayAt(e.clientX)
   if (e.button !== 0 || day === undefined) return
   painting = !on(day)
-  draft.value = [...model.value]
+  draft.value = [...days.value]
   set(day, painting)
   row.value?.setPointerCapture(e.pointerId)
 }
@@ -100,10 +106,10 @@ function move(e: PointerEvent) {
 }
 function up() {
   painting = undefined
-  if (!draft.value) return
   const next = draft.value
-  draft.value = undefined
+  if (!next) return
   if (next.length !== model.value.length || next.some((d) => !model.value.includes(d))) model.value = next
+  else draft.value = undefined
 }
 // A press already set its day on pointerdown; only a click from the keyboard (Enter, Space) toggles.
 const click = (e: MouseEvent, day: number) => e.detail === 0 && set(day, !on(day))
