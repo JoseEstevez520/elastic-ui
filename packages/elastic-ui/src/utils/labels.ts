@@ -71,6 +71,7 @@ export const defaultLabels = {
   pagesAtThisLevel: 'Pages at this level',
   sidebar: 'Sidebar',
   toggleSidebar: 'Toggle sidebar',
+  closeSidebar: 'Close sidebar',
   onThisPage: 'On this page',
   /** A card linking to another site, after its title, for screen readers. */
   newTab: 'opens in a new tab',

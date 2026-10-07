@@ -3,7 +3,7 @@ import { animate, motion, useMotionValue } from 'motion-v'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, type HTMLAttributes } from 'vue'
 import { labelFor } from '../../utils/labels'
 import { EASE_EMPHASIZED, EASE_SOFT, prefersReducedMotion } from '../../utils/motion'
-import { useSidebarVariant } from '../sidebar/sidebar.context'
+import { useSidebarContext, useSidebarVariant } from '../sidebar/sidebar.context'
 import { provideNavTreeContext } from './nav-tree.context'
 import { navTreeIndicatorVariants } from './nav-tree.variants'
 
@@ -71,7 +71,10 @@ let shown = false
 
 const list = useTemplateRef<HTMLElement>('list')
 // In a `connected` sidebar the indicator is a tab of the page, running on to the sidebar's edge.
-const tab = useSidebarVariant() === 'connected'
+// On a phone the panel covers the page, so there is nothing to connect to: a pill.
+const variant = useSidebarVariant()
+const sidebarContext = useSidebarContext()
+const tab = computed(() => variant === 'connected' && !sidebarContext?.mobile.value)
 
 // The indicator sits outside the groups' clip, so it takes on the clip of the groups around its
 // item: it folds away and grows back exactly like the item, and fades with the group's content
@@ -135,7 +138,7 @@ function place(slide: boolean) {
 
   const from = list.value.getBoundingClientRect()
   const to = row.getBoundingClientRect()
-  const edge = tab ? list.value.closest('aside')?.getBoundingClientRect().right : undefined
+  const edge = tab.value ? list.value.closest('aside')?.getBoundingClientRect().right : undefined
   const target = {
     x: (to.left - from.left) / scale,
     y: (to.top - from.top) / scale,

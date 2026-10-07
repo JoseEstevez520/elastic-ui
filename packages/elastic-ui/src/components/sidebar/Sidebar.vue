@@ -6,7 +6,6 @@ import { labelFor } from '../../utils/labels'
 import { provideSidebarVariant, useRequiredSidebarContext, type SidebarVariant } from './sidebar.context'
 import SidebarToggle from './SidebarToggle.vue'
 import {
-  sidebarBackdropClass,
   sidebarHeaderClass,
   sidebarHeaderFolded,
   sidebarHeaderShown,
@@ -15,7 +14,7 @@ import {
 
 /**
  * A side column that folds to a rail of icons, whose labels are erased and come back as tooltips.
- * On a phone it is a panel that slides in from the edge instead. Put a NavTree inside, with an
+ * On a phone it is a screen of its own that slides in from the edge instead. Put a NavTree inside, with an
  * `icon` on each item and group.
  */
 defineOptions({ inheritAttrs: false })
@@ -27,9 +26,11 @@ const props = withDefaults(
     label?: string
     /** Names the fold button the sidebar carries. */
     toggleLabel?: string
+    /** Names the button that closes the panel on a phone. */
+    closeLabel?: string
     class?: HTMLAttributes['class']
   }>(),
-  { variant: 'plain', label: labelFor('sidebar'), toggleLabel: labelFor('toggleSidebar') },
+  { variant: 'plain', label: labelFor('sidebar'), toggleLabel: labelFor('toggleSidebar'), closeLabel: labelFor('closeSidebar') },
 )
 
 const sidebar = useRequiredSidebarContext('Sidebar')
@@ -43,11 +44,14 @@ const change = ref<'fold' | 'bare'>('fold')
 watch(collapsed, () => (change.value = 'fold'))
 watch(bare, () => (change.value = 'bare'))
 
-// The panel on a phone closes with Escape and a tap outside, and takes focus while open.
+// The panel on a phone closes with Escape and on choosing a page, and takes focus while open.
 const aside = useTemplateRef<HTMLElement>('aside')
 useEventListener<KeyboardEvent>(() => document, 'keydown', (event) => {
   if (event.key === 'Escape' && mobileOpen.value) mobileOpen.value = false
 })
+function onClick(event: MouseEvent) {
+  if (mobile.value && (event.target as Element).closest('[data-nav-tree-item]')) mobileOpen.value = false
+}
 watch(mobileOpen, async (isMobileOpen) => {
   await nextTick()
   if (isMobileOpen) aside.value?.querySelector<HTMLElement>('a[href], button')?.focus({ preventScroll: true })
@@ -76,13 +80,6 @@ const contentClass = computed(() =>
 </script>
 
 <template>
-  <div
-    v-if="mobile"
-    aria-hidden="true"
-    :class="cn(sidebarBackdropClass, mobileOpen ? 'opacity-100' : 'pointer-events-none opacity-0')"
-    @click="mobileOpen = false"
-  />
-  <!-- Two roots (the backdrop and the sidebar), so attributes go to the sidebar. -->
   <aside
     v-bind="$attrs"
     :id="sidebar.panelId"
@@ -93,15 +90,17 @@ const contentClass = computed(() =>
     :data-bare="bare || undefined"
     :style="style"
     :class="cn(sidebarVariants({ variant, mobile }), timing, props.class)"
+    @click="onClick"
   >
     <div :class="cn('flex h-full flex-col', contentClass)">
       <!-- The header folds like the labels: its own content folds away to the left and leaves the
-           toggle alone, centred in the rail. On a phone the toggle lives in the page instead. -->
+           toggle alone, centred in the rail. On a phone it carries a close button, and the toggle that opens it lives in the page. -->
       <div class="flex shrink-0 items-center p-2">
         <div :class="cn(sidebarHeaderClass, collapsed ? sidebarHeaderFolded : sidebarHeaderShown)">
           <slot name="header" />
         </div>
         <SidebarToggle v-if="!mobile" :label="toggleLabel" :class="collapsed ? 'mx-auto' : 'ml-auto'" />
+        <SidebarToggle v-else :label="closeLabel" close class="ml-auto" />
       </div>
       <div class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain p-2 scrollbar-subtle">
         <slot />

@@ -17,20 +17,14 @@ export const sidebarVariants = /* @__PURE__ */ cva('shrink-0 overflow-hidden tex
     },
     mobile: {
       false: 'sticky top-0 h-dvh transition-[width] ease-glide motion-reduce:transition-none',
-      // On a phone: a panel over the page, slid in from the left edge and out through it.
+      // On a phone: a screen of its own over the page, slid in from the left edge and out through it.
       true: [
-        'fixed inset-y-0 left-0 z-50 w-[min(var(--sidebar-width,16rem),85vw)] shadow-overlay',
+        'fixed inset-0 z-50 w-full',
         'transition-transform ease-emphasized motion-reduce:transition-none',
       ],
     },
   },
 })
-
-/** Barely there, as in SkillNet: a light veil and a blur, enough to set the panel apart. */
-export const sidebarBackdropClass = [
-  'fixed inset-0 z-40 bg-[color:var(--sidebar-overlay,rgb(0_0_0/0.1))] backdrop-blur-sm transition-opacity duration-200',
-  'motion-reduce:transition-none',
-]
 
 /**
  * The header's own content (a logo, a name). As in SkillNet it goes at once when folding starts,

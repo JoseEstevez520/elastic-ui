@@ -74,6 +74,7 @@ onBeforeUnmount(() => active.value && group?.holdActive(false))
         :aria-level="tree.selectable.value ? level : undefined"
         :tabindex="tree.tabIndex(rowId, active, index)"
         :aria-current="active && !tree.selectable.value ? (link ? 'page' : 'true') : undefined"
+        data-nav-tree-item
         :data-nav-tree-active="(active && !group?.railedAway.value) || undefined"
         :class="cn(navTreeRowClass, active && 'text-fg', props.class)"
         @click="tree.select(value)"
