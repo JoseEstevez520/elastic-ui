@@ -143,7 +143,7 @@ const grow = 'transition-[scale] duration-500 ease-emphasized motion-reduce:tran
         <div class="size-full rounded-full border border-dashed border-border-strong" />
       </div>
 
-      <Liquid fill="color-mix(in oklab, var(--color-fg) 16%, var(--color-bg))" :reach="5" class="absolute inset-0">
+      <Liquid fill="var(--week-pill-bg, color-mix(in oklab, var(--color-fg) 16%, var(--color-bg)))" :reach="5" class="absolute inset-0">
         <template #shapes>
           <div v-for="(d, i) in week" :key="`pill-${d.day}`" :class="['absolute inset-y-0 p-0.5', grow]" :style="{ ...column(i), scale: on(d.day) ? 1 : 0 }">
             <div class="size-full rounded-full bg-black" />

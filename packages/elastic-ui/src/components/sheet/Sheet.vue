@@ -8,7 +8,7 @@ import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
 import { morphTransition } from '../../utils/motion'
-import { dialogMorphTriggerClass } from '../dialog-morph/dialog-morph.variants'
+import { dialogMorphTriggerVariants, morphGhostTriggerPaint, morphTriggerPaint, type DialogMorphTriggerVariants } from '../dialog-morph/dialog-morph.variants'
 import { sheetContentVariants } from './sheet.variants'
 
 /**
@@ -23,6 +23,12 @@ import { sheetContentVariants } from './sheet.variants'
 const props = withDefaults(
   defineProps<{
     side?: 'right' | 'left' | 'bottom'
+    /** The button's look at rest: `ghost` for a row of quiet actions. */
+    variant?: DialogMorphTriggerVariants['variant']
+    /** `icon` for a square button holding only an icon, which then needs `triggerLabel`. */
+    size?: DialogMorphTriggerVariants['size']
+    /** Names an icon-only button for screen readers and on hover. */
+    triggerLabel?: string
     /** At a side, how wide it is at most, in pixels. */
     width?: number
     closeLabel?: string
@@ -68,10 +74,12 @@ const { shown, grown, visible, settled, returned, to, style } = useMorphBox({
   },
   returnFocus: () => trigger.value,
 })
+const triggerClass = computed(() => dialogMorphTriggerVariants({ variant: props.variant, size: props.size }))
+const triggerPaint = computed(() => (props.variant === 'ghost' ? morphGhostTriggerPaint : morphTriggerPaint))
 const surfaceStyle = computed(() =>
   style({
     borderRadius: ['8px', '16px'],
-    boxShadow: ['0 0 0 1px var(--color-border-strong)', '0 0 0 1px var(--color-border), var(--shadow-overlay)'],
+    boxShadow: [triggerPaint.value.boxShadow, '0 0 0 1px var(--color-border), var(--shadow-overlay)'],
   }),
 )
 
@@ -109,8 +117,10 @@ const contentStyle = computed(() => ({
       ref="trigger"
       type="button"
       aria-haspopup="dialog"
-      :class="dialogMorphTriggerClass"
-      style="border-radius: 8px; box-shadow: 0 0 0 1px var(--color-border-strong)"
+      :class="triggerClass"
+      :style="triggerPaint"
+      :aria-label="triggerLabel"
+      :title="triggerLabel"
       @click="open = true"
     >
       <!-- Out as the sheet, the button's box has left: its label waits, and comes back into focus
