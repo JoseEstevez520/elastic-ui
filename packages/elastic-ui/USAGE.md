@@ -258,6 +258,24 @@ Most ideas are pieces that fit together or a flow, and are composed rather than 
 />
 ```
 
+### Data without axes
+
+When the question is simpler than a chart's axes, a part of its own answers it:
+
+| The question | Use |
+|---|---|
+| Which are the most? | `RankedList`: a row per item, the fill is the measure |
+| When, and where? (rows against columns) | `Heatmap`: one hue in three steps |
+| How did a state go through time? | `StateStrip`: one cell per moment, with a player |
+| Where on a picture? | `ImageRegions`: outlines that open into a card |
+| How does a value change along x, or two measures compare? | `Chart` |
+
+- **The caller sorts a `RankedList`.** Its rows are places: give it the items in a new order and the name and figure in each place turn into the new ones, while the fills ease to their lengths. Don't key rows by item or animate them up and down.
+- **Grey until the colour means something.** `Heatmap` takes a `tone` only when the hue says what the cells are (`danger` for what was empty, `success` for what was done). The steps are one hue, never several.
+- **Colour is never the only signal.** A `Heatmap` cell is read in the line under the grid, a `StateStrip` moment in the line above it, a region has its name and icon. Write those lines (`describe`, an item's `label` and `flag`).
+- **On a tray, supporting text is `fg-secondary`.** `fg-muted` on the tray tone is 3.99:1 in light, under AA. A fill or a cell drawn on a tray steps further from it than the tray steps from the page; the heat steps start at 55% for that reason.
+- **One thing leads.** Don't start a `StateStrip` playing next to another movement, and keep to one open card in an `ImageRegions` (it does so on its own).
+
 **Written elsewhere** (by a model, by a student), a drawing or a piece is shown so it can do no harm: an SVG with `DiagramImage`, as an image that runs nothing; interactive HTML with `SandboxFrame`, in a frame with no way to the page or the network, as tall as what it holds. Both take the theme's tokens and follow its changes. Never put such markup in the page itself (`v-html`).
 
 A piece in a `SandboxFrame` can be plain HTML or be made of the library's own parts:
