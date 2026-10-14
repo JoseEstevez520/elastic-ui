@@ -245,7 +245,7 @@ function select(e: TimetableEvent) {
 }
 
 onMounted(() => {
-  if (!props.editable) return
+  // Always attached, so `editable` can be switched on after the first render.
   window.addEventListener('pointermove', onMove)
   window.addEventListener('pointerup', onUp)
   window.addEventListener('keydown', onKey)
