@@ -27,6 +27,23 @@ export const Default: Story = {}
 /** With no photo, a person drawn on the surface tone: never initials. */
 export const NoPhoto: Story = { args: { src: undefined, name: 'Iván Soto' } }
 
+/** Opt in with `initials`: the first letter of the name, neutral grey, for someone with no photo. */
+export const Initials: Story = {
+  render: () => ({
+    components: { Avatar, AvatarGroup },
+    setup: () => ({ people }),
+    template: `
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-3">
+          <Avatar v-for="size in ['sm', 'md', 'lg']" :key="size" :size="size" name="Iván Soto" initials />
+        </div>
+        <AvatarGroup initials>
+          <Avatar v-for="p in people" :key="p.name" :src="p.src" :name="p.name" />
+        </AvatarGroup>
+      </div>`,
+  }),
+}
+
 /** A photo that fails to load gives way to the person, fading in. */
 export const BrokenPhoto: Story = { args: { src: 'https://example.invalid/missing.jpg', name: 'Marco Ruiz' } }
 

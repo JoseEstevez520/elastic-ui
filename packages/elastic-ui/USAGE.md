@@ -151,6 +151,7 @@ An icon earns its place when it helps find something at a glance: buttons, menu 
 - A logo is drawn with `Logo`, given the Simple Icons entry itself (`:icon="siVuedotjs"`): the library ships no icons, so the project picks the ones it uses. A stack is a `LogoList` of `LogoListItem`s, each its logo and its name.
 - Over colour (a Glow, a photo) a `LogoList` goes `bare`: a tray under each name would cut holes in it.
 - Links that each have a recognisable icon (GitHub, LinkedIn, an email, a project's site and its code) are an `IconLinks` row: the icon alone at rest, opening into its label when pointed at. `ghost` drops the trays, for a row over colour or beside text. A link given `copy` copies an address instead of going anywhere.
+- A person with no photo is a silhouette. Where a name beside it would be redundant (a profile, a row of who is here), `initials` on an `Avatar` or an `AvatarGroup` swaps it for the name's first letter in neutral grey; off by default.
 - Pass the component, not a rendered icon: `:icon="Search"`.
 - An icon alone needs a name: `aria-label` on its button, `label` on the part.
 

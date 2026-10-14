@@ -17,6 +17,8 @@ const props = withDefaults(
     max?: number
     /** For every avatar in it. */
     size?: AvatarSize
+    /** For every avatar in it: the first letter of the name when there is no photo. Off by default. */
+    initials?: boolean
     class?: HTMLAttributes['class']
   }>(),
   { size: 'md' },
@@ -44,7 +46,7 @@ const nameOf = (node: VNode) => (node.props?.name as string | undefined) ?? (nod
             :tabindex="nameOf(avatar) ? 0 : undefined"
             :class="[avatarGroupItemVariants({ size }), 'rounded-full focus-ring']"
           >
-            <component :is="avatar" :size="size" />
+            <component :is="avatar" :size="size" v-bind="initials ? { initials: true } : {}" />
           </span>
         </Tooltip>
       </template>

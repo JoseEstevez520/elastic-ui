@@ -1,8 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * A round photo, or with no photo a person drawn on the surface tone: never initials, which say
- * little and read as filler. Colours read `--avatar-*` first.
+ * A round photo, or with no photo a person drawn on the surface tone: never initials unless asked
+ * for (`initials`), which say little and read as filler elsewhere. Colours read `--avatar-*` first.
  */
 export const avatarVariants = /* @__PURE__ */ cva(
   'relative inline-grid shrink-0 place-items-center overflow-hidden rounded-full bg-[color:var(--avatar-bg,var(--color-surface))] align-middle text-[color:var(--avatar-fg,var(--color-fg-muted))]',
@@ -12,6 +12,21 @@ export const avatarVariants = /* @__PURE__ */ cva(
         sm: 'size-6',
         md: 'size-8',
         lg: 'size-10',
+      },
+    },
+    defaultVariants: { size: 'md' },
+  },
+)
+
+/** The letter of an Avatar given `initials`: neutral grey, sized to the avatar. */
+export const avatarInitialVariants = /* @__PURE__ */ cva(
+  'select-none font-medium leading-none tabular-nums text-[color:var(--avatar-fg,var(--color-fg-secondary))]',
+  {
+    variants: {
+      size: {
+        sm: 'text-[0.6875rem]',
+        md: 'text-sm',
+        lg: 'text-base',
       },
     },
     defaultVariants: { size: 'md' },
