@@ -30,7 +30,7 @@ Where there is a morphing version, use it. The library's personality is things t
 
 Fields that open (Select, Combobox, DatePicker) grow out of themselves: their outline stretches down to hold the list or the month, and folds back once something is picked. Give them their width on the part itself (`<Select class="w-56">`), since it draws the outline; in a `Field` they fill it. In a DialogMorph, a Sheet or a PopoverMorph the box makes room for the open field on its own; don't put them in a box of your own that clips (`overflow-hidden`, `overflow-auto`), which would cut the list off.
 
-In a row of quiet actions (a tree, a list's rows, a page's top bar), the triggers go ghost so nothing stands out at rest: `Button variant="ghost" size="icon"`, `DialogMorph variant="ghost" size="icon"`, `PopoverMorph variant="ghost"` (`size="sm"` beside small Buttons, `size="icon"` for an icon alone), `ActionButton variant="ghost" size="icon"` and `ConfirmButton variant="ghost"` look alike until one is pressed.
+In a row of quiet actions (a tree, a list's rows, a page's top bar), the triggers go ghost so nothing stands out at rest: `Button variant="ghost" size="icon"`, `DialogMorph variant="ghost" size="icon"`, `Sheet variant="ghost" size="icon" trigger-label="..."`, `PopoverMorph variant="ghost"` (`size="sm"` beside small Buttons, `size="icon"` for an icon alone), `ActionButton variant="ghost" size="icon"` and `ConfirmButton variant="ghost"` look alike until one is pressed.
 
 ```vue
 <ActionButton
@@ -120,6 +120,27 @@ Neither, just replace it:
 </Button>
 ```
 
+### A first load with nothing yet
+
+`Skeleton` is a placeholder with the shape of what will come, for a first load that has no data to show: a grid of cards, a list, a profile. Size it with `class` (`h-4 w-48`), `circle` for an avatar; `SkeletonText` is `lines` of it, the last one shorter. They move only by a faint band crossing them, which stops under reduced motion.
+
+- **When**: the first load, when there is nothing else to show. Not for a wait under about 300 ms (the placeholder would only flash), not for a refresh (keep the old content), not for an action in progress (that is a `Button loading` or a `StatusText`).
+- **Never together with a loading text.** One or the other: the shape says it is loading.
+- **Say it once, on the region.** Skeletons are `aria-hidden`; put `aria-busy="true"` on the region that waits and take it off when the content arrives. The content comes in with `animate-blur-in motion-reduce:animate-none`, and the region's height should match the placeholders' so nothing jumps.
+- **Mirror the real layout**: the same grid, the same card, a title line and three text lines. There is no `SkeletonCard`: compose it from your own card (see the `CardGrid` story).
+
+```vue
+<div class="grid gap-4 sm:grid-cols-2" :aria-busy="loading">
+  <template v-if="loading">
+    <Card v-for="n in 4" :key="n" class="flex flex-col gap-4 p-5">
+      <Skeleton class="h-5 w-2/5" />
+      <SkeletonText :lines="3" />
+    </Card>
+  </template>
+  <MyCard v-else v-for="item in items" :key="item.id" :item="item" />
+</div>
+```
+
 ## 4. Icons where they help, not everywhere
 
 An icon earns its place when it helps find something at a glance: buttons, menu items, inputs, and the first level of a navigation. Past that it is noise: an icon or a coloured dot on every row, a badge on every card tire more than they tell.
@@ -159,6 +180,8 @@ Never hardcode a colour, a duration or a curve. Motion comes from the library's 
 - An icon-only `DialogMorph` (`size="icon"`) or `ConfirmButton` gets its name: an sr-only label in the trigger, or `label`.
 - An icon-only `ActionButton` (`size="icon"`) takes its name from its labels, one per state (`label`, `workingLabel`, `doneLabel`, `errorLabel`): it is its name, its tooltip and what is announced, so give it all four.
 - A field without a visible label gets an `aria-label`; one that needs fixing gets `invalid` and a message linked with `aria-describedby`.
+- `NavTree static` is a tree to look at, as a preview inside a ChatProposal: same look, but rows are not buttons or links, take no focus and show no hover, and groups stay open. `NavTreeItem` and `NavTreeGroup` take `mark="new"` or `"moved"`: a small tinted icon after the label, read out by screen readers with the labels `markNew` and `markMoved` (set them to translate). `NavTreeItem` also takes `count`: a quiet number after the label (`9+` past nine, hidden at 0 or unset) for what is waiting there, like live notes being written; in a folded Sidebar it becomes a dot on the icon, and screen readers hear the real number after the name ("Notes, 2").
+- `Status` takes `compact`: only the ring, for lists and cards where the word is noise. The label shows on hover and focus (with the `reason`, if any) and screen readers still read it.
 - `NavTree` is bound to the current route with `v-model`, so the active item carries `aria-current`. A tree to pick from takes `selectable` instead of buttons dressed as links: it is announced as a tree, the chosen row selected, and moved through with the arrow keys.
 - Don't take focus away from where the library puts it: into a panel as it opens, back to its trigger as it closes.
 
@@ -190,6 +213,7 @@ Around the aurora:
 - **Every part to watch or play with ends in its conclusion, where it can be seen**: a session's last note stands out once it has played, and the text right after it says the conclusion again in bold. Whoever only glances at the end still leaves with the idea.
 - **The text around it frames it, and does not retell it**: a sentence before says what to watch for, a sentence after says what it showed.
 - **An action beside a ChatMorph's cross** (open the conversation in full) goes in its `actions` slot: an icon alone, `chatMorphActionClass` for the corner's look, in a Tooltip for its name. One or two at most; the cross stays last.
+- **A second, larger size for a ChatMorph** instead of a separate full-screen page: `v-model:size="'default' | 'wide'"`. `resizable` adds the built-in expand/collapse button (labels `expand`, `collapse`); `open` with `size="wide"` opens it large straight away. Same object, same content; the wide size is a right-hand panel (right edge, full height less the margin, `--chat-morph-wide-width`, 44rem, one 40rem reading column inside) that leaves an app's sidebar uncovered; it animates between the two sizes and fills the screen on a small one.
 
 ### A change the assistant proposes
 
@@ -198,10 +222,12 @@ Around the aurora:
 - `label` (it morphs as it changes), `icon`, `args` (key → value, shown as a DescriptionList).
 - `state`: `proposed`, `working`, `done`, `error`, `cancelled`.
 - `destructive`: Confirm becomes a ConfirmButton (ghost, danger tone) that asks again in its own square.
+- `details`: `always` (default) lists the args; `edit` keeps them hidden until Edit turns them into fields, for when the preview already says it.
 - `confirmLabel`, `editLabel`, `cancelLabel`, `cancelledLabel`, `revertLabel` for the texts.
 - `v-model:editing`: the args become fields in place (Input, Textarea, Switch, JSON in a Textarea for the rest). "Undo edits" reverts, Escape leaves, Enter in a one-line field confirms. Invalid JSON or a number left empty keeps Confirm off.
 - `v-model:open`: the result, collapsible like ChatTool's.
-- Emits `confirm(args)`, typed back and with the edited values when edited, and `cancel`.
+- Emits `confirm(args)`, typed back and with the edited values when edited, `cancel`, and `change(args)` each time a field is edited (typed back as for confirm, and not while a field is invalid), so a preview can follow the edit.
+- `preview` slot: what would change (CodeDiff, a before/after NavTree), between the line and the details, while `proposed` or `working`; it folds away once settled.
 - Default slot: the result or the error (ChatToolDetail, ChatSources), shown once `done` or `error`.
 
 Rules:
