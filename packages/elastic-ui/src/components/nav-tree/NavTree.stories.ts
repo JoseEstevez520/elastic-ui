@@ -264,3 +264,78 @@ export const TwoInstances: Story = {
       </div>`,
   }),
 }
+
+/**
+ * A tree to look at, not to use: a preview of what a change does to it. Same look, but rows are
+ * plain text (no buttons, no focus stops, no hover) and every group stays open.
+ */
+export const Static: Story = {
+  render: () => ({
+    components: parts,
+    template: `
+      <NavTree static label="Preview" class="w-64">
+        <NavTreeGroup label="Web client">
+          <NavTreeItem value="unit-1">Unit 1 · HTML</NavTreeItem>
+          <NavTreeItem value="unit-2">Unit 2 · CSS</NavTreeItem>
+        </NavTreeGroup>
+      </NavTree>`,
+  }),
+}
+
+/**
+ * `mark` says what a change did to a row: a small tinted icon after the label (the label keeps its
+ * colour), with the word ("New", "Moved") read by screen readers. On items and groups alike.
+ */
+export const Marked: Story = {
+  render: () => ({
+    components: parts,
+    template: `
+      <NavTree static label="Preview" class="w-64">
+        <NavTreeGroup label="Web client">
+          <NavTreeItem value="unit-1">Unit 1 · HTML</NavTreeItem>
+          <NavTreeItem value="unit-2" mark="new">Unit 2 · CSS</NavTreeItem>
+          <NavTreeGroup label="Unit 3 · JavaScript" mark="moved">
+            <NavTreeItem value="unit-3-1" mark="moved">Variables</NavTreeItem>
+            <NavTreeItem value="unit-3-2" mark="new">Functions</NavTreeItem>
+          </NavTreeGroup>
+        </NavTreeGroup>
+        <NavTreeGroup label="Guides" mark="new">
+          <NavTreeItem value="theming">Theming</NavTreeItem>
+        </NavTreeGroup>
+      </NavTree>`,
+  }),
+}
+
+/** Marks also work in a live tree, which keeps its buttons and its folding groups. */
+export const MarkedLive: Story = {
+  render: () => ({
+    components: parts,
+    setup: () => ({ page: ref('a') }),
+    template: `
+      <NavTree v-model="page" class="w-64">
+        <NavTreeItem value="a" mark="new">Introduction</NavTreeItem>
+        <NavTreeGroup label="Components" mark="moved" default-open>
+          <NavTreeItem value="b">Button</NavTreeItem>
+        </NavTreeGroup>
+      </NavTree>`,
+  }),
+}
+
+/**
+ * `count` is a quiet number after the label for what is waiting there, such as notes being written
+ * now: muted, with tabular digits, `9+` past nine, and hidden at 0. Folded to its rail, a Sidebar
+ * shows a dot on the icon instead. Screen readers hear it after the name ("Notes, 2").
+ */
+export const Counted: Story = {
+  render: () => ({
+    components: parts,
+    setup: () => ({ page: ref('notes'), Folder }),
+    template: `
+      <NavTree v-model="page" class="w-64">
+        <NavTreeItem value="home" :icon="Folder">Home</NavTreeItem>
+        <NavTreeItem value="notes" :icon="Folder" :count="2">Notes</NavTreeItem>
+        <NavTreeItem value="inbox" :icon="Folder" :count="14">Inbox</NavTreeItem>
+        <NavTreeItem value="none" :icon="Folder" :count="0">Nothing waiting</NavTreeItem>
+      </NavTree>`,
+  }),
+}

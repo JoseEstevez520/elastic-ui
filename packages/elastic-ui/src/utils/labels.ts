@@ -44,6 +44,9 @@ export const defaultLabels = {
   statusFlagged: 'Needs a look',
   statusError: 'Failed',
   statusCancelled: 'Cancelled',
+  /** NavTreeItem and NavTreeGroup `mark`, for screen readers. */
+  markNew: 'New',
+  markMoved: 'Moved',
   /** WeekPillbox: its name, and what its line says for the sets of days that have one. */
   days: 'Days',
   everyDay: 'Every day',
@@ -170,6 +173,8 @@ export const defaultLabels = {
   thinking: 'Thinking',
   askAi: 'Ask AI',
   assistant: 'Assistant',
+  expand: 'Expand',
+  collapse: 'Collapse',
 }
 
 export type Labels = typeof defaultLabels

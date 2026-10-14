@@ -21,6 +21,8 @@ export {
   OctagonAlert as OctagonAlertIcon,
   Pencil as EditIcon,
   Pause as PauseIcon,
+  Maximize2 as ExpandIcon,
+  Minimize2 as CollapseIcon,
   Play as PlayIcon,
   Plus as PlusIcon,
   RotateCcw as ReplayIcon,

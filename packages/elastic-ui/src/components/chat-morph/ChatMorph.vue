@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch, type Component, type HTMLAttributes } from 'vue'
 import { useEventListener } from '../../composables/useEventListener'
-import { XIcon } from '../../icons/internal'
+import { CollapseIcon, ExpandIcon, XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor, useLabels } from '../../utils/labels'
 import Aurora, { type AuroraActivity } from '../aurora/Aurora.vue'
@@ -19,8 +19,18 @@ import { chatMorphActionClass, chatMorphTriggerState, chatMorphPanelVariants, ch
  *
  * The `actions` slot puts icon actions in the corner row, beside the cross and to its left
  * ("open in full"). Give each the corner's look with `chatMorphActionClass`, and a Tooltip for its
- * name, since an icon alone has no word. The slot receives `close`. Without it, the row is the
- * cross alone.
+ * name, since an icon alone has no word. The slot receives `close`, the current `size` and
+ * `toggleSize`. Without it, the row is the cross alone.
+ *
+ * The same box also has a second, much larger size, `v-model:size="wide"`: a right-hand
+ * panel: anchored to the right edge with the small box's margin, the full height less that margin,
+ * `--chat-morph-wide-width` wide (44rem by default, never more than the screen less the margins),
+ * so an app's sidebar on the left stays uncovered. Its content keeps one reading column of up to
+ * 40rem, centred. On a small screen it simply fills the screen. Same surface and content. Switching animates between the two measured boxes. `resizable` adds a
+ * built-in icon button to the corner row that toggles it (labels `expand` and `collapse`); or
+ * drive `size` from your own action. Open it straight at the large size with `open` and
+ * `size="wide"`. Closing folds back to the orb from either size, and reopening keeps the last
+ * size. Inline, the wide box grows from where it sits, so give it room.
  */
 const props = withDefaults(
   defineProps<{
@@ -36,6 +46,8 @@ const props = withDefaults(
     settled?: boolean
     /** What the answer is doing, for the aurora to follow: thinking, answering, or at rest. */
     activity?: AuroraActivity
+    /** Adds a built-in button to the corner row that toggles between the two sizes. */
+    resizable?: boolean
     /** Applied to the box. */
     class?: HTMLAttributes['class']
   }>(),
@@ -43,6 +55,9 @@ const props = withDefaults(
 )
 
 const open = defineModel<boolean>('open', { default: false })
+const size = defineModel<'default' | 'wide'>('size', { default: 'default' })
+const wide = computed(() => size.value === 'wide')
+const toggleSize = () => (size.value = wide.value ? 'default' : 'wide')
 const close = () => (open.value = false)
 
 // It stays above its neighbours until it has folded all the way back.
@@ -118,20 +133,30 @@ const labels = useLabels()
         :aria-labelledby="titleId"
         tabindex="-1"
         :inert="!open"
-        :class="cn(chatMorphPanelVariants({ floating, open }), props.class)"
+        :class="cn(chatMorphPanelVariants({ floating, open, wide }), props.class)"
       >
         <div class="flex min-h-0 flex-1 flex-col">
           <!-- No header: the box is the conversation, with only a way out in its corner, and any actions beside it. -->
           <h2 :id="titleId" class="sr-only">{{ title }}</h2>
           <div class="absolute top-3 right-3 z-10 flex items-center gap-1">
-            <slot name="actions" :close="close" />
+            <slot name="actions" :close="close" :size="size" :toggle-size="toggleSize" />
+            <button
+              v-if="resizable"
+              type="button"
+              :aria-label="wide ? labels.collapse : labels.expand"
+              :aria-pressed="wide"
+              :class="chatMorphActionClass"
+              @click="toggleSize"
+            >
+              <component :is="wide ? CollapseIcon : ExpandIcon" class="size-4" />
+            </button>
             <button type="button" :aria-label="labels.close" :class="chatMorphActionClass" @click="close">
               <XIcon class="size-4" />
             </button>
           </div>
           <!-- The conversation ends below the corner's row, never under it, and fades out gently, on an
                eased curve, as it reaches that edge. -->
-          <div :style="chatGlassStyle" class="mt-12 flex min-h-0 flex-1 flex-col [mask-image:linear-gradient(to_bottom,transparent,rgb(0_0_0/0.03)_0.5rem,rgb(0_0_0/0.15)_1rem,rgb(0_0_0/0.35)_1.5rem,rgb(0_0_0/0.6)_2rem,rgb(0_0_0/0.82)_2.5rem,rgb(0_0_0/0.95)_3rem,#000_3.5rem)]">
+          <div :style="chatGlassStyle" :class="wide && 'mx-auto max-w-[40rem]'" class="mt-12 flex min-h-0 w-full flex-1 flex-col [mask-image:linear-gradient(to_bottom,transparent,rgb(0_0_0/0.03)_0.5rem,rgb(0_0_0/0.15)_1rem,rgb(0_0_0/0.35)_1.5rem,rgb(0_0_0/0.6)_2rem,rgb(0_0_0/0.82)_2.5rem,rgb(0_0_0/0.95)_3rem,#000_3.5rem)]">
             <slot :close="close" />
           </div>
         </div>

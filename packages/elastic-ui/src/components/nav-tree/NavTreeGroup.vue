@@ -11,6 +11,7 @@ import DisclosureChevron from '../collapsible/DisclosureChevron.vue'
 import { disclosureContentClass } from '../collapsible/collapsible.variants'
 import SidebarTypewriter from '../sidebar/SidebarTypewriter.vue'
 import Tooltip from '../tooltip/Tooltip.vue'
+import NavTreeMark from './NavTreeMark.vue'
 import {
   provideNavTreeGroupContext,
   useNavTreeContext,
@@ -23,13 +24,15 @@ import {
   navTreeLabelVariants,
   navTreeRailContentClass,
   navTreeRowClass,
+  navTreeStaticRowClass,
 } from './nav-tree.variants'
 
 /**
  * A heading that folds its items (and nested groups) open, like a Collapsible. Given a `value` and
  * a link (`to`, `href`), the heading is also a page of its own, as a section's index in a
  * documentation site: its label goes there, and its chevron alone folds it. In a `selectable`
- * tree a `value` alone makes it an option: its label picks it, and its chevron folds it.
+ * tree a `value` alone makes it an option: its label picks it, and its chevron folds it. In a
+ * `static` tree it is a plain heading with its items always shown.
  */
 const props = defineProps<{
   label: string
@@ -45,6 +48,8 @@ const props = defineProps<{
   as?: string | Component
   /** Names the chevron when the label is a link: it says what folding does. */
   toggleLabel?: string
+  /** Says what a change did to the group: a small icon after the label, and the word for screen readers. */
+  mark?: 'new' | 'moved'
   class?: HTMLAttributes['class']
 }>()
 
@@ -164,7 +169,16 @@ provideNavTreeGroupContext({
 </script>
 
 <template>
-  <li :role="tree.selectable.value ? 'none' : undefined">
+  <!-- In a tree to look at: a heading and its items, always open, with nothing to press. -->
+  <li v-if="tree.isStatic.value">
+    <div :class="cn(navTreeStaticRowClass, 'text-label text-fg', props.class)">
+      <component :is="icon" v-if="icon" aria-hidden="true" :class="navTreeIconClass" />
+      <span :class="navTreeLabelVariants({ placement, edge: true })">{{ label }}</span>
+      <NavTreeMark v-if="mark" :mark="mark" />
+    </div>
+    <ul :class="navTreeChildrenVariants({ wave: false })"><slot /></ul>
+  </li>
+  <li v-else :role="tree.selectable.value ? 'none' : undefined">
     <Collapsible v-model:open="shownOpen">
       <component :is="sidebar ? Tooltip : Passthrough" side="right" :content="label" :disabled="!railed">
         <!-- A page of its own, or an option: the label goes there or picks it, and only the
@@ -189,6 +203,7 @@ provideNavTreeGroupContext({
               <SidebarTypewriter v-if="sidebar" :text="label" :shown="!railed" :index="index" />
               <template v-else>{{ label }}</template>
             </span>
+            <NavTreeMark v-if="mark" v-show="!railed" :mark="mark" />
           </component>
           <!-- In a selectable tree the arrow keys fold it from the label, so the chevron is only
                for the pointer, and pressing it leaves the focus where it was. -->
@@ -220,6 +235,7 @@ provideNavTreeGroupContext({
               <SidebarTypewriter v-if="sidebar" :text="label" :shown="!railed" :index="index" />
               <template v-else>{{ label }}</template>
             </span>
+            <NavTreeMark v-if="mark" v-show="!railed" :mark="mark" class="-mr-2" />
             <!-- Goes as the erasing starts, and comes back as the label is written in. -->
             <span :class="['flex transition-opacity duration-150', railed && 'opacity-0']">
               <DisclosureChevron />

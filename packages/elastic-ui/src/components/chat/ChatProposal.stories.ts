@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import Chat from './Chat.vue'
 import ChatMessage from './ChatMessage.vue'
 import ChatProposal from './ChatProposal.vue'
+import CodeDiff from '../code-diff/CodeDiff.vue'
 import ChatThread from './ChatThread.vue'
 import ChatTool from './ChatTool.vue'
 import ChatToolDetail from './ChatToolDetail.vue'
@@ -282,6 +283,54 @@ export const Failing: Story = {
         <ChatProposal v-bind="args" v-model:editing="editing" v-model:open="open" :state="state" @confirm="confirm" @cancel="cancel">
           <ChatToolDetail error>The note was not saved: the page "Caching" was deleted while you were deciding.</ChatToolDetail>
         </ChatProposal>
+      </div>`,
+  }),
+}
+
+/**
+ * A `preview` slot shows what would change inside the card while it waits and works: here a diff.
+ * With `details="edit"` the fields stay out of sight until Edit is pressed. Once done it folds away,
+ * leaving the one line and the result.
+ */
+export const WithPreview: Story = {
+  args: { label: 'Rewrite the note "Cache invalidation"', icon: StickyNote, details: 'edit' },
+  render: (args) => ({
+    components: { ChatProposal, ChatToolDetail, CodeDiff },
+    setup: () => ({
+      args,
+      ...useProposal(),
+      before: 'Stale reads come from the CDN.\nPurge by URL.',
+      after: 'Stale reads come from the CDN, not the database.\nPurge by tag on every publish.',
+    }),
+    template: `
+      <div class="max-w-xl">
+        <ChatProposal v-bind="args" v-model:editing="editing" v-model:open="open" :state="state" @confirm="confirm" @cancel="cancel">
+          <template #preview><CodeDiff :before="before" :after="after" :animate="false" /></template>
+          <ChatToolDetail>Note rewritten in Caching.</ChatToolDetail>
+        </ChatProposal>
+      </div>`,
+  }),
+}
+
+/**
+ * `change` carries the details as they stand each time a field is edited (and not while one is
+ * invalid), so a preview can follow the edit. Open Edit and type: the line under it follows.
+ */
+export const FollowsEdits: Story = {
+  render: (args) => ({
+    components: { ChatProposal },
+    setup: () => ({ args, ...useProposal(), current: ref<Record<string, unknown>>({ ...NOTE }) }),
+    template: `
+      <div class="max-w-xl">
+        <ChatProposal
+          v-bind="args"
+          v-model:editing="editing"
+          :state="state"
+          @change="current = $event"
+          @confirm="confirm"
+          @cancel="cancel"
+        />
+        <p class="mt-3 text-meta text-fg-muted">Would be saved as: {{ current.title }}</p>
       </div>`,
   }),
 }

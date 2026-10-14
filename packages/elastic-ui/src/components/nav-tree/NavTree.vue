@@ -15,12 +15,17 @@ import { navTreeIndicatorVariants } from './nav-tree.variants'
  * With `selectable` it is a tree to pick a place from, as a field's panel: items and groups with a
  * `value` are options instead of links, announced as a tree whose chosen row is selected, and
  * reached with the arrow keys. Every pick emits `select`, the moment to close what holds it.
+ *
+ * With `static` it is only shown, as a preview of a tree (what a change would do to it): the same
+ * look, but nothing to press, no focus stops, and every group open. Rows can still carry a `mark`.
  */
 const props = withDefaults(
   defineProps<{
     label?: string
     /** A tree to pick from: rows are options (`role="tree"`, `aria-selected`) rather than links. */
     selectable?: boolean
+    /** To look at, not to use: rows are not buttons or links, take no focus and show no hover, and groups stay open. */
+    static?: boolean
     class?: HTMLAttributes['class']
   }>(),
   { label: labelFor('sections') },
@@ -31,14 +36,15 @@ const emit = defineEmits<{
 }>()
 
 const active = defineModel<string>()
-const selectable = computed(() => props.selectable)
+const selectable = computed(() => props.selectable && !props.static)
+const isStatic = computed(() => !!props.static)
 let rows = 0
 
 // The one row Tab reaches in a selectable tree: the last one focused, or else the chosen one, or
 // else the first. Until the tree has mounted, it is worked out from the rows themselves.
 const tabStop = ref<string>()
 function tabIndex(rowId: string, isActive: boolean, index: number) {
-  if (!props.selectable) return undefined
+  if (!selectable.value) return undefined
   if (tabStop.value !== undefined) return tabStop.value === rowId ? 0 : -1
   return isActive || (index === 0 && active.value === undefined) ? 0 : -1
 }
@@ -51,6 +57,7 @@ provideNavTreeContext({
   },
   nextIndex: () => rows++,
   selectable,
+  isStatic,
   tabIndex,
 })
 
@@ -171,7 +178,7 @@ function visibleRows() {
 // Keeps Tab's way into the tree on a row in view: one folded away hands it to the chosen row, or
 // to the first.
 function keepTabStop() {
-  if (!props.selectable) return
+  if (!selectable.value) return
   const rows = visibleRows()
   if (rows.some((row) => row.id === tabStop.value)) return
   tabStop.value = (rows.find((row) => row.getAttribute('aria-selected') === 'true') ?? rows[0])?.id
@@ -179,13 +186,13 @@ function keepTabStop() {
 
 function onFocusin(event: FocusEvent) {
   const row = event.target as HTMLElement
-  if (props.selectable && row.getAttribute('role') === 'treeitem') tabStop.value = row.id
+  if (selectable.value && row.getAttribute('role') === 'treeitem') tabStop.value = row.id
 }
 
 // Up and down through the rows in view, Home and End to the ends, a letter to the next row
 // starting with it. Left and right fold and unfold, on the rows themselves; Enter and Space pick.
 function onKeydown(event: KeyboardEvent) {
-  if (!props.selectable || event.ctrlKey || event.metaKey || event.altKey) return
+  if (!selectable.value || event.ctrlKey || event.metaKey || event.altKey) return
   const rows = visibleRows()
   const from = rows.indexOf(document.activeElement as HTMLElement)
   if (from < 0) return
@@ -229,12 +236,17 @@ onBeforeUnmount(() => observer?.disconnect())
 
 <template>
   <!-- A tree to pick from is not navigation: the tree itself carries the name. -->
-  <component :is="selectable ? 'div' : 'nav'" :aria-label="selectable ? undefined : label" :class="props.class">
+  <component
+    :is="selectable || static ? 'div' : 'nav'"
+    :role="static ? 'group' : undefined"
+    :aria-label="selectable && !static ? undefined : label"
+    :class="props.class"
+  >
     <!-- `isolate` keeps the indicator's negative z-index above whatever is behind the nav. -->
     <ul
       ref="list"
-      :role="selectable ? 'tree' : 'list'"
-      :aria-label="selectable ? label : undefined"
+      :role="selectable && !static ? 'tree' : 'list'"
+      :aria-label="selectable && !static ? label : undefined"
       class="relative isolate flex flex-col gap-0.5"
       @focusin="onFocusin"
       @keydown="onKeydown"

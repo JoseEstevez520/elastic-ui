@@ -25,6 +25,10 @@ import { chatToolContentClass, chatToolTriggerClass } from './chat.variants'
  * done or cancelled, so what was decided stays in the conversation. Put it in ChatMessage's
  * `after` slot, under the answer, one per change.
  *
+ * The `preview` slot shows what would change (a diff, a before/after tree) between the line and
+ * the details while it waits or works, and folds away once it is settled. With a preview that
+ * says it all, `details="edit"` keeps the fields out of sight until Edit is pressed.
+ *
  * After Vercel AI Elements' Confirmation and the OpenAI Agents SDK's tool approvals, with the
  * details editable before confirming, as LangGraph's interrupts allow.
  */
@@ -39,6 +43,8 @@ const props = withDefaults(
     state?: 'proposed' | 'working' | 'done' | 'error' | 'cancelled'
     /** It can't be undone: Confirm asks again, in the danger colour, before it goes. */
     destructive?: boolean
+    /** `always` lists the details; `edit` keeps them hidden until Edit turns them into fields. */
+    details?: 'always' | 'edit'
     confirmLabel?: string
     editLabel?: string
     revertLabel?: string
@@ -49,6 +55,7 @@ const props = withDefaults(
   {
     args: () => ({}),
     state: 'proposed',
+    details: 'always',
     confirmLabel: labelFor('confirm'),
     editLabel: labelFor('edit'),
     revertLabel: labelFor('revertEdits'),
@@ -56,7 +63,12 @@ const props = withDefaults(
     cancelledLabel: labelFor('statusCancelled'),
   },
 )
-const emit = defineEmits<{ confirm: [args: Record<string, unknown>]; cancel: [] }>()
+const emit = defineEmits<{
+  confirm: [args: Record<string, unknown>]
+  cancel: []
+  /** The details as they stand, each time a field is edited (not while one is invalid), so a preview can follow. */
+  change: [args: Record<string, unknown>]
+}>()
 
 /** Whether the details are fields. */
 const editing = defineModel<boolean>('editing', { default: false })
@@ -75,6 +87,9 @@ const arrived = inject(ChatThreadReadyKey, ref(true)).value
 const deciding = computed(() => props.state === 'proposed' || props.state === 'error')
 // What was decided stays as a line: the details fold away once it is done or dropped.
 const settled = computed(() => props.state === 'done' || props.state === 'cancelled')
+// What would change is shown while the decision waits and the request runs, then folds with the rest.
+const previewing = computed(() => (props.state === 'proposed' || props.state === 'working') && !!slots.preview)
+const detailsOpen = computed(() => !settled.value && entries.value.length > 0 && (props.details === 'always' || editing.value))
 const expandable = computed(() => (props.state === 'done' || props.state === 'error') && !!slots.default)
 
 // --- The details, shown and edited ------------------------------------------------------------
@@ -103,7 +118,10 @@ const isLong = (text: string) => text.length > 240 || text.split('\n').length > 
 // While editing, each detail is held as its field holds it (JSON as text) and typed back on confirm.
 // Typed loosely: each field writes the type its own kind holds.
 const draft = ref<Record<string, any>>({})
+// Opening the fields fills the draft: that is not an edit, so it says nothing.
+let filling = false
 const startDraft = () => {
+  filling = true
   draft.value = Object.fromEntries(
     entries.value.map(({ key, value, kind }) => [
       key,
@@ -126,8 +144,18 @@ const typedBack = (key: string, kind: Kind): { value: unknown; ok: boolean } => 
   }
   return { value: held, ok: true }
 }
+const typedArgs = () => Object.fromEntries(entries.value.map(({ key, kind }) => [key, typedBack(key, kind).value]))
 const invalid = computed(() =>
   editing.value ? new Set(entries.value.filter(({ key, kind }) => !typedBack(key, kind).ok).map((e) => e.key)) : new Set<string>(),
+)
+
+watch(
+  draft,
+  () => {
+    if (filling) return void (filling = false)
+    if (editing.value && !invalid.value.size) emit('change', typedArgs())
+  },
+  { deep: true },
 )
 
 watch(
@@ -150,7 +178,7 @@ watch(
 function confirm() {
   if (!deciding.value || invalid.value.size) return
   const args = editing.value
-    ? Object.fromEntries(entries.value.map(({ key, kind }) => [key, typedBack(key, kind).value]))
+    ? typedArgs()
     : { ...shown.value }
   sent.value = args
   editing.value = false
@@ -243,8 +271,17 @@ const announcement = computed(() => {
         </div>
       </CollapsibleContent>
 
+      <!-- What would change, while it waits or works. -->
+      <CollapsibleRoot v-if="$slots.preview" :open="previewing" :unmount-on-hide="false">
+        <CollapsibleContent :class="chatToolContentClass">
+          <div class="pt-2 pb-1" :inert="!previewing || undefined">
+            <slot name="preview" />
+          </div>
+        </CollapsibleContent>
+      </CollapsibleRoot>
+
       <!-- The details, folding away once it is settled. -->
-      <CollapsibleRoot :open="!settled && entries.length > 0" :unmount-on-hide="false">
+      <CollapsibleRoot :open="detailsOpen" :unmount-on-hide="false">
         <CollapsibleContent :class="chatToolContentClass">
           <DescriptionList class="pt-1.5">
             <DescriptionItem

@@ -7,7 +7,9 @@ import { textOf } from '../../utils/textOf'
 import SidebarTypewriter from '../sidebar/SidebarTypewriter.vue'
 import Tooltip from '../tooltip/Tooltip.vue'
 import { useNavTreeContext, useNavTreeGroupContext, useNavTreePlacement } from './nav-tree.context'
-import { navTreeIconClass, navTreeLabelVariants, navTreeRowClass } from './nav-tree.variants'
+import NavTreeCount from './NavTreeCount.vue'
+import NavTreeMark from './NavTreeMark.vue'
+import { navTreeIconClass, navTreeLabelVariants, navTreeRowClass, navTreeStaticRowClass } from './nav-tree.variants'
 
 const props = defineProps<{
   /** Identifies the item; it is active while it equals the NavTree's `v-model`. */
@@ -20,6 +22,10 @@ const props = defineProps<{
   as?: string | Component
   /** Shown before the label, and alone when a Sidebar folds to its rail. */
   icon?: Component
+  /** Says what a change did to the row: a small icon after the label, and the word for screen readers. */
+  mark?: 'new' | 'moved'
+  /** A quiet number after the label (`9+` past nine), a dot on the icon in a folded Sidebar. Hidden at 0 or unset. */
+  count?: number
   class?: HTMLAttributes['class']
 }>()
 
@@ -35,7 +41,7 @@ const index = tree.nextIndex()
 
 // In a tree to pick from the item is an option, never a link.
 const anyLink = useLink(props)
-const link = computed(() => (tree.selectable.value ? undefined : anyLink.value))
+const link = computed(() => (tree.selectable.value || tree.isStatic.value ? undefined : anyLink.value))
 const active = computed(() => tree.active.value === props.value)
 const rowId = useId()
 const level = (group?.level ?? 0) + 1
@@ -65,10 +71,10 @@ onBeforeUnmount(() => active.value && group?.holdActive(false))
     <!-- In a sidebar folded to its rail only the icon shows; the label comes back as a tooltip. -->
     <component :is="sidebar ? Tooltip : Passthrough" side="right" :disabled="!railed">
       <component
-        :is="link?.is ?? 'button'"
+        :is="tree.isStatic.value ? 'div' : (link?.is ?? 'button')"
         v-bind="link?.attrs"
         :id="rowId"
-        :type="link ? undefined : 'button'"
+        :type="tree.isStatic.value || link ? undefined : 'button'"
         :role="tree.selectable.value ? 'treeitem' : undefined"
         :aria-selected="tree.selectable.value ? active : undefined"
         :aria-level="tree.selectable.value ? level : undefined"
@@ -76,8 +82,8 @@ onBeforeUnmount(() => active.value && group?.holdActive(false))
         :aria-current="active && !tree.selectable.value ? (link ? 'page' : 'true') : undefined"
         data-nav-tree-item
         :data-nav-tree-active="(active && !group?.railedAway.value) || undefined"
-        :class="cn(navTreeRowClass, active && 'text-fg', props.class)"
-        @click="tree.select(value)"
+        :class="cn(tree.isStatic.value ? navTreeStaticRowClass : navTreeRowClass, active && 'text-fg', props.class)"
+        @click="!tree.isStatic.value && tree.select(value)"
         @keydown="onKeydown"
       >
         <component :is="icon" v-if="icon" aria-hidden="true" :class="navTreeIconClass" />
@@ -85,6 +91,8 @@ onBeforeUnmount(() => active.value && group?.holdActive(false))
           <SidebarTypewriter v-if="label()" :text="label()!" :shown="!railed" :index="index" />
           <slot v-else />
         </span>
+        <NavTreeMark v-if="mark" v-show="!railed" :mark="mark" />
+        <NavTreeCount v-if="count && count > 0" :count="count" :railed="railed" />
       </component>
       <template #content><slot /></template>
     </component>

@@ -27,10 +27,15 @@ export const chatMorphSurfaceVariants = /* @__PURE__ */ cva(
 export const chatMorphPanelVariants = /* @__PURE__ */ cva(
   [
     'absolute flex flex-col text-fg outline-none',
-    'w-[min(var(--chat-morph-width,24rem),calc(100vw-2rem))] h-[min(var(--chat-morph-height,36rem),calc(100dvh-3rem))]',
   ],
   {
     variants: {
+      // The wide box: a panel on the right edge, the full height less the corner's margin, and no wider
+      // than the screen less that margin on both sides.
+      wide: {
+        true: 'w-[min(var(--chat-morph-wide-width,44rem),calc(100vw-3rem))] h-[calc(100dvh-3rem)]',
+        false: 'w-[min(var(--chat-morph-width,24rem),calc(100vw-2rem))] h-[min(var(--chat-morph-height,36rem),calc(100dvh-3rem))]',
+      },
       floating: { true: 'right-0 bottom-0', false: 'top-0 left-0' },
       open: {
         // Comes into focus once the shape is on its way.

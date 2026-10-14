@@ -10,6 +10,8 @@ export interface NavTreeContext {
   nextIndex: () => number
   /** A tree to pick from rather than to navigate: rows are options, never links. */
   selectable: Readonly<Ref<boolean>>
+  /** A tree to look at: rows are plain text, groups stay open, nothing takes focus. */
+  isStatic: Readonly<Ref<boolean>>
   /**
    * A selectable tree's `tabindex` for a row: only one row is reached with Tab, and the arrow
    * keys move between them. `undefined` in a navigation tree.

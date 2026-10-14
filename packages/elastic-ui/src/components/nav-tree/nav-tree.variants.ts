@@ -7,6 +7,11 @@ export const navTreeRowClass = [
   'focus-ring-inset',
 ]
 
+/** A `static` tree's row: the same look, with nothing to press, hover or focus. */
+export const navTreeStaticRowClass = [
+  'relative flex w-full items-center rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-ui text-fg-secondary',
+]
+
 export const navTreeIconClass = 'size-4 shrink-0'
 
 /**
