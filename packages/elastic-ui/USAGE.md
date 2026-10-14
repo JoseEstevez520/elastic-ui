@@ -36,7 +36,7 @@ In a row of quiet actions (a tree, a list's rows, a page's top bar), the trigger
 <ActionButton
   variant="ghost"
   size="icon"
-  icon="arrowDown"
+  icon="download"
   label="Download"
   working-label="Downloading"
   done-label="Downloaded"

@@ -151,6 +151,26 @@ export const glyphs = {
     },
     at([12, 19]),
   ],
+  // An arrow into a tray: what is taken away from the page, as a file.
+  download: [
+    { points: line([12, 4], [12, 14]) },
+    {
+      points: [
+        [7, 10],
+        [12, 15],
+        [17, 10],
+        [17, 10],
+      ],
+    },
+    {
+      points: [
+        [4, 16],
+        [4, 20],
+        [20, 20],
+        [20, 16],
+      ],
+    },
+  ],
 } satisfies Record<string, Glyph>
 
 export type GlyphName = keyof typeof glyphs

@@ -26,7 +26,7 @@ export const OtherActions: Story = {
       <div class="flex flex-wrap gap-3">
         <ActionButton v-bind="args" label="Save" done-label="Saved" error-label="Not saved" icon="plus" />
         <ActionButton v-bind="args" label="Publish" done-label="Published" error-label="Not published" icon="arrowUp" />
-        <ActionButton v-bind="args" label="Download" done-label="Downloaded" error-label="Not downloaded" icon="arrowDown" />
+        <ActionButton v-bind="args" label="Download" done-label="Downloaded" error-label="Not downloaded" icon="download" />
         <ActionButton v-bind="args" label="Hand in" done-label="Handed in" error-label="Not handed in" />
       </div>`,
   }),
@@ -37,7 +37,7 @@ export const Ghost: Story = {
   render: (args) => ({
     components: { ActionButton },
     setup: () => ({ args }),
-    template: `<ActionButton v-bind="args" variant="ghost" label="Download" done-label="Downloaded" error-label="Not downloaded" icon="arrowDown" />`,
+    template: `<ActionButton v-bind="args" variant="ghost" label="Download" done-label="Downloaded" error-label="Not downloaded" icon="download" />`,
   }),
 }
 
@@ -63,12 +63,12 @@ export const IconOnly: Story = {
         <div class="flex w-80 max-w-full items-center gap-1">
           <span class="flex-1 text-label text-fg">Unit 1 · HTML</span>
           <Button variant="ghost" size="icon" :icon="icons.Pencil" aria-label="Rename" />
-          <ActionButton v-bind="args" variant="ghost" size="icon" icon="arrowDown" label="Download" working-label="Downloading" done-label="Downloaded" error-label="Not downloaded" />
+          <ActionButton v-bind="args" variant="ghost" size="icon" icon="download" label="Download" working-label="Downloading" done-label="Downloaded" error-label="Not downloaded" />
           <Button variant="ghost" size="icon" :icon="icons.Ellipsis" aria-label="More" />
         </div>
         <div class="flex items-center gap-3">
-          <ActionButton v-bind="args" variant="ghost" size="icon" icon="arrowDown" label="Download" working-label="Downloading" done-label="Downloaded" error-label="Not downloaded" />
-          <ActionButton v-bind="args" :action="fail" variant="ghost" size="icon" icon="arrowDown" label="Download" working-label="Downloading" done-label="Downloaded" error-label="Not downloaded" />
+          <ActionButton v-bind="args" variant="ghost" size="icon" icon="download" label="Download" working-label="Downloading" done-label="Downloaded" error-label="Not downloaded" />
+          <ActionButton v-bind="args" :action="fail" variant="ghost" size="icon" icon="download" label="Download" working-label="Downloading" done-label="Downloaded" error-label="Not downloaded" />
           <ActionButton v-bind="args" size="icon" icon="arrowUp" label="Publish" working-label="Publishing" done-label="Published" error-label="Not published" />
         </div>
       </div>`,
