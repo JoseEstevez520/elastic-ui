@@ -182,6 +182,11 @@
     from { mask-position: 100% 0; }
     to { mask-position: -50% 0; }
   }
+  /* A faint band crossing a placeholder (Skeleton): the one thing here that moves on a transform. */
+  @keyframes skeleton-sweep {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
   /* A light wandering from where it rests and back, as behind an Aurora. */
   @keyframes aurora-drift {
     from { translate: 0 0; scale: 1; }
@@ -505,6 +510,40 @@
     animation: none;
     mask-image: none;
     opacity: 0.7;
+  }
+}
+
+/*
+ * A placeholder for content on its way (Skeleton): a block a tone off the page, with a band
+ * barely lighter than it crossing it. Only a transform moves, on a layer of its own. Under
+ * reduced motion, or with animations turned off by the app, it is the plain block.
+ */
+@utility skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--skeleton-bg, var(--color-bg-muted));
+  border-radius: var(--skeleton-radius, var(--radius-md));
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-fg) 6%, transparent),
+      transparent
+    );
+    animation: skeleton-sweep 1.8s var(--ease-soft) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html:not([data-motion='full']) &::after {
+      display: none;
+    }
+  }
+  html[data-motion='none'] &::after {
+    display: none;
   }
 }
 
