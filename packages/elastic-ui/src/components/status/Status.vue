@@ -24,6 +24,8 @@ const props = defineProps<{
   label?: string
   /** Why it is in this state: shown on hover and focus. */
   reason?: string
+  /** Only the ring: the label moves to hover and focus, and stays readable to screen readers. */
+  compact?: boolean
   class?: HTMLAttributes['class']
 }>()
 
@@ -69,10 +71,11 @@ const dash = computed(() => (props.state === 'working' ? `${CIRCUMFERENCE * 0.72
 </script>
 
 <template>
-  <!-- Focusable only when there is a reason to read: the reason is its description. -->
+  <!-- Focusable only when there is something to read that is not on screen: a reason, or the
+       label of a compact one. -->
   <span
-    :title="reason"
-    :tabindex="reason ? 0 : undefined"
+    :title="compact ? (reason ? `${text}: ${reason}` : text) : reason"
+    :tabindex="reason || compact ? 0 : undefined"
     :aria-description="reason"
     :class="cn('inline-flex max-w-full items-center gap-2 align-middle text-label text-fg-secondary', props.class)"
   >
@@ -103,6 +106,7 @@ const dash = computed(() => (props.state === 'working' ? `${CIRCUMFERENCE * 0.72
         class="transition-[d,opacity] duration-[350ms] ease-emphasized motion-reduce:transition-none"
       />
     </svg>
-    <TruncatedText class="min-w-0"><TextMorph :text="text" /></TruncatedText>
+    <TruncatedText v-if="!compact" class="min-w-0"><TextMorph :text="text" /></TruncatedText>
+    <span v-else class="sr-only">{{ text }}</span>
   </span>
 </template>

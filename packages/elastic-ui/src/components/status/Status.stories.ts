@@ -27,6 +27,15 @@ export const States: Story = {
   }),
 }
 
+/** Only the ring, for lists and cards: the label shows on hover and focus. */
+export const Compact: Story = {
+  render: () => ({
+    components: { Status },
+    setup: () => ({ all }),
+    template: `<div class="flex gap-4"><Status v-for="s in all" :key="s" :state="s" compact /></div>`,
+  }),
+}
+
 /** A state that changes while you watch turns into the next one. */
 export const Changing: Story = {
   render: () => ({
