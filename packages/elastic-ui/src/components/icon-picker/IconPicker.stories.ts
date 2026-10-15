@@ -17,6 +17,7 @@ const colors = [
 const meta = {
   title: 'Forms/IconPicker',
   component: IconPicker,
+  args: { icons },
   parameters: { layout: 'centered' },
   decorators: [() => ({ template: '<div class="h-80 w-80"><story /></div>' })],
 } satisfies Meta<typeof IconPicker>
