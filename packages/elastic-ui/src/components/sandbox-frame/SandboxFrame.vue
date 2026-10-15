@@ -32,9 +32,11 @@ const props = withDefaults(
     label: string
     /** Its height in pixels until it says its own. */
     height?: number
+    /** No ground, rounded corners, padding or entrance of its own: the piece draws all of it. */
+    bare?: boolean
     class?: HTMLAttributes['class']
   }>(),
-  { height: 160 },
+  { height: 160, bare: false },
 )
 
 const frame = useTemplateRef<HTMLIFrameElement>('frame')
@@ -46,13 +48,13 @@ const labels = useLabels()
 // theme goes in by message instead, keeping its state.
 const srcdoc = ref<string>()
 watch(
-  [() => props.html, () => props.piece, () => props.runtime, () => !!sheet.value],
-  ([html, piece, runtime, ready]) => {
+  [() => props.html, () => props.piece, () => props.runtime, () => props.bare, () => !!sheet.value],
+  ([html, piece, runtime, bare, ready]) => {
     if (!ready) return
     srcdoc.value =
       piece !== undefined
-        ? pieceDocument(piece, sheet.value!, runtime && runtimeAddress(runtime), labels)
-        : frameDocument(html ?? '', sheet.value!)
+        ? pieceDocument(piece, sheet.value!, runtime && runtimeAddress(runtime), labels, bare)
+        : frameDocument(html ?? '', sheet.value!, bare)
   },
   { immediate: true },
 )
@@ -108,9 +110,12 @@ function onLoad() {
     loading="lazy"
     :class="
       cn(
-        'block w-full rounded-[var(--radius-xl)] border-0 bg-bg-subtle',
+        'block w-full border-0',
+        !props.bare && 'rounded-[var(--radius-xl)] bg-bg-subtle',
         // Eases to its new height so nothing below it jumps; at once while it is still hidden.
-        loaded ? 'animate-blur-in transition-[height] duration-300 ease-[var(--ease-emphasized)] motion-reduce:transition-none' : 'opacity-0',
+        loaded
+          ? ['transition-[height] duration-300 ease-[var(--ease-emphasized)] motion-reduce:transition-none', !props.bare && 'animate-blur-in']
+          : 'opacity-0',
         props.class,
       )
     "
@@ -118,5 +123,5 @@ function onLoad() {
     @load="onLoad"
   />
   <!-- Its room, kept until mounted: the tokens are read from the page. -->
-  <div v-else :class="cn('w-full rounded-[var(--radius-xl)] bg-bg-subtle', props.class)" :style="{ height: `${height}px` }" />
+  <div v-else :class="cn('w-full', !props.bare && 'rounded-[var(--radius-xl)] bg-bg-subtle', props.class)" :style="{ height: `${height}px` }" />
 </template>

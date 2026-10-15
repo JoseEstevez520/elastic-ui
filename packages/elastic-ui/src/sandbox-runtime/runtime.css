@@ -28,13 +28,18 @@
 html,
 body {
   margin: 0;
-  background: var(--color-bg-subtle);
   color: var(--color-fg);
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.5;
 }
 
-body {
+/* A bare frame (`<html data-bare>`) has neither ground nor padding: the piece sets its own. */
+:where(html:not([data-bare])),
+:where(html:not([data-bare])) body {
+  background: var(--color-bg-subtle);
+}
+
+:where(html:not([data-bare])) body {
   padding: 16px;
 }

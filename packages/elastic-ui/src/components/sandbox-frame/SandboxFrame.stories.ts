@@ -209,3 +209,27 @@ export const LibraryPartsInTheDark: Story = {
   ...LibraryPartsOnAPhone,
   globals: { theme: 'dark', viewport: { value: 'mobile1', isRotated: false } },
 }
+
+/** Without its ground, corners, padding or entrance: the piece draws all of it, here a card of its own. */
+export const Bare: Story = {
+  args: {
+    html: undefined,
+    runtime,
+    bare: true,
+    label: 'A piece that draws its own ground',
+    piece: `<template>
+  <div class="card">
+    <p>This piece sets its own ground and corners; the frame adds nothing.</p>
+    <Button @click="n++">Pressed {{ n }}</Button>
+  </div>
+</template>
+<script>
+import { ref } from 'vue'
+import { Button } from '@joseestevez/vue-elastic-ui'
+export default { components: { Button }, setup() { return { n: ref(0) } } }
+</script>
+<style>
+.card { display: grid; gap: 12px; padding: 20px; border-radius: var(--radius-xl); background: var(--color-surface-raised); border: 1px solid var(--color-border); }
+</style>`,
+  },
+}

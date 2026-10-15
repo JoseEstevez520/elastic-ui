@@ -14,8 +14,9 @@ const policy = (runtime?: string) =>
 
 // Plain elements in the library's type and controls, so a piece looks native without a class.
 const BASE = `
-html, body { margin: 0; background: var(--color-bg-subtle); color: var(--color-fg); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; }
-body { padding: 16px; }
+html, body { margin: 0; color: var(--color-fg); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; }
+:where(html:not([data-bare])), :where(html:not([data-bare])) body { background: var(--color-bg-subtle); }
+:where(html:not([data-bare])) body { padding: 16px; }
 *, *::before, *::after { box-sizing: border-box; }
 code, pre, kbd { font-family: var(--font-mono); font-size: 0.8125em; }
 button { font: inherit; font-weight: 500; border: 0; border-radius: var(--radius-md); padding: 0.4rem 0.8rem; background: var(--color-accent); color: var(--color-accent-fg); cursor: pointer; }
@@ -63,8 +64,8 @@ export const themeSheet = (declarations: string, dark: boolean) =>
  * `<html>` and `<head>` merge into these as the parser goes; only its doctype is dropped, since
  * nothing may come before it.
  */
-export function frameDocument(html: string, theme: string) {
-  return `<!doctype html><html><head>${head(theme, BASE)}</head>${html.replace(/^\s*<!doctype[^>]*>/i, '')}`
+export function frameDocument(html: string, theme: string, bare = false) {
+  return `<!doctype html><html${bare ? ' data-bare' : ''}><head>${head(theme, BASE)}</head>${html.replace(/^\s*<!doctype[^>]*>/i, '')}`
 }
 
 const head = (theme: string, base: string, runtime?: string) =>
@@ -90,14 +91,14 @@ export function runtimeAddress(url: string): string | undefined {
  * document: the runtime, loaded from the host, mounts it with the library's texts in the page's
  * language. The runtime brings its own stylesheet, so no plain-element styles here.
  */
-export function pieceDocument(piece: string, theme: string, runtime: string | undefined, labels: object) {
+export function pieceDocument(piece: string, theme: string, runtime: string | undefined, labels: object, bare = false) {
   // As JSON in a script, with `<` escaped so nothing in the piece can close the script early.
   const json = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c')
   const mount =
     `if (window.ElasticUiSandbox) ElasticUiSandbox.mount(${json(piece)}, { labels: ${json(labels)} });` +
     `else document.getElementById('app').textContent = 'The library\\'s runtime could not be loaded.'`
   return (
-    `<!doctype html><html><head>${head(theme, '', runtime)}` +
+    `<!doctype html><html${bare ? ' data-bare' : ''}><head>${head(theme, '', runtime)}` +
     (runtime ? `<script src="${runtime}"></script>` : '') +
     `</head><body><div id="app"></div><script>${mount}</script></body></html>`
   )
