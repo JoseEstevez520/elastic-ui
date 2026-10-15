@@ -83,7 +83,7 @@ useEventListener<KeyboardEvent>(
           'inline cursor-pointer rounded-[var(--radius-sm)] -mx-[0.15em] px-[0.15em] text-inherit transition-colors duration-150 focus-ring',
           open
             ? 'bg-[color:var(--selection-bg,color-mix(in_srgb,var(--color-accent)_28%,transparent))] text-fg'
-            : 'underline decoration-dotted decoration-[color:var(--color-fg-faint)] decoration-1 underline-offset-[0.25em] hover:bg-[color:color-mix(in_srgb,var(--color-accent)_14%,transparent)] hover:no-underline',
+            : 'underline decoration-solid decoration-[color:color-mix(in_srgb,var(--color-fg-faint)_55%,transparent)] decoration-1 underline-offset-[0.25em] hover:bg-[color:color-mix(in_srgb,var(--color-accent)_14%,transparent)] hover:no-underline',
         ]"
       >
         <slot />
