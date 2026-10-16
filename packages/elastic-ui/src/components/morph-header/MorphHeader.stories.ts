@@ -8,6 +8,7 @@ const LINKS = ['Projects', 'About', 'Background', 'Skills', 'Contact', 'Blog', '
 
 interface HeaderArgs {
   menu: 'responsive' | 'scrolled' | 'always'
+  navAlign: 'end' | 'center'
   scrollThreshold: number
   /** How many links the nav shows. */
   links: number
@@ -26,7 +27,7 @@ const page = (args: HeaderArgs) => ({
     label: (link: string) => (args.longLabels ? `${link} and everything around it` : link),
   }),
   template: `
-    <MorphHeader :menu="args.menu" :scroll-threshold="args.scrollThreshold">
+    <MorphHeader :menu="args.menu" :nav-align="args.navAlign" :scroll-threshold="args.scrollThreshold">
       <template #logo>
         <span class="font-semibold tracking-tight">elastic</span>
       </template>
@@ -52,9 +53,10 @@ const page = (args: HeaderArgs) => ({
 const meta = {
   title: 'Navigation/MorphHeader',
   parameters: { layout: 'fullscreen' },
-  args: { menu: 'responsive', scrollThreshold: 40, links: 5, longLabels: false, actions: true },
+  args: { menu: 'responsive', navAlign: 'end', scrollThreshold: 40, links: 5, longLabels: false, actions: true },
   argTypes: {
     menu: { control: 'inline-radio', options: ['responsive', 'scrolled', 'always'] },
+    navAlign: { control: 'inline-radio', options: ['end', 'center'] },
     links: { control: { type: 'range', min: 1, max: LINKS.length, step: 1 } },
   },
   render: (args) => page(args),
@@ -65,12 +67,17 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
-/** Only the logo and the menu button, at every width. */
 /** The links at the top of the page; scrolled, the pill holds only the logo and the menu button. */
 export const MenuWhenScrolled: Story = {
   args: { menu: 'scrolled' },
 }
 
+/** The links in the middle of the bar, the logo on one side and the actions on the other. */
+export const CenteredNav: Story = {
+  args: { navAlign: 'center', menu: 'scrolled' },
+}
+
+/** Only the logo and the menu button, at every width. */
 export const MenuOnly: Story = {
   args: { menu: 'always' },
 }
@@ -91,6 +98,14 @@ export const SingleLink: Story = {
 
 export const NoActions: Story = {
   args: { actions: false },
+}
+
+export const CenteredNavManyLinks: Story = {
+  args: { navAlign: 'center', links: LINKS.length },
+}
+
+export const CenteredNavNoActions: Story = {
+  args: { navAlign: 'center', actions: false },
 }
 
 export const Mobile: Story = {

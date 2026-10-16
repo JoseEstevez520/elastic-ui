@@ -377,6 +377,7 @@ Not a template to fill: a page is composed from what it has to say. What the bes
   - `responsive`, the default: inline while they fit, in the bar and in the pill; behind the menu button when they don't.
   - `scrolled`: inline at the top of the page, while the reader is deciding where to go; once scrolled, the pill holds only the logo and the menu button, so it takes as little room as it can while they read. The links fade before the pill folds, so keep the threshold low (`:scroll-threshold="8"`) for it to answer the first scroll.
   - `always`: only the logo and the menu button, at every width, for a site with many sections.
+  - `nav-align="center"` puts the inline links in the middle of the bar, the logo on the left and the actions on the right, instead of beside the actions. The pill and the panel do not change. A centred nav needs the same room on both sides, so it folds into the menu a little sooner.
 
 ## 16. Setting up a project
 

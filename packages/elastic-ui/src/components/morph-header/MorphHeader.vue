@@ -24,10 +24,16 @@ const props = withDefaults(
      * `always`: only the logo and the menu button, at every width.
      */
     menu?: 'responsive' | 'scrolled' | 'always'
+    /**
+     * Where the inline links sit in the bar. `end`: beside the actions, at the right. `center`: in
+     * the middle of the bar, with the logo on the left and the actions on the right. Only the bar
+     * is laid out this way: the pill and the panel are the same either way.
+     */
+    navAlign?: 'end' | 'center'
     menuLabel?: string
     class?: HTMLAttributes['class']
   }>(),
-  { scrollThreshold: 40, menu: 'responsive', menuLabel: labelFor('menu') },
+  { scrollThreshold: 40, menu: 'responsive', navAlign: 'end', menuLabel: labelFor('menu') },
 )
 
 const open = defineModel<boolean>('open', { default: false })
@@ -97,29 +103,48 @@ const responsive = computed(() => props.menu === 'responsive' || (props.menu ===
 // Whether the inline nav fits is measured, not guessed from a breakpoint, so it holds for any
 // number of links, any label length and any language. An invisible, inert copy of the nav and
 // actions gives their natural width; a box with the bar's width gives the room there is. Until
-// the first measurement (and in server rendering) the `lg` breakpoint stands in.
+// the first measurement (and in server rendering) the `lg` breakpoint stands in. A centred nav
+// needs the same room on both sides of it, so the wider of the logo and the actions counts twice.
 const MIN_GAP = 40
 const logo = useTemplateRef<HTMLElement>('logo')
 const measureBar = useTemplateRef<HTMLElement>('measureBar')
 const measureNav = useTemplateRef<HTMLElement>('measureNav')
+const measureLinks = useTemplateRef<HTMLElement>('measureLinks')
+const measureActions = useTemplateRef<HTMLElement>('measureActions')
 const fits = ref<boolean>()
 let fitObserver: ResizeObserver | undefined
 
 onMounted(() => {
   const measure = () => {
     if (!measureBar.value || !measureNav.value) return
-    const needed = (logo.value?.offsetWidth ?? 0) + MIN_GAP + measureNav.value.offsetWidth
+    const logoWidth = logo.value?.offsetWidth ?? 0
+    const needed = centered.value
+      ? (measureLinks.value?.offsetWidth ?? 0) + 2 * (Math.max(logoWidth, measureActions.value?.offsetWidth ?? 0) + MIN_GAP)
+      : logoWidth + MIN_GAP + measureNav.value.offsetWidth
     fits.value = needed <= measureBar.value.offsetWidth
   }
   fitObserver = new ResizeObserver(measure)
-  for (const el of [logo.value, measureBar.value, measureNav.value]) if (el) fitObserver.observe(el)
+  for (const el of [logo.value, measureBar.value, measureNav.value, measureLinks.value, measureActions.value]) {
+    if (el) fitObserver.observe(el)
+  }
+  watch(centered, measure)
 })
 onBeforeUnmount(() => fitObserver?.disconnect())
 
+const centered = computed(() => props.navAlign === 'center')
 const inline = computed(() => responsive.value && fits.value !== false)
 // Class sets for the inline nav and for the menu button and panel, before and after measuring.
 const inlineClass = computed(() => (fits.value === undefined ? 'hidden lg:flex' : 'flex'))
 const menuClass = computed(() => (responsive.value && fits.value === undefined ? 'lg:hidden' : undefined))
+// The links, and the actions beside them, fade as one: out quickly when the page scrolls, in slowly
+// once the bar is back.
+const linksClass = computed(() =>
+  cn(
+    'items-center transition-opacity motion-reduce:transition-none',
+    linksHidden.value ? 'opacity-0 duration-100 ease-linear' : 'opacity-100 duration-[450ms] ease-soft',
+    inlineClass.value,
+  ),
+)
 const showMenu = computed(() => !responsive.value || fits.value !== true)
 const shape = computed(() => (expanded.value ? 'panel' : pill.value ? 'pill' : 'bar'))
 
@@ -198,7 +223,13 @@ watch(open, (isOpen) => {
           :class="
             cn(
               'relative z-10 flex items-center',
-              { panel: 'justify-between px-2', pill: 'gap-4 sm:gap-5', bar: 'justify-between' }[shape],
+              {
+                panel: 'justify-between px-2',
+                pill: 'gap-4 sm:gap-5',
+                // Three columns, the middle one the links: a centred nav stays centred whatever
+                // the logo and the actions weigh.
+                bar: centered ? 'grid grid-cols-[1fr_auto_1fr]' : 'justify-between',
+              }[shape],
             )
           "
         >
@@ -206,17 +237,7 @@ watch(open, (isOpen) => {
             <div ref="logo" class="flex items-center"><slot name="logo" /></div>
           </motion.div>
 
-          <motion.div
-            v-if="inline"
-            layout
-            :class="
-              cn(
-                'items-center gap-5 transition-opacity motion-reduce:transition-none',
-                linksHidden ? 'opacity-0 duration-100 ease-linear' : 'opacity-100 duration-[450ms] ease-soft',
-                inlineClass,
-              )
-            "
-          >
+          <motion.div v-if="inline && !centered" layout :class="cn('gap-5', linksClass)">
             <MorphHeaderRegion placement="inline">
               <slot />
             </MorphHeaderRegion>
@@ -225,12 +246,23 @@ watch(open, (isOpen) => {
             </motion.div>
           </motion.div>
 
+          <template v-else-if="inline">
+            <motion.div layout :class="cn('col-start-2', linksClass)">
+              <MorphHeaderRegion placement="inline">
+                <slot />
+              </MorphHeaderRegion>
+            </motion.div>
+            <motion.div v-if="$slots.actions" layout :class="cn('col-start-3 justify-self-end gap-2', linksClass)">
+              <slot name="actions" />
+            </motion.div>
+          </template>
+
           <motion.div
             v-if="showMenu"
             layout
             :initial="menuEntering ? { opacity: 0 } : false"
             :animate="{ opacity: 1, transition: menuIn }"
-            :class="cn('flex shrink-0', menuClass)"
+            :class="cn('flex shrink-0', shape === 'bar' && centered && 'col-start-3 justify-self-end', menuClass)"
           >
             <button
               ref="menuButton"
@@ -286,10 +318,12 @@ watch(open, (isOpen) => {
     <div v-if="menu !== 'always'" aria-hidden="true" inert class="invisible absolute inset-x-0 top-0 h-0 overflow-hidden">
       <div ref="measureBar" :class="morphHeaderWidth" />
       <div ref="measureNav" class="flex w-max items-center gap-5 whitespace-nowrap">
-        <MorphHeaderRegion placement="measure">
-          <slot />
-        </MorphHeaderRegion>
-        <div v-if="$slots.actions" class="flex items-center gap-2"><slot name="actions" /></div>
+        <div ref="measureLinks" class="flex items-center">
+          <MorphHeaderRegion placement="measure">
+            <slot />
+          </MorphHeaderRegion>
+        </div>
+        <div v-if="$slots.actions" ref="measureActions" class="flex items-center gap-2"><slot name="actions" /></div>
       </div>
     </div>
   </header>
