@@ -15,6 +15,9 @@ import { labelFor } from '../../utils/labels'
  * by that corner's own light, with nothing behind it. Closing (a click anywhere, Escape, the
  * cross), the caption goes first, then the picture folds back into its place.
  *
+ * With `video`, the same for a clip: the thumbnail plays it muted and in a loop (`src` is its poster)
+ * and the full view plays it with its controls, from where the thumbnail had got to.
+ *
  * Not on Reka UI's Dialog: its scroll lock takes the page's scrollbar away and shifts the page
  * under the picture, which then lands a few pixels off its place and jumps. Here the page keeps
  * its scrollbar's room while it cannot scroll, and the view is shown in the same frame it opens.
@@ -23,6 +26,8 @@ const props = withDefaults(
   defineProps<{
     src: string
     alt: string
+    /** A clip in place of the picture: `src` becomes its poster, shown until it plays. */
+    video?: string
     caption?: string
     /** A larger file for the full view; the thumbnail's own `src` if not given. */
     fullSrc?: string
@@ -35,7 +40,8 @@ const props = withDefaults(
 )
 
 const open = defineModel<boolean>('open', { default: false })
-const thumb = useTemplateRef<HTMLImageElement>('thumb')
+const thumb = useTemplateRef<HTMLImageElement | HTMLVideoElement>('thumb')
+const fullVideo = useTemplateRef<HTMLVideoElement>('fullVideo')
 const full = computed(() => props.fullSrc ?? props.src)
 const portalTo = usePortalTarget()
 const size = usePortalSize()
@@ -44,14 +50,18 @@ const size = usePortalSize()
 // image's own proportions, and never larger than the file.
 const MARGIN = 32
 const CAPTION = 56
+// The picture's own size: a clip's once its first frame is known.
+function naturalOf(el: HTMLImageElement | HTMLVideoElement) {
+  return el instanceof HTMLVideoElement ? { w: el.videoWidth, h: el.videoHeight } : { w: el.naturalWidth, h: el.naturalHeight }
+}
 function fullBox() {
-  const img = thumb.value!
-  const ratio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 4 / 3
+  const { w, h } = naturalOf(thumb.value!)
+  const ratio = w && h ? w / h : 4 / 3
   const room = props.caption ? CAPTION : 0
   const { width: vw, height: vh } = size()
   const maxW = vw - MARGIN * 2
   const maxH = vh - MARGIN * 2 - room
-  const width = Math.min(maxW, maxH * ratio, props.fullSrc ? maxW : img.naturalWidth || maxW)
+  const width = Math.min(maxW, maxH * ratio, props.fullSrc || props.video ? maxW : w || maxW)
   const height = width / ratio
   return { top: (vh - height - room) / 2, left: (vw - width) / 2, width, height }
 }
@@ -122,6 +132,17 @@ const idle = (run: () => void) =>
 onMounted(() => idle(prepare))
 watch(full, () => ((ready = undefined), idle(prepare)))
 
+// While the full view plays the clip, the thumbnail's own copy waits; it goes on once folded back.
+// The full one starts where the thumbnail had got to.
+watch(open, (isOpen) => {
+  if (!(thumb.value instanceof HTMLVideoElement)) return
+  if (isOpen) thumb.value.pause()
+  else void thumb.value.play().catch(() => {})
+})
+function continueClip() {
+  if (fullVideo.value && thumb.value instanceof HTMLVideoElement) fullVideo.value.currentTime = thumb.value.currentTime
+}
+
 async function openView() {
   if (open.value) return
   // Almost always ready by now; pressed straight away, it waits for it, briefly.
@@ -156,7 +177,26 @@ useEventListener<KeyboardEvent>(
 </script>
 
 <template>
+  <video
+    v-if="video"
+    ref="thumb"
+    :src="video"
+    :poster="src"
+    muted
+    loop
+    autoplay
+    playsinline
+    tabindex="0"
+    role="button"
+    aria-haspopup="dialog"
+    :aria-label="`${alt}, ${fullViewLabel}`"
+    :class="cn('cursor-zoom-in focus-ring', placed && 'invisible', props.class)"
+    @click="openView"
+    @keydown.enter.prevent="openView"
+    @keydown.space.prevent="openView"
+  />
   <img
+    v-else
     ref="thumb"
     :src="src"
     :alt="alt"
@@ -180,7 +220,21 @@ useEventListener<KeyboardEvent>(
       />
       <div role="dialog" aria-modal="true" :aria-label="alt" class="pointer-events-none fixed inset-0 z-50">
         <!-- The picture itself, its box growing from the thumbnail to the whole of it. -->
+        <video
+          v-if="video"
+          ref="fullVideo"
+          :src="video"
+          :poster="full"
+          autoplay
+          loop
+          controls
+          playsinline
+          class="pointer-events-auto fixed bg-black object-cover"
+          :style="pictureStyle"
+          @loadedmetadata="continueClip"
+        />
         <img
+          v-else
           :src="full"
           alt=""
           class="pointer-events-auto fixed cursor-zoom-out object-cover"

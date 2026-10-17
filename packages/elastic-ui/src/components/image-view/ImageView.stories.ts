@@ -24,3 +24,18 @@ export const InNotes: Story = {
       </article>`,
   }),
 }
+
+/** A clip: the thumbnail plays it muted and in a loop (`src` is its poster); pressed, it opens with its controls. */
+export const Video: Story = {
+  args: {
+    src: 'https://picsum.photos/id/1043/1600/1000',
+    video: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+    alt: 'A flower opening',
+    caption: 'A clip that opens where it is.',
+  },
+  render: (args) => ({
+    components: { ImageView },
+    setup: () => ({ args }),
+    template: `<div class="mx-auto max-w-xl"><ImageView v-bind="args" class="w-full rounded-[var(--radius-lg)]" /></div>`,
+  }),
+}
