@@ -4,6 +4,7 @@ import { useEventListener } from '../../composables/useEventListener'
 import { provideFieldRoom } from '../../composables/useFieldRoom'
 import { RovingFocusGroup } from 'reka-ui'
 import { cn } from '../../utils/cn'
+import { useMorphHeaderPlacement } from '../morph-header/morph-header.context'
 import { providePopoverMorphContext } from './popover-morph.context'
 import {
   popoverMorphLabelState,
@@ -29,7 +30,10 @@ const props = withDefaults(
   defineProps<{
     /** The edge the panel lines up with, and the corner it grows from, where there is room. */
     align?: 'start' | 'end'
-    /** Where it opens, where there is room; otherwise it opens the other way. */
+    /**
+     * Where it opens, where there is room; otherwise it opens the other way. Inside a MorphHeader's
+     * open panel it opens upwards unless told otherwise: the panel clips what hangs out below it.
+     */
     side?: 'bottom' | 'top'
     /** The button's look at rest: `outline` (the default), or `ghost` for a quiet bar or row. */
     variant?: PopoverMorphTriggerVariants['variant']
@@ -50,7 +54,7 @@ const props = withDefaults(
     /** Applied to the panel. */
     class?: HTMLAttributes['class']
   }>(),
-  { align: 'start', side: 'bottom', role: 'dialog' },
+  { align: 'start', role: 'dialog' },
 )
 
 const open = defineModel<boolean>('open', { default: false })
@@ -112,7 +116,9 @@ const { room } = provideFieldRoom({
 const MARGIN = 16
 const shift = ref(0)
 const flipped = ref(false)
-const placedSide = computed(() => (flipped.value ? (props.side === 'bottom' ? 'top' : 'bottom') : props.side))
+const inHeaderPanel = useMorphHeaderPlacement() === 'panel'
+const asksSide = computed(() => props.side ?? (inHeaderPanel ? 'top' : 'bottom'))
+const placedSide = computed(() => (flipped.value ? (asksSide.value === 'bottom' ? 'top' : 'bottom') : asksSide.value))
 
 function fitSideways() {
   const box = root.value?.getBoundingClientRect()
@@ -130,7 +136,7 @@ function chooseSide() {
   // It grows over the trigger: going down it starts at the trigger's top, going up at its bottom.
   const below = window.innerHeight - MARGIN - box.top
   const above = box.bottom - MARGIN
-  const [asked, other] = props.side === 'bottom' ? [below, above] : [above, below]
+  const [asked, other] = asksSide.value === 'bottom' ? [below, above] : [above, below]
   flipped.value = asked < size.height && other > asked
 }
 

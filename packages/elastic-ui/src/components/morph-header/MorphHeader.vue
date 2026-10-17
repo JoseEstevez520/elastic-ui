@@ -307,7 +307,10 @@ watch(open, (isOpen) => {
               v-if="$slots.actions"
               class="flex items-center gap-2 px-3 py-3 animate-[blur-in_0.45s_var(--ease-soft)_0.3s_both] motion-reduce:animate-none"
             >
-              <slot name="actions" />
+              <!-- The actions know they are in the panel too: a menu opening there goes up, not out of its edge. -->
+              <MorphHeaderRegion placement="panel">
+                <slot name="actions" />
+              </MorphHeaderRegion>
             </div>
           </motion.div>
         </AnimatePresence>
