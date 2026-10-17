@@ -27,6 +27,9 @@ Where there is a morphing version, use it. The library's personality is things t
 | An action that cannot be undone (delete, reset) | `ConfirmButton`: it asks in its own place, in the danger colour | it can be undone: `tone="warning"` with `ArchiveIcon` for an archive, `tone="neutral"` for a sign-out |
 | Two to four quick actions, each clear from its icon (share to…, react) | `SplitActions`: they pull out of the button as drops (`row`, `fan`), or it grows into a ring or a split column round them (`ring`, `column`) | they need words: `PopoverMorph role="menu"` |
 | Cards that open | `ExpandableCard` in an `ExpandableCardGroup` | the content is a page of its own: link to it |
+| A row of cards or photos to move through | `Carousel`: `per-view` (or `--carousel-per-view` with classes, to change it by screen width), `:arrows="false"` for dots only, a link beside the dots in its `end` slot | — |
+| A picture with its caption | `Figure`: it opens where it is (`ImageView`) and the caption goes with it | the picture has nothing more to show: `:zoomable="false"` |
+| Picking the page's language | `LanguageSwitch`: an icon that unfolds into the languages, each named in its own language; `labels="hidden"` keeps only their marks | — |
 
 Fields that open (Select, Combobox, DatePicker) grow out of themselves: their outline stretches down to hold the list or the month, and folds back once something is picked. Give them their width on the part itself (`<Select class="w-56">`), since it draws the outline; in a `Field` they fill it. In a DialogMorph, a Sheet or a PopoverMorph the box makes room for the open field on its own; don't put them in a box of your own that clips (`overflow-hidden`, `overflow-auto`), which would cut the list off.
 

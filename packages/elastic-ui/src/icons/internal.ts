@@ -16,6 +16,7 @@ export {
   ListFilter as FilterIcon,
   GripVertical as GripIcon,
   Info as InfoIcon,
+  Languages as LanguagesIcon,
   Lightbulb as LightbulbIcon,
   Minus as MinusIcon,
   OctagonAlert as OctagonAlertIcon,

@@ -43,8 +43,8 @@ Construida sobre Vue 3, Tailwind CSS v4, [Reka UI](https://reka-ui.com) y [motio
 | Forms | Input, Textarea, Select, Checkbox, Switch, Filters |
 | Overlays | Popover, PopoverMorph, Menu, Tooltip, DialogMorph, CommandPalette, Toast, SelectionMenu |
 | Disclosure | Collapsible, Accordion, Tabs, Steps, ExpandableCard |
-| Navigation | Sidebar, NavTree, MorphHeader, Breadcrumbs, TableOfContents, SearchMorph, ScrollIndicator |
-| Content | Card, Badge, Callout, AnimatedList, DynamicIsland |
+| Navigation | Sidebar, NavTree, MorphHeader, Breadcrumbs, TableOfContents, SearchMorph, ScrollIndicator, LanguageSwitch |
+| Content | Card, Badge, Callout, Figure, AnimatedList, DynamicIsland |
 | Text | TextMorph, StatusText, TruncatedText, Prose, Markdown |
 | Code | CodeBlock, CodeDiff, CodeWalkthrough, TerminalReplay |
 | AI | Chat, ChatMorph, ChatProposal, Aurora, AgentReplay, ImageReveal |

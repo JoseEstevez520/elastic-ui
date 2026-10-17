@@ -81,6 +81,8 @@ export const defaultLabels = {
   /** Pagination's landmark, and each page's name before its number. */
   pagination: 'Pagination',
   page: 'Page',
+  /** LanguageSwitch: its name, for screen readers. */
+  language: 'Language',
   /** Carousel: its landmark, and each slide's name before its number. */
   carousel: 'Carousel',
   slide: 'Slide',
