@@ -1,10 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DocsLayout from './layouts/DocsLayout.vue'
-import ComponentPage from './pages/ComponentPage.vue'
-import ComponentsPage from './pages/ComponentsPage.vue'
-import DocsPage from './pages/DocsPage.vue'
-import LandingPage from './pages/LandingPage.vue'
-import PrinciplesPage from './pages/PrinciplesPage.vue'
 import { registry } from './parts'
 
 declare module 'vue-router' {
@@ -29,12 +24,11 @@ function targetOf(hash: string, saved?: { left: number; top: number }): number |
   return el.getBoundingClientRect().top + window.scrollY - margin
 }
 
-// A part's page (or the Components page's many sections) fills in async: its stories load, then
-// mount their own Tabs, and TabsList moves the newly-mounted tab "into view" on the way (a library
-// quirk, SITE-NEEDS.md) — after the page has already landed on its target, that nudges the window
-// off it again, so the next page opens looking scrolled halfway down. Rather than guessing how long
-// that takes, this keeps the window pinned on the target for as long as the page keeps changing
-// underneath it, and gives up the moment the visitor actually tries to scroll it themselves.
+// A part's page (or the Components page's many sections) fills in async: its stories load and
+// mount and the header publishes its height, so the page's height changes after the router has
+// already landed on its target. Rather than guessing how long that takes, this keeps the window
+// pinned on the target for as long as the page keeps changing underneath it, and gives up the
+// moment the visitor actually tries to scroll it themselves.
 function pinScroll(hash: string, saved?: { left: number; top: number }): void {
   let live = true
   const events = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const
@@ -91,13 +85,16 @@ export const router = createRouter({
       path: '/',
       component: DocsLayout,
       children: [
-        { path: '', component: LandingPage, meta: { title: 'elastic-ui' } },
-        { path: 'docs', component: DocsPage, meta: { title: 'Get started' } },
-        { path: 'docs/principles', component: PrinciplesPage, meta: { title: 'Principles' } },
-        { path: 'components', component: ComponentsPage, meta: { title: 'Components' } },
-        { path: 'components/:name', component: ComponentPage },
+        // Each page loads when it is first visited, so opening one does not load them all.
+        { path: '', component: () => import('./pages/LandingPage.vue'), meta: { title: 'elastic-ui' } },
+        { path: 'docs', component: () => import('./pages/DocsPage.vue'), meta: { title: 'Get started' } },
+        { path: 'docs/principles', component: () => import('./pages/PrinciplesPage.vue'), meta: { title: 'Principles' } },
+        { path: 'components', component: () => import('./pages/ComponentsPage.vue'), meta: { title: 'Components' } },
+        { path: 'components/:name', component: () => import('./pages/ComponentPage.vue') },
       ],
     },
+    // A story alone, outside the shell, for the iframe a story of the page itself is shown in.
+    { path: '/frame/:name/:story', component: () => import('./pages/FramePage.vue') },
   ],
 })
 

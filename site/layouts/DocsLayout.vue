@@ -22,7 +22,7 @@ const route = useRoute()
 const collapsed = ref(false)
 const scrollIndicator = useTemplateRef('scrollIndicator')
 // Every part, as groups the sidebar can jump straight to a section of the (single, long)
-// Components page (SITE.md §4); read once, since it never changes at runtime.
+// Components page (ROADMAP.md, the site plan); read once, since it never changes at runtime.
 const groups = groupedRegistry()
 // On the long Components page the sidebar's tab follows the part being read; elsewhere, the page.
 const current = computed(() => (route.path === '/components' && readingPart.value ? readingPart.value : route.path))

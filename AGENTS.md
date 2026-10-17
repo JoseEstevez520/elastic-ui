@@ -7,12 +7,13 @@
 
 ## Language
 
-- Everything in the project is written in English: code, comments, docs and commit messages.
+- Everything in the project is written in English: code, comments, docs and commit messages. The exception is `README.es.md` (and `packages/elastic-ui/README.es.md`), the Spanish translations of the READMEs. A README always ships in both languages: edit one and the other in the same commit.
 - Chat with the user in Spanish.
 
 ## Workflow
 
 - This is a learning project. Discuss and plan with the user before creating files, installing dependencies or writing code.
 - Only write code when the user explicitly asks for it.
-- Follow the decisions and code rules in `DECISIONS.md`. Keep the code clean.
-- When using the library (stories, examples, other projects), follow `USAGE.md`.
+- This is an npm workspace: the library lives in `packages/elastic-ui` and the site in `site`. Root scripts delegate to them.
+- Follow the decisions and code rules in `packages/elastic-ui/DECISIONS.md`. Keep the code clean.
+- When using the library (stories, examples, other projects), follow `packages/elastic-ui/USAGE.md`.

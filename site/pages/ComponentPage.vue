@@ -29,12 +29,10 @@ const examples = computed(() => part.value?.stories.filter((story) => !story.sit
 const situations = computed(() => part.value?.stories.filter((story) => story.situation) ?? [])
 const neighbors = computed(() => neighborsOf(slug.value))
 
-// One story lives on the page at once (SITE.md §5's own rule, taken further): with every other
+// One story lives on the page at once (the site plan's own rule, taken further): with every other
 // example, every situation and every sub-component's API always mounted too, a part with many of
-// each (Sidebar's five, Select's ten-odd stories) got heavy to scroll — and a part whose story
-// mounts something that answers to one shared state for the whole page rather than its own
-// instance (Toast's queue) showed as many of it as there were stories open at once. Collapsed,
-// only the main example actually renders.
+// each (Sidebar's five, Select's ten-odd stories) gets heavy to scroll. Collapsed, only the main
+// example actually renders.
 const mainExample = computed(() => examples.value[0])
 const restExamples = computed(() => examples.value.slice(1))
 const moreCount = computed(() => restExamples.value.length + situations.value.length)
@@ -46,7 +44,7 @@ const moreCount = computed(() => restExamples.value.length + situations.value.le
     <p v-if="part.description">{{ part.description }}</p>
     <p v-for="credit in part.credits ?? []" :key="credit"><em>{{ credit }}</em></p>
 
-    <StoryExample v-if="mainExample" :story="mainExample" :component="loaded?.components[mainExample.key]" />
+    <StoryExample v-if="mainExample" :slug="slug" :story="mainExample" :component="loaded?.components[mainExample.key]" />
 
     <Collapsible class="not-prose">
       <CollapsibleTrigger class="text-label text-fg-secondary hover:text-fg">
@@ -55,6 +53,7 @@ const moreCount = computed(() => restExamples.value.length + situations.value.le
       <CollapsibleContent>
         <StoryExample
           v-for="story in restExamples"
+          :slug="slug"
           :key="story.key"
           :story="story"
           :component="loaded?.components[story.key]"
@@ -68,6 +67,7 @@ const moreCount = computed(() => restExamples.value.length + situations.value.le
           </p>
           <StoryExample
             v-for="story in situations"
+            :slug="slug"
             :key="story.key"
             :story="story"
             :component="loaded?.components[story.key]"

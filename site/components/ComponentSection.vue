@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import { cn, StatusText } from 'elastic-ui'
+import { StatusText } from 'elastic-ui'
 import { loadPart, type LoadedPart, type RegistryEntry } from '../parts'
+import StoryFrame from './StoryFrame.vue'
 
 /**
- * One part, read on the scrolling Components page (SITE.md §4): its name, a one-line description,
+ * One part, read on the scrolling Components page (ROADMAP.md, the site plan): its name, a one-line description,
  * and its main story live — the same live preview a part's own page opens with, so scrolling here
  * and opening `/components/:name` never show two different things. Its other stories stay a click
  * away, on that page, rather than repeating them all inline.
@@ -39,23 +40,6 @@ watch(near, async (isNear) => {
 
 const mainStory = computed(() => loaded.value?.data.stories.find((story) => !story.situation))
 const mainComponent = computed(() => (mainStory.value ? loaded.value?.components[mainStory.value.key] : undefined))
-
-// The loading line is short; the story that replaces it rarely is. Easing the box's floor from
-// one to the other (never its content, never clipped: a `min-height`, not a `height`) means the
-// swap settles instead of jumping the moment it lands.
-const stage = useTemplateRef<HTMLElement>('stage')
-const minHeight = ref<number>()
-const eased = ref(false)
-watch(mainComponent, async (component) => {
-  if (!component || !stage.value) return
-  eased.value = false
-  minHeight.value = stage.value.scrollHeight
-  await nextTick()
-  requestAnimationFrame(() => {
-    eased.value = true
-    minHeight.value = stage.value?.scrollHeight
-  })
-})
 </script>
 
 <template>
@@ -75,13 +59,9 @@ watch(mainComponent, async (component) => {
     </div>
     <p v-if="entry.description" class="line-clamp-1 text-copy text-fg-secondary">{{ entry.description }}</p>
 
-    <div
-      ref="stage"
-      :style="{ minHeight: minHeight ? `${minHeight}px` : undefined }"
-      :class="cn('story-stage rounded-[var(--radius-xl)] border border-border p-6', eased && 'transition-[min-height] duration-300 ease-emphasized')"
-    >
-      <StatusText v-if="near && !mainComponent" text="Loading" working class="text-copy text-fg-muted" />
-      <component :is="mainComponent" v-else-if="mainComponent" />
+    <StoryFrame v-if="mainStory && mainComponent" :slug="entry.slug" :story="mainStory" :component="mainComponent" />
+    <div v-else class="min-h-44 rounded-[var(--radius-xl)] border border-border p-6">
+      <StatusText v-if="near" text="Loading" working class="text-copy text-fg-muted" />
     </div>
   </section>
 </template>
