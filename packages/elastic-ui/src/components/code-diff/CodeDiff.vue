@@ -92,7 +92,7 @@ onMounted(() => {
       observer?.disconnect()
       play()
     },
-    { threshold: 0.6 },
+    { threshold: 0.3 },
   )
   if (root.value) observer.observe(root.value)
 })

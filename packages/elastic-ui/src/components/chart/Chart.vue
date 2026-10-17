@@ -79,7 +79,7 @@ onMounted(() => {
       shown.value = true
       intersection?.disconnect()
     },
-    { threshold: 0.6 },
+    { threshold: 0.3 },
   )
   intersection.observe(root.value!)
 })
