@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
+import { prefersReducedMotion } from '../../utils/motion'
 import ImageView from '../image-view/ImageView.vue'
 
 /**
@@ -26,6 +27,8 @@ const props = withDefaults(
   }>(),
   { zoomable: true },
 )
+// A clip that is not opened still waits for a press with reduced motion, as ImageView's does.
+const still = prefersReducedMotion()
 </script>
 
 <template>
@@ -46,7 +49,8 @@ const props = withDefaults(
         :poster="src"
         muted
         loop
-        autoplay
+        :autoplay="!still"
+        :controls="still"
         playsinline
         class="w-full rounded-[var(--radius-lg)]"
       />

@@ -6,6 +6,7 @@ import { usePortalSize, usePortalTarget } from '../../composables/usePortalTarge
 import { XIcon } from '../../icons/internal'
 import { cn } from '../../utils/cn'
 import { labelFor } from '../../utils/labels'
+import { prefersReducedMotion } from '../../utils/motion'
 
 /**
  * An image that grows into full view where it is. Pressed, the picture itself grows from its place
@@ -40,6 +41,9 @@ const props = withDefaults(
 )
 
 const open = defineModel<boolean>('open', { default: false })
+// A clip that plays by itself is motion nobody asked for: with reduced motion the thumbnail shows its
+// poster, and the clip plays once it is opened.
+const still = prefersReducedMotion()
 const thumb = useTemplateRef<HTMLImageElement | HTMLVideoElement>('thumb')
 const fullVideo = useTemplateRef<HTMLVideoElement>('fullVideo')
 const full = computed(() => props.fullSrc ?? props.src)
@@ -137,7 +141,7 @@ watch(full, () => ((ready = undefined), idle(prepare)))
 watch(open, (isOpen) => {
   if (!(thumb.value instanceof HTMLVideoElement)) return
   if (isOpen) thumb.value.pause()
-  else void thumb.value.play().catch(() => {})
+  else if (!still) void thumb.value.play().catch(() => {})
 })
 function continueClip() {
   if (fullVideo.value && thumb.value instanceof HTMLVideoElement) fullVideo.value.currentTime = thumb.value.currentTime
@@ -184,7 +188,7 @@ useEventListener<KeyboardEvent>(
     :poster="src"
     muted
     loop
-    autoplay
+    :autoplay="!still"
     playsinline
     tabindex="0"
     role="button"
