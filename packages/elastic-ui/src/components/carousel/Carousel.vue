@@ -8,28 +8,49 @@ import { provideCarousel } from './carousel.context'
 import { carouselTrackClass, DOT, DOT_GAP, PILL } from './carousel.variants'
 
 /**
- * Slides in a row, one shown at a time: photos of a project, cards, steps of a story. The track
+ * Slides in a row, one shown at a time by default: photos of a project, cards, steps of a story. The track
  * moves as one to the slide chosen, on the library's morph ease; dragged or swiped, it follows the
  * finger and settles on the nearest slide, holding back past either end rather than springing.
  * Under it, a dot per slide: the one shown is a slim pill that stretches towards the next dot and
  * catches up with itself, quiet chevrons on either side,
  * fainter at the ends. Arrow keys move it while it has the focus. A photo on a slide can be an
  * ImageView, which opens where it is. ARIA: a region named by `label`, each slide "Slide 2 of 5".
+ *
+ * Several slides can be in view at once (`perView`, or `--carousel-per-view` set with classes to
+ * change it with the screen). Then it moves one slide at a time and stops where the last slide meets
+ * the end, never leaving a gap, and the dots mark each place it can stop. Only the slides wholly in
+ * view can be reached; the rest stay inert until they come in. The chevrons can be dropped
+ * (`arrows`) and the `end` slot puts a link or an action beside the dots.
  */
 const props = withDefaults(
   defineProps<{
     /** Goes on from the last slide to the first, and back. */
     loop?: boolean
+    /**
+     * How many slides fit in the view at once, 1 by default. It sets `--carousel-per-view`, which
+     * the slides' width follows, so it can also be set by screen width with classes on the carousel
+     * (`[--carousel-per-view:1] sm:[--carousel-per-view:2]`); the places it stops are read from the
+     * layout either way.
+     */
+    perView?: number
+    /** The chevrons either side of the dots. */
+    arrows?: boolean
+    /** Keeps the dots when there is only one place to stop, so the row is ready for more slides. */
+    alwaysShowDots?: boolean
     label?: string
     slideLabel?: string
+    /** Names each dot when it stands for a place several slides wide ("Page 2 of 3"). */
+    pageLabel?: string
     ofLabel?: string
     previousLabel?: string
     nextLabel?: string
     class?: HTMLAttributes['class']
   }>(),
   {
+    arrows: true,
     label: labelFor('carousel'),
     slideLabel: labelFor('slide'),
+    pageLabel: labelFor('page'),
     ofLabel: labelFor('of'),
     previousLabel: labelFor('previous'),
     nextLabel: labelFor('next'),
@@ -41,43 +62,67 @@ const current = defineModel<number>({ default: 0 })
 const slides = ref<HTMLElement[]>([])
 const byPlace = (a: HTMLElement, b: HTMLElement) =>
   a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+// The slides wholly in view, read from the layout: the first and the last (inclusive).
+const visible = ref({ from: 0, to: 0 })
 provideCarousel({
   slides,
   register: (el) => (slides.value = [...slides.value, el].sort(byPlace)),
   unregister: (el) => (slides.value = slides.value.filter((s) => s !== el)),
   current,
+  visible,
   slideLabel: props.slideLabel,
   ofLabel: props.ofLabel,
 })
 const count = computed(() => slides.value.length)
-const clamp = (i: number) => Math.min(Math.max(i, 0), Math.max(count.value - 1, 0))
+
+// The places it can stop: one per slide when one is in view, fewer when several are, since the track
+// stops where the last slide meets the end. Read from the layout, so any slide width and gap works.
+const stops = ref(1)
+const clamp = (i: number) => Math.min(Math.max(i, 0), Math.max(stops.value - 1, 0))
 
 function go(to: number) {
-  if (!count.value) return
-  current.value = props.loop ? (to + count.value) % count.value : clamp(to)
+  if (!stops.value) return
+  current.value = props.loop ? (to + stops.value) % stops.value : clamp(to)
 }
 const atStart = computed(() => !props.loop && current.value <= 0)
-const atEnd = computed(() => !props.loop && current.value >= count.value - 1)
+const atEnd = computed(() => !props.loop && current.value >= stops.value - 1)
+const unitLabel = computed(() => (stops.value < count.value ? props.pageLabel : props.slideLabel))
 
 // The track's place: the chosen slide's left edge, read from the layout, so any slide width and
-// gap works. Measured again when the carousel's width changes.
+// gap works, but no further than the end of the track. Measured again when the carousel's width
+// changes.
 const viewport = useTemplateRef<HTMLElement>('viewport')
+const track = useTemplateRef<HTMLElement>('track')
 const offset = ref(0)
-function measure() {
-  offset.value = slides.value[clamp(current.value)]?.offsetLeft ?? 0
+// The distance between one slide and the next, which is what one step moves.
+function stride() {
+  const [first, second] = slides.value
+  return first && second ? second.offsetLeft - first.offsetLeft : (viewport.value?.clientWidth ?? 1)
 }
-watch([current, count], () => nextTick(measure))
+function measure() {
+  const width = viewport.value?.clientWidth ?? 0
+  const end = track.value ? Math.max(0, track.value.scrollWidth - width) : 0
+  const step = stride()
+  stops.value = count.value > 1 && step > 0 ? Math.max(1, Math.ceil(end / step - 0.02) + 1) : 1
+  offset.value = Math.min(slides.value[clamp(current.value)]?.offsetLeft ?? 0, end)
+  const inView = slides.value.flatMap((el, i) =>
+    el.offsetLeft >= offset.value - 1 && el.offsetLeft + el.offsetWidth <= offset.value + width + 1 ? [i] : [],
+  )
+  visible.value = { from: inView[0] ?? 0, to: inView[inView.length - 1] ?? 0 }
+}
+watch([current, count, () => props.perView], () => nextTick(measure))
 let resize: ResizeObserver | undefined
 onMounted(() => {
   measure()
   resize = new ResizeObserver(() => ((settling.value = false), measure()))
   if (viewport.value) resize.observe(viewport.value)
+  if (track.value) resize.observe(track.value)
 })
 onBeforeUnmount(() => resize?.disconnect())
 
 // Dragged: the track follows the pointer at once; past either end it holds back, following at a
 // third of the distance. Let go, it settles on the slide it was dragged towards, if dragged a
-// fifth of a slide or flicked, else back where it was. A drag is not a click: the click that ends
+// fifth of a step or flicked, else back where it was. A drag is not a click: the click that ends
 // it is swallowed, so a photo on the slide does not open.
 const drag = ref(0)
 const dragging = ref(false)
@@ -85,7 +130,7 @@ const settling = ref(true)
 let start: { x: number; y: number; time: number; id: number } | undefined
 let moved = false
 function down(e: PointerEvent) {
-  if (e.button !== 0 || count.value < 2) return
+  if (e.button !== 0 || stops.value < 2) return
   start = { x: e.clientX, y: e.clientY, time: e.timeStamp, id: e.pointerId }
   moved = false
 }
@@ -104,9 +149,9 @@ function move(e: PointerEvent) {
 }
 function up(e: PointerEvent) {
   if (!start || e.pointerId !== start.id) return
-  const width = viewport.value?.clientWidth ?? 1
+  const unit = stride()
   const speed = drag.value / Math.max(e.timeStamp - start.time, 1)
-  const toward = drag.value < -width / 5 || speed < -0.5 ? 1 : drag.value > width / 5 || speed > 0.5 ? -1 : 0
+  const toward = drag.value < -unit / 5 || speed < -0.5 ? 1 : drag.value > unit / 5 || speed > 0.5 ? -1 : 0
   start = undefined
   if (!dragging.value) return
   dragging.value = false
@@ -137,7 +182,7 @@ function key(e: KeyboardEvent) {
 // towards the next dot and then its tail catches up. A plain pill, the dot's own height: no liquid,
 // which blurred it into a blob (tried and dropped).
 const center = (i: number) => i * (DOT + DOT_GAP) + DOT / 2
-const dotsWidth = computed(() => Math.max(count.value, 1) * DOT + Math.max(count.value - 1, 0) * DOT_GAP)
+const dotsWidth = computed(() => Math.max(stops.value, 1) * DOT + Math.max(stops.value - 1, 0) * DOT_GAP)
 const pill = ref({ left: center(current.value) - PILL / 2, right: center(current.value) + PILL / 2 })
 const pillDelays = ref({ left: 0, right: 0 })
 watch(current, (to, from) => {
@@ -162,6 +207,7 @@ const pillStyle = computed(() => ({
     :aria-label="label"
     aria-roledescription="carousel"
     :class="cn('flex flex-col gap-4 outline-none', props.class)"
+    :style="perView ? { '--carousel-per-view': perView } : undefined"
   >
     <!-- `touch-pan-y`: a sideways drag is the carousel's, a vertical one the page's. Without it a
          phone takes over a drag that starts a little slanted and cancels it halfway. -->
@@ -177,57 +223,66 @@ const pillStyle = computed(() => ({
       @click.capture="swallowClick"
       @dragstart.prevent
     >
-      <div :class="carouselTrackClass" :style="trackStyle" aria-live="polite">
+      <div ref="track" :class="carouselTrackClass" :style="trackStyle" aria-live="polite">
         <slot />
       </div>
     </div>
-    <div v-if="count > 1" class="flex items-center justify-center gap-3">
-      <button
-        type="button"
-        :aria-label="previousLabel"
-        :disabled="atStart"
-        class="flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-[color,opacity] hover:text-fg focus-ring disabled:cursor-default disabled:opacity-40 disabled:hover:text-fg-muted"
-        @click="go(current - 1)"
-      >
-        <ChevronLeftIcon class="size-4" aria-hidden="true" />
-      </button>
-      <!-- The dots: quiet marks, the pill over them, and a button over each to its slide. -->
-      <div class="relative h-4" :style="{ width: `${dotsWidth}px` }">
-        <div aria-hidden="true" class="absolute inset-0 flex items-center" :style="{ gap: `${DOT_GAP}px` }">
+    <div
+      v-if="stops > 1 || alwaysShowDots || $slots.end"
+      :class="cn('flex items-center gap-3', $slots.end ? 'justify-between' : 'justify-center')"
+    >
+      <div v-if="stops > 1 || alwaysShowDots" class="flex items-center gap-3">
+        <button
+          v-if="arrows"
+          type="button"
+          :aria-label="previousLabel"
+          :disabled="atStart"
+          class="flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-[color,opacity] hover:text-fg focus-ring disabled:cursor-default disabled:opacity-40 disabled:hover:text-fg-muted"
+          @click="go(current - 1)"
+        >
+          <ChevronLeftIcon class="size-4" aria-hidden="true" />
+        </button>
+        <!-- The dots: quiet marks, the pill over them, and a button over each to its place. -->
+        <div class="relative h-4" :style="{ width: `${dotsWidth}px` }">
+          <div aria-hidden="true" class="absolute inset-0 flex items-center" :style="{ gap: `${DOT_GAP}px` }">
+            <span
+              v-for="(_, i) in stops"
+              :key="i"
+              class="shrink-0 rounded-full bg-fg-faint"
+              :style="{ width: `${DOT}px`, height: `${DOT}px` }"
+            />
+          </div>
           <span
-            v-for="(_, i) in count"
-            :key="i"
-            class="shrink-0 rounded-full bg-fg-faint"
-            :style="{ width: `${DOT}px`, height: `${DOT}px` }"
+            aria-hidden="true"
+            class="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-full bg-[color:var(--color-fg)]"
+            :style="pillStyle"
           />
+          <div class="absolute inset-0 flex items-center" :style="{ gap: `${DOT_GAP}px` }">
+            <button
+              v-for="(_, i) in stops"
+              :key="i"
+              type="button"
+              :aria-label="`${unitLabel} ${i + 1} ${ofLabel} ${stops}`"
+              :aria-current="i === current || undefined"
+              class="relative shrink-0 cursor-pointer rounded-full outline-none before:absolute before:-inset-2 focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg)]"
+              :style="{ width: `${DOT}px`, height: `${DOT}px` }"
+              @click="go(i)"
+            />
+          </div>
         </div>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-full bg-[color:var(--color-fg)]"
-          :style="pillStyle"
-        />
-        <div class="absolute inset-0 flex items-center" :style="{ gap: `${DOT_GAP}px` }">
-          <button
-            v-for="(_, i) in count"
-            :key="i"
-            type="button"
-            :aria-label="`${slideLabel} ${i + 1} ${ofLabel} ${count}`"
-            :aria-current="i === current || undefined"
-            class="relative shrink-0 cursor-pointer rounded-full outline-none before:absolute before:-inset-2 focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg)]"
-            :style="{ width: `${DOT}px`, height: `${DOT}px` }"
-            @click="go(i)"
-          />
-        </div>
+        <button
+          v-if="arrows"
+          type="button"
+          :aria-label="nextLabel"
+          :disabled="atEnd"
+          class="flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-[color,opacity] hover:text-fg focus-ring disabled:cursor-default disabled:opacity-40 disabled:hover:text-fg-muted"
+          @click="go(current + 1)"
+        >
+          <ChevronRightIcon class="size-4" aria-hidden="true" />
+        </button>
       </div>
-      <button
-        type="button"
-        :aria-label="nextLabel"
-        :disabled="atEnd"
-        class="flex size-8 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-[color,opacity] hover:text-fg focus-ring disabled:cursor-default disabled:opacity-40 disabled:hover:text-fg-muted"
-        @click="go(current + 1)"
-      >
-        <ChevronRightIcon class="size-4" aria-hidden="true" />
-      </button>
+      <!-- A link or an action beside the dots, at the end of the row. -->
+      <slot name="end" />
     </div>
   </section>
 </template>

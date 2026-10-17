@@ -6,6 +6,8 @@ interface CarouselContext {
   register: (el: HTMLElement) => void
   unregister: (el: HTMLElement) => void
   current: Ref<number>
+  /** The first and last slides wholly in view, read from the layout. */
+  visible: Ref<{ from: number; to: number }>
   slideLabel: string
   ofLabel: string
 }

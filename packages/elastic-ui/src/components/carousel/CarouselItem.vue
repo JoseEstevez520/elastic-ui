@@ -12,6 +12,8 @@ onMounted(() => el.value && carousel.register(el.value))
 onBeforeUnmount(() => el.value && carousel.unregister(el.value))
 
 const index = computed(() => (el.value ? carousel.slides.value.indexOf(el.value) : -1))
+// Only the slides wholly in view can be reached; the others come in as it moves.
+const inView = computed(() => index.value >= carousel.visible.value.from && index.value <= carousel.visible.value.to)
 const label = computed(
   () => `${carousel.slideLabel} ${index.value + 1} ${carousel.ofLabel} ${carousel.slides.value.length}`,
 )
@@ -23,8 +25,8 @@ const label = computed(
     role="group"
     aria-roledescription="slide"
     :aria-label="label"
-    :aria-hidden="index !== carousel.current.value || undefined"
-    :inert="index !== carousel.current.value || undefined"
+    :aria-hidden="!inView || undefined"
+    :inert="!inView || undefined"
     :class="cn(carouselItemClass, props.class)"
   >
     <slot />
