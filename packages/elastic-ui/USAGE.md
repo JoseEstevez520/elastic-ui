@@ -368,6 +368,7 @@ Not a template to fill: a page is composed from what it has to say. What the bes
 - **Write Markdown and render it with `Markdown`**: it gives the article its type (Prose) and turns what you write into the parts. No hand-made HTML for code, alerts or tables.
 - Code in fences with its file: ` ```js title="server.js" `. A change as a ` ```diff ` fence. A step-by-step build as a ` ```walkthrough ` fence, a session as ` ```agent-replay `.
 - Asides as GitHub's alerts (`> [!TIP]`), one kind for each thing: note, tip, important, warning, caution. Not two in a row.
+- An arrow in a sentence (`A → B`) is written as the character →: `Markdown` draws it as the library's arrow icon (`inline-arrow`), so it matches the icons. An editor that shows the same text puts `inline-arrow` on it with a decoration.
 - Headings at two levels (`##`, `###`) under the page's title, which is the only `#`; `headingsOf(source)` gives them to a TableOfContents.
 
 ## 15. Finding your way

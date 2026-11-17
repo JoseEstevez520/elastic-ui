@@ -30,7 +30,8 @@ const TASK = /^\[([ xX])\]\s+/
  * - headings into anchors with GitHub's ids (`headingsOf` gives them to a TableOfContents);
  * - a link within the site into the app's RouterLink, so it never reloads the page, and one to
  *   another site into a new tab;
- * - a table into one as wide as the text, scrolling sideways when it is wider.
+ * - a table into one as wide as the text, scrolling sideways when it is wider;
+ * - an arrow in the text (→) into the library's arrow icon ().
  *
  * Other fences can become any component through `components`, by language.
  */
@@ -55,12 +56,18 @@ export default defineComponent({
       return h('a', { href }, children)
     }
 
+    // Each → in the text is drawn as the library's arrow icon (the inline-arrow utility).
+    function arrows(text: string): VNodeChild[] {
+      if (!text.includes('→')) return [text]
+      return text.split(/(→)/).filter(Boolean).map((part) => (part === '→' ? h('span', { class: 'inline-arrow' }, part) : part))
+    }
+
     function inline(tokens: Token[]): VNodeChild[] {
       const root: VNodeChild[] = []
       const stack: { tag: string; href?: string; children: VNodeChild[] }[] = []
       const out = () => stack.at(-1)?.children ?? root
       for (const token of tokens) {
-        if (token.type === 'text') out().push(token.content)
+        if (token.type === 'text') out().push(...arrows(token.content))
         else if (token.type === 'code_inline') out().push(h('code', token.content))
         else if (token.type === 'softbreak') out().push('\n')
         else if (token.type === 'hardbreak') out().push(h('br'))

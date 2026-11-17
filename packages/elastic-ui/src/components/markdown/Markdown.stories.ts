@@ -10,6 +10,8 @@ const GUIDE = [
   '',
   'This guide builds a small **tasks API**, step by step. You need Node 20 or later; check it with `node --version`.',
   '',
+  'A request goes browser → route → handler → JSON back.',
+  '',
   '> [!NOTE]',
   '> The practice is handed in through the virtual classroom, not by email.',
   '',

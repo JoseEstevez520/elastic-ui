@@ -823,6 +823,17 @@ html.theme-switching *::after {
  * same colour for the same concept on every page. `diagram-chip` is the tinted part for HTML, and
  * `diagram-area` a larger one that holds others.
  */
+/* An arrow written in text ("A → B") drawn as the library's arrow icon (Lucide's arrow-right, the
+   same stroke as every icon), so it doesn't look like a different font's glyph. The character stays
+   (copying, searching and screen readers get "→"); only its ink is replaced, in the text's colour.
+   Markdown wraps each → in it; an editor can do the same with a decoration. */
+@utility inline-arrow {
+  -webkit-text-fill-color: transparent;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M12 5l7 7-7 7'/%3E%3C/svg%3E") center / 0.95em no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M12 5l7 7-7 7'/%3E%3C/svg%3E") center / 0.95em no-repeat;
+}
+
 @utility diagram {
   overflow: visible;
   font-family: var(--font-sans);
