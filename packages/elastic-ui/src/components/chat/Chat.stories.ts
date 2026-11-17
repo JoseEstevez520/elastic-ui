@@ -5,25 +5,23 @@ import Chat from './Chat.vue'
 import ChatComposer from './ChatComposer.vue'
 import ChatMessage from './ChatMessage.vue'
 import ChatThread from './ChatThread.vue'
-import { fakeModel, REPLIES, SOURCES } from './chat.fixtures'
+import { fakeModel, REPLIES, SOURCES, type Message } from './chat.fixtures'
 import ChatSource from './ChatSource.vue'
 import ChatSources from './ChatSources.vue'
 import ChatTool from './ChatTool.vue'
 import ChatToolDetail from './ChatToolDetail.vue'
 
 // The chat both stories run, with a model that answers as it streams (see chat.fixtures).
-const chat = (options?: { searchFails?: boolean; answerFails?: boolean; failsMidway?: boolean; long?: boolean }) => ({
+const FIRST: Omit<Message, 'id'>[] = [
+  { role: 'user', text: 'What is a harness?' },
+  { role: 'assistant', text: REPLIES[0]!, tool: { label: `Read ${SOURCES.length} sources`, state: 'done', sources: SOURCES } },
+]
+const chat = (
+  options?: { searchFails?: boolean; answerFails?: boolean; failsMidway?: boolean; long?: boolean },
+  start: Omit<Message, 'id'>[] = FIRST,
+) => ({
   components: { Chat, ChatComposer, ChatMessage, ChatSource, ChatSources, ChatThread, ChatTool, ChatToolDetail },
-  setup: () => ({
-    ...fakeModel(
-      [
-        { role: 'user', text: 'What is a harness?' },
-        { role: 'assistant', text: REPLIES[0]!, tool: { label: `Read ${SOURCES.length} sources`, state: 'done', sources: SOURCES } },
-      ],
-      options,
-    ),
-    Globe,
-  }),
+  setup: () => ({ ...fakeModel(start, options), Globe }),
   template: `
     <Chat class="h-screen">
       <ChatThread>
@@ -68,11 +66,35 @@ export const Default: Story = {}
 
 /**
  * A long answer: your message glides to the top and the view holds there while the answer grows
- * below. Scroll down to the end and it follows it, gliding at the pace the text comes; scroll up to
- * reread and it lets go, with a button back to the end.
+ * below, never following it, so it is read from its first line. While more is below, a button
+ * takes you to the end, once. Scrolling up lets the message go, and the room under it goes too,
+ * out of sight. Send a short question after it: the short answer leaves the room below it, still,
+ * until you scroll up.
  */
 export const LongAnswer: Story = {
   render: () => chat({ long: true }),
+}
+
+/**
+ * An empty thread: the first message already sits in the upper half of the view, so nothing moves;
+ * the answer grows below it, out past the end, and the button offers the way down.
+ */
+export const FromEmpty: Story = {
+  render: () => chat({ long: true }, []),
+}
+
+/**
+ * A long message of yours: only its end stays at the top, so the answer still has most of the view.
+ */
+export const LongQuestion: Story = {
+  render: () => ({
+    ...chat(),
+    setup() {
+      const model = fakeModel(FIRST)
+      const question = Array.from({ length: 6 }, () => SOURCES.map((s) => s.title).join('. ')).join('\n\n')
+      return { ...model, Globe, send: () => model.send(question) }
+    },
+  }),
 }
 
 /** An answer arriving whole flows in as the same wave. */

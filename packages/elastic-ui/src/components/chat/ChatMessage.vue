@@ -70,7 +70,8 @@ watch(
 </script>
 
 <template>
-  <div :class="cn(chatMessageVariants({ role }), props.class)">
+  <!-- `data-chat-role`: how ChatThread tells your message, to bring it to the top as it is sent. -->
+  <div :data-chat-role="role" :class="cn(chatMessageVariants({ role }), props.class)">
     <!-- Above the answer: what it used to get there, such as the tools it ran. -->
     <slot name="before" />
     <!-- The status and the answer share one cell, so the status fades out where it stood as the

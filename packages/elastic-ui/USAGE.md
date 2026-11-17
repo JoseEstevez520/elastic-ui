@@ -361,6 +361,7 @@ Not a template to fill: a page is composed from what it has to say. What the bes
 - **The page scrolls, not a box inside it**, unless the box is a surface of its own (a chat, a panel). Sticky parts and TableOfContents expect the window.
 - **A scrollbar is a short line** (ScrollIndicator): hidden at rest, it shows for a moment when the page opens and while you scroll. Put one in the page's layout; ChatThread brings its own.
 - **Inside a box, text fades at the edges it scrolls under** and the line runs only where the text reads (`inset`), never along the box's corners.
+- **A chat never follows its answer.** ChatThread brings your message to the top as it is sent (unless it already sits in the upper half of the view), keeps room below it for the answer, and holds still while the answer streams in; a button takes the reader to the end while there is more below. Nothing to wire: it tells your message by `ChatMessage role="user"`, so render each message as a ChatMessage, a wrapper round it (with its sources line, say) being fine, and add the question and its answer's place in the same update. A conversation replaced whole (restored, or a new one) shows from its end, as when the thread opens. Don't scroll the thread yourself, nor keep it pinned to the bottom.
 
 ## 14. Writing notes and guides
 
