@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { Globe } from '@lucide/vue'
-import { ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
+import { setStreamEffect } from '../../utils/streamPace'
 import Chat from './Chat.vue'
 import ChatComposer from './ChatComposer.vue'
 import ChatMessage from './ChatMessage.vue'
@@ -73,6 +74,25 @@ export const Default: Story = {}
  */
 export const LongAnswer: Story = {
   render: () => chat({ long: true }),
+}
+
+/**
+ * In ink (`setStreamEffect('ink')`): the same front of words coming into focus, but each lands in
+ * the aurora's colours, drifting from one to the next along the text, and dries into the text's
+ * own. Send a message.
+ */
+export const InkStream: Story = {
+  render: () => {
+    const base = chat({ long: true })
+    return {
+      ...base,
+      setup(...args: unknown[]) {
+        setStreamEffect('ink')
+        onBeforeUnmount(() => setStreamEffect('wave'))
+        return (base.setup as (...a: unknown[]) => object)(...args)
+      },
+    }
+  },
 }
 
 /**

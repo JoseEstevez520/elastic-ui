@@ -120,5 +120,15 @@ export { cn } from './utils/cn'
 export { defaultLabels, ElasticUi, provideLabels, useLabels, type Labels } from './utils/labels'
 export { startFocusModality } from './utils/focusModality'
 export { getMotionPreference, setMotionPreference, type MotionPreference } from './utils/motion'
-export { createStreamPace, wholeWords, type StreamPace, type StreamPaceOptions } from './utils/streamPace'
+export {
+  createStreamPace,
+  getStreamEffect,
+  inkFlow,
+  setStreamEffect,
+  streamEffect,
+  wholeWords,
+  type StreamEffect,
+  type StreamPace,
+  type StreamPaceOptions,
+} from './utils/streamPace'
 export type { LinkTo } from './utils/link'

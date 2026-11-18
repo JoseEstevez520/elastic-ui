@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, ref, watch } from 'vue'
-import { createStreamPace, wholeWords } from '../../utils/streamPace'
+import { createStreamPace, inkFlow, streamEffect, wholeWords, type StreamEffect } from '../../utils/streamPace'
 import { prefersReducedMotion } from '../../utils/motion'
 import { ChatThreadReadyKey } from './chat.keys'
 
@@ -14,7 +14,13 @@ import { ChatThreadReadyKey } from './chat.keys'
  * coming in at once: a soft gradient of focus travelling through the text, one smooth wave
  * rather than words landing one by one.
  */
-const props = defineProps<{ text: string; streaming?: boolean }>()
+const props = defineProps<{
+  text: string
+  streaming?: boolean
+  /** How the words come in: the focus wave, or ink (see setStreamEffect). Default: the project's. */
+  effect?: StreamEffect
+}>()
+const ink = computed(() => (props.effect ?? streamEffect.value) === 'ink')
 /** Everything that has come is on show; what comes after the answer can follow it in. */
 const emit = defineEmits<{ caughtUp: [] }>()
 
@@ -51,7 +57,14 @@ const animate = shown.value < props.text.length || props.streaming
   <template v-for="(piece, i) in pieces" :key="i">
     <template v-if="/^\s+$/.test(piece)">{{ piece }}</template>
     <!-- Each word comes into focus over 1.2s, far longer than the gap to the next: at a model's
-         pace the band of words coming in spans several lines, a soft front moving on a slant. -->
+         pace the band of words coming in spans several lines, a soft front moving on a slant. In
+         ink, it also lands in an aurora colour and dries into the text's (1.7s). -->
+    <span
+      v-else-if="ink"
+      :class="animate && 'inline-block animate-[ink-wave_1700ms_cubic-bezier(0.4,0,0.2,1)_both] motion-reduce:animate-none'"
+      :style="animate ? { '--ink-flow': inkFlow(i) } : undefined"
+      >{{ piece }}</span
+    >
     <span v-else :class="animate && 'animate-[blur-in_1200ms_var(--ease-in-out)_both] motion-reduce:animate-none'">{{
       piece
     }}</span>

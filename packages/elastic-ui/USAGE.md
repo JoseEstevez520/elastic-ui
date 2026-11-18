@@ -127,6 +127,8 @@ Neither, just replace it:
 
 A model sends its answer in bursts and pauses; shown as it lands, it reads as jolts. `ChatStream` (inside `ChatMessage`) already smooths plain text. Anything else that streams (Markdown, a program drawn by a renderer, an editor being filled) takes the same pace from `createStreamPace({ onFrame })`: call `update(text, streaming)` as text arrives and draw the first `shown` characters on each frame; `wholeWords(text, shown, streaming, quiet)` cuts that at a whole word. What it draws comes into focus with the library's `blur-in`, so every answer in a project arrives the same way.
 
+The words come in one of two ways, set once for a project with `setStreamEffect` (a part's `effect` still wins): `wave` (the default), each word coming into focus; or `ink`, the same front, but the words land in the aurora's colours, drifting from one to the next along the text (`inkFlow(i)` into `--ink-flow`, with the `ink-wave` keyframes), and dry into the text's colour. The aurora says the AI is at work; once it ends, everything is the text's own colour again. Use one effect for everything that streams in a project.
+
 ### A first load with nothing yet
 
 `Skeleton` is a placeholder with the shape of what will come, for a first load that has no data to show: a grid of cards, a list, a profile. Size it with `class` (`h-4 w-48`), `circle` for an avatar; `SkeletonText` is `lines` of it, the last one shorter. They move only by a faint band crossing them, which stops under reduced motion.

@@ -1,3 +1,4 @@
+import { ref } from 'vue'
 import { prefersReducedMotion } from './motion'
 
 /**
@@ -154,4 +155,42 @@ export function wholeWords(text: string, shown: number, streaming: boolean, quie
   }
   const next = text.slice(shown).search(/\s/)
   return next === -1 ? text : text.slice(0, shown + next)
+}
+
+/**
+ * How a streamed answer's words come in. `wave` (the default): each word comes into focus, a soft
+ * front of focus moving through the text. `ink`: the same front, but the words land in the
+ * aurora's colours and dry into the text's: the aurora says the AI is at work, and once it is
+ * done everything is the text's own colour again. Set it once for a project with
+ * `setStreamEffect`; a part's own `effect` still wins.
+ */
+export type StreamEffect = 'wave' | 'ink'
+export const streamEffect = ref<StreamEffect>('wave')
+
+export function setStreamEffect(effect: StreamEffect) {
+  streamEffect.value = effect
+}
+
+export function getStreamEffect(): StreamEffect {
+  return streamEffect.value
+}
+
+// The aurora's own colours (Aurora.vue's), solid, for ink: a project's --aurora-1..4 win.
+const AURORA = [
+  'var(--aurora-1, oklch(0.65 0.16 255))',
+  'var(--aurora-2, oklch(0.65 0.2 295))',
+  'var(--aurora-3, oklch(0.8 0.12 55))',
+  'var(--aurora-4, oklch(0.72 0.15 350))',
+]
+const INK_STEP = 7
+
+/**
+ * The ink of the `index`th word of a streamed text: its hue drifts along the text, from one
+ * aurora colour to the next every few words, so a front of fresh words reads as one gradient
+ * rather than a colour per word. Goes in `--ink-flow` with the `ink-wave` keyframes.
+ */
+export function inkFlow(index: number): string {
+  const k = Math.floor(index / INK_STEP) % AURORA.length
+  const f = Math.round(((index % INK_STEP) / INK_STEP) * 100)
+  return `color-mix(in oklab, ${AURORA[k]} ${100 - f}%, ${AURORA[(k + 1) % AURORA.length]})`
 }
