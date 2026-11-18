@@ -24,7 +24,9 @@ const direction = computed(() => (context ? context.direction.value : 'across'))
 <template>
   <span
     aria-hidden="true"
-    :class="cn('diagram-in inline-flex shrink-0 items-center justify-center gap-1 self-center text-meta text-fg-faint', props.class)"
+    :data-both="both || undefined"
+    :data-across="direction === 'across' || undefined"
+    :class="cn('diagram-arrow diagram-in inline-flex shrink-0 items-center justify-center gap-1 self-center text-meta text-fg-faint', props.class)"
   >
     <component
       :is="both ? ArrowBothIcon : ArrowRightIcon"

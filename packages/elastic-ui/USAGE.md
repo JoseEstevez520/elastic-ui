@@ -269,6 +269,16 @@ Most ideas are pieces that fit together or a flow, and are composed rather than 
 </Diagram>
 ```
 
+**In ink**, for someone who would rather see the composed parts drawn by hand: `ink` on a `Diagram`, or `setDiagramInk(true)` for every one (a setting that covers the whole app; the prop still wins). The parts are laid out as ever, rows running down on a phone included; then the Diagram measures them and draws over them, with Rough.js, a rough outline round each chip and area in its colour and a rough arrow from the part before each `DiagramArrow` to the part after it, along the way they run. The strokes come in one after another as a pen draws them when the figure first shows (at once with reduced motion), follow any change of size, and stay still after that. Only the lines are drawn: the words are the page's own, in the hand-written face `--font-hand`, over a lighter tint, never distorted, and nothing is hatched, which costs reading. SVG drawings, tables, steps and code stay as they are. Rough.js is loaded only once a diagram is drawn in ink. The library ships no font file: provide one for `--font-hand` (Excalidraw's Excalifont, OFL, is the one it names first), or the system's own hand stands in.
+
+```css
+@font-face {
+  font-family: "Excalifont";
+  src: url("./fonts/excalifont.woff2") format("woff2");
+  font-display: swap;
+}
+```
+
 ### Charts
 
 `Chart` draws values on real axes: a `line` for something that changes along x, `bars` to compare categories, `points` for two measures of the same things (a model's cost against its score). The data goes in as props, `series` of `{ x, y, label? }`, and each axis takes a `title`, a `unit` and a `scale` (`log` when the values span several orders of magnitude).

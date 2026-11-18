@@ -166,6 +166,70 @@ export const Grid: Story = {
 }
 
 /**
+ * The same parts in ink (`ink`; setDiagramInk turns it on for every Diagram): laid out as ever,
+ * then drawn over by hand with Rough.js, a rough outline round each chip and area in its colour
+ * and a rough arrow from one part to the next, coming in stroke by stroke when the figure shows.
+ * The words stay the page's, in the hand-written face. Narrow the canvas or switch the theme: the
+ * row runs down, its arrows turn, and the drawing follows.
+ */
+export const Ink: Story = {
+  render: () => ({
+    components: parts,
+    setup: () => ({ harness: HARNESS, colors: COLORS, icons: { Braces, FileCode, Globe, Route } }),
+    template: `
+      <div class="flex max-w-3xl flex-col gap-10">
+        <Diagram ink label="A request goes from the browser or Postman to the controller, which answers with an HTML view or with JSON data" class="rounded-[var(--radius-xl)] bg-bg-subtle p-5 sm:p-6">
+          <DiagramGroup>
+            <DiagramArea title="Client" :icon="icons.Globe" :color="colors.client" layout="row" note="Asks for a URL (GET).">
+              <DiagramChip>Browser</DiagramChip>
+              <DiagramChip>Postman</DiagramChip>
+            </DiagramArea>
+            <DiagramArrow label="GET" />
+            <DiagramArea title="Controller" :icon="icons.Route" :color="colors.controller" note="Finds the method for that route.">
+              <DiagramChip>@GetMapping("/products")</DiagramChip>
+            </DiagramArea>
+            <DiagramArrow />
+            <DiagramGroup layout="column">
+              <DiagramArea :color="colors.view" note="@Controller">
+                <DiagramChip :icon="icons.FileCode">View (HTML)</DiagramChip>
+              </DiagramArea>
+              <DiagramArea :color="colors.data" note="@RestController">
+                <DiagramChip :icon="icons.Braces">Data (JSON)</DiagramChip>
+              </DiagramArea>
+            </DiagramGroup>
+          </DiagramGroup>
+        </Diagram>
+        <Diagram ink label="Several characters point to the same planet" caption="A column of chips, an arrow with a word on it, and a chip with a note." class="rounded-[var(--radius-xl)] bg-bg-subtle p-5 sm:p-6">
+          <DiagramGroup>
+            <DiagramGroup layout="column">
+              <DiagramChip :color="colors.controller">Luke</DiagramChip>
+              <DiagramChip :color="colors.controller">Leia</DiagramChip>
+              <DiagramChip :color="colors.controller">Han</DiagramChip>
+            </DiagramGroup>
+            <DiagramArrow label="homeworld" />
+            <DiagramChip :icon="icons.Globe" :color="colors.harness" note="Planet">Tatooine</DiagramChip>
+          </DiagramGroup>
+        </Diagram>
+        <Diagram ink label="You, the harness round the model, and your project" class="rounded-[var(--radius-xl)] bg-bg-subtle p-5 sm:p-6">
+          <DiagramGroup layout="column">
+            <DiagramChip :icon="harness.you" color="var(--color-fg-muted)">You</DiagramChip>
+            <DiagramArrow both />
+            <DiagramArea :color="colors.harness" layout="grid" title="Harness">
+              <DiagramItem v-for="tool in harness.tools" :key="tool.label" :icon="tool.icon">{{ tool.label }}</DiagramItem>
+            </DiagramArea>
+          </DiagramGroup>
+        </Diagram>
+      </div>`,
+  }),
+}
+
+/** In ink on a phone: the rows run down and the arrows point down, still drawn by hand. */
+export const InkPhoneWidth: Story = {
+  ...Ink,
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+}
+
+/**
  * A drawing made elsewhere, by a model or a tool, shown as an image: it runs nothing and reaches
  * nothing, and it takes the theme's tokens and the diagram classes. Switch the theme to see it
  * drawn again.

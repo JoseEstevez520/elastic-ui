@@ -3,6 +3,13 @@
 
 @source "../src";
 
+/* The hand-written face for diagrams in ink, provided here as a project would (Latin subset, OFL). */
+@font-face {
+  font-family: "Excalifont";
+  src: url("./fonts/excalifont.woff2") format("woff2");
+  font-display: swap;
+}
+
 body {
   background-color: var(--color-bg);
   color: var(--color-fg);

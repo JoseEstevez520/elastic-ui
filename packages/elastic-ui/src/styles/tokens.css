@@ -77,6 +77,9 @@
   /* Typography */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* A hand-written face, for diagrams in ink. Like Inter, the project provides the font file
+     (Excalidraw's Excalifont, OFL); without it, the system's own hand stands in. */
+  --font-hand: "Excalifont", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
 
   /*
    * The type scale (DECISIONS, "Type"): five sizes, each with its line height, its tracking (tighter
@@ -926,6 +929,48 @@ html.theme-switching *::after {
   html[data-motion='none'] & .diagram-in {
     opacity: 1;
     animation: none !important;
+  }
+
+  /*
+   * In ink (Diagram's `ink`, setDiagramInk): the pen's lines are drawn by Rough.js on a layer over
+   * the parts (`diagram-ink-layer`); the parts keep their place and their words, in the hand-written
+   * face, over a lighter tint, and the frame keeps no ground: ink on the page. An arrow's icon only
+   * keeps its room, where the drawn arrow passes, with its word above it across and beside it down.
+   */
+  &[data-ink] {
+    position: relative;
+    background: none;
+  }
+  &[data-ink] :is(.diagram-chip, .diagram-area, .diagram-arrow) {
+    font-family: var(--font-hand);
+  }
+  &[data-ink] :is(.diagram-chip, .diagram-area) {
+    border-radius: 0;
+    background: color-mix(in oklab, var(--diagram-color, var(--color-accent)) 8%, transparent);
+  }
+  &[data-ink] .diagram-arrow {
+    color: var(--color-fg-secondary);
+    font-size: 0.875rem;
+  }
+  &[data-ink] .diagram-arrow[data-across] {
+    flex-direction: column-reverse;
+    gap: 0;
+  }
+  /* Down, the word stands out of the way, so the line runs down the middle of the parts. */
+  &[data-ink] .diagram-arrow:not([data-across]) {
+    position: relative;
+  }
+  &[data-ink] .diagram-arrow:not([data-across]) > span {
+    position: absolute;
+    left: calc(100% + 0.25rem);
+    white-space: nowrap;
+  }
+  &[data-ink] .diagram-arrow > svg {
+    visibility: hidden;
+    width: 2rem;
+  }
+  &[data-waiting] .diagram-ink-layer {
+    opacity: 0;
   }
 }
 
