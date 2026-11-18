@@ -123,6 +123,10 @@ Neither, just replace it:
 </Button>
 ```
 
+### Text that arrives in a stream
+
+A model sends its answer in bursts and pauses; shown as it lands, it reads as jolts. `ChatStream` (inside `ChatMessage`) already smooths plain text. Anything else that streams (Markdown, a program drawn by a renderer, an editor being filled) takes the same pace from `createStreamPace({ onFrame })`: call `update(text, streaming)` as text arrives and draw the first `shown` characters on each frame; `wholeWords(text, shown, streaming, quiet)` cuts that at a whole word. What it draws comes into focus with the library's `blur-in`, so every answer in a project arrives the same way.
+
 ### A first load with nothing yet
 
 `Skeleton` is a placeholder with the shape of what will come, for a first load that has no data to show: a grid of cards, a list, a profile. Size it with `class` (`h-4 w-48`), `circle` for an avatar; `SkeletonText` is `lines` of it, the last one shorter. They move only by a faint band crossing them, which stops under reduced motion.

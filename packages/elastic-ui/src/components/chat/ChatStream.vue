@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, ref, watch } from 'vue'
+import { createStreamPace, wholeWords } from '../../utils/streamPace'
 import { prefersReducedMotion } from '../../utils/motion'
 import { ChatThreadReadyKey } from './chat.keys'
 
@@ -17,102 +18,31 @@ const props = defineProps<{ text: string; streaming?: boolean }>()
 /** Everything that has come is on show; what comes after the answer can follow it in. */
 const emit = defineEmits<{ caughtUp: [] }>()
 
-// The pace follows how fast text arrives, averaged, and keeps a small cushion of it unshown, so
-// the model's pauses are absorbed instead of showing as stops (as llm-ui does). Short of the
-// cushion it slows, past it it speeds up, never halting while there is text left to show.
-const CUSHION = 24 // characters
-const CATCH_UP = 1500 // ms to close the gap to the cushion
-const STARTING_RATE = 0.12 // characters a millisecond, before any has been measured
-// A whole answer, or what is left once the model is done, comes in over about this long.
-const FLUSH = 600
-
+// The pace (see createStreamPace): steady, following how fast text arrives, with a cushion that
+// absorbs the model's pauses; whole words only (see wholeWords).
 const threadReady = inject(ChatThreadReadyKey, ref(true))
-// An answer there when the conversation opened just shows.
-const shown = ref(threadReady.value && !prefersReducedMotion() ? 0 : props.text.length)
-let exact = shown.value
-
-let rate = STARTING_RATE
-let lastArrival = 0
-let lastLength = props.text.length
-watch(
-  () => props.text.length,
-  (length) => {
-    const now = performance.now()
-    if (lastArrival && length > lastLength) {
-      const measured = (length - lastLength) / Math.max(16, now - lastArrival)
-      rate = 0.8 * rate + 0.2 * measured
-    }
-    lastArrival = now
-    lastLength = length
-    quiet.value = false
-    clearTimeout(quietTimer)
-    quietTimer = setTimeout(() => {
-      quiet.value = true
-      run()
-    }, QUIET)
-    run()
-  },
-)
-// The model has sent nothing for a moment: the last word is most likely whole, so it need not wait
-// for the space after it (the answer's very last word never gets one).
-const QUIET = 300
+const shown = ref(0)
 const quiet = ref(false)
-let quietTimer: ReturnType<typeof setTimeout> | undefined
-
-let frame = 0
-let last = 0
-function run() {
-  // Without motion, or rendering on the server, the text simply shows.
-  if (typeof requestAnimationFrame === 'undefined' || prefersReducedMotion()) {
-    shown.value = props.text.length
-    emit('caughtUp')
-    return
-  }
-  if (frame) return
-  last = performance.now()
-  const step = (now: number) => {
-    const dt = now - last
-    last = now
-    const pending = props.text.length - exact
-    if (pending <= 0) {
-      frame = 0
-      emit('caughtUp')
-      return
-    }
-    // Once the model is done, or has paused (`quiet`), there is nothing left to cushion: what is
-    // held back comes in at once, so the answer's end never lags behind the model.
-    const speed =
-      props.streaming && !quiet.value
-        ? Math.max(rate * 0.25, rate + (pending - CUSHION) / CATCH_UP)
-        : Math.max(rate, pending / FLUSH)
-    exact = Math.min(props.text.length, exact + speed * dt)
-    shown.value = Math.floor(exact)
-    frame = requestAnimationFrame(step)
-  }
-  frame = requestAnimationFrame(step)
-}
-run()
-watch(() => props.streaming, run)
-onBeforeUnmount(() => {
-  cancelAnimationFrame(frame)
-  clearTimeout(quietTimer)
+const pace = createStreamPace({
+  onFrame: (n) => (shown.value = n),
+  onCaughtUp: () => emit('caughtUp'),
+  onQuiet: () => (quiet.value = true),
+  // An answer there when the conversation opened just shows.
+  startShown: !(threadReady.value && !prefersReducedMotion()),
 })
+shown.value = pace.shown
+watch(
+  [() => props.text, () => props.streaming],
+  ([text, streaming]) => {
+    pace.update(text, Boolean(streaming))
+    quiet.value = pace.quiet
+    shown.value = pace.shown
+  },
+  { immediate: true },
+)
+onBeforeUnmount(() => pace.stop())
 
-// Whole words only: a word appears once it is complete, never a few letters of it. While the
-// answer streams, the last word may still be growing (a model splits words across bursts), so it
-// waits for the space after it, unless it ends a sentence or the model has paused (`quiet`);
-// once done, whatever is revealed runs to the end of its word.
-const visible = computed(() => {
-  const text = props.text
-  const revealed = text.slice(0, shown.value)
-  const whole = shown.value >= text.length && (quiet.value || /[.!?:;…)\]"'”]$/.test(text))
-  if (props.streaming && !whole) {
-    const lastSpace = revealed.search(/\s\S*$/)
-    return lastSpace === -1 ? '' : revealed.slice(0, lastSpace)
-  }
-  const next = text.slice(shown.value).search(/\s/)
-  return next === -1 ? text : text.slice(0, shown.value + next)
-})
+const visible = computed(() => wholeWords(props.text, shown.value, Boolean(props.streaming), quiet.value))
 const pieces = computed(() => visible.value.split(/(\s+)/).filter(Boolean))
 const animate = shown.value < props.text.length || props.streaming
 </script>
