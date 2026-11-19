@@ -15,6 +15,10 @@ import { afterPaint, prefersReducedMotion } from '../../utils/motion'
  * When there is nothing to animate (reduced motion, or not an element) the change still waits for
  * `afterPaint`: finishing the transition from inside the hook would re-render in the middle of
  * Vue's own patch, and the incoming page would never mount.
+ *
+ * Each step also has a timer that finishes it a little after its duration. A tab the browser is
+ * not painting (in the background, or its window covered) runs no frames, so neither an animation
+ * nor `afterPaint` would ever end, and the page would stay on the one it left.
  */
 const props = defineProps<{
   /** Which page it is; a new one plays the change. */
@@ -27,9 +31,23 @@ const emit = defineEmits<{ changed: [] }>()
 const OUT = 100
 const IN = 200
 
+// Plays one step and calls `done` once: when it ends, or after its duration and a margin if the
+// browser paints no frames.
+function play(el: Element, keyframes: Keyframe[], options: KeyframeAnimationOptions & { duration: number }, done: () => void) {
+  let called = false
+  const finish = () => {
+    if (called) return
+    called = true
+    clearTimeout(timer)
+    done()
+  }
+  const timer = setTimeout(finish, options.duration + 150)
+  if (prefersReducedMotion() || !(el instanceof HTMLElement)) return afterPaint(finish)
+  el.animate(keyframes, options).finished.then(finish, finish)
+}
+
 function leave(el: Element, done: () => void) {
-  if (prefersReducedMotion() || !(el instanceof HTMLElement)) return afterPaint(done)
-  el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: OUT, easing: 'linear', fill: 'forwards' }).finished.then(done, done)
+  play(el, [{ opacity: 1 }, { opacity: 0 }], { duration: OUT, easing: 'linear', fill: 'forwards' }, done)
 }
 
 // Back to the top, at once, before the new page shows.
@@ -42,8 +60,7 @@ function toTop() {
 function enter(el: Element, done: () => void) {
   toTop()
   emit('changed')
-  if (prefersReducedMotion() || !(el instanceof HTMLElement)) return afterPaint(done)
-  el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: IN, easing: 'ease-out' }).finished.then(done, done)
+  play(el, [{ opacity: 0 }, { opacity: 1 }], { duration: IN, easing: 'ease-out' }, done)
 }
 </script>
 
